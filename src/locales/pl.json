@@ -1,0 +1,92 @@
+{
+  "common": {
+    "navigation": {
+      "home": "Strona główna",
+      "about": "O nas",
+      "contact": "Kontakt",
+      "my_account": "Moje konto",
+      "logout": "Wyloguj",
+      "articles": "Artykuły"
+    },
+    "submit": "Wyślij",
+    "search": "Wyszukaj...",
+    "try_again": "Spróbuj ponownie",
+    "sending": "Wysyłanie...",
+    "success": "Sukces",
+    "change_pass": "Zmień hasło"
+  },
+  "validation": {
+    "required": "To pole jest wymagane",
+    "invalid_email": "Podaj poprawny adres email",
+    "incorrect_password_format": "Hasło musi zawierać co najmniej 8 znaków",
+    "password_confirmation": "Hasła muszą być takie same",
+    "first_name": "Imię musi zawierać co najmniej 2 znaki",
+    "last_name": "Nazwisko musi zawierać co najmniej 2 znaki",
+    "phone": "Podaj poprawny numer telefonu",
+    "message": "Wiadomość musi zawierać co najmniej 10 znaków"
+  },
+  "errors": {
+    "failed_to_fetch_chat_note": "Wystąpił problem podczas wczytywania notatek. Spróbuj ponownie później",
+    "failed_to_create_report": "Wystąpił problem podczas tworzenia zgłoszenia.",
+    "failed_to_save_note": "Wystąpił problem podczas zapisywania notatki. Spróbuj ponownie później",
+    "unknown": "Wystąpił nieznany błąd. Spróbuj ponownie później",
+    "failed_to_fetch_chat": "Wystąpił problem podczas wczytywania rozmowy. Spróbuj ponownie później"
+  },
+  "report": {
+    "modal_title": "Zgłoszenie",
+    "select_report_type": "Wybierz typ zgłoszenia",
+    "subject": "Temat",
+    "description": "Opis",
+    "change_volunteer": "Zmień wolontariusza",
+    "change_mentee": "Zmień podopiecznego",
+    "abuse": "Zgłoś nadużycie",
+    "other": "Inne",
+    "crisis_situation": "Sytuacja kryzysowa"
+  },
+  "chat": {
+    "conntecting": "Łączenie z rozmówcą...",
+    "open": "Połaczono",
+    "closing": "Połaczenie jest przerwane... Sprawdź swoje połaczenie internetowe",
+    "closed": "Połaczenie zostało przerwane... Sprawdź swoje połaczenie internetowe",
+    "uninstantiated": "Nie można połączyć z rozmówcą. Spróbuj ponownie później",
+    "send": "Wyślij",
+    "enter_message_label": "Wpisz wiadomość...",
+    "notes": "Notatki",
+    "contract": "Kontrakt",
+    "report": "Zgłoś",
+    "note_title": "Notatki"
+  },
+  "profile": {
+    "settings_subtitle": "Informacje o Twoim koncie",
+    "settings_acc_name": "Nazwa konta: {{name}}",
+    "settings_acc_email": "Adres email: {{email}}",
+    "this_section_is_private": "Ta sekcja jest prywatna, nikt inny jej nie widzi.",
+    "description_subtitle": "O mnie",
+    "articles_subtitle": "Ostatnia aktywność"
+  },
+  "articles": {
+    "read_more": "Czytaj więcej",
+    "title": "Tworzymy przestrzeń bez tabu, dla Ciebie!",
+    "add_article": "Nowy artykuł",
+    "more_articles": "Więcej artykułów",
+    "manage": "Zarządzaj",
+    "subtitle": "W naszym serwisie znajdziesz artykuły na temat psychologii, które pomogą Ci zrozumieć siebie i innych. Wszystkie prace są autorstwa naszych wolontariuszy, którzy chcą pomóc Ci w trudnych chwilach. Każdy artykuł weryfikujemy pod kątem merytorycznym, aby zapewnić Ci najwyższą jakość treści."
+  },
+  "homepage": {
+    "choose_mentee_button": "Zostań wolontariuszem",
+    "choose_volunteer_button": "Dołacz teraz",
+    "title": {
+      "1": "Wypłyń z nami na brzeg",
+      "2": "Fundacja Peryskop",
+      "3": "to darmowa pomoc psychologiczna"
+    },
+    "desc": "Zrzeszamy ochotników z całej Polski z odpowiednim doświadczeniem, aby dostarczać pomoc dostępną dla każdego.",
+    "about_us": {
+      "about_us_card": {
+        "subtitle": "O nas",
+        "title": "Pomysł na powstanie projektu narodził się w wyniku kryzysu osobistego i potrzeby wsparcia w trudnym czasie",
+        "text": "Z doświadczenia wiemy, jak ogromną rolę odgrywają w takiej sytuacji towarzyszące nam osoby. Jesteśmy także świadomi potencjału kryjącego się w trudnych momentach życia, który, choć na początku niedostrzegalny, może stanowić przełom ku zmianie na lepsze. Fundację Peryskop współtworzymy z myślą o wszystkich, którzy pomimo dynamicznego rozwoju mediów społecznościowych i rosnącego zainteresowania psychologią w przestrzeni publicznej, w kryzysie psychicznym wciąż czują się pozostawieni sami sobie. Chcemy przestrzeni bez tabu, w której spotykamy się na najgłębszym poziomie. Wiemy, że posiadamy idealne warunki, by zadbać o dobrostan psychiczny osób takich jak my, bo tak naprawdę wszystkich nas łączą podobne troski i wyzwania, świadczące o naszym człowieczeństwie. Z psychologią jesteśmy za pan brat. Dołącz do nas, jeśli potrzebujesz pomocy lub chcesz pomagać. Rola, w którą się u nas wcielisz, nie musi pozostać na zawsze taka sama. Każdy z nas, bez wyjątku, podlega procesowi ciągłych zmian, a kryzys często okazuje się stanem przejściowym. Możemy tworzyć wspólnie unikalne miejsce, w którym osoby doświadczające trudnych emocji będą zaopiekowane przez naszych wolontariuszy, pozostających pod stałą opieką superwizyjną. Razem widzimy więcej, możemy więcej i jesteśmy lepiej przygotowani do stawiania czoła nieustannej podróży, jaką jest życie."
+      }
+    }
+  }
+}

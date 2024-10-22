@@ -1,0 +1,51 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  /* style scrollbar */
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f0f0f0;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #153243;
+  border-radius: 10px;
+  border: 2px solid #f0f0f0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #999; /* Zmiana koloru przy najechaniu myszką */
+}
+
+.markdown {
+  color: #153243 !important;
+}
+
+/* Dodatkowa specyficzność dla tekstu wewnątrz edytora */
+.markdown * {
+  color: #153243;
+}
+
+/* Specyficzność dla nagłówków, paragrafów itp. */
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown p,
+.markdown li,
+.markdown blockquote {
+  color: #153243 !important;
+}
+
+.markdown a,
+.markdown a > * {
+  color: #06b7a7 !important;
+}
