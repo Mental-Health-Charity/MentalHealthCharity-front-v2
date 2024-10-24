@@ -1,4 +1,6 @@
-export interface Report {
+import { User } from "../auth/types";
+
+export interface ReportPayload {
   report_type: ReportType;
   subject: string;
   description: string;
@@ -8,10 +10,18 @@ export interface ChangeReportStatusPayload {
   id: number;
 }
 
+export interface Report {
+  report_type: ReportType;
+  subject: string;
+  description: string;
+  chat_id: number;
+  id: number;
+  created_by: User;
+  creation_date: string;
+}
+
 export enum ReportType {
   CHANGE_VOLUNTEER = "CHANGE_VOLUNTEER",
-  CHANGE_MENTEE = "CHANGE_MENTEE",
-  ABUSE = "ABUSE",
-  OTHER = "OTHER",
-  CRISIS_SITUATION = "CRISIS_SITUATION",
+  ABUSE = "CHAT_ABUSE",
+  BUG = "BUG",
 }

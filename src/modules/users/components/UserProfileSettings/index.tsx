@@ -2,7 +2,12 @@ import { Box, Button, Typography } from "@mui/material";
 import SimpleCard from "../../../shared/components/SimpleCard";
 import { useTranslation } from "react-i18next";
 
-const UserProfileSettings = () => {
+interface Props {
+  username: string;
+  email: string;
+}
+
+const UserProfileSettings = ({ email, username }: Props) => {
   const { t } = useTranslation();
   return (
     <SimpleCard
@@ -30,7 +35,7 @@ const UserProfileSettings = () => {
               fontSize: "18px",
             }}
           >
-            {t("profile.settings_acc_name", { name: "Jan Kowalski" })}
+            {t("profile.settings_acc_name", { name: username })}
           </Typography>
           <Typography
             color="text.secondary"
@@ -39,7 +44,7 @@ const UserProfileSettings = () => {
             }}
           >
             {t("profile.settings_acc_email", {
-              email: "jankowalski@gmail.com",
+              email: email,
             })}
           </Typography>
         </Box>

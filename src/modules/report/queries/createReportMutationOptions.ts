@@ -1,9 +1,9 @@
 import { url } from "../../../api";
 import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
 import { ErrorMessage } from "../../shared/types";
-import { Report } from "../types";
+import { ReportPayload } from "../types";
 
-const createReportMutationOptions = async (payload: Report) => {
+const createReportMutationOptions = async (payload: ReportPayload) => {
   const headers = getAuthHeaders();
 
   const res = await fetch(url.reports.create, {

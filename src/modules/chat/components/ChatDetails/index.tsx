@@ -24,7 +24,7 @@ const ChatDetails = ({ chat, onClose }: Props) => {
         backgroundColor: theme.palette.background.default,
         borderRadius: "8px",
         boxShadow: `0 0 10px 5px ${theme.palette.shadows.box}`,
-        height: "100%",
+        height: "fit-content",
         display: "flex",
         justifyContent: "center",
         padding: "15px",

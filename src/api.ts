@@ -42,9 +42,8 @@ export const url = {
   users: {
     searchUser(options: ReadSearchUsersOptions) {
       const query = buildQuery(options);
-      return {
-        readSearchUsers: `${baseUrl}/api/v1/users/?${query}`,
-      };
+      console.log(query);
+      return `${baseUrl}/api/v1/users/?${query}`;
     },
     readUserById({ id }: ReadUserByIdOptions) {
       return `${baseUrl}/api/v1/users/${id}`;

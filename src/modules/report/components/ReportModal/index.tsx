@@ -3,7 +3,7 @@ import Modal from "../../../shared/components/Modal";
 import { Box, Select, TextField, MenuItem, Button } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup"; // Można dodać walidację
-import { Report, ReportType } from "../../types";
+import { ReportPayload, ReportType } from "../../types";
 import { ReportTranslationKeys } from "../../constants";
 import { useMutation } from "@tanstack/react-query";
 import createReportMutationOptions from "../../queries/createReportMutationOptions";
@@ -49,7 +49,7 @@ const ReportModal = ({ open, onClose }: Props) => {
           }}
           validationSchema={validationSchema}
           onSubmit={(values, { setSubmitting }) => {
-            mutate(values as Report);
+            mutate(values as ReportPayload);
             setSubmitting(false);
             onClose();
           }}

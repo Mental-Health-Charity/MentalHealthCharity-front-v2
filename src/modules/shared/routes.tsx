@@ -1,3 +1,4 @@
+import AdminScreen from "../../screens/AdminScreen";
 import ArticleScreen from "../../screens/ArticleScreen";
 import ArticlesScreen from "../../screens/ArticlesScreen";
 import ChatScreen from "../../screens/ChatScreen";
@@ -23,8 +24,8 @@ const routes: RouteType[] = [
     requiresAuth: false,
   },
   {
-    url: "/dashboard",
-    onRender: <div>Dashboard</div>,
+    url: "/admin",
+    onRender: <AdminScreen />,
     requiresAuth: true,
   },
   {

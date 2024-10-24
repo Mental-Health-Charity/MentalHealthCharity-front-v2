@@ -82,7 +82,7 @@ const ArticleView = ({ article, articles }: Props) => {
         }}
         component="article"
       >
-        <Markdown content={article.content} />
+        <Markdown readOnly content={article.content} />
       </Card>
       <Box marginTop={2} display="flex" flexDirection="column" gap={2}>
         <Typography color="secondary" fontWeight={600} fontSize={20}>

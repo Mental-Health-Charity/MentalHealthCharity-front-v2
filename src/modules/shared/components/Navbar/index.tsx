@@ -25,6 +25,8 @@ const Navbar = () => {
     null
   );
 
+  const isAdminPanel = window.location.pathname.includes("/admin");
+
   const { user } = useUser();
 
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
@@ -32,8 +34,6 @@ const Navbar = () => {
   );
 
   const { isScrolled } = useWindowScroll();
-
-  const currentPath = window.location.pathname;
 
   const { t } = useTranslation();
   const theme = useTheme();
@@ -62,7 +62,15 @@ const Navbar = () => {
       name: t("common.navigation.articles"),
       path: "/articles",
     },
+    {
+      name: t("common.navigation.chat"),
+      path: "/chat/",
+    },
   ];
+
+  if (isAdminPanel) {
+    return null;
+  }
 
   return (
     <AppBar
@@ -201,9 +209,12 @@ const Navbar = () => {
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
-                  <MenuItem LinkComponent={Link} href="/account">
+                  <MenuItem>
                     <ListItemText>
-                      <Link sx={{ textDecoration: "none" }} href="/account">
+                      <Link
+                        sx={{ textDecoration: "none" }}
+                        href={`/profile/${user.id}`}
+                      >
                         {t("common.navigation.my_account")}
                       </Link>
                     </ListItemText>

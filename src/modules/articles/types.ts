@@ -8,7 +8,7 @@ export interface ReadArticlesOptions extends DefaultPaginationOptions {
 }
 
 export interface SearchPublicArticlesOptions extends DefaultPaginationOptions {
-  query: string;
+  q: string;
 }
 
 export interface ReadPublicArticlesOptions extends ReadArticlesOptions {

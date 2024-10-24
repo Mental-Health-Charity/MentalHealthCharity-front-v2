@@ -24,7 +24,7 @@ const Loader = ({ variant = "small", ...props }: Props) => {
         }}
         {...props}
       >
-        <img src={loading_icon} alt="Loading icon" width="100%" height="auto" />
+        <img src={loading_icon} alt="Loading icon" width="60" height="60" />
       </Box>
     );
   }

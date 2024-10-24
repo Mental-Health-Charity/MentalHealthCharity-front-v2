@@ -10,7 +10,7 @@ const ArticleScreen = () => {
   const navigate = useNavigate();
   const { data } = useQuery(getArticleByIdQueryOptions({ id: id || "" }));
   const { data: articles } = useQuery(
-    articlesQueryOptions({ query: "", page: 1, size: 50 })
+    articlesQueryOptions({ q: "", page: 1, size: 50 })
   );
 
   const getRandomArticles = useCallback(() => {

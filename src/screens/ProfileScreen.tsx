@@ -5,27 +5,80 @@ import wave_bg from "../assets/static/wave_bg.webp";
 import UserProfileSettings from "../modules/users/components/UserProfileSettings";
 import UserProfileDescription from "../modules/users/components/UserProfileDescription";
 import UserProfileArticles from "../modules/users/components/UserProfileArticles";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { articlesByUserQueryOptions } from "../modules/articles/queries/articlesByUserQueryOptions";
 import { ArticleStatus } from "../modules/articles/constants";
 import { useNavigate, useParams } from "react-router-dom";
+import { readPublicProfileQueryOptions } from "../modules/users/queries/readPublicProfileQueryOptions";
+import Loader from "../modules/shared/components/Loader";
+import { useUser } from "../modules/auth/components/AuthProvider";
+import { editPublicProfileMutation } from "../modules/users/queries/editPublicProfileMutation";
+import { useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
 
 const ProfileScreen = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
+  const { user } = useUser();
+  const { t } = useTranslation();
 
-  if (!userId) {
-    navigate("/404");
-  }
+  const {
+    data,
+    isLoading,
+    isSuccess,
+    refetch: refreshProfile,
+  } = useQuery(
+    readPublicProfileQueryOptions(
+      { id: Number(userId) || -1 },
+      {
+        enabled: !!userId,
+      }
+    )
+  );
+
+  const { mutate: updateProfile } = useMutation({
+    mutationFn: editPublicProfileMutation,
+    onSuccess() {
+      toast.success(t("profile.profile_updated"));
+      refreshProfile();
+    },
+    onError(error) {
+      toast.error(t(error.message));
+    },
+  });
+
+  const isOwner = !!user && user.id === Number(userId);
+  const isPublicProfile = isSuccess;
 
   const { data: articles } = useQuery(
-    articlesByUserQueryOptions({
-      status: ArticleStatus.SENT,
-      author: userId,
-      page: 1,
-      size: 24,
-    })
+    articlesByUserQueryOptions(
+      {
+        status: ArticleStatus.SENT,
+        author: userId,
+        page: 1,
+        size: 24,
+      },
+      {
+        enabled: isPublicProfile,
+      }
+    )
   );
+
+  if (!userId || (!data && !isOwner)) {
+    navigate("/404");
+    return null;
+  }
+
+  if (isLoading) {
+    return <Loader variant="fullscreen" />;
+  }
+
+  const role = isPublicProfile ? data.user.user_role : user?.user_role ?? null;
+  const username = isPublicProfile
+    ? data.user.full_name
+    : user?.full_name ?? null;
+  const avatar = data && data.avatar_url;
+
   return (
     <Box
       sx={{
@@ -40,14 +93,14 @@ const ProfileScreen = () => {
           marginTop: "80px",
           display: "flex",
           justifyContent: "center",
-          alignItems: "center",
+          alignItems: "flex-start",
 
           "& img": {
             opacity: "0.8",
           },
         }}
       >
-        <img width="100%" src={wave_bg} alt="" height="700px" aria-disabled />
+        <img width="100%" src={wave_bg} alt="" height="600px" aria-disabled />
       </Box>
       <Container
         parentProps={{
@@ -61,14 +114,37 @@ const ProfileScreen = () => {
           gap: "20px",
         }}
       >
-        <UserProfileHeading />
-        <UserProfileSettings />
-        <UserProfileDescription
-          content="Z doświadczenia wiemy, jak ogromną rolę odgrywają w takiej sytuacji towarzyszące nam osoby. Jesteśmy także świadomi potencjału kryjącego się w trudnych momentach życia, który, choć na początku niedostrzegalny, może stanowić przełom ku zmianie na lepsze.
-Fundację Peryskop współtworzymy z myślą o wszystkich, którzy pomimo dynamicznego rozwoju mediów społecznościowych i rosnącego zainteresowania psychologią w przestrzeni publicznej, w kryzysie psychicznym wciąż czują się pozostawieni sami sobie. Chcemy przestrzeni bez tabu, w której spotykamy się na najgłębszym poziomie. Wiemy, że posiadamy idealne warunki, by zadbać o dobrostan psychiczny osób takich jak my, bo tak naprawdę wszystkich nas łączą podobne troski i wyzwania, świadczące o naszym człowieczeństwie.
-Z psychologią jesteśmy za pan brat. Dołącz do nas, jeśli potrzebujesz pomocy lub chcesz pomagać. Rola, w którą się u nas wcielisz, nie musi pozostać na zawsze taka sama. Każdy z nas, bez wyjątku, podlega procesowi ciągłych zmian, a kryzys często okazuje się stanem przejściowym.
-Możemy tworzyć wspólnie unikalne miejsce, w którym osoby doświadczające trudnych emocji będą zaopiekowane przez naszych wolontariuszy, pozostających pod stałą opieką superwizyjną. Razem widzimy więcej, możemy więcej i jesteśmy lepiej przygotowani do stawiania czoła nieustannej podróży, jaką jest życie."
-        />
+        {username && role && (
+          <UserProfileHeading
+            onSubmit={({ avatar }) =>
+              updateProfile({
+                description: data ? data.description : "",
+                id: Number(userId),
+                avatar_url: avatar,
+              })
+            }
+            isOwner={isOwner}
+            username={username}
+            role={role}
+            avatar_url={avatar}
+          />
+        )}
+        {isOwner && user && (
+          <UserProfileSettings email={user.email} username={user.full_name} />
+        )}
+        {isPublicProfile && data && (
+          <UserProfileDescription
+            onSubmit={(val) =>
+              updateProfile({
+                ...val,
+                id: data.user.id,
+                avatar_url: data.avatar_url,
+              })
+            }
+            isOwner={isOwner}
+            content={data.description}
+          />
+        )}
         {articles && <UserProfileArticles articles={articles.items} />}
       </Container>
     </Box>

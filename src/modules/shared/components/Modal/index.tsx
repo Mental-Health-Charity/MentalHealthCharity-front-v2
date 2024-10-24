@@ -51,7 +51,9 @@ const Modal = ({ title, modalContentProps, ...props }: Props) => {
           >
             {title}
           </Typography>
-          <CloseButton onClick={() => props.onClose} />
+          <CloseButton
+            onClick={(event) => props.onClose?.(event, "backdropClick")}
+          />
         </Box>
         <Box>{props.children}</Box>
       </Box>

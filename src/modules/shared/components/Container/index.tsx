@@ -15,8 +15,9 @@ const Container = ({ waves, parentProps, ...props }: Props) => {
       sx={{
         width: "100%",
         display: "flex",
-        alignItems: "center",
+
         justifyContent: "center",
+        minHeight: "100vh",
         position: "relative",
         background: waves ? `${theme.palette.primary.main}1A` : "inherit",
 

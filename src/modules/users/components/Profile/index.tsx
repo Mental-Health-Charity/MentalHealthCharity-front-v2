@@ -1,6 +1,23 @@
-import { Avatar, Box, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import { Roles } from "../../constants";
+import ChangeAvatar from "../ChangeAvatar";
+import { useState } from "react";
 
-const UserProfileHeading = () => {
+interface Props {
+  username: string;
+  role: Roles;
+  avatar_url?: string;
+  isOwner: boolean;
+  onSubmit: (values: { avatar: string }) => void;
+}
+
+const UserProfileHeading = ({
+  role,
+  username,
+  avatar_url,
+  isOwner,
+  onSubmit,
+}: Props) => {
   return (
     <Box>
       <Box
@@ -11,13 +28,11 @@ const UserProfileHeading = () => {
           gap: "20px",
         }}
       >
-        <Avatar
-          sx={{
-            width: "165px",
-            height: "165px",
-          }}
-          variant="rounded"
-          alt="A"
+        <ChangeAvatar
+          disabled={!isOwner}
+          avatar={avatar_url}
+          username={username}
+          onSubmit={onSubmit}
         />
         <Box>
           <Typography
@@ -28,7 +43,7 @@ const UserProfileHeading = () => {
               textTransform: "uppercase",
             }}
           >
-            Jan Kowalski
+            {username}
           </Typography>
           <Typography
             color="text.secondary"
@@ -38,7 +53,7 @@ const UserProfileHeading = () => {
               textTransform: "uppercase",
             }}
           >
-            Wolontariusz
+            {role}
           </Typography>
         </Box>
       </Box>

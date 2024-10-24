@@ -7,6 +7,7 @@ import {
   frontmatterPlugin,
   headingsPlugin,
   imagePlugin,
+  KitchenSinkToolbar,
   linkDialogPlugin,
   linkPlugin,
   listsPlugin,
@@ -17,6 +18,7 @@ import {
   quotePlugin,
   tablePlugin,
   thematicBreakPlugin,
+  toolbarPlugin,
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
 import { forwardRef } from "react";
@@ -45,6 +47,13 @@ const Markdown = forwardRef<MDXEditorMethods, Props>(
           }),
           tablePlugin(),
           thematicBreakPlugin(),
+          ...(editorProps.readOnly
+            ? []
+            : [
+                toolbarPlugin({
+                  toolbarContents: () => <KitchenSinkToolbar />,
+                }),
+              ]),
           frontmatterPlugin(),
           codeBlockPlugin({ defaultCodeBlockLanguage: "txt" }),
 

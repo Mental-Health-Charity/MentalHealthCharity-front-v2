@@ -1,16 +1,32 @@
 import { useQuery } from "@tanstack/react-query";
 import { articlesQueryOptions } from "../modules/articles/queries/articlesQueryOptions";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Box } from "@mui/material";
 import ArticleCard from "../modules/articles/components/ArticleCard";
 import Container from "../modules/shared/components/Container";
 import ArticlesHeading from "../modules/articles/components/ArticlesHeading";
+import debounce from "lodash.debounce";
 
 const ArticlesScreen = () => {
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState(query);
   const [page, _setPage] = useState(1);
 
-  const { data } = useQuery(articlesQueryOptions({ query, page, size: 50 }));
+  const debouncedSetQuery = useCallback(
+    debounce((q) => {
+      setDebouncedQuery(q);
+    }, 500),
+    []
+  );
+
+  useEffect(() => {
+    debouncedSetQuery(query);
+  }, [query, debouncedSetQuery]);
+
+  const { data } = useQuery(
+    articlesQueryOptions({ q: debouncedQuery, page, size: 50 })
+  );
+
   return (
     <Container waves>
       <ArticlesHeading onSearch={setQuery} search={query} />

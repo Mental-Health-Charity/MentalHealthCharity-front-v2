@@ -6,14 +6,17 @@
       "contact": "Kontakt",
       "my_account": "Moje konto",
       "logout": "Wyloguj",
-      "articles": "Artykuły"
+      "articles": "Artykuły",
+      "chat": "Czat"
     },
     "submit": "Wyślij",
     "search": "Wyszukaj...",
     "try_again": "Spróbuj ponownie",
     "sending": "Wysyłanie...",
     "success": "Sukces",
-    "change_pass": "Zmień hasło"
+    "change_pass": "Zmień hasło",
+    "save": "Zapisz",
+    "cancel": "Anuluj"
   },
   "validation": {
     "required": "To pole jest wymagane",
@@ -39,8 +42,8 @@
     "description": "Opis",
     "change_volunteer": "Zmień wolontariusza",
     "change_mentee": "Zmień podopiecznego",
-    "abuse": "Zgłoś nadużycie",
-    "other": "Inne",
+    "bug": "Błąd",
+    "abuse": "Nadużycie",
     "crisis_situation": "Sytuacja kryzysowa"
   },
   "chat": {
@@ -62,7 +65,13 @@
     "settings_acc_email": "Adres email: {{email}}",
     "this_section_is_private": "Ta sekcja jest prywatna, nikt inny jej nie widzi.",
     "description_subtitle": "O mnie",
-    "articles_subtitle": "Ostatnia aktywność"
+    "articles_subtitle": "Ostatnia aktywność",
+    "description_placeholder": "Wpisz coś o sobie...",
+    "empty_description_placeholder": "Ten użytkownik nie napisał jeszcze nic o sobie",
+    "change_avatar_title": "Zmień zdjęcie profilowe",
+    "profile_updated": "Profil zaktualizowany",
+    "change_avatar_label": "Bezpośredni link do zdjęcia",
+    "change_avatar_tutorial": "Aby zmienić zdjęcie profilowe, wklej bezpośredni link do zdjęcia w pole poniżej. Aby uzyskać link do zdjęcia, kliknij prawym przyciskiem myszy na zdjęcie, które chcesz użyć i wybierz opcję 'Kopiuj adres obrazu'."
   },
   "articles": {
     "read_more": "Czytaj więcej",
