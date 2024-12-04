@@ -22,14 +22,13 @@ const useChat = (chatId: number, options?: Options) => {
     throw new Error("Token not found");
   }
 
-  const { readyState, sendMessage, lastMessage, sendJsonMessage } =
-    useWebSocket(
-      url.chat.connect({
-        token,
-        chat_id: String(chatId),
-      }),
-      options
-    );
+  const { readyState, lastMessage, sendJsonMessage } = useWebSocket(
+    url.chat.connect({
+      token,
+      chat_id: String(chatId),
+    }),
+    options
+  );
 
   const send = (message: string) => {
     console.log("send", message);

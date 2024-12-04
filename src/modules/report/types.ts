@@ -7,7 +7,7 @@ export interface ReportPayload {
 }
 
 export interface ChangeReportStatusPayload {
-  id: number;
+  user_report_id: number;
 }
 
 export interface Report {

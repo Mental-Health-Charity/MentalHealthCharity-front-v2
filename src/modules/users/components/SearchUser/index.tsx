@@ -1,96 +1,165 @@
 import {
-  Autocomplete,
-  Avatar,
-  Box,
-  ListItem,
-  ListItemText,
-  TextField,
-  Typography,
-  useTheme,
+    Autocomplete,
+    Avatar,
+    Box,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    TextField,
+    Typography,
+    useTheme,
 } from "@mui/material";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { searchUserQueryOptions } from "../../queries/searchUserQueryOptions";
 import { Roles } from "../../constants";
-import { useState, useCallback, useMemo } from "react";
 import { User } from "../../../auth/types";
-import debounce from "lodash.debounce";
+import useDebounce from "../../../shared/hooks/useDebounce";
 
-const SearchUser = () => {
-  const [role, setRole] = useState<Roles | undefined>();
-  const [username, setUsername] = useState<string>("");
-  const theme = useTheme();
-  const [selectedUser, setSelectedUser] = useState<User | undefined | null>();
+interface Props {
+    onChange: (user?: User) => void;
+    onChangeSearchQuery?: (nickname: string) => void;
+    value?: User;
+}
 
-  const debouncedSetUsername = useMemo(
-    () => debounce((value: string) => setUsername(value), 500),
-    []
-  );
+const SearchUser = ({ onChange, value, onChangeSearchQuery }: Props) => {
+    const [role, setRole] = useState<Roles | undefined>();
+    const [username, setUsername] = useState<string>("");
+    const [isLoading, setIsLoading] = useState(false);
+    const theme = useTheme();
+    const debouncedValue = useDebounce(username, 500);
 
-  const { data } = useQuery(
-    searchUserQueryOptions(
-      {
-        query: username,
-        role: role,
-      },
-      {
-        enabled: !!username,
-      }
-    )
-  );
+    const { data, refetch } = useQuery(
+        searchUserQueryOptions({
+            query: debouncedValue,
+            role,
+        })
+    );
 
-  const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      debouncedSetUsername(event.target.value);
-    },
-    [debouncedSetUsername]
-  );
+    useEffect(() => {
+        if (onChangeSearchQuery) {
+            onChangeSearchQuery(debouncedValue);
+        }
+    }, [debouncedValue]);
 
-  return (
-    <Autocomplete
-      fullWidth
-      renderOption={(props, option) => (
-        <ListItem
-          sx={{
-            gap: "10px",
-          }}
-          {...props}
-        >
-          <Avatar variant="rounded" />
-          <Box>
-            <ListItemText
-              sx={{
-                color: theme.palette.text.secondary,
-                fontWeight: "bold",
-                margin: 0,
-                padding: 0,
-              }}
-            >
-              {option.full_name}
-            </ListItemText>
-            <Typography
-              sx={{
-                color: theme.palette.text.secondary,
-                fontSize: "12px !important",
-              }}
-            >
-              {option.email}
-            </Typography>
-          </Box>
-        </ListItem>
-      )}
-      renderInput={(params) => (
-        <TextField
-          label="Wyszukaj użytkownika"
-          onChange={handleChange}
-          value={username}
-          {...params}
-        />
-      )}
-      options={data ? data.items : []}
-      value={selectedUser}
-      onChange={(_, user) => setSelectedUser(user)}
-    />
-  );
+    useEffect(() => {
+        if (debouncedValue) {
+            setIsLoading(true);
+            refetch()
+                .then(() => setIsLoading(false))
+                .catch((err) => {
+                    console.error(err);
+                    setIsLoading(false);
+                });
+        }
+    }, [debouncedValue, role]);
+
+    const handleOptionChange = (selectedUser?: User) => {
+        onChange(selectedUser || undefined);
+    };
+
+    return (
+        <>
+            <Autocomplete
+                fullWidth
+                freeSolo
+                disablePortal
+                options={data ? data.items : []}
+                getOptionLabel={(option) =>
+                    typeof option === "object" ? option.full_name : option
+                }
+                loading={isLoading}
+                loadingText={<p>loading</p>}
+                noOptionsText="Brak wyników"
+                filterOptions={(options) => options}
+                value={value || null}
+                onChange={(_, user) =>
+                    handleOptionChange(user as User | undefined)
+                }
+                renderOption={(props, option) => {
+                    return (
+                        <li {...props} key={option.id}>
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 2,
+                                }}
+                            >
+                                <Avatar
+                                    variant="rounded"
+                                    src={option.chat_avatar_url || ""}
+                                />
+                                <Box>
+                                    <Typography
+                                        variant="body1"
+                                        sx={{
+                                            fontWeight: "bold",
+                                            color: theme.palette.text.secondary,
+                                        }}
+                                    >
+                                        {option.full_name}
+                                    </Typography>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            color: theme.palette.text.secondary,
+                                        }}
+                                    >
+                                        {option.email}
+                                    </Typography>
+                                </Box>
+                            </Box>
+                        </li>
+                    );
+                }}
+                renderInput={(params) => (
+                    <Box
+                        sx={{
+                            display: "flex",
+                            gap: "10px",
+                            alignItems: "center",
+                            width: "100%",
+                        }}
+                    >
+                        <TextField
+                            {...params}
+                            label="Wyszukaj użytkownika"
+                            onChange={(e) => setUsername(e.target.value)}
+                            value={username}
+                        />
+                        <FormControl
+                            sx={{
+                                minWidth: "120px",
+                            }}
+                        >
+                            <InputLabel id="Role">Role</InputLabel>
+                            <Select
+                                labelId="Role"
+                                value={role || ""}
+                                onChange={(e) =>
+                                    setRole(
+                                        e.target.value === ""
+                                            ? undefined
+                                            : (e.target.value as Roles)
+                                    )
+                                }
+                                variant="filled"
+                            >
+                                <MenuItem value={""}>Każda rola</MenuItem>
+                                {Object.values(Roles).map((role) => (
+                                    <MenuItem key={role} value={role}>
+                                        {role}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Box>
+                )}
+            />
+        </>
+    );
 };
 
 export default SearchUser;

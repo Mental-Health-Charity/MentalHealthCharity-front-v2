@@ -1,23 +1,29 @@
 import { queryOptions } from "@tanstack/react-query";
 import { url } from "../../../api";
 import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
-import { ErrorMessage, Pagination } from "../../shared/types";
+import { Pagination } from "../../shared/types";
 import { Report } from "../types";
+import handleApiError from "../../shared/helpers/handleApiError";
 
 export const getReportsQueryOptions = () =>
-  queryOptions<Pagination<Report>>({
-    queryKey: ["reports"],
-    refetchOnWindowFocus: true,
-    queryFn: async () => {
-      const headers = getAuthHeaders();
-      const response = await fetch(url.reports.get, {
-        headers,
-      });
+    queryOptions<Pagination<Report>>({
+        queryKey: ["reports"],
+        refetchOnWindowFocus: true,
+        queryFn: async () => {
+            const headers = getAuthHeaders();
 
-      if (!response.ok) {
-        throw new Error(ErrorMessage.FAILED_TO_FETCH_REPORTS);
-      }
+            try {
+                const response = await fetch(url.reports.get, { headers });
+                const data = await response.json();
 
-      return response.json();
-    },
-  });
+                if (!response.ok) {
+                    throw handleApiError(response);
+                }
+
+                return data;
+            } catch (error) {
+                console.error("Error fetching reports:", error);
+                throw error;
+            }
+        },
+    });

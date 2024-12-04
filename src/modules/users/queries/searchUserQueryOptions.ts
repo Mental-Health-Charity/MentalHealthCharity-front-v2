@@ -8,10 +8,10 @@ import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
 
 export const searchUserQueryOptions = (
   options: ReadSearchUsersOptions,
-  additional: Omit<UseQueryOptions<Pagination<User>>, "queryKey" | "queryFn">
+  additional?: Omit<UseQueryOptions<Pagination<User>>, "queryKey" | "queryFn">
 ) =>
   queryOptions<Pagination<User>>({
-    queryKey: ["search_user"],
+    queryKey: ["search_user", options.query, options.role],
     queryFn: async () => {
       const headers = getAuthHeaders();
 

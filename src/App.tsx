@@ -6,26 +6,40 @@ import Layout from "./modules/shared/components/Layout";
 import useTheme from "./theme";
 import { BrowserRouter } from "react-router-dom";
 import { UserProvider } from "./modules/auth/components/AuthProvider";
+import { Suspense } from "react";
+import Loader from "./modules/shared/components/Loader";
+import i18next from "i18next";
+import { initReactI18next } from "react-i18next";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+    // defaultOptions: {
+    //     mutations: {
+    //         onError: (error) => {
+    //             handleApiError(error);
+    //         },
+    //     },
+    // },
+});
 
 function App() {
-  const theme = useTheme();
+    const theme = useTheme();
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      <UserProvider>
-        <BrowserRouter>
-          <ThemeProvider theme={theme}>
-            <Layout>
-              <Navbar />
-              <RootRouter />
-            </Layout>
-          </ThemeProvider>
-        </BrowserRouter>
-      </UserProvider>
-    </QueryClientProvider>
-  );
+    return (
+        <Suspense fallback={<Loader variant="fullscreen" />}>
+            <QueryClientProvider client={queryClient}>
+                <UserProvider>
+                    <BrowserRouter>
+                        <ThemeProvider theme={theme}>
+                            <Layout>
+                                <Navbar />
+                                <RootRouter />
+                            </Layout>
+                        </ThemeProvider>
+                    </BrowserRouter>
+                </UserProvider>
+            </QueryClientProvider>
+        </Suspense>
+    );
 }
 
 export default App;

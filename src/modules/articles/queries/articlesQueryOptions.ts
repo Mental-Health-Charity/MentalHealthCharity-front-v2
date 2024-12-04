@@ -3,17 +3,27 @@ import { url } from "../../../api";
 import { SearchPublicArticlesOptions } from "../types";
 import { Article } from "../types";
 import { Pagination } from "../../shared/types";
+import handleApiError from "../../shared/helpers/handleApiError";
 
 export const articlesQueryOptions = (options: SearchPublicArticlesOptions) =>
-  queryOptions<Pagination<Article>>({
-    queryKey: ["articles", options],
-    queryFn: async () => {
-      const response = await fetch(url.articles.searchPublicArticles(options));
+    queryOptions<Pagination<Article>>({
+        queryKey: ["articles", options],
+        queryFn: async () => {
+            try {
+                const response = await fetch(
+                    url.articles.searchPublicArticles(options)
+                );
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch articles");
-      }
+                const data = await response.json();
 
-      return response.json();
-    },
-  });
+                if (!response.ok) {
+                    throw handleApiError(data);
+                }
+
+                return data;
+            } catch (error) {
+                console.error("Error fetching articles:", error);
+                throw error;
+            }
+        },
+    });

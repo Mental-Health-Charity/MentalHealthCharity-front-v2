@@ -32,7 +32,8 @@ const ChatItem = ({ chat, onChange, selected }: Props) => {
         padding: "5px",
       }}
       disabled={selected}
-      onClick={() => onChange(chat.id)}
+      // fix
+      onClick={() => onChange(chat.id as unknown as string)}
     >
       <Avatar variant="rounded" />
       <Box

@@ -2,20 +2,28 @@ import { queryOptions } from "@tanstack/react-query";
 import { url } from "../../../api";
 import { Chat, ReadChatOptions } from "../types";
 import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
+import handleApiError from "../../shared/helpers/handleApiError";
 
 export const getChatById = (options: ReadChatOptions) =>
-  queryOptions<Chat>({
-    queryKey: ["chat", options],
-    queryFn: async () => {
-      const headers = getAuthHeaders();
-      const response = await fetch(url.chat.readChat(options), {
-        headers,
-      });
+    queryOptions<Chat>({
+        queryKey: ["chat", options],
+        queryFn: async () => {
+            try {
+                const headers = getAuthHeaders();
+                const response = await fetch(url.chat.readChat(options), {
+                    headers,
+                });
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch chat");
-      }
+                const data = await response.json();
 
-      return response.json();
-    },
-  });
+                if (!response.ok) {
+                    throw handleApiError(data);
+                }
+
+                return data;
+            } catch (error) {
+                console.error("Error fetching chat:", error);
+                throw error;
+            }
+        },
+    });

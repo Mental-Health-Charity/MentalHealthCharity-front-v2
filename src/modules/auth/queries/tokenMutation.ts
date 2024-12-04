@@ -1,29 +1,35 @@
 import { LoginAccessTokenResponse, LoginFormValues } from "../types";
 import { url } from "../../../api";
 import Cookies from "js-cookie";
+import handleApiError from "../../shared/helpers/handleApiError";
 
 export const loginMutation = async (
-  data: LoginFormValues
+    data: LoginFormValues
 ): Promise<LoginAccessTokenResponse> => {
-  const loginResponse = await fetch(url.login.loginAccessToken, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({
-      username: data.email,
-      password: data.password,
-    }),
-  });
+    try {
+        const loginResponse = await fetch(url.login.loginAccessToken, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams({
+                username: data.email,
+                password: data.password,
+            }),
+        });
 
-  if (!loginResponse.ok) {
-    throw new Error("An error occurred while logging in.");
-  }
+        const tokenData = await loginResponse.json();
 
-  const tokenData: LoginAccessTokenResponse = await loginResponse.json();
+        if (!loginResponse.ok) {
+            throw handleApiError(tokenData);
+        }
 
-  Cookies.set("token", tokenData.access_token, { expires: 7 });
-  Cookies.set("jwt_type", tokenData.token_type, { expires: 7 });
+        Cookies.set("token", tokenData.access_token, { expires: 7 });
+        Cookies.set("jwt_type", tokenData.token_type, { expires: 7 });
 
-  return tokenData;
+        return tokenData;
+    } catch (error) {
+        console.error("Error logging in:", error);
+        throw error;
+    }
 };
