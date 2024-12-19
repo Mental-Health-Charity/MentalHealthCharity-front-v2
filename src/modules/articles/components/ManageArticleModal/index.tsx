@@ -19,7 +19,7 @@ const ManageArticleModal = ({ onClose, open, onSubmit }: Props) => {
         status: Yup.string().required(
             t("manage_articles.validation.status_required")
         ),
-        reject_message: Yup.string().when("status", (status: ArticleStatus) => {
+        reject_message: Yup.string().when("status", (status: unknown) => {
             if (status === ArticleStatus.REJECTED) {
                 return Yup.string();
             }

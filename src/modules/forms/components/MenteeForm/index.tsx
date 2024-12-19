@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import FormWrapper from "../FormWrapper";
 import { MenteeFormValues } from "../../types";
 import { useUser } from "../../../auth/components/AuthProvider";
+import { Link } from "react-router-dom";
 
 interface Props {
     onSubmit: (values: MenteeFormValues) => void;
@@ -343,8 +344,8 @@ const MenteeForm = ({ onSubmit }: Props) => {
                         <Button
                             fullWidth
                             type="button"
-                            href="/"
-                            onClick={onSubmit}
+                            component={Link}
+                            to="/"
                             variant="contained"
                         >
                             {t("form.homepage")}

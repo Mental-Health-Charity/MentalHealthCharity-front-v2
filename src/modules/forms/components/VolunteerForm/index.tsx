@@ -15,6 +15,7 @@ import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
 import FormWrapper from "../FormWrapper";
 import { VolunteerFormValues } from "../../types";
+import { Link } from "react-router-dom";
 
 interface Props {
     onSubmit: (values: VolunteerFormValues) => void;
@@ -399,10 +400,10 @@ const VolunteerForm = ({ onSubmit }: Props) => {
                     )}
                     {step === 6 && (
                         <Button
+                            component={Link}
                             fullWidth
                             type="button"
-                            href="/"
-                            onClick={onSubmit}
+                            to="/"
                             variant="contained"
                         >
                             {t("form.homepage")}

@@ -27,22 +27,22 @@ const CreateArticleCategoryModal = ({ onSuccess, ...props }: Props) => {
         onSuccess,
     });
 
-    const { mutate: deleteCategory, isPending: isPendingDelete } = useMutation({
+    const { mutate: deleteCategory } = useMutation({
         mutationFn: deleteArticleCategoryMutation,
         onSuccess,
     });
 
-    const { mutate: editCategory, isPending: isPendingEdit } = useMutation({
+    const { mutate: editCategory } = useMutation({
         mutationFn: updateArticleCategoryMutation,
         onSuccess,
     });
 
-    const { mutate: toggleCategory, isPending: isPendingToggle } = useMutation({
+    const { mutate: toggleCategory } = useMutation({
         mutationFn: deleteArticleCategoryMutation,
         onSuccess,
     });
 
-    const { data, isLoading, refetch } = useQuery(getCategoriesQueryOptions());
+    const { data } = useQuery(getCategoriesQueryOptions());
 
     const formik = useFormik<CreateArticleCategoryPayload>({
         initialValues: {
