@@ -16,7 +16,6 @@ import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import * as Yup from "yup";
 import Loader from "../../../shared/components/Loader";
 import Skeleton from "../../../shared/components/Skeleton";
-import { ReadyState } from "react-use-websocket";
 import { useUser } from "../../../auth/components/AuthProvider";
 
 interface Props {
