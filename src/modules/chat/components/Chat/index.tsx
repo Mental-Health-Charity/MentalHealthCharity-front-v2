@@ -17,6 +17,7 @@ import * as Yup from "yup";
 import Loader from "../../../shared/components/Loader";
 import Skeleton from "../../../shared/components/Skeleton";
 import { ReadyState } from "react-use-websocket";
+import { useUser } from "../../../auth/components/AuthProvider";
 
 interface Props {
     chat?: ChatType;
@@ -35,6 +36,7 @@ const Chat = ({
 }: Props) => {
     const theme = useTheme();
     const { t } = useTranslation();
+    const { user } = useUser();
 
     const validationSchema = Yup.object({
         message: Yup.string().max(1500).required(),
@@ -122,8 +124,8 @@ const Chat = ({
                     fullWidth
                     variant="filled"
                     disabled={
-                        status.state === ReadyState.OPEN ||
-                        status.state === ReadyState.CONNECTING
+                        !chat ||
+                        !chat.participants.some((p) => p.id === user.id)
                     }
                     label={t("chat.enter_message_label")}
                     name="message"
