@@ -125,6 +125,7 @@ const Chat = ({
                     variant="filled"
                     disabled={
                         !chat ||
+                        !user ||
                         !chat.participants.some((p) => p.id === user.id)
                     }
                     label={t("chat.enter_message_label")}
