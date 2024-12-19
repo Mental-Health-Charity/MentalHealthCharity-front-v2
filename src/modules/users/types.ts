@@ -20,6 +20,13 @@ export interface PublicProfile {
     user: User;
 }
 
+export interface ReadUsersReportsOptions {
+    report_type?: string;
+    is_considered?: boolean;
+    page?: number;
+    size?: number;
+}
+
 export interface editPublicProfilePayload {
     avatar_url: string;
     description: string;

@@ -1,23 +1,83 @@
-import { Box, BoxProps, Button, Typography } from "@mui/material";
-import { FormResponse, MenteeForm, VolunteerForm } from "../../types";
+import {
+    Box,
+    BoxProps,
+    Button,
+    Stepper,
+    Step,
+    StepLabel,
+    Typography,
+} from "@mui/material";
+import {
+    FormResponse,
+    formTypes,
+    MenteeForm,
+    VolunteerForm,
+} from "../../types";
 import UserTableItem from "../../../users/components/UserTableItem";
 import useTheme from "../../../../theme";
 import { useNavigate } from "react-router-dom";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useTranslation } from "react-i18next";
+import { useMutation } from "@tanstack/react-query";
+import acceptFormMutation from "../../queries/acceptFormMutation";
+import toast from "react-hot-toast";
+import rejectFormMutation from "../../queries/rejectFormMutation";
 
 interface Props extends BoxProps {
     form: FormResponse<MenteeForm | VolunteerForm>;
+    refetch?: () => void;
 }
 
-const FormTableItem = ({ form, ...props }: Props) => {
+const FormTableItem = ({ form, refetch, ...props }: Props) => {
     const theme = useTheme();
     const navigate = useNavigate();
+    const { t } = useTranslation();
+    const { mutate: acceptForm } = useMutation({
+        mutationFn: acceptFormMutation,
+        onSuccess: () => {
+            refetch && refetch();
+            toast.success(t("common.success"));
+        },
+    });
+
+    const { mutate: rejectForm } = useMutation({
+        mutationFn: rejectFormMutation,
+        onSuccess: () => {
+            refetch && refetch();
+            toast.success(t("common.success"));
+        },
+    });
+
+    const getFormsSteps = () => {
+        if (form.form_type.id === formTypes.MENTEE) {
+            return ["Oczekuje na przypisanie do czatu", "Zaakceptowany"];
+        } else {
+            return [
+                "Oczekuje na zaakceptowanie",
+                "Rozmowa kwalifikacyjna i nadanie uprawnień",
+                "Zaakceptowany",
+            ];
+        }
+    };
+
+    const steps = getFormsSteps();
 
     const formFieldsRenderer = (fields: MenteeForm | VolunteerForm) => {
         return Object.keys(fields).map((key) => {
+            const value = fields[key as keyof (MenteeForm | VolunteerForm)];
+
+            const displayValue =
+                Array.isArray(value) &&
+                value.every(
+                    (item) => typeof item === "object" && "name" in item
+                )
+                    ? value.map((option) => option.name).join(", ")
+                    : value;
+
             return (
                 <Box
+                    key={key}
                     sx={{
                         display: "flex",
                         justifyContent: "space-between",
@@ -32,14 +92,14 @@ const FormTableItem = ({ form, ...props }: Props) => {
                             fontSize: "20px",
                         }}
                     >
-                        {key}
+                        {t(`forms_fields.${key}`)}
                     </Typography>
                     <Typography
                         sx={{
                             fontSize: "20px",
                         }}
                     >
-                        0
+                        {(displayValue as string) || "-"}{" "}
                     </Typography>
                 </Box>
             );
@@ -57,6 +117,28 @@ const FormTableItem = ({ form, ...props }: Props) => {
                     boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.15)",
                 }}
             >
+                <Box
+                    sx={{
+                        marginTop: "15px",
+                        marginBottom: "20px",
+                    }}
+                >
+                    <Stepper activeStep={form.current_step - 1}>
+                        {steps.map((label, index) => (
+                            <Step key={index}>
+                                <StepLabel>
+                                    <Typography
+                                        sx={{
+                                            color: theme.palette.text.secondary,
+                                        }}
+                                    >
+                                        {label}
+                                    </Typography>
+                                </StepLabel>
+                            </Step>
+                        ))}
+                    </Stepper>
+                </Box>
                 <UserTableItem
                     sx={{
                         padding: "15px",
@@ -76,36 +158,49 @@ const FormTableItem = ({ form, ...props }: Props) => {
                 >
                     {formFieldsRenderer(form.fields)}
                 </Box>
-                <Box
-                    sx={{
-                        marginTop: "15px",
-                        display: "flex",
-                        gap: "10px",
-                    }}
-                >
-                    <Button
+
+                {form.current_step < form.form_type.max_step && (
+                    <Box
                         sx={{
+                            marginTop: "15px",
+                            display: "flex",
                             gap: "10px",
                         }}
-                        variant="contained"
-                        fullWidth
                     >
-                        <CheckBoxIcon />
-                        Zaakceptuj
-                    </Button>
-                    <Button
-                        sx={{
-                            gap: "10px",
-                            borderColor: theme.palette.error.main,
-                            color: theme.palette.error.main,
-                        }}
-                        variant="outlined"
-                        fullWidth
-                    >
-                        <DeleteIcon />
-                        Odrzuć
-                    </Button>
-                </Box>
+                        <Button
+                            sx={{
+                                gap: "10px",
+                            }}
+                            variant="contained"
+                            fullWidth
+                            onClick={() =>
+                                acceptForm({
+                                    id: form.id,
+                                })
+                            }
+                        >
+                            <CheckBoxIcon />
+                            Zaakceptuj
+                        </Button>
+                        <Button
+                            sx={{
+                                gap: "10px",
+                                borderColor: theme.palette.error.main,
+                                color: theme.palette.error.main,
+                            }}
+                            variant="outlined"
+                            fullWidth
+                            onClick={() =>
+                                rejectForm({
+                                    id: form.id,
+                                })
+                            }
+                        >
+                            <DeleteIcon />
+                            Odrzuć
+                        </Button>
+                    </Box>
+                )}
             </Box>
         </Box>
     );

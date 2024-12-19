@@ -16,6 +16,7 @@ const NavLink = ({ name, to }: Props) => {
             href={to}
             to={to}
             component={Link}
+            reloadDocument={to === "/admin/"}
             sx={{
                 color: "text.primary",
                 display: "block",

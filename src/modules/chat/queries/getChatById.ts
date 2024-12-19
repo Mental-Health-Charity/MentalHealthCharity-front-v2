@@ -26,4 +26,5 @@ export const getChatById = (options: ReadChatOptions) =>
                 throw error;
             }
         },
+        enabled: !!options.id && Number(options.id) > 0,
     });

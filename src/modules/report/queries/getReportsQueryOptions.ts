@@ -4,8 +4,9 @@ import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
 import { Pagination } from "../../shared/types";
 import { Report } from "../types";
 import handleApiError from "../../shared/helpers/handleApiError";
+import { ReadUsersReportsOptions } from "../../users/types";
 
-export const getReportsQueryOptions = () =>
+export const getReportsQueryOptions = (options: ReadUsersReportsOptions) =>
     queryOptions<Pagination<Report>>({
         queryKey: ["reports"],
         refetchOnWindowFocus: true,
@@ -13,7 +14,9 @@ export const getReportsQueryOptions = () =>
             const headers = getAuthHeaders();
 
             try {
-                const response = await fetch(url.reports.get, { headers });
+                const response = await fetch(url.reports.get(options), {
+                    headers,
+                });
                 const data = await response.json();
 
                 if (!response.ok) {

@@ -25,7 +25,7 @@ const ArticleView = ({ article, articles }: Props) => {
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     width: "100%",
-                    height: "500px",
+                    minHeight: "500px",
                     borderRadius: "10px",
                     display: "flex",
                     alignItems: "flex-end",

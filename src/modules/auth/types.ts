@@ -1,20 +1,31 @@
 import { Roles } from "../users/constants";
 
 export interface LoginFormValues {
-  email: string;
-  password: string;
+    email: string;
+    password: string;
+}
+
+export interface RegisterFormValues {
+    password: string;
+    email: string;
+    full_name: string;
+    confirmPassword: string;
 }
 
 export interface LoginAccessTokenResponse {
-  access_token: string;
-  token_type: string;
+    access_token: string;
+    token_type: string;
+}
+
+export interface RegisterResponse extends User {
+    reset_token: string;
 }
 
 export interface User {
-  email: string;
-  full_name: string;
-  user_role: Roles;
-  is_assigned_to_chat: boolean;
-  chat_avatar_url?: string;
-  id: number;
+    email: string;
+    full_name: string;
+    user_role: Roles;
+    is_assigned_to_chat: boolean;
+    chat_avatar_url?: string;
+    id: number;
 }

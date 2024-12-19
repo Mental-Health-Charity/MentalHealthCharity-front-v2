@@ -1,7 +1,7 @@
 import { User } from "../auth/types";
 
 export interface FormOptions {
-    id: string;
+    id: number;
 }
 
 export enum formStatus {
@@ -82,8 +82,8 @@ export interface FormResponse<T> {
     current_step: number;
     fields: T;
     form_status: formStatus;
-    formType: {
-        form_type: string;
+    form_type: {
+        form_type: formTypes;
         id: number;
         is_active: boolean;
         max_step: number;

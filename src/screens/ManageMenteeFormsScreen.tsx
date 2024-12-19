@@ -11,9 +11,9 @@ import FormTableItem from "../modules/forms/components/FormTableItem";
 
 const ManageMenteeFormsScreen = () => {
     const { t } = useTranslation();
-    const { data } = useQuery(
+    const { data, refetch } = useQuery(
         getFormsQueryOptions({
-            form_status: formStatus.ACCEPTED,
+            form_status: formStatus.WAITED,
             form_type_id: formTypes.MENTEE,
             page: 1,
             size: 100,
@@ -26,6 +26,7 @@ const ManageMenteeFormsScreen = () => {
 
         return (
             <FormTableItem
+                refetch={refetch}
                 sx={{
                     ...style,
                 }}
@@ -47,7 +48,7 @@ const ManageMenteeFormsScreen = () => {
                 }}
             >
                 <WindowListVirtualizer
-                    rowHeight={850}
+                    rowHeight={600}
                     onRender={onRender}
                     rowCount={data ? data.items.length : 0}
                 />

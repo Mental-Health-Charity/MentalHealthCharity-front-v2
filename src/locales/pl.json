@@ -15,10 +15,11 @@
             "volunteer": "Wolontariusz",
             "user": "Użytkownik",
             "redactor": "Redaktor",
-            "volunteersupervisor": "Koordynator"
+            "volunteer_supervisor": "Koordynator"
         },
         "submit": "Wyślij",
         "search": "Wyszukaj...",
+        "login": "Zaloguj",
         "try_again": "Spróbuj ponownie",
         "sending": "Wysyłanie...",
         "confirm": "Potwierdź",
@@ -58,6 +59,8 @@
     },
     "validation": {
         "required": "To pole jest wymagane",
+        "passwords_must_match": "Hasła muszą być takie same",
+        "min_one_uppercase": "Hasło musi zawierać co najmniej jedną wielką literę",
         "invalid_email": "Podaj poprawny adres email",
         "invalid_url": "Podaj poprawny adres URL",
         "incorrect_password_format": "Hasło musi zawierać co najmniej 8 znaków",
@@ -370,5 +373,15 @@
     "manage_volunteer_forms": {
         "title": "Rekrutuj nowych wolontariuszy",
         "subtitle": "Zarządzaj formularzami wolontariuszy"
+    },
+    "forms_fields": {
+        "source": "Skąd nas poznał",
+        "contacts": "Preferowana forma kontaktu",
+        "description": "Opis",
+        "age": "Wiek",
+        "phone": "Numer telefonu",
+        "themes": "Problemy",
+        "reason": "Powód dołączenia",
+        "did_help": "Czy pomogał wcześniej"
     }
 }

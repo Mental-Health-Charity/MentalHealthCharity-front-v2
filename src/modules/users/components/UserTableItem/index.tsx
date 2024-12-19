@@ -2,7 +2,7 @@ import { Box, Avatar, Typography, Button, Chip, BoxProps } from "@mui/material";
 import { t } from "i18next";
 import useTheme from "../../../../theme";
 import { User } from "../../../auth/types";
-import { Roles } from "../../constants";
+import { Roles, translatedRoles } from "../../constants";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Person2Icon from "@mui/icons-material/Person2";
 import EditIcon from "@mui/icons-material/Edit";
@@ -102,7 +102,7 @@ const UserTableItem = ({
                     sx={{
                         color: theme.palette.text.primary,
                     }}
-                    label={user.user_role}
+                    label={translatedRoles[user.user_role]}
                 />
 
                 <ActionMenu

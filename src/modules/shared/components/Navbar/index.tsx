@@ -7,9 +7,7 @@ import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-
 import Button from "@mui/material/Button";
-
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { useTranslation } from "react-i18next";
@@ -21,6 +19,9 @@ import { useUser } from "../../../auth/components/AuthProvider";
 import { Avatar, Link, ListItemText, Tooltip } from "@mui/material";
 import { Permissions } from "../../constants";
 import usePermissions from "../../hooks/usePermissions";
+import { getChatsQueryOptions } from "../../../chat/queries/getChatsQueryOptions";
+import { useQuery } from "@tanstack/react-query";
+import { Roles } from "../../../users/constants";
 
 const Navbar = () => {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -29,7 +30,17 @@ const Navbar = () => {
 
     const isAdminPanel = window.location.pathname.includes("/admin");
 
-    const { user } = useUser();
+    const { user, logout } = useUser();
+
+    const { data: chats } = useQuery(
+        getChatsQueryOptions(
+            { size: 50, page: 1 },
+            {
+                enabled: !!user && user.user_role !== Roles.USER,
+                queryKey: ["chats"],
+            }
+        )
+    );
 
     const { hasPermissions } = usePermissions(user);
 
@@ -66,16 +77,20 @@ const Navbar = () => {
             name: t("common.navigation.articles"),
             path: "/articles",
         },
-        {
-            name: t("common.navigation.chat"),
-            path: "/chat/",
-        },
+
         {
             name: t("common.navigation.admin"),
             path: "/admin/",
             permissions: Permissions.ADMIN_DASHBOARD,
         },
     ];
+
+    if (chats && chats.total > 0) {
+        pages.push({
+            name: t("common.navigation.chat"),
+            path: "/chat",
+        });
+    }
 
     if (isAdminPanel) {
         return null;
@@ -261,7 +276,7 @@ const Navbar = () => {
                                             </Link>
                                         </ListItemText>
                                     </MenuItem>
-                                    <MenuItem onClick={handleCloseUserMenu}>
+                                    <MenuItem onClick={logout}>
                                         <Typography
                                             sx={{ textAlign: "center" }}
                                         >

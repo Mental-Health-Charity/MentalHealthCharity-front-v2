@@ -14,7 +14,7 @@ const UserEditorScreen = () => {
         params.get("search") || ""
     );
 
-    const { data, isLoading } = useQuery(
+    const { data, isLoading, refetch } = useQuery(
         searchUserQueryOptions({
             query: searchQuery,
             role,
@@ -39,6 +39,7 @@ const UserEditorScreen = () => {
                     user={selectedUser}
                     onChange={(u) => setSelectedUser(u)}
                     data={data}
+                    refetchUsers={refetch}
                 />
             </div>
         </AdminLayout>

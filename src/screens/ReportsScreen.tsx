@@ -7,7 +7,13 @@ import { Box } from "@mui/material";
 import ReportItem from "../modules/report/components/ReportItem";
 
 const ReportsScreen = () => {
-    const { data } = useQuery(getReportsQueryOptions());
+    const { data } = useQuery(
+        getReportsQueryOptions({
+            page: 1,
+            size: 100,
+            is_considered: false,
+        })
+    );
     const { t } = useTranslation();
 
     return (

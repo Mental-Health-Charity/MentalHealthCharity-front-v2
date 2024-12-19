@@ -1,11 +1,14 @@
-import { queryOptions } from "@tanstack/react-query";
+import { queryOptions, UseQueryOptions } from "@tanstack/react-query";
 import { url } from "../../../api";
 import { Pagination } from "../../shared/types";
 import { Chat, SearchChatQueryOptions } from "../types";
 import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
 import handleApiError from "../../shared/helpers/handleApiError";
 
-export const getChatsQueryOptions = (options: SearchChatQueryOptions) =>
+export const getChatsQueryOptions = (
+    options: SearchChatQueryOptions,
+    additionals?: Omit<UseQueryOptions<Pagination<Chat>>, "queryFn">
+) =>
     queryOptions<Pagination<Chat>>({
         queryKey: ["chats", options],
         queryFn: async () => {
@@ -27,4 +30,5 @@ export const getChatsQueryOptions = (options: SearchChatQueryOptions) =>
                 throw error; // Przekazanie błędu do react-query
             }
         },
+        ...additionals,
     });

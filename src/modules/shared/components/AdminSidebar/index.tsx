@@ -13,6 +13,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const drawerWidth = 240;
 
@@ -80,6 +81,18 @@ export const AdminSidebar = ({ open }: Props) => {
                             </ListItemButton>
                         </ListItem>
                     ))}
+                    <ListItem disablePadding>
+                        <ListItemButton
+                            reloadDocument
+                            to={"/"}
+                            component={Link}
+                        >
+                            <ListItemIcon sx={{ color: "#fff" }}>
+                                <ArrowBackIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Powrót" />
+                        </ListItemButton>
+                    </ListItem>
                 </List>
             </Drawer>
         </Box>

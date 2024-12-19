@@ -110,15 +110,7 @@ const ChatWindow = () => {
                             <EventNoteIcon fontSize="large" />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title={t("chat.contract")}>
-                        <IconButton
-                            sx={{
-                                color: theme.palette.text.primary,
-                            }}
-                        >
-                            <HistoryEduIcon fontSize="large" />
-                        </IconButton>
-                    </Tooltip>
+
                     <Tooltip title={t("chat.report")}>
                         <IconButton
                             sx={{
@@ -127,6 +119,16 @@ const ChatWindow = () => {
                             onClick={() => setShowReportModal(!showReportModal)}
                         >
                             <ReportIcon fontSize="large" />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title={t("chat.contract")}>
+                        <IconButton
+                            disabled
+                            sx={{
+                                color: theme.palette.text.primary,
+                            }}
+                        >
+                            <HistoryEduIcon fontSize="large" />
                         </IconButton>
                     </Tooltip>
                 </Box>

@@ -23,6 +23,7 @@ import {
     PublicProfileOptions,
     ReadSearchUsersOptions,
     ReadUserByIdOptions,
+    ReadUsersReportsOptions,
 } from "./modules/users/types";
 
 export const baseUrl = import.meta.env.VITE_BASE_URL as string;
@@ -38,7 +39,12 @@ export const url = {
             return `${baseUrl}/api/v1/user-report/${user_report_id}/change-status`;
         },
         create: `${baseUrl}/api/v1/user-report/`,
-        get: `${baseUrl}/api/v1/user-report/`,
+        // get: `${baseUrl}/api/v1/user-report/`,
+        get(options: ReadUsersReportsOptions) {
+            const query = buildQuery(options);
+
+            return `${baseUrl}/api/v1/user-report/?${query}`;
+        },
     },
     users: {
         searchUser(options: ReadSearchUsersOptions) {

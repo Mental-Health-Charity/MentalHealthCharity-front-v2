@@ -90,12 +90,6 @@ const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft }: Props) => {
 
     return (
         <Box component="form" onSubmit={formik.handleSubmit}>
-            <button
-                type="button"
-                onClick={() => console.log(formik.values, initialValues)}
-            >
-                debug
-            </button>
             <Box
                 sx={{
                     backgroundImage: banner,

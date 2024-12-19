@@ -11,9 +11,9 @@ import FormTableItem from "../modules/forms/components/FormTableItem";
 
 const ManageVolunteerFormsScreen = () => {
     const { t } = useTranslation();
-    const { data } = useQuery(
+    const { data, refetch } = useQuery(
         getFormsQueryOptions({
-            form_status: formStatus.ACCEPTED,
+            form_status: formStatus.WAITED,
             form_type_id: formTypes.VOLUNTEER,
             page: 1,
             size: 100,
@@ -26,6 +26,7 @@ const ManageVolunteerFormsScreen = () => {
 
         return (
             <FormTableItem
+                refetch={refetch}
                 sx={{
                     ...style,
                 }}
@@ -47,7 +48,7 @@ const ManageVolunteerFormsScreen = () => {
                 }}
             >
                 <WindowListVirtualizer
-                    rowHeight={680}
+                    rowHeight={750}
                     onRender={onRender}
                     rowCount={data ? data.items.length : 0}
                 />

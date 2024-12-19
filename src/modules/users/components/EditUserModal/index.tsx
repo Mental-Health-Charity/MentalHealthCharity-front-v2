@@ -4,7 +4,7 @@ import { Box, Button, MenuItem, TextField, Typography } from "@mui/material";
 import { User } from "../../../auth/types";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { Roles } from "../../constants";
+import { Roles, translatedRoles } from "../../constants";
 import useTheme from "../../../../theme";
 import WarningIcon from "@mui/icons-material/Warning";
 import { useState } from "react";
@@ -18,7 +18,7 @@ interface Props {
     user: User;
 }
 
-const EditUserModal = ({ onClose, open, user }: Props) => {
+const EditUserModal = ({ onClose, open, user, onSubmit }: Props) => {
     const { t } = useTranslation();
     const theme = useTheme();
     const [step, setStep] = useState(0);
@@ -38,8 +38,8 @@ const EditUserModal = ({ onClose, open, user }: Props) => {
     const handleSubmit = (values: EditUserFormValues) => {
         if (step === 0) {
             setStep(1);
-            console.debug(values);
         } else {
+            onSubmit(values);
             onClose();
         }
     };
@@ -145,7 +145,7 @@ const EditUserModal = ({ onClose, open, user }: Props) => {
                                     >
                                         {Object.values(Roles).map((role) => (
                                             <MenuItem key={role} value={role}>
-                                                {role}
+                                                {translatedRoles[role]}
                                             </MenuItem>
                                         ))}
                                     </TextField>

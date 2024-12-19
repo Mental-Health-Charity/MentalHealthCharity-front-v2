@@ -11,7 +11,13 @@ import { User } from "../../../auth/types";
 
 const Dashboard = () => {
     const { user } = useUser();
-    const { data } = useQuery(getReportsQueryOptions());
+    const { data } = useQuery(
+        getReportsQueryOptions({
+            page: 1,
+            size: 100,
+            is_considered: false,
+        })
+    );
     const [quickSearchUser, setQuickSearchUser] = useState<User>();
 
     return (

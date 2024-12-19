@@ -9,6 +9,7 @@ import EditArticleScreen from "../../screens/EditArticleScreen";
 import ManageArticlesScreen from "../../screens/ManageArticlesScreen";
 import ManageMenteeFormsScreen from "../../screens/ManageMenteeFormsScreen";
 import ManageVolunteerFormsScreen from "../../screens/ManageVolunteerFormsScreen";
+import RegisterScreen from "../../screens/RegisterScreen";
 
 const ManageChatsScreen = React.lazy(
     () => import("../../screens/ManageChatsScreen")
@@ -44,6 +45,11 @@ const routes: RouteType[] = [
     {
         url: "/login",
         onRender: <LoginScreen />,
+        requiresAuth: false,
+    },
+    {
+        url: "/auth/register",
+        onRender: <RegisterScreen />,
         requiresAuth: false,
     },
     {

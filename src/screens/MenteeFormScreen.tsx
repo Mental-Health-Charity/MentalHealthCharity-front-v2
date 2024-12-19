@@ -32,6 +32,7 @@ const MenteeFormScreen = () => {
                 name: theme,
                 value: theme,
             })),
+            phone: values.phone !== "" ? values.phone : "0",
         };
 
         mutate({

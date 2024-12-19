@@ -8,6 +8,9 @@ import SearchUser from "../SearchUser";
 import EditUserModal from "../EditUserModal";
 import { ListRowProps } from "react-virtualized";
 import UserTableItem from "../UserTableItem";
+import { useMutation } from "@tanstack/react-query";
+import editUserAsAdminMutation from "../../queries/editUserAsAdminMutation";
+import toast from "react-hot-toast";
 
 interface Props {
     data?: Pagination<User>;
@@ -15,11 +18,25 @@ interface Props {
     onChange: (user?: User) => void;
     onChangeSearchQuery?: (nickname: string) => void;
     isLoading: boolean;
+    refetchUsers: () => void;
 }
 
-const UsersList = ({ data, onChange, onChangeSearchQuery, user }: Props) => {
+const UsersList = ({
+    data,
+    onChange,
+    onChangeSearchQuery,
+    user,
+    refetchUsers,
+}: Props) => {
     const [userToEdit, setUserToEdit] = useState<User>();
     const { t } = useTranslation();
+    const { mutate } = useMutation({
+        mutationFn: editUserAsAdminMutation,
+        onSuccess: () => {
+            refetchUsers();
+            toast.success(t("common.success"));
+        },
+    });
 
     const onRender = ({ index, key, style }: ListRowProps) => {
         const user = data && data.items[index];
@@ -62,7 +79,12 @@ const UsersList = ({ data, onChange, onChangeSearchQuery, user }: Props) => {
 
             {userToEdit && (
                 <EditUserModal
-                    onSubmit={() => console.log("elo")}
+                    onSubmit={(val) =>
+                        mutate({
+                            id: userToEdit.id,
+                            payload: val,
+                        })
+                    }
                     onClose={() => setUserToEdit(undefined)}
                     open={!!userToEdit}
                     user={userToEdit}
