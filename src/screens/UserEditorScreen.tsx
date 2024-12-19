@@ -8,7 +8,7 @@ import { User } from "../modules/auth/types";
 import { useSearchParams } from "react-router-dom";
 
 const UserEditorScreen = () => {
-    const [role, setRole] = useState<Roles | undefined>();
+    const [role, _setRole] = useState<Roles | undefined>();
     const [params, setParams] = useSearchParams();
     const [searchQuery, setSearchQuery] = useState<string>(
         params.get("search") || ""

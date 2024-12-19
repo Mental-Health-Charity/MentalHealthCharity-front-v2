@@ -10,7 +10,7 @@ import { ArticleCategory } from "../../types";
 import useTheme from "../../../../theme";
 import { useTranslation } from "react-i18next";
 import ActionMenu from "../../../shared/components/ActionMenu";
-import EditIcon from "@mui/icons-material/Edit";
+
 import { useRef, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -63,9 +63,14 @@ const CategoryItem = ({
                 <ListItemText>{category.name}</ListItemText>
             )}
             <Box>
-                {/* <IconButton>
-                    <EditIcon onClick={toggleEditMode} />
-                </IconButton> */}
+                <IconButton
+                    sx={{
+                        display: "none",
+                    }}
+                    onClick={toggleEditMode}
+                >
+                    {isEditMode ? "Save" : "Edit"}
+                </IconButton>
                 <Chip
                     sx={{
                         backgroundColor: category.is_active

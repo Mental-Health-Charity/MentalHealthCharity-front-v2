@@ -9,11 +9,12 @@ import useTheme from "../../../../theme";
 import WarningIcon from "@mui/icons-material/Warning";
 import { useState } from "react";
 import DataComparison from "../../../shared/components/CompareChanges";
+import { EditUserFormValues } from "../../types";
 
 interface Props {
     open: boolean;
     onClose: () => void;
-    onSubmit: (values: typeof initialValues) => void;
+    onSubmit: (values: EditUserFormValues) => void;
     user: User;
 }
 
@@ -34,9 +35,10 @@ const EditUserModal = ({ onClose, open, user }: Props) => {
         user_role: user.user_role || Roles.USER,
     };
 
-    const handleSubmit = (values: typeof initialValues) => {
+    const handleSubmit = (values: EditUserFormValues) => {
         if (step === 0) {
             setStep(1);
+            console.debug(values);
         } else {
             onClose();
         }
@@ -66,7 +68,6 @@ const EditUserModal = ({ onClose, open, user }: Props) => {
                     touched,
                     handleChange,
                     handleBlur,
-                    isSubmitting,
                     dirty,
                 }) => (
                     <Form>

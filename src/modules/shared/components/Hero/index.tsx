@@ -4,6 +4,7 @@ import useTheme from "../../../../theme";
 import wave_icon from "../../../../assets/static/wave.svg";
 import logo_with_shadow_icon from "../../../../assets/static/logo_shadow.webp";
 import { HeroLogoContainer } from "./styles";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
     const { t } = useTranslation();
@@ -99,10 +100,18 @@ const Hero = () => {
                     <Box
                         sx={{ marginTop: "25px", display: "flex", gap: "15px" }}
                     >
-                        <Button variant="contained" to="/form/mentee">
+                        <Button
+                            component={Link}
+                            variant="contained"
+                            to="/form/mentee"
+                        >
                             {t("homepage.choose_mentee_button")}
                         </Button>
-                        <Button variant="outlined" to="/form/volunteer">
+                        <Button
+                            component={Link}
+                            variant="outlined"
+                            to="/form/volunteer"
+                        >
                             {t("homepage.choose_volunteer_button")}
                         </Button>
                     </Box>

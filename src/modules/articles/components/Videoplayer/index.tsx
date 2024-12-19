@@ -1,12 +1,10 @@
-import { Box, BoxProps, useTheme } from "@mui/material";
+import { Box, BoxProps } from "@mui/material";
 
 interface Props extends BoxProps {
     src: string;
 }
 
 const Videoplayer = ({ src, ...props }: Props) => {
-    const theme = useTheme();
-
     if (src.includes("youtube.com")) {
         const videoId = new URL(src).searchParams.get("v");
         const embedUrl = `https://www.youtube.com/embed/${videoId}`;

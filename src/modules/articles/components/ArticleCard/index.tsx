@@ -25,7 +25,7 @@ import { Permissions } from "../../../shared/constants";
 import { useMutation } from "@tanstack/react-query";
 import updateArticleMutation from "../../queries/updateArticleBannerMutation";
 import { ArticleStatus } from "../../constants";
-import { MouseEventHandler, useCallback } from "react";
+import { useCallback } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 

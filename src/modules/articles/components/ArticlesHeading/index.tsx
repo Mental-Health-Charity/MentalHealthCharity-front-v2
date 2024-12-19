@@ -10,6 +10,7 @@ import {
 import { useTranslation } from "react-i18next";
 import person_image from "../../../../assets/static/person.png";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { Link } from "react-router-dom";
 
 interface Props {
     onSearch: (query: string) => void;
@@ -91,6 +92,7 @@ const ArticlesHeading = ({ onSearch, search }: Props) => {
                         onChange={(e) => onSearch(e.target.value)}
                     />
                     <Button
+                        component={Link}
                         to="/articles/dashboard"
                         variant="contained"
                         sx={{ gap: "5px", width: "300px" }}

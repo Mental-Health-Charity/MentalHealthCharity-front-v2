@@ -1,6 +1,5 @@
 import { User } from "../auth/types";
 import { DefaultPaginationOptions } from "../shared/types";
-import { Roles } from "../users/constants";
 import { ArticleRequiredRoles, ArticleStatus } from "./constants";
 
 export interface ReadArticlesOptions extends DefaultPaginationOptions {

@@ -8,13 +8,12 @@ import { ArticleStatus } from "../modules/articles/constants";
 import { useUser } from "../modules/auth/components/AuthProvider";
 import Loader from "../modules/shared/components/Loader";
 import ArticleCard from "../modules/articles/components/ArticleCard";
-import useTheme from "../theme";
 import AddIcon from "@mui/icons-material/Add";
+import { Link } from "react-router-dom";
 
 const ArticleDashboardScreen = () => {
     const { t } = useTranslation();
     const { user } = useUser();
-    const theme = useTheme();
 
     const statuses = [
         {
@@ -68,6 +67,7 @@ const ArticleDashboardScreen = () => {
                     subtitle={t("articles.dashboard.subtitle")}
                 >
                     <Button
+                        component={Link}
                         to="/articles/create"
                         variant="contained"
                         sx={{ marginTop: "20px", gap: "10px" }}

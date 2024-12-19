@@ -9,7 +9,7 @@ interface Props {
     actions?: ComponentAction[];
 }
 
-const UserListRow = ({ actions, user }: Props) => {
+const UserListRow = ({ user }: Props) => {
     const { t } = useTranslation();
     return (
         <Box

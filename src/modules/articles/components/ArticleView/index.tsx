@@ -1,4 +1,4 @@
-import { Box, Card, Chip, Typography, useTheme } from "@mui/material";
+import { Box, Chip, Typography, useTheme } from "@mui/material";
 import Container from "../../../shared/components/Container";
 import { Article } from "../../types";
 import formatDate from "../../../shared/helpers/formatDate";
