@@ -9,7 +9,7 @@ const ArticleScreen = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { data } = useQuery(
-        getArticleByIdQueryOptions({ id: Number(id) || "" })
+        getArticleByIdQueryOptions({ id: Number(id) || -1 }, {})
     );
     const { data: articles } = useQuery(
         articlesQueryOptions({ q: "", page: 1, size: 50 })

@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import ArticleEditor from "../modules/articles/components/ArticleEditor";
 import Container from "../modules/shared/components/Container";
 import SimpleCard from "../modules/shared/components/SimpleCard";
@@ -33,11 +33,14 @@ const CreateArticleScreen = () => {
         });
 
     const handleCreateArticle = async (values: CreateArticleValues) => {
-        const banner = await fileToBase64(values.banner_url);
+        const banner =
+            values.banner_url instanceof File
+                ? await fileToBase64(values.banner_url)
+                : values.banner_url;
 
         const transformValues: CreateArticlePayload = {
             ...values,
-            banner_url: banner,
+            banner_url: banner || "",
             article_category_id: values.article_category_id || 0,
         };
 
@@ -45,11 +48,14 @@ const CreateArticleScreen = () => {
     };
 
     const handleCreateDraft = async (values: CreateArticleValues) => {
-        const banner = await fileToBase64(values.banner_url);
+        const banner =
+            values.banner_url instanceof File
+                ? await fileToBase64(values.banner_url)
+                : values.banner_url;
 
         const transformValues: CreateArticlePayload = {
             ...values,
-            banner_url: banner,
+            banner_url: banner || "",
             status: ArticleStatus.DRAFT,
             article_category_id: values.article_category_id || 0,
         };

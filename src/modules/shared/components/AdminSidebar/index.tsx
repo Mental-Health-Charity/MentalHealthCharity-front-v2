@@ -71,7 +71,7 @@ export const AdminSidebar = ({ open }: Props) => {
                             <ListItemButton
                                 disabled={currentPath === item.to}
                                 to={item.to}
-                                LinkComponent={Link}
+                                component={Link}
                             >
                                 <ListItemIcon sx={{ color: "#fff" }}>
                                     {item.icon}
