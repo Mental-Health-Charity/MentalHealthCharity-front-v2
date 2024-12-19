@@ -29,7 +29,13 @@ const ReportCard = ({ report }: Props) => {
     const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-    const { refetch } = useQuery(getReportsQueryOptions());
+    const { refetch } = useQuery(
+        getReportsQueryOptions({
+            page: 1,
+            size: 100,
+            is_considered: false,
+        })
+    );
     const { mutate } = useMutation({
         mutationFn: changeStatusMutationOptions,
         onMutate: () => {
