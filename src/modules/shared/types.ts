@@ -1,6 +1,7 @@
 import React from "react";
 import { Roles } from "../users/constants";
 import { MenuItemProps } from "@mui/material";
+import { Permissions } from "./constants";
 
 export interface Pagination<T> {
     page: number;
@@ -19,7 +20,7 @@ export interface RouteType {
     url: string;
     onRender: React.ReactNode;
     requiresAuth?: boolean;
-    permissions?: Roles[];
+    permission?: Permissions;
 }
 
 export interface Pagination<T> {
@@ -45,6 +46,8 @@ export interface ComponentAction extends MenuItemProps {
 
 export enum ErrorMessage {
     FAILED_TO_FETCH_CHAT = "failed_to_fetch_chat",
+    ARTICLE_CATEGORY_IS_USED = "article_category_is_used",
+    ARTICLE_CATEGORY_WITH_THAT_NAME_ALREADY_EXISTS = "article_category_with_that_name_already_exists",
     FAILED_TO_FETCH_CHAT_NOTE = "failed_to_fetch_chat_note",
     FAILED_TO_SAVE_NOTE = "failed_to_save_note",
     FAILED_TO_CREATE_REPORT = "failed_to_create_report",

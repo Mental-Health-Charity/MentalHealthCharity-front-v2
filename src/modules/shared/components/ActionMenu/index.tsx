@@ -20,6 +20,9 @@ const ActionMenu = ({ actions }: Props) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
@@ -61,6 +64,9 @@ const ActionMenu = ({ actions }: Props) => {
                                 reloadDocument
                                 to={action.href}
                                 key={action.id}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                }}
                                 style={{
                                     textDecoration: "none",
                                     color: "inherit",
@@ -88,6 +94,9 @@ const ActionMenu = ({ actions }: Props) => {
                     {dividerActions.map((action) =>
                         action.href ? (
                             <Link
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                }}
                                 to={action.href}
                                 key={action.id}
                                 style={{
@@ -101,7 +110,14 @@ const ActionMenu = ({ actions }: Props) => {
                                 </MenuItem>
                             </Link>
                         ) : (
-                            <MenuItem {...action} key={action.id}>
+                            <MenuItem
+                                {...action}
+                                key={action.id}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    action.onClick && action.onClick(e);
+                                }}
+                            >
                                 <ListItemIcon>{action.icon}</ListItemIcon>
                                 <ListItemText>{action.label}</ListItemText>
                             </MenuItem>

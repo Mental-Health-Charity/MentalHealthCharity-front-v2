@@ -27,6 +27,12 @@ declare module "@mui/material/styles" {
             border: string;
         };
 
+        text: {
+            primary: string;
+            secondary: string;
+            light: string;
+        };
+
         gradients: {
             primary: string;
             dark: string;
@@ -37,6 +43,10 @@ declare module "@mui/material/styles" {
             box: string;
         };
     }
+    interface TypeText {
+        light: string;
+    }
+
     interface Palette {
         colors: {
             accent: string;
@@ -187,6 +197,7 @@ const useTheme = () => {
             text: {
                 primary: "#F5F9F9",
                 secondary: "#153243",
+                light: "#275D7C",
             },
             primary: {
                 main: "#00D8BD",

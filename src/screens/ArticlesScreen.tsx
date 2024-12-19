@@ -30,16 +30,19 @@ const ArticlesScreen = () => {
     );
 
     return (
-        <Container waves>
+        <Container
+            sx={{
+                maxWidth: "2150px",
+            }}
+            waves
+        >
             <ArticlesHeading onSearch={setQuery} search={query} />
             <Box
                 gap={2}
                 sx={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: "100%",
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(530px, 1fr))",
+                    gap: 2,
                 }}
             >
                 {!isLoading && (!data || data.items.length === 0) && (

@@ -2,29 +2,24 @@ import toast from "react-hot-toast";
 import Errors from "../constants";
 import { ErrorMessage } from "../types";
 
-function handleApiError(error: unknown): Error {
-    if (isApiError(error)) {
-        const errorDetails = error.details;
-
-        const name = ErrorMessage[errorDetails as keyof typeof ErrorMessage];
-        const message = Errors[name] || Errors[ErrorMessage.UNKNOWN];
-
-        toast.error(message);
-        throw { message, name };
+async function handleApiError(error: unknown): Promise<Error> {
+    if (error instanceof Response) {
+        const responseBody = await error.json().catch(() => null);
+        if (responseBody && "detail" in responseBody) {
+            const errorDetails = responseBody.detail as string;
+            const errorCode = errorDetails.toUpperCase().replace(/ /g, "_");
+            const name = ErrorMessage[errorCode as keyof typeof ErrorMessage];
+            const message = Errors[name] || Errors[ErrorMessage.UNKNOWN];
+            console.log("Elo", name);
+            toast.error(message);
+            throw { message, name };
+        }
     }
 
+    console.log("error", error);
     const message = Errors[ErrorMessage.UNKNOWN];
     toast.error(message);
     throw { name: ErrorMessage.UNKNOWN, message };
-}
-
-function isApiError(error: unknown): error is { details: string } {
-    return (
-        typeof error === "object" &&
-        error !== null &&
-        "details" in error &&
-        typeof (error as { details: unknown }).details === "string"
-    );
 }
 
 export default handleApiError;

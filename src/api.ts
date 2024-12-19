@@ -16,7 +16,7 @@ import {
     ParticipantOptions,
     ReadChatOptions,
 } from "./modules/chat/types";
-import { FormOptions } from "./modules/forms/types";
+import { FormOptions, ReadAllFormOptions } from "./modules/forms/types";
 import { ChangeReportStatusPayload } from "./modules/report/types";
 import { DefaultPaginationOptions } from "./modules/shared/types";
 import {
@@ -112,6 +112,7 @@ export const url = {
         createChat: `${baseUrl}/api/v1/chat/`,
     },
     articles: {
+        create: `${baseUrl}/api/v1/article/`,
         readArticles(options: ReadArticlesOptions) {
             const query = buildQuery(options);
             return `${baseUrl}/api/v1/article?${query}`;
@@ -134,6 +135,9 @@ export const url = {
         update({ id }: UpdateArticleOptions) {
             return `${baseUrl}/api/v1/article/${id}`;
         },
+        updateBanner({ id }: UpdateArticleOptions) {
+            return `${baseUrl}/api/v1/article/${id}/banner`;
+        },
         delete({ id }: UpdateArticleOptions) {
             return `${baseUrl}/api/v1/article/${id}`;
         },
@@ -151,8 +155,8 @@ export const url = {
         changeStatus({ id }: ArticleCategoryOptions) {
             return `${baseUrl}/api/v1/article-category/${id}/change-status`;
         },
-        read: `${baseUrl}/api/v1/article-category`,
-        create: `${baseUrl}/api/v1/article-category`,
+        read: `${baseUrl}/api/v1/article-category/`,
+        create: `${baseUrl}/api/v1/article-category/`,
     },
     publicProfiles: {
         read({ id }: PublicProfileOptions) {
@@ -178,8 +182,11 @@ export const url = {
         reject({ id }: FormOptions) {
             return `${baseUrl}/api/v1/form/${id}/reject`;
         },
-        read: `${baseUrl}/api/v1/form`,
-        create: `${baseUrl}/api/v1/form`,
-        canUserSendForm: `${baseUrl}/api/v1/form/can-send-form`,
+        read(options: ReadAllFormOptions) {
+            const query = buildQuery(options);
+            return `${baseUrl}/api/v1/form/?${query}`;
+        },
+        create: `${baseUrl}/api/v1/form/`,
+        canUserSendForm: `${baseUrl}/api/v1/form/can-send-form/`,
     },
 };

@@ -26,6 +26,7 @@ const Modal = ({ title, modalContentProps, ...props }: Props) => {
             {...props}
         >
             <Box
+                {...modalContentProps}
                 sx={{
                     backgroundColor: theme.palette.background.paper,
                     padding: "10px 15px",
@@ -33,7 +34,6 @@ const Modal = ({ title, modalContentProps, ...props }: Props) => {
                     minWidth: "300px",
                     ...modalContentProps?.sx,
                 }}
-                {...modalContentProps}
             >
                 <Box
                     sx={{

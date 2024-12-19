@@ -8,8 +8,6 @@ import { BrowserRouter } from "react-router-dom";
 import { UserProvider } from "./modules/auth/components/AuthProvider";
 import { Suspense } from "react";
 import Loader from "./modules/shared/components/Loader";
-import i18next from "i18next";
-import { initReactI18next } from "react-i18next";
 
 const queryClient = new QueryClient({
     // defaultOptions: {

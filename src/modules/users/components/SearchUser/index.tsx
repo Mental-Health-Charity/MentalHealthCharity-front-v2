@@ -21,9 +21,15 @@ interface Props {
     onChange: (user?: User) => void;
     onChangeSearchQuery?: (nickname: string) => void;
     value?: User;
+    disabled?: boolean;
 }
 
-const SearchUser = ({ onChange, value, onChangeSearchQuery }: Props) => {
+const SearchUser = ({
+    onChange,
+    value,
+    onChangeSearchQuery,
+    disabled,
+}: Props) => {
     const [role, setRole] = useState<Roles | undefined>();
     const [username, setUsername] = useState<string>("");
     const [isLoading, setIsLoading] = useState(false);
@@ -64,6 +70,7 @@ const SearchUser = ({ onChange, value, onChangeSearchQuery }: Props) => {
             <Autocomplete
                 fullWidth
                 freeSolo
+                disabled={disabled}
                 disablePortal
                 options={data ? data.items : []}
                 getOptionLabel={(option) =>
@@ -136,6 +143,7 @@ const SearchUser = ({ onChange, value, onChangeSearchQuery }: Props) => {
                         >
                             <InputLabel id="Role">Role</InputLabel>
                             <Select
+                                disabled={disabled}
                                 labelId="Role"
                                 value={role || ""}
                                 onChange={(e) =>

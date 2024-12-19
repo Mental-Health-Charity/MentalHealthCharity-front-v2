@@ -12,6 +12,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
+import { Link } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -27,7 +28,17 @@ export const AdminSidebar = ({ open }: Props) => {
     const menuItems = [
         { text: "Dashboard", icon: <DashboardIcon />, to: "/admin/" },
         { text: "Użytkownicy", icon: <HomeIcon />, to: "/admin/users/" },
-        { text: "Formularze", icon: <SettingsIcon />, to: "/admin/forms/" },
+        { text: "Artykuły", icon: <SettingsIcon />, to: "/admin/articles/" },
+        {
+            text: "Formularze podopiecznych",
+            icon: <SettingsIcon />,
+            to: "/admin/forms/mentee",
+        },
+        {
+            text: "Formularze wolontariuszy",
+            icon: <SettingsIcon />,
+            to: "/admin/forms/volunteer",
+        },
         { text: "Zgłoszenia", icon: <SettingsIcon />, to: "/admin/reports/" },
         { text: "Czaty", icon: <SettingsIcon />, to: "/admin/chats/" },
     ];
@@ -59,7 +70,8 @@ export const AdminSidebar = ({ open }: Props) => {
                         <ListItem key={item.text} disablePadding>
                             <ListItemButton
                                 disabled={currentPath === item.to}
-                                href={item.to}
+                                to={item.to}
+                                LinkComponent={Link}
                             >
                                 <ListItemIcon sx={{ color: "#fff" }}>
                                     {item.icon}

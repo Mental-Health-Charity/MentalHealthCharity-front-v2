@@ -1,5 +1,6 @@
 import { ErrorMessage } from "./types";
 import i18n from "../../locales/i18n";
+import { Roles } from "../users/constants";
 
 const Errors = {
     [ErrorMessage.FAILED_TO_FETCH_CHAT]: i18n.t("errors.failed_to_fetch_chat"),
@@ -21,6 +22,12 @@ const Errors = {
     [ErrorMessage.FAILED_TO_CREATE_CHAT]: i18n.t(
         "errors.failed_to_create_chat"
     ),
+    [ErrorMessage.ARTICLE_CATEGORY_IS_USED]: i18n.t(
+        "errors.article_category_in_use"
+    ),
+    [ErrorMessage.ARTICLE_CATEGORY_WITH_THAT_NAME_ALREADY_EXISTS]: i18n.t(
+        "errors.article_category_with_that_name_already_exists"
+    ),
     [ErrorMessage.FAILED_TO_EDIT_CHAT]: i18n.t("errors.failed_to_edit_chat"),
     [ErrorMessage.FAILED_TO_FETCH_REPORTS]: i18n.t(
         "errors.failed_to_fetch_reports"
@@ -28,3 +35,54 @@ const Errors = {
 };
 
 export default Errors;
+
+export enum Permissions {
+    AlL = "*",
+    CREATE_ARTICLE = "CREATE_ARTICLE",
+    EDIT_ARTICLE = "EDIT_ARTICLE",
+    DELETE_ARTICLE = "DELETE_ARTICLE",
+    PUBLISH_ARTICLE_AS_ADMIN = "PUBLISH_ARTICLE_AS_ADMIN",
+    ADMIN_DASHBOARD = "ADMIN_DASHBOARD",
+    SEARCH_USERS = "SEARCH_USERS",
+    MANAGE_USERS = "MANAGE_USERS",
+    MANAGE_ARTICLES = "MANAGE_ARTICLES",
+    MANAGE_REPORTS = "MANAGE_REPORTS",
+    MANAGE_CHATS = "MANAGE_CHATS",
+    READ_OWN_CHATS = "READ_OWN_CHATS",
+    MANAGE_MENTEE_FORMS = "MANAGE_MENTEE_FORMS",
+    MANAGE_VOLUNTEER_FORMS = "MANAGE_VOLUNTEER_FORMS",
+}
+
+export const groupedPermissions = {
+    [Roles.ADMIN]: [Permissions.AlL],
+    [Roles.VOLUNTEERSUPERVISOR]: [
+        Permissions.CREATE_ARTICLE,
+        Permissions.EDIT_ARTICLE,
+        Permissions.DELETE_ARTICLE,
+        Permissions.MANAGE_MENTEE_FORMS,
+        Permissions.MANAGE_VOLUNTEER_FORMS,
+        Permissions.PUBLISH_ARTICLE_AS_ADMIN,
+        Permissions.MANAGE_USERS,
+        Permissions.MANAGE_ARTICLES,
+        Permissions.MANAGE_REPORTS,
+        Permissions.MANAGE_CHATS,
+        Permissions.ADMIN_DASHBOARD,
+        Permissions.SEARCH_USERS,
+        Permissions.READ_OWN_CHATS,
+    ],
+    [Roles.VOLUNTEER]: [
+        Permissions.CREATE_ARTICLE,
+        Permissions.EDIT_ARTICLE,
+        Permissions.DELETE_ARTICLE,
+        Permissions.READ_OWN_CHATS,
+    ],
+    [Roles.REDACTOR]: [
+        Permissions.CREATE_ARTICLE,
+        Permissions.EDIT_ARTICLE,
+        Permissions.DELETE_ARTICLE,
+        Permissions.READ_OWN_CHATS,
+        Permissions.MANAGE_ARTICLES,
+        Permissions.ADMIN_DASHBOARD,
+    ],
+    [Roles.USER]: [Permissions.READ_OWN_CHATS],
+};

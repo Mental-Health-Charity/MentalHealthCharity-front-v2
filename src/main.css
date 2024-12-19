@@ -1,51 +1,70 @@
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-
-  /* style scrollbar */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 ::-webkit-scrollbar {
-  width: 12px;
-  height: 8px;
+    width: 12px;
+    height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #f0f0f0;
-  border-radius: 10px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #153243;
-  border-radius: 10px;
-  border: 2px solid #f0f0f0;
+    background-color: #153243;
+    border-radius: 10px;
+    border: 2px solid #f0f0f0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #999; /* Zmiana koloru przy najechaniu myszką */
+    background-color: #999;
 }
 
 .markdown {
-  color: #153243 !important;
+    color: #153243 !important;
+    height: 100%;
+
+    & .mdxeditor-diff-source-wrapper {
+        height: 100%;
+    }
+
+    & .mdxeditor-root-contenteditable {
+        height: 100%;
+        min-height: 300px;
+
+        & > div {
+            height: 100%;
+        }
+    }
 }
 
-/* Dodatkowa specyficzność dla tekstu wewnątrz edytora */
-.markdown * {
-  color: #153243;
+.markdown .mdxeditor-root-contenteditable > div {
+    padding: 10px 0;
 }
 
-/* Specyficzność dla nagłówków, paragrafów itp. */
 .markdown h1,
 .markdown h2,
 .markdown h3,
 .markdown p,
 .markdown li,
 .markdown blockquote {
-  color: #153243 !important;
+    color: #153243 !important;
 }
 
 .markdown a,
 .markdown a > * {
-  color: #06b7a7 !important;
+    color: #06b7a7 !important;
+}
+
+.markdown-editable {
+    height: 100%;
+    min-height: 500px;
+}
+
+.markdown-editable img {
+    max-width: 100%;
 }

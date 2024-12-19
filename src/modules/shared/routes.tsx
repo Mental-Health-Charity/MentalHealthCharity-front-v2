@@ -1,5 +1,14 @@
 import React from "react";
 import { RouteType } from "./types";
+import MenteeFormScreen from "../../screens/MenteeFormScreen";
+import VolunteerFormScreen from "../../screens/VolunteerFormScreen";
+import CreateArticleScreen from "../../screens/CreateArticleScreen";
+import ArticleDashboardScreen from "../../screens/ArticlesDashboardScreen";
+import { Permissions } from "./constants";
+import EditArticleScreen from "../../screens/EditArticleScreen";
+import ManageArticlesScreen from "../../screens/ManageArticlesScreen";
+import ManageMenteeFormsScreen from "../../screens/ManageMenteeFormsScreen";
+import ManageVolunteerFormsScreen from "../../screens/ManageVolunteerFormsScreen";
 
 const ManageChatsScreen = React.lazy(
     () => import("../../screens/ManageChatsScreen")
@@ -23,6 +32,16 @@ const routes: RouteType[] = [
         requiresAuth: false,
     },
     {
+        url: "/form/mentee",
+        onRender: <MenteeFormScreen />,
+        requiresAuth: false,
+    },
+    {
+        url: "/form/volunteer",
+        onRender: <VolunteerFormScreen />,
+        requiresAuth: false,
+    },
+    {
         url: "/login",
         onRender: <LoginScreen />,
         requiresAuth: false,
@@ -36,21 +55,43 @@ const routes: RouteType[] = [
         url: "/admin",
         onRender: <AdminScreen />,
         requiresAuth: true,
+        permission: Permissions.ADMIN_DASHBOARD,
     },
     {
         url: "/admin/reports",
         onRender: <ReportsScreen />,
         requiresAuth: true,
+        permission: Permissions.MANAGE_REPORTS,
     },
     {
         url: "/admin/users",
         onRender: <UserEditorScreen />,
         requiresAuth: true,
+        permission: Permissions.MANAGE_USERS,
+    },
+    {
+        url: "/admin/articles",
+        onRender: <ManageArticlesScreen />,
+        requiresAuth: true,
+        permission: Permissions.MANAGE_ARTICLES,
+    },
+    {
+        url: "/admin/forms/mentee",
+        onRender: <ManageMenteeFormsScreen />,
+        requiresAuth: true,
+        permission: Permissions.MANAGE_MENTEE_FORMS,
+    },
+    {
+        url: "/admin/forms/volunteer",
+        onRender: <ManageVolunteerFormsScreen />,
+        requiresAuth: true,
+        permission: Permissions.MANAGE_VOLUNTEER_FORMS,
     },
     {
         url: "/admin/chats",
         onRender: <ManageChatsScreen />,
         requiresAuth: true,
+        permission: Permissions.MANAGE_CHATS,
     },
     {
         url: "/profile/:userId",
@@ -60,7 +101,25 @@ const routes: RouteType[] = [
     {
         url: "/articles",
         onRender: <ArticlesScreen />,
+        requiresAuth: false,
+    },
+    {
+        url: "/articles/create",
+        onRender: <CreateArticleScreen />,
         requiresAuth: true,
+        permission: Permissions.CREATE_ARTICLE,
+    },
+    {
+        url: "/articles/edit/:id",
+        onRender: <EditArticleScreen />,
+        requiresAuth: true,
+        permission: Permissions.CREATE_ARTICLE,
+    },
+    {
+        url: "/articles/dashboard",
+        onRender: <ArticleDashboardScreen />,
+        requiresAuth: true,
+        permission: Permissions.CREATE_ARTICLE,
     },
     {
         url: "/article/:id",
@@ -71,17 +130,20 @@ const routes: RouteType[] = [
         url: "/chat/:id",
         onRender: <ChatScreen />,
         requiresAuth: true,
+        permission: Permissions.READ_OWN_CHATS,
     },
     {
         url: "/chat",
         onRender: <ChatScreen />,
         requiresAuth: true,
+        permission: Permissions.READ_OWN_CHATS,
     },
 
     {
         url: "/users",
         onRender: <div>Users</div>,
         requiresAuth: true,
+        permission: Permissions.MANAGE_USERS,
     },
     {
         url: "/users/:id",

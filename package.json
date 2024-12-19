@@ -26,6 +26,7 @@
     "js-cookie": "^3.0.5",
     "lodash.debounce": "^4.0.8",
     "react": "^18.3.1",
+    "react-confetti": "^6.1.0",
     "react-dom": "^18.3.1",
     "react-draggable": "^4.4.6",
     "react-hot-toast": "^2.4.1",

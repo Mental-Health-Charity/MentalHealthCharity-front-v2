@@ -7,10 +7,7 @@ import handleApiError from "../../shared/helpers/handleApiError";
 
 export const articlesByUserQueryOptions = (
     options: ReadPublicArticlesOptions,
-    additional: Omit<
-        UseQueryOptions<Pagination<Article>>,
-        "queryKey" | "queryFn"
-    >
+    additional?: Omit<UseQueryOptions<Pagination<Article>>, "queryFn">
 ) =>
     queryOptions<Pagination<Article>>({
         queryKey: ["articles"],
