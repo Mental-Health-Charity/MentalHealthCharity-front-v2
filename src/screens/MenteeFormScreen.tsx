@@ -1,18 +1,19 @@
-import MenteeForm from "../modules/forms/components/MenteeForm";
-import Container from "../modules/shared/components/Container";
-import bgImg from "../assets/static/line_bg.webp";
-import Confetti from "react-confetti";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import Confetti from "react-confetti";
+import bgImg from "../assets/static/line_bg.webp";
+import MenteeForm from "../modules/forms/components/MenteeForm";
+import sendFormMutation from "../modules/forms/queries/sendFormMutation";
 import {
     formTypes,
     MenteeForm as MenteeFormType,
     MenteeFormValues,
 } from "../modules/forms/types";
-import { useMutation } from "@tanstack/react-query";
-import sendFormMutation from "../modules/forms/queries/sendFormMutation";
+import Container from "../modules/shared/components/Container";
 
 const MenteeFormScreen = () => {
     const [showConfetti, setShowConfetti] = useState(false);
+
     const { mutate } = useMutation({
         mutationFn: sendFormMutation,
 

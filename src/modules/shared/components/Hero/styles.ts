@@ -1,22 +1,14 @@
 import { styled } from "@mui/material";
 
 export const HeroLogoContainer = styled("div")(() => ({
-  width: "auto",
-  height: "300px",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  animation: `fadeIn 4s infinite`,
-
-  "@keyframes fadeIn": {
-    "0%": {
-      transform: "translateY(15px)",
-    },
-    "50%": {
-      transform: "translateY(0)",
-    },
-    "100%": {
-      transform: "translateY(15px)",
-    },
-  },
+    width: "auto",
+    height: "565px",
+    display: "flex",
+    position: "absolute",
+    right: "0",
+    borderRadius: "12px",
+    overflow: "hidden",
+    boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+    justifyContent: "center",
+    alignItems: "center",
 }));

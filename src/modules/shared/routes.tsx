@@ -1,15 +1,15 @@
 import React from "react";
-import { RouteType } from "./types";
-import MenteeFormScreen from "../../screens/MenteeFormScreen";
-import VolunteerFormScreen from "../../screens/VolunteerFormScreen";
-import CreateArticleScreen from "../../screens/CreateArticleScreen";
 import ArticleDashboardScreen from "../../screens/ArticlesDashboardScreen";
-import { Permissions } from "./constants";
+import CreateArticleScreen from "../../screens/CreateArticleScreen";
 import EditArticleScreen from "../../screens/EditArticleScreen";
 import ManageArticlesScreen from "../../screens/ManageArticlesScreen";
 import ManageMenteeFormsScreen from "../../screens/ManageMenteeFormsScreen";
 import ManageVolunteerFormsScreen from "../../screens/ManageVolunteerFormsScreen";
+import MenteeFormScreen from "../../screens/MenteeFormScreen";
 import RegisterScreen from "../../screens/RegisterScreen";
+import VolunteerFormScreen from "../../screens/VolunteerFormScreen";
+import { Permissions } from "./constants";
+import { RouteType } from "./types";
 
 const ManageChatsScreen = React.lazy(
     () => import("../../screens/ManageChatsScreen")
@@ -40,7 +40,7 @@ const routes: RouteType[] = [
     {
         url: "/form/volunteer",
         onRender: <VolunteerFormScreen />,
-        requiresAuth: false,
+        requiresAuth: true,
     },
     {
         url: "/login",

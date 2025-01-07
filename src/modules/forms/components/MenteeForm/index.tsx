@@ -1,22 +1,23 @@
-import { useState } from "react";
 import {
     Box,
     Button,
-    TextField,
-    MenuItem,
     Checkbox,
-    FormControlLabel,
     FormControl,
+    FormControlLabel,
     InputLabel,
+    MenuItem,
     Select,
+    TextField,
 } from "@mui/material";
 import { useFormik } from "formik";
-import * as Yup from "yup";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import FormWrapper from "../FormWrapper";
-import { MenteeFormValues } from "../../types";
-import { useUser } from "../../../auth/components/AuthProvider";
 import { Link } from "react-router-dom";
+import * as Yup from "yup";
+import { useUser } from "../../../auth/components/AuthProvider";
+import { validation } from "../../../shared/constants";
+import { MenteeFormValues } from "../../types";
+import FormWrapper from "../FormWrapper";
 
 interface Props {
     onSubmit: (values: MenteeFormValues) => void;
@@ -24,19 +25,21 @@ interface Props {
 
 const MenteeForm = ({ onSubmit }: Props) => {
     const { t } = useTranslation();
-    const { user } = useUser();
-
+    const { user, register } = useUser();
     const [step, setStep] = useState(0);
 
     const initialValues: MenteeFormValues = {
         age: "",
         name: user?.full_name || "",
         contacts: [],
+        email: user?.email || "",
         phone: "",
         themes: [],
         description: "",
         source: "",
         tos: false,
+        password: "",
+        confirmPassword: "",
     };
 
     const validationSchemas = [
@@ -50,6 +53,7 @@ const MenteeForm = ({ onSubmit }: Props) => {
         }),
         Yup.object({
             contacts: Yup.array().min(1, t("validation.contacts.min")),
+            email: validation.email,
         }),
         Yup.object({
             themes: Yup.array().min(1, t("validation.issueType.min")),
@@ -60,6 +64,10 @@ const MenteeForm = ({ onSubmit }: Props) => {
                 .required(t("validation.required")),
         }),
         Yup.object({
+            ...(!user && {
+                password: validation.password,
+                confirmPassword: validation.confirmPassword,
+            }),
             source: Yup.string().required(t("validation.required")),
             tos: Yup.boolean().oneOf([true], t("validation.consent.required")),
         }),
@@ -68,8 +76,33 @@ const MenteeForm = ({ onSubmit }: Props) => {
     const formik = useFormik({
         initialValues,
         validationSchema: validationSchemas[step],
-        onSubmit: (values) => {
-            if (step === validationSchemas.length - 1) {
+        onSubmit: async (values) => {
+            if (step === 4 && !user) {
+                try {
+                    await new Promise<void>((resolve, reject) => {
+                        register.mutate(
+                            {
+                                confirmPassword: values.confirmPassword,
+                                email: values.email,
+                                full_name: values.name,
+                                password: values.password,
+                            },
+                            {
+                                onSuccess: () => resolve(),
+                                onError: (error) => reject(error),
+                            }
+                        );
+                    });
+
+                    setStep((prevStep) => prevStep + 1);
+                } catch (error) {
+                    formik.setErrors({
+                        email: t("validation.registration_failed"),
+                        password: t("validation.registration_failed"),
+                        confirmPassword: t("validation.registration_failed"),
+                    });
+                }
+            } else if (step === validationSchemas.length - 1) {
                 onSubmit(values);
                 setStep(validationSchemas.length);
             } else {
@@ -84,10 +117,19 @@ const MenteeForm = ({ onSubmit }: Props) => {
 
     return (
         <FormWrapper
-            subtitle={t(`form.mentee.subtitle.${step}`, {
-                contact: formik.values.phone || "email",
-            })}
-            title={t(`form.mentee.title.${step}`)}
+            subtitle={t(
+                user
+                    ? `form.mentee.subtitle.${step}`
+                    : `form.mentee.subtitle_new_user.${step}`,
+                {
+                    contact: formik.values.phone || "email",
+                }
+            )}
+            title={t(
+                user
+                    ? `form.mentee.title.${step}`
+                    : `form.mentee.title_new_user.${step}`
+            )}
             progress={(step / validationSchemas.length) * 100}
         >
             <form onSubmit={formik.handleSubmit}>
@@ -180,6 +222,21 @@ const MenteeForm = ({ onSubmit }: Props) => {
                                 fullWidth
                             />
                         )}
+                        <TextField
+                            label={t("form.mentee.contact_detail.email")}
+                            name="email"
+                            value={formik.values.email}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={
+                                formik.touched.email &&
+                                Boolean(formik.errors.email)
+                            }
+                            helperText={
+                                formik.touched.email && formik.errors.email
+                            }
+                            fullWidth
+                        />
                     </Box>
                 )}
 
@@ -258,15 +315,6 @@ const MenteeForm = ({ onSubmit }: Props) => {
                     </Box>
                 )}
 
-                {step === 5 && (
-                    <Box
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "20px",
-                        }}
-                    ></Box>
-                )}
                 {step === 4 && (
                     <Box
                         sx={{
@@ -275,6 +323,44 @@ const MenteeForm = ({ onSubmit }: Props) => {
                             gap: "20px",
                         }}
                     >
+                        {!user && (
+                            <>
+                                <TextField
+                                    label={t("common.password")}
+                                    name="password"
+                                    type="password"
+                                    value={formik.values.password}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    error={
+                                        formik.touched.password &&
+                                        Boolean(formik.errors.password)
+                                    }
+                                    helperText={
+                                        formik.touched.password &&
+                                        formik.errors.password
+                                    }
+                                    fullWidth
+                                />
+                                <TextField
+                                    label={t("common.password_confirmation")}
+                                    name="confirmPassword"
+                                    type="password"
+                                    value={formik.values.confirmPassword}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    error={
+                                        formik.touched.confirmPassword &&
+                                        Boolean(formik.errors.confirmPassword)
+                                    }
+                                    helperText={
+                                        formik.touched.confirmPassword &&
+                                        formik.errors.confirmPassword
+                                    }
+                                    fullWidth
+                                />
+                            </>
+                        )}
                         <TextField
                             select
                             label={t("form.referral_source_label")}
@@ -319,6 +405,16 @@ const MenteeForm = ({ onSubmit }: Props) => {
                             </span>
                         )}
                     </Box>
+                )}
+
+                {step === 5 && (
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "20px",
+                        }}
+                    ></Box>
                 )}
 
                 <Box

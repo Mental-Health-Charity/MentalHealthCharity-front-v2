@@ -18,8 +18,10 @@
             "volunteer_supervisor": "Koordynator"
         },
         "submit": "Wyślij",
+        "join_us": "Dołącz teraz",
         "search": "Wyszukaj...",
         "login": "Zaloguj",
+        "create_new_account": "Załóż konto",
         "try_again": "Spróbuj ponownie",
         "sending": "Wysyłanie...",
         "confirm": "Potwierdź",
@@ -30,6 +32,8 @@
         "change_pass": "Zmień hasło",
         "unavailable_in_beta": "Niedostępne w wersji beta",
         "active": "Aktywny",
+        "password": "Hasło",
+        "password_confirmation": "Potwierdź hasło",
         "remove": "Usuń",
         "disable": "Wyłącz",
         "enable": "Włącz",
@@ -60,16 +64,21 @@
     "validation": {
         "required": "To pole jest wymagane",
         "passwords_must_match": "Hasła muszą być takie same",
+        "registration_failed": "Rejestracja nie powiodła się. Spróbuj ponownie.",
         "min_one_uppercase": "Hasło musi zawierać co najmniej jedną wielką literę",
         "invalid_email": "Podaj poprawny adres email",
         "invalid_url": "Podaj poprawny adres URL",
         "incorrect_password_format": "Hasło musi zawierać co najmniej 8 znaków",
+        "min_one_number": "Hasło musi zawierać co najmniej jedną cyfrę np. 1",
         "password_confirmation": "Hasła muszą być takie same",
         "first_name": "Imię musi zawierać co najmniej 2 znaki",
         "last_name": "Nazwisko musi zawierać co najmniej 2 znaki",
         "phone": "Podaj poprawny numer telefonu",
         "age": {
             "min": "Musisz mieć co najmniej 18 lat"
+        },
+        "email": {
+            "invalid": "Podaj poprawny adres email"
         },
         "max_size": "Plik jest za duży. Maksymalny rozmiar to {{size}}",
         "invalid_file": "Plik powinien być w formacie {{type}}",
@@ -226,12 +235,8 @@
     "homepage": {
         "choose_mentee_button": "Dołącz teraz",
         "choose_volunteer_button": "Zostań wolontariuszem",
-        "title": {
-            "1": "Wypłyń z nami na brzeg",
-            "2": "Fundacja Peryskop",
-            "3": "to darmowa pomoc psychologiczna"
-        },
-        "desc": "Zrzeszamy ochotników z całej Polski z odpowiednim doświadczeniem, aby dostarczać pomoc dostępną dla każdego.",
+        "title": "Darmowe i anonimowe wsparcie psychologiczne w formie czatu",
+        "desc": "Dołacz do grona podopiecznych, lub zostań wolontariuszem",
         "about_us": {
             "about_us_card": {
                 "subtitle": "O nas",
@@ -313,6 +318,22 @@
                 "Wybierz rodzaj problemu",
                 "Opisz swój problem",
                 "Skąd się o nas dowiedziałeś?",
+                "Dziękujemy za wypełnienie formularza!"
+            ],
+            "subtitle_new_user": [
+                "To pierwszy krok ku lepszemu jutra! Dołacz do nas i uzyskaj darmowe wsparcie, które może działać dzięki pomocy wolontariuszom z całego świata. To pierwszy krok ku lepszemu jutra! Dołacz do nas i uzyskaj darmowe wsparcie.",
+                "Jak możemy poinformować Cię gdy zostanie przydzielony dla Ciebie odpowiedni wolontariusz?",
+                "Wybierz jak najlepiej rodzaj problemu, abyśmy mogli dopasować Ci najlepszego wolontariusza! Możesz wybrać kilka.",
+                "Opisz jak najlepiej swój problem, abyśmy mogli dopasować Ci najlepszego wolontariusza!",
+                "Musisz utworzyć konto, aby dołączyć i korzystać w pełni z naszych usług",
+                "To wszystko! Już w krótce otrzymasz informacje na temat dalszych kroków na {{contact}} gdy znajdziemy dla Ciebie odpowiedniego wolontariusza. Dziękujemy za zaufanie!"
+            ],
+            "title_new_user": [
+                "Dziękujemy, że postanowiłeś do nas dołączyć. Wypełnij krótki formularz, aby dołączyć do zespołu podopiecznych!",
+                "Wybierz formę kontaktu",
+                "Wybierz rodzaj problemu",
+                "Opisz swój problem",
+                "Zarejestruj się, aby dołączyć do zespołu podopiecznych!",
                 "Dziękujemy za wypełnienie formularza!"
             ],
             "name_label": "Podaj imię, ksywkę lub jak mamy się do Ciebie zwracać?",

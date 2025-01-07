@@ -1,15 +1,14 @@
 import { Box, Button, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import useTheme from "../../../../theme";
-import wave_icon from "../../../../assets/static/wave.svg";
-import logo_with_shadow_icon from "../../../../assets/static/logo_shadow.webp";
-import { HeroLogoContainer } from "./styles";
 import { Link } from "react-router-dom";
+import banner from "../../../../assets/static/hero_image.webp";
+import waves from "../../../../assets/static/waves.svg";
+import Card from "../Card";
+import { HeroLogoContainer } from "./styles";
 
 const Hero = () => {
     const { t } = useTranslation();
-    const theme = useTheme();
-    console.log("theme", theme);
+
     return (
         <Box
             sx={{
@@ -19,18 +18,18 @@ const Hero = () => {
                 minHeight: "800px",
                 position: "relative",
                 width: "100%",
-                background: theme.palette.gradients.primary,
 
                 "&:before": {
                     content: '""',
                     position: "absolute",
-                    bottom: 0,
+                    top: 0,
                     left: 0,
                     width: "100%",
-                    height: "500px",
-                    backgroundImage: `url(${wave_icon})`,
+                    height: "100%",
+                    backgroundImage: `url(${waves})`,
                     backgroundSize: "cover",
-                    backgroundPosition: "center",
+                    backgroundPosition: "top",
+                    backgroundRepeat: "no-repeat",
                 },
             }}
         >
@@ -43,54 +42,35 @@ const Hero = () => {
                     alignItems: "center",
                     flexWrap: "wrap",
                     gap: "20px",
+                    position: "relative",
                 }}
             >
-                <Box
-                    sx={{
-                        backgroundColor: theme.palette.gradients.dark,
-                        borderRadius: "8px",
-                        padding: "50px",
-                        maxWidth: "850px",
-                        zIndex: 1,
-                    }}
-                >
+                <Card>
                     <Box
                         component="main"
                         sx={{
                             display: "flex",
                             flexDirection: "column",
                             gap: "20px",
+                            maxWidth: "520px",
                         }}
                     >
                         <Typography
                             sx={{
-                                color: "text.primary",
-                                textTransform: "uppercase",
+                                color: "text.secondary",
                             }}
                             variant="h1"
-                            fontSize="36px"
+                            fontSize="32px"
                             fontWeight={550}
                         >
-                            {t("homepage.title.1")}{" "}
-                            <Typography
-                                fontWeight={550}
-                                component="span"
-                                fontSize="36px"
-                                color="colors.accent"
-                                variant="h1"
-                                sx={{
-                                    textShadow: `0px 4px 4px ${theme.palette.shadows.text}`,
-                                }}
-                            >
-                                {t("homepage.title.2")}
-                            </Typography>{" "}
-                            {t("homepage.title.3")}{" "}
+                            {t("homepage.title")}
                         </Typography>
                         <Typography
                             component="h2"
                             sx={{
-                                color: "text.primary",
+                                color: "text.secondary",
                                 fontSize: "24px",
+                                width: "100%",
                                 fontWeight: 550,
                             }}
                         >
@@ -115,13 +95,13 @@ const Hero = () => {
                             {t("homepage.choose_volunteer_button")}
                         </Button>
                     </Box>
-                </Box>
+                </Card>
                 <HeroLogoContainer>
                     <img
-                        src={logo_with_shadow_icon}
+                        src={banner}
                         width="100%"
                         height="100%"
-                        alt="Fundacja peryskop logo"
+                        alt="Fundacja peryskop baner"
                     />
                 </HeroLogoContainer>
             </Box>

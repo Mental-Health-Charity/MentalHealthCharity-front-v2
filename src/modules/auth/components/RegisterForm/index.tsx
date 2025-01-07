@@ -1,14 +1,15 @@
 import {
     Box,
-    TextField,
     Button,
     Checkbox,
     FormControlLabel,
+    TextField,
 } from "@mui/material";
-import { Formik, Field, Form } from "formik";
-import { LoginFormValues, RegisterFormValues } from "../../types";
-import * as Yup from "yup";
+import { Field, Form, Formik } from "formik";
 import { useTranslation } from "react-i18next";
+import * as Yup from "yup";
+import { validation } from "../../../shared/constants";
+import { LoginFormValues, RegisterFormValues } from "../../types";
 
 interface Props {
     onSubmit: (values: RegisterFormValues) => void;
@@ -20,19 +21,9 @@ const RegisterForm = ({ onSubmit, initial }: Props) => {
 
     const validationSchema = Yup.object({
         full_name: Yup.string().required(t("validation.required")),
-        email: Yup.string()
-            .email(t("validation.invalid_email"))
-            .required(t("validation.required")),
-        password: Yup.string()
-            .min(8, t("validation.incorrect_password_format"))
-            .matches(/[A-Z]/, t("validation.min_one_uppercase"))
-            .required(t("validation.required")),
-        confirmPassword: Yup.string()
-            .oneOf(
-                [Yup.ref("password"), undefined],
-                t("validation.passwords_must_match")
-            )
-            .required(t("validation.required")),
+        email: validation.email,
+        password: validation.password,
+        confirmPassword: validation.confirmPassword,
     });
 
     const initialValues: RegisterFormValues = {

@@ -1,4 +1,5 @@
 import { Button, useTheme } from "@mui/material";
+import { useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 interface Props {
@@ -6,22 +7,30 @@ interface Props {
     to: string;
 }
 
+const reloadDocumentRoutes = ["/admin/"];
+
 const NavLink = ({ name, to }: Props) => {
     const location = useLocation();
     const isCurrentRoute = location.pathname === to;
     const theme = useTheme();
+
+    const reloadDocument = useMemo(
+        () => reloadDocumentRoutes.includes(to),
+        [to]
+    );
 
     return (
         <Button
             href={to}
             to={to}
             component={Link}
-            reloadDocument={to === "/admin/"}
+            reloadDocument={reloadDocument}
             sx={{
-                color: "text.primary",
+                color: "text.secondary",
                 display: "block",
                 fontSize: "20px",
-                fontWeight: 500,
+                fontWeight: 600,
+                opacity: isCurrentRoute ? 1 : 0.9,
                 position: "relative",
 
                 "&::after": {
@@ -31,10 +40,11 @@ const NavLink = ({ name, to }: Props) => {
                     minHeight: "5px",
                     borderRadius: "5px",
                     left: 0,
-                    bottom: 1,
+                    bottom: 15,
+                    zIndex: -1,
                     width: isCurrentRoute ? "100%" : 0,
                     background: isCurrentRoute
-                        ? theme.palette.background.default
+                        ? theme.palette.colors.accent
                         : "transparent",
                     transition: "width 0.3s",
                 },

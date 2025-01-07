@@ -54,9 +54,12 @@ export interface MenteeFormValues {
     contacts: string[];
     description: string;
     phone?: string;
+    email: string;
     tos: boolean;
     source: string;
     themes: string[];
+    password: string;
+    confirmPassword: string;
 }
 
 export interface MenteeForm {

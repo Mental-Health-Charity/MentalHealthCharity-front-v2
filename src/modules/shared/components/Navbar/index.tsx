@@ -1,27 +1,32 @@
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
-import Button from "@mui/material/Button";
-import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
+import MenuIcon from "@mui/icons-material/Menu";
+import {
+    Avatar,
+    Box,
+    Button,
+    Container,
+    IconButton,
+    ListItemText,
+    Link as MuiLink,
+    Tooltip,
+} from "@mui/material";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import { useQuery } from "@tanstack/react-query";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
-import useTheme from "../../../../theme";
+import { Link } from "react-router-dom";
 import Logo from "../../../../assets/static/logo_small.webp";
-import useWindowScroll from "../../hooks/useWindowScroll";
-import NavLink from "../NavLink";
+import useTheme from "../../../../theme";
 import { useUser } from "../../../auth/components/AuthProvider";
-import { Avatar, Link, ListItemText, Tooltip } from "@mui/material";
+import { getChatsQueryOptions } from "../../../chat/queries/getChatsQueryOptions";
+import { Roles } from "../../../users/constants";
 import { Permissions } from "../../constants";
 import usePermissions from "../../hooks/usePermissions";
-import { getChatsQueryOptions } from "../../../chat/queries/getChatsQueryOptions";
-import { useQuery } from "@tanstack/react-query";
-import { Roles } from "../../../users/constants";
+import NavLink from "../NavLink";
+import { StyledAppBar } from "./styles";
 
 const Navbar = () => {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -47,8 +52,6 @@ const Navbar = () => {
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
         null
     );
-
-    const { isScrolled } = useWindowScroll();
 
     const { t } = useTranslation();
     const theme = useTheme();
@@ -97,21 +100,12 @@ const Navbar = () => {
     }
 
     return (
-        <AppBar
-            sx={{
-                padding: "10px",
-                backgroundColor: theme.palette.primary.main,
-                boxShadow: isScrolled ? "5px 2px 2px rgba(0,0,0,0.1)" : "none",
-                position: "fixed",
-                top: 0,
-                width: "100%",
-                transition: "all 1s",
-                zIndex: 100,
-            }}
-            position="static"
-        >
-            <Container style={{ maxWidth: "1650px" }}>
-                <Toolbar disableGutters>
+        <StyledAppBar>
+            <Container disableGutters style={{ maxWidth: "1650px" }}>
+                <Toolbar
+                    sx={{ width: "100%", justifyContent: "space-between" }}
+                    disableGutters
+                >
                     <Box
                         sx={{
                             backgroundColor: theme.palette.background.default,
@@ -126,10 +120,10 @@ const Navbar = () => {
                     >
                         <img src={Logo} width={40} />
                         <Typography
-                            fontSize={20}
+                            fontSize={24}
                             textTransform="uppercase"
                             fontWeight={600}
-                            color="secondary.main"
+                            color="text.secondary"
                         >
                             Fundacja Peryskop
                         </Typography>
@@ -139,6 +133,8 @@ const Navbar = () => {
                         sx={{
                             flexGrow: 1,
                             display: { xs: "flex", md: "none" },
+
+                            width: "100%",
                         }}
                     >
                         <IconButton
@@ -196,11 +192,15 @@ const Navbar = () => {
                     />
                     <Box
                         sx={{
+                            position: "absolute",
+                            left: "50%",
+                            transform: "translateX(-50%)",
                             flexGrow: 1,
                             display: { xs: "none", md: "flex" },
                             height: "100%",
                             gap: "20px",
                             alignItems: "center",
+                            justifyContent: "center",
                         }}
                     >
                         {pages
@@ -266,14 +266,14 @@ const Navbar = () => {
                                 >
                                     <MenuItem>
                                         <ListItemText>
-                                            <Link
+                                            <MuiLink
                                                 sx={{ textDecoration: "none" }}
                                                 href={`/profile/${user.id}`}
                                             >
                                                 {t(
                                                     "common.navigation.my_account"
                                                 )}
-                                            </Link>
+                                            </MuiLink>
                                         </ListItemText>
                                     </MenuItem>
                                     <MenuItem onClick={logout}>
@@ -287,12 +287,19 @@ const Navbar = () => {
                             </>
                         )}
                         {!user && (
-                            <NavLink name={t("common.login")} to="/login" />
+                            <Button
+                                sx={{ margin: "0 10px" }}
+                                component={Link}
+                                to="/articles/dashboard"
+                                variant="contained"
+                            >
+                                {t("common.join_us")}
+                            </Button>
                         )}
                     </Box>
                 </Toolbar>
             </Container>
-        </AppBar>
+        </StyledAppBar>
     );
 };
 
