@@ -4,6 +4,7 @@ import AboutUs from "../modules/shared/components/AboutUs";
 import Hero from "../modules/shared/components/Hero";
 
 const HomepageScreen = () => {
+    console.log("elo");
     return (
         <Box
             sx={{
