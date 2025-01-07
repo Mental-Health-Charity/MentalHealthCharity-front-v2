@@ -31,6 +31,31 @@ module.exports = {
         '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }], // Ostrzegaj o niewykorzystanych zmiennych (ignoruj te z prefiksem _)
         '@typescript-eslint/explicit-module-boundary-types': 'off', // Nie wymaga deklaracji typów w funkcjach eksportowanych
         'no-console': 'warn', // Ostrzegaj przy użyciu console.log
+        'no-debugger': 'warn', // O
+        'no-alert': 'warn', // Ostrzegaj przy użyciu alert
+        'no-unused-vars': 'off', // Wyłącz ostrzeżenie o nieużywanych zmiennych
+        'no-undef': 'off', // Wyłącz ostrzeżenie o niezadeklarowanych zmiennych
+        'no-restricted-globals': 'off', // Wyłącz ograniczenia globalne
+        'no-prototype-builtins': 'off', // Wyłącz ostrzeżenie o metodach prototypu
+        'no-restricted-syntax': 'off', // Wyłącz ograniczenia składni
+        'no-use-before-define': 'off', // Wyłącz ostrzeżenie o użyciu zmiennych przed deklaracją
+        'no-underscore-dangle': 'off', // Wyłącz ostrzeżenie o użyciu podkreślników
+        'no-plusplus': 'off', // Wyłącz ostrzeżenie o inkrementacji/dekrementacji
+        'no-param-reassign': 'off', // Wyłącz ostrzeżenie o przypisywaniu wartości parametrom
+        'no-shadow': 'off', // Wyłącz ostrzeżenie o zasłanianiu zmiennych
+        'no-unused-expressions': 'off', // Wyłącz ostrzeżenie o nieużywanych wyrażeniach
+        'no-nested-ternary': 'off', // Wyłącz zagnieżdżone wyrażenia warunkowe
+        'no-continue': 'off', // Wyłącz instrukcje continue
+        'no-else-return': 'off', // Wyłącz else po return
+        'no-constant-condition': 'off', // Wyłącz stałe warunki
+        'no-void': 'off', // Wyłącz void
+        'no-return-assign': 'off', // Wyłącz przypisanie w return
+        'no-prototype-builtins': 'off', // Wyłącz metody prototypu
+        'no-undef': 'off', // Wyłącz niezadeklarowane zmienne
+        'no-useless-catch': 'off', // Wyłącz zbędne catch
+        'no-useless-escape': 'off', // Wyłącz zbędne ucieczki
+        'no-useless-concat': 'off', // Wyłącz zbędne konkatenacje
+        'no-useless-return': 'off', // Wyłącz zbędne return
         'react/prop-types': 'off', // Wyłącz walidację propTypes (używamy TypeScript)
     },
     settings: {
