@@ -15,7 +15,7 @@ export const StyledCard = styled(Box)<{
     position: relative;
 
     &::before {
-        display: ${({ variant }) => (variant === 'secondary' ? 'block' : 'none')};
+        display: ${({ variant }) => (variant === 'default' ? 'block' : 'none')};
         content: '';
         position: absolute;
         right: 20px;
@@ -36,8 +36,8 @@ export const StyledCard = styled(Box)<{
         ${({ variant }) =>
             variant === 'default'
                 ? `
-            left: 20px;
-            bottom: 20px;
+            left: -43px;
+            bottom: -43px;
         `
                 : `
             right: -40px;
