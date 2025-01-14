@@ -102,6 +102,7 @@
         "failed_to_create_report": "Wystąpił problem podczas tworzenia zgłoszenia.",
         "failed_to_save_note": "Wystąpił problem podczas zapisywania notatki. Spróbuj ponownie później",
         "unknown": "Wystąpił nieznany błąd. Spróbuj ponownie później",
+        "incorrect_email_or_password": "Nieprawidłowy email lub hasło",
         "article_category_with_that_name_already_exists": "Kategoria o tej nazwie już istnieje",
         "article_category_in_use": "Błąd, nie można przeprowadzić tej operacji na kategorii, ponieważ wybrana kategoria jest używana przez jakiś artykuł.",
         "failed_to_fetch_chat": "Wystąpił problem podczas wczytywania rozmowy. Spróbuj ponownie później"
@@ -238,6 +239,7 @@
         "title": "Darmowe i anonimowe wsparcie psychologiczne w formie czatu",
         "desc": "Dołacz do grona podopiecznych, lub zostań wolontariuszem",
         "about_us": {
+            "learn_more_button": "Dowiedz się więcej",
             "about_us_card": {
                 "subtitle": "O nas",
                 "title": "Pomysł na powstanie projektu narodził się w wyniku kryzysu osobistego i potrzeby wsparcia w trudnym czasie",

@@ -1,4 +1,4 @@
-import { AppBar, styled } from "@mui/material";
+import { AppBar, styled } from '@mui/material';
 
 export const StyledAppBar = styled(AppBar)`
     padding: 8px 5px;

@@ -1,18 +1,19 @@
 {
-  "common": {
-    "navigation": {
-      "home": "Homepage",
-      "about": "About us",
-      "contact": "Contact",
-      "my_account": "My account",
-      "logout": "Logout",
-      "articles": "Articles"
+    "common": {
+        "navigation": {
+            "home": "Homepage",
+            "about": "About us",
+            "contact": "Contact",
+            "my_account": "My account",
+            "logout": "Logout",
+            "articles": "Articles"
+        }
+    },
+    "homepage": {
+        "choose_mentee_button": "Potrzebuje pomocy",
+        "choose_volunteer_button": "Jestem tu, aby pomagać",
+        "title": "Fundacja Peryskop",
+
+        "desc": "Fundacja Peryskop to organizacja non-profit, która łączy osoby potrzebujące pomocy z wolontariuszami. Zarejestruj się i zacznij pomagać!"
     }
-  },
-  "homepage": {
-    "choose_mentee_button": "Potrzebuje pomocy",
-    "choose_volunteer_button": "Jestem tu, aby pomagać",
-    "title": "Fundacja Peryskop",
-    "desc": "Fundacja Peryskop to organizacja non-profit, która łączy osoby potrzebujące pomocy z wolontariuszami. Zarejestruj się i zacznij pomagać!"
-  }
 }

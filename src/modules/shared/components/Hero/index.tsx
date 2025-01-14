@@ -77,17 +77,20 @@ const Hero = () => {
                             {t('homepage.desc')}
                         </Typography>
                     </Box>
-                    <Box sx={{ marginTop: '25px', display: 'flex', gap: '15px' }}>
-                        <Button component={Link} variant="contained" to="/form/mentee">
+
+                    <Box
+                        sx={{ marginTop: '25px', display: 'flex', gap: '15px', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
+                    >
+                        <Button fullWidth component={Link} variant="contained" to="/form/mentee">
                             {t('homepage.choose_mentee_button')}
                         </Button>
-                        <Button component={Link} variant="outlined" to="/form/volunteer">
+                        <Button fullWidth component={Link} variant="outlined" to="/form/volunteer">
                             {t('homepage.choose_volunteer_button')}
                         </Button>
                     </Box>
                 </Card>
                 <HeroLogoContainer>
-                    <img src={banner} width="100%" height="100%" alt="Fundacja peryskop baner" />
+                    <img loading="lazy" src={banner} width="100%" height="100%" alt="Fundacja peryskop baner" />
                 </HeroLogoContainer>
             </Box>
         </Box>

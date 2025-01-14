@@ -44,5 +44,9 @@ export const StyledCard = styled(Box)<{
             top: 50%;
             transform: translateY(-50%);
         `}
+
+        @media (max-width: 650px) {
+            display: none;
+        }
     }
 `;
