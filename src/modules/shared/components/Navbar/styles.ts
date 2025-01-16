@@ -14,4 +14,9 @@ export const StyledAppBar = styled(AppBar)`
     transition: all 1s;
     z-index: 100;
     color: ${({ theme }) => theme.palette.text.primary};
+
+    @media (max-width: 600px) {
+        top: 0;
+        border-radius: 0;
+    }
 `;

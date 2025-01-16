@@ -1,33 +1,33 @@
 import {
+    Avatar,
+    Box,
     Card,
     CardContent,
     CardMedia,
-    Typography,
-    Box,
-    Avatar,
     Chip,
-    useTheme,
     Divider,
     IconButton,
-} from "@mui/material";
+    Typography,
+    useTheme,
+} from '@mui/material';
 
-import { Link } from "react-router-dom";
-import { Article } from "../../types";
-import EditIcon from "@mui/icons-material/Edit";
-import { baseUrl } from "../../../../api";
-import formatDate from "../../../shared/helpers/formatDate";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import ActionMenu from "../../../shared/components/ActionMenu";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { useUser } from "../../../auth/components/AuthProvider";
-import usePermissions from "../../../shared/hooks/usePermissions";
-import { Permissions } from "../../../shared/constants";
-import { useMutation } from "@tanstack/react-query";
-import updateArticleMutation from "../../queries/updateArticleBannerMutation";
-import { ArticleStatus } from "../../constants";
-import { useCallback } from "react";
-import toast from "react-hot-toast";
-import { useTranslation } from "react-i18next";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { useMutation } from '@tanstack/react-query';
+import { useCallback } from 'react';
+import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { baseUrl } from '../../../../api';
+import { useUser } from '../../../auth/components/AuthProvider';
+import ActionMenu from '../../../shared/components/ActionMenu';
+import { Permissions } from '../../../shared/constants';
+import formatDate from '../../../shared/helpers/formatDate';
+import usePermissions from '../../../shared/hooks/usePermissions';
+import { ArticleStatus } from '../../constants';
+import updateArticleMutation from '../../queries/updateArticleBannerMutation';
+import { Article } from '../../types';
 
 interface Props {
     article: Article;
@@ -38,12 +38,12 @@ const ArticleCard = ({ article, onRefetch }: Props) => {
     const theme = useTheme();
     const { user } = useUser();
     const { t } = useTranslation();
-    const { hasPermissions } = usePermissions(user);
+    const { hasPermissions } = usePermissions();
     const { mutate } = useMutation({
         mutationFn: updateArticleMutation,
         onSuccess: () => {
             onRefetch && onRefetch();
-            toast.success(t("articles.article_deleted_success"));
+            toast.success(t('articles.article_deleted_success'));
         },
     });
 
@@ -59,49 +59,46 @@ const ArticleCard = ({ article, onRefetch }: Props) => {
         });
     }, [mutate, article]);
 
-    const canManageArticle =
-        hasPermissions(Permissions.MANAGE_ARTICLES) ||
-        user?.id === article.created_by.id;
+    const canManageArticle = hasPermissions(Permissions.MANAGE_ARTICLES) || user?.id === article.created_by.id;
 
     return (
         <Link
             to={`/article/${article.id}`}
             style={{
-                textDecoration: "none",
-                width: "100%",
+                textDecoration: 'none',
+                width: '100%',
             }}
         >
             <Card
                 sx={{
-                    width: "100%",
+                    width: '100%',
                     borderRadius: 2,
-                    padding: "0",
+                    padding: '0',
                 }}
                 component="article"
             >
-                <Box sx={{ position: "relative" }}>
+                <Box sx={{ position: 'relative' }}>
                     <CardMedia
                         component="img"
                         height="350"
                         image={baseUrl + article.banner_url}
                         alt={article.title}
-                        sx={{ borderRadius: "10px" }}
+                        sx={{ borderRadius: '10px' }}
                         onError={(e) => {
-                            e.currentTarget.src =
-                                "https://placehold.co/600x400";
+                            e.currentTarget.src = 'https://placehold.co/600x400';
                         }}
                     />
                     <Chip
                         label={article.article_category.name}
                         size="small"
                         sx={{
-                            fontWeight: "bold",
+                            fontWeight: 'bold',
                             backgroundColor: theme.palette.primary.main,
                             color: theme.palette.text.primary,
                             fontSize: 16,
-                            padding: "16px 8px",
-                            textTransform: "uppercase",
-                            position: "absolute",
+                            padding: '16px 8px',
+                            textTransform: 'uppercase',
+                            position: 'absolute',
                             bottom: 10,
                             left: 10,
                             borderRadius: 10,
@@ -112,8 +109,8 @@ const ArticleCard = ({ article, onRefetch }: Props) => {
                 </Box>
                 <CardContent
                     sx={{
-                        paddingBottom: "0px !important",
-                        padding: "20px 20px",
+                        paddingBottom: '0px !important',
+                        padding: '20px 20px',
                     }}
                 >
                     <Typography
@@ -127,32 +124,20 @@ const ArticleCard = ({ article, onRefetch }: Props) => {
                         {article.title}
                     </Typography>
 
-                    <Typography
-                        variant="body1"
-                        color="text.secondary"
-                        fontSize={20}
-                        sx={{ minHeight: "60px" }}
-                    >
-                        {article.content.length > 100
-                            ? `${article.content.substring(0, 100)}...`
-                            : article.content}
+                    <Typography variant="body1" color="text.secondary" fontSize={20} sx={{ minHeight: '60px' }}>
+                        {article.content.length > 100 ? `${article.content.substring(0, 100)}...` : article.content}
                     </Typography>
                     <Divider
                         sx={{
-                            margin: "10px 0",
+                            margin: '10px 0',
                         }}
                     />
                     <Box
                         sx={{
-                            padding: "5px 0 15px 0",
+                            padding: '5px 0 15px 0',
                         }}
                     >
-                        <Box
-                            flexWrap="nowrap"
-                            display="flex"
-                            justifyContent="space-between"
-                            alignItems="center"
-                        >
+                        <Box flexWrap="nowrap" display="flex" justifyContent="space-between" alignItems="center">
                             <Box display="flex" alignItems="center">
                                 <Avatar
                                     variant="rounded"
@@ -161,19 +146,10 @@ const ArticleCard = ({ article, onRefetch }: Props) => {
                                     sx={{ width: 50, height: 50, mr: 1 }}
                                 />
                                 <Box>
-                                    <Typography
-                                        fontWeight={550}
-                                        fontSize={20}
-                                        variant="body1"
-                                        color="text.secondary"
-                                    >
+                                    <Typography fontWeight={550} fontSize={20} variant="body1" color="text.secondary">
                                         {article.created_by.full_name}
                                     </Typography>
-                                    <Typography
-                                        fontSize={20}
-                                        variant="body1"
-                                        color="text.secondary"
-                                    >
+                                    <Typography fontSize={20} variant="body1" color="text.secondary">
                                         {formatDate(article.creation_date)}
                                     </Typography>
                                 </Box>
@@ -183,15 +159,15 @@ const ArticleCard = ({ article, onRefetch }: Props) => {
                                     <ActionMenu
                                         actions={[
                                             {
-                                                id: "edit",
-                                                label: "Edytuj",
+                                                id: 'edit',
+                                                label: 'Edytuj',
                                                 icon: <EditIcon />,
                                                 href: `/articles/edit/${article.id}/`,
                                             },
                                             {
-                                                id: "delete",
-                                                variant: "divider",
-                                                label: "Usuń",
+                                                id: 'delete',
+                                                variant: 'divider',
+                                                label: 'Usuń',
                                                 icon: <DeleteIcon />,
                                                 onClick: handleDeleteArticle,
                                             },

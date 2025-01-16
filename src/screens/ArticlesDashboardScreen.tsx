@@ -1,15 +1,15 @@
-import { Box, Button, Typography } from "@mui/material";
-import Container from "../modules/shared/components/Container";
-import SimpleCard from "../modules/shared/components/SimpleCard";
-import { useTranslation } from "react-i18next";
-import { useQuery } from "@tanstack/react-query";
-import { articlesByUserQueryOptions } from "../modules/articles/queries/articlesByUserQueryOptions";
-import { ArticleStatus } from "../modules/articles/constants";
-import { useUser } from "../modules/auth/components/AuthProvider";
-import Loader from "../modules/shared/components/Loader";
-import ArticleCard from "../modules/articles/components/ArticleCard";
-import AddIcon from "@mui/icons-material/Add";
-import { Link } from "react-router-dom";
+import AddIcon from '@mui/icons-material/Add';
+import { Box, Button, Typography } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import ArticleCard from '../modules/articles/components/ArticleCard';
+import { ArticleStatus } from '../modules/articles/constants';
+import { articlesByUserQueryOptions } from '../modules/articles/queries/articlesByUserQueryOptions';
+import { useUser } from '../modules/auth/components/AuthProvider';
+import Container from '../modules/shared/components/Container';
+import Loader from '../modules/shared/components/Loader';
+import SimpleCard from '../modules/shared/components/SimpleCard';
 
 const ArticleDashboardScreen = () => {
     const { t } = useTranslation();
@@ -18,23 +18,23 @@ const ArticleDashboardScreen = () => {
     const statuses = [
         {
             key: ArticleStatus.DRAFT,
-            title: t("articles.dashboard.draft", { user: user?.full_name }),
-            subtitle: t("articles.dashboard.draft_subtitle"),
+            title: t('articles.dashboard.draft', { user: user?.full_name }),
+            subtitle: t('articles.dashboard.draft_subtitle'),
         },
         {
             key: ArticleStatus.REJECTED,
-            title: t("articles.dashboard.rejected"),
+            title: t('articles.dashboard.rejected'),
         },
         {
             key: ArticleStatus.CORRECTED,
-            title: t("articles.dashboard.corrected"),
+            title: t('articles.dashboard.corrected'),
         },
-        { key: ArticleStatus.SENT, title: t("articles.dashboard.sent") },
+        { key: ArticleStatus.SENT, title: t('articles.dashboard.sent') },
         {
             key: ArticleStatus.PUBLISHED,
-            title: t("articles.dashboard.published"),
+            title: t('articles.dashboard.published'),
         },
-        { key: ArticleStatus.DELETED, title: t("articles.dashboard.deleted") },
+        { key: ArticleStatus.DELETED, title: t('articles.dashboard.deleted') },
     ];
 
     const getArticles = (status: ArticleStatus) =>
@@ -49,7 +49,7 @@ const ArticleDashboardScreen = () => {
                 retry: 1,
                 refetchOnWindowFocus: false,
                 enabled: !!user,
-                queryKey: ["articles", status],
+                queryKey: ['articles', status],
             }
         );
 
@@ -57,22 +57,19 @@ const ArticleDashboardScreen = () => {
         <Container>
             <Box
                 sx={{
-                    display: "flex",
-                    flexDirection: "column",
+                    display: 'flex',
+                    flexDirection: 'column',
                     gap: 2,
                 }}
             >
-                <SimpleCard
-                    title={t("articles.dashboard.title")}
-                    subtitle={t("articles.dashboard.subtitle")}
-                >
+                <SimpleCard title={t('articles.dashboard.title')} subtitle={t('articles.dashboard.subtitle')}>
                     <Button
                         component={Link}
                         to="/articles/create"
                         variant="contained"
-                        sx={{ marginTop: "20px", gap: "10px" }}
+                        sx={{ marginTop: '20px', gap: '10px' }}
                     >
-                        <AddIcon fontSize="large" /> {t("articles.add_article")}
+                        <AddIcon fontSize="large" /> {t('articles.add_article')}
                     </Button>
                 </SimpleCard>
 
@@ -86,35 +83,25 @@ const ArticleDashboardScreen = () => {
                                 <Box
                                     gap={2}
                                     sx={{
-                                        display: "grid",
-                                        gridTemplateColumns:
-                                            "repeat(auto-fit, minmax(530px, 1fr))",
+                                        display: 'grid',
+                                        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
                                         gap: 2,
-                                        marginTop: "20px",
+                                        marginTop: '20px',
                                     }}
                                 >
                                     {data.items.map((article) => (
                                         <Box
                                             sx={{
-                                                width: "100%",
+                                                width: '100%',
                                             }}
                                         >
-                                            <ArticleCard
-                                                article={article}
-                                                key={article.id}
-                                            />
-                                            {article.reject_message !== "" && (
-                                                <Box>
-                                                    {article.reject_message}
-                                                </Box>
-                                            )}
+                                            <ArticleCard article={article} key={article.id} />
+                                            {article.reject_message !== '' && <Box>{article.reject_message}</Box>}
                                         </Box>
                                     ))}
                                 </Box>
                             ) : (
-                                <Typography sx={{ marginTop: "10px" }}>
-                                    {t("articles.dashboard.not_found")}
-                                </Typography>
+                                <Typography sx={{ marginTop: '10px' }}>{t('articles.dashboard.not_found')}</Typography>
                             )}
                         </SimpleCard>
                     );

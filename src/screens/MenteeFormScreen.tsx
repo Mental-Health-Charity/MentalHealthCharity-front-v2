@@ -21,17 +21,18 @@ const MenteeFormScreen = () => {
     });
 
     const handleSubmit = (values: MenteeFormValues) => {
+        const { password, confirmPassword, ...rest } = values;
         const fields: MenteeFormType = {
-            ...values,
-            contacts: values.contacts.map((contact) => ({
+            ...rest,
+            contacts: rest.contacts.map((contact) => ({
                 name: contact,
                 value: contact,
             })),
-            themes: values.themes.map((theme) => ({
+            themes: rest.themes.map((theme) => ({
                 name: theme,
                 value: theme,
             })),
-            phone: values.phone !== '' ? values.phone : '0',
+            phone: rest.phone !== '' ? rest.phone : '0',
         };
 
         mutate({

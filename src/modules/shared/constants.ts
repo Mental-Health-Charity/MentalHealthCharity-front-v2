@@ -34,6 +34,7 @@ export enum Permissions {
     SEARCH_USERS = 'SEARCH_USERS',
     MANAGE_USERS = 'MANAGE_USERS',
     MANAGE_ARTICLES = 'MANAGE_ARTICLES',
+    EDIT_CHAT_NOTE = 'EDIT_CHAT_NOTE',
     MANAGE_REPORTS = 'MANAGE_REPORTS',
     MANAGE_CHATS = 'MANAGE_CHATS',
     READ_OWN_CHATS = 'READ_OWN_CHATS',
@@ -57,12 +58,14 @@ export const groupedPermissions = {
         Permissions.ADMIN_DASHBOARD,
         Permissions.SEARCH_USERS,
         Permissions.READ_OWN_CHATS,
+        Permissions.EDIT_CHAT_NOTE,
     ],
     [Roles.VOLUNTEER]: [
         Permissions.CREATE_ARTICLE,
         Permissions.EDIT_ARTICLE,
         Permissions.DELETE_ARTICLE,
         Permissions.READ_OWN_CHATS,
+        Permissions.EDIT_CHAT_NOTE,
     ],
     [Roles.REDACTOR]: [
         Permissions.CREATE_ARTICLE,
@@ -71,6 +74,7 @@ export const groupedPermissions = {
         Permissions.READ_OWN_CHATS,
         Permissions.MANAGE_ARTICLES,
         Permissions.ADMIN_DASHBOARD,
+        Permissions.EDIT_CHAT_NOTE,
     ],
     [Roles.USER]: [Permissions.READ_OWN_CHATS],
 };

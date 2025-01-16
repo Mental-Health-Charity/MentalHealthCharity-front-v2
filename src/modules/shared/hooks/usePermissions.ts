@@ -1,20 +1,19 @@
-import { User } from "../../auth/types";
-import { groupedPermissions, Permissions } from "../constants";
-import { useCallback } from "react";
+import { useCallback } from 'react';
+import { useUser } from '../../auth/components/AuthProvider';
+import { groupedPermissions, Permissions } from '../constants';
 
-const usePermissions = (user?: User) => {
-    const userRole = user?.user_role;
+const usePermissions = () => {
+    const { user } = useUser();
 
     const hasPermissions = useCallback(
         (permission: Permissions) => {
-            if (!userRole) return false;
+            if (!user) return false;
 
-            if (groupedPermissions[userRole].includes(Permissions.AlL))
-                return true;
+            if (groupedPermissions[user.user_role].includes(Permissions.AlL)) return true;
 
-            return groupedPermissions[userRole].includes(permission);
+            return groupedPermissions[user.user_role].includes(permission);
         },
-        [userRole]
+        [user]
     );
 
     return { hasPermissions };

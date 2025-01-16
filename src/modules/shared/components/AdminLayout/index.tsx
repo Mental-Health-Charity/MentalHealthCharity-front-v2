@@ -1,8 +1,8 @@
-import { Box } from "@mui/material";
-import { AdminSidebar } from "../AdminSidebar";
-import { useState } from "react";
-import useTheme from "../../../../theme";
-import BgImage from "../../../,./../../assets/static/admin_panel_bg.svg";
+import { Box } from '@mui/material';
+import { useState } from 'react';
+import BgImage from '../../../,./../../assets/static/admin_panel_bg.svg';
+import useTheme from '../../../../theme';
+import { AdminSidebar } from '../AdminSidebar';
 
 interface Props {
     children: React.ReactNode;
@@ -14,29 +14,26 @@ const AdminLayout = ({ children }: Props) => {
     return (
         <Box
             sx={{
-                width: "100%",
+                width: '100%',
                 backgroundImage: `url(${BgImage})`,
-                // opacity of bg
-                minHeight: "100vh",
+                minHeight: '100%',
                 backgroundColor: theme.palette.background.default,
-                display: "flex",
-                alignItems: "start",
-                justifyContent: "center",
+                display: 'flex',
+                padding: '40px 10px',
+                alignItems: 'start',
+                justifyContent: 'center',
             }}
         >
-            <AdminSidebar
-                open={isSidebarOpen}
-                handleToggle={() => setSidebarOpen(!isSidebarOpen)}
-            />
+            <AdminSidebar open={isSidebarOpen} handleToggle={() => setSidebarOpen(!isSidebarOpen)} />
             <Box
                 sx={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                    marginTop: "20px",
-                    maxWidth: "1400px",
-                    gap: "20px",
-                    flexDirection: "column",
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginTop: '20px',
+                    maxWidth: '1400px',
+                    gap: '20px',
+                    flexDirection: 'column',
                 }}
             >
                 {children}

@@ -17,4 +17,11 @@ export const HeroLogoContainer = styled('div')(() => ({
         height: '100%',
         objectFit: 'cover',
     },
+
+    '@media (max-width: 600px)': {
+        position: 'relative',
+        width: '100%',
+        height: '200px',
+        borderRadius: '0',
+    },
 }));

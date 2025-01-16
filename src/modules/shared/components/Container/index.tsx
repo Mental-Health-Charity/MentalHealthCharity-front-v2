@@ -1,5 +1,5 @@
-import { Box, BoxProps, useTheme } from "@mui/material";
-import wave_icon from "../../../../assets/static/wave.svg";
+import { Box, BoxProps, useTheme } from '@mui/material';
+import wave_icon from '../../../../assets/static/wave.svg';
 
 interface Props extends BoxProps {
     waves?: boolean;
@@ -13,44 +13,42 @@ const Container = ({ waves, parentProps, ...props }: Props) => {
         <Box
             {...parentProps}
             sx={{
-                width: "100%",
-                display: "flex",
+                width: '100%',
+                display: 'flex',
 
-                justifyContent: "center",
-                minHeight: "100vh",
-                position: "relative",
-                background: waves
-                    ? `${theme.palette.primary.main}1A`
-                    : "inherit",
+                justifyContent: 'center',
+                minHeight: '100vh',
+                position: 'relative',
+                background: waves ? `${theme.palette.primary.main}1A` : 'inherit',
 
-                "&:before": {
-                    display: waves ? "block" : "none",
+                '&:before': {
+                    display: waves ? 'block' : 'none',
                     content: '""',
-                    position: "absolute",
+                    position: 'absolute',
                     top: 0,
                     left: 0,
                     zIndex: 0,
-                    width: "100%",
-                    height: "500px",
+                    width: '100%',
+                    height: '500px',
                     backgroundImage: `url(${wave_icon})`,
-                    rotate: "180deg",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
+                    rotate: '180deg',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
                 },
-                "&:after": {
-                    display: waves ? "block" : "none",
+                '&:after': {
+                    display: waves ? 'block' : 'none',
                     content: '""',
-                    position: "absolute",
+                    position: 'absolute',
                     top: 200,
                     left: 0,
                     zIndex: 0,
-                    width: "100%",
-                    height: "500px",
+                    width: '100%',
+                    height: '500px',
                     opacity: 0.5,
                     backgroundImage: `url(${wave_icon})`,
-                    rotate: "180deg",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
+                    rotate: '180deg',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
                 },
                 ...(parentProps?.sx || {}),
             }}
@@ -58,12 +56,12 @@ const Container = ({ waves, parentProps, ...props }: Props) => {
             <Box
                 {...props}
                 sx={{
-                    display: "flex",
-                    marginTop: "100px",
-                    width: "100%",
-                    maxWidth: "1650px",
+                    display: 'flex',
+                    marginTop: '100px',
+                    width: '100%',
+                    maxWidth: '1600px',
                     zIndex: 10,
-                    flexDirection: "column",
+                    flexDirection: 'column',
                     ...props.sx,
                 }}
             >

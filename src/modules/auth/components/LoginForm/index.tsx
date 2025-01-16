@@ -26,7 +26,7 @@ const LoginForm = ({ onSubmit, initial, disabled }: Props) => {
 
     return (
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-            {({ isSubmitting, errors, touched }) => (
+            {({ errors, touched }) => (
                 <Form>
                     <Box mb={2}>
                         <Field

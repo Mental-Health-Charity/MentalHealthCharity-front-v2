@@ -14,6 +14,10 @@ export const StyledCard = styled(Box)<{
     width: fit-content;
     position: relative;
 
+    @media (max-width: 650px) {
+        padding: 30px;
+    }
+
     &::before {
         display: ${({ variant }) => (variant === 'default' ? 'block' : 'none')};
         content: '';

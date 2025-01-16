@@ -30,7 +30,8 @@ const LoginScreen = () => {
             <Box
                 sx={{
                     overflow: 'hidden',
-                    maxWidth: '50vw',
+                    maxWidth: '50%',
+                    display: { xs: 'none', md: 'block' },
                     boxShadow: `3px 4px 4px ${theme.palette.shadows.box}`,
                 }}
             >
@@ -41,6 +42,7 @@ const LoginScreen = () => {
                 sx={{
                     minHeight: '100vh',
                     backgroundColor: theme.palette.background.default,
+                    padding: '90px 20px',
                 }}
                 width="100%"
                 display="flex"

@@ -1,55 +1,49 @@
-import {
-    Box,
-    IconButton,
-    List,
-    TextField,
-    Tooltip,
-    useTheme,
-} from "@mui/material";
-import Logo from "../../../../assets/static/logo_small.webp";
-import ChatItem from "../ChatItem";
-import Chat from "../Chat";
-import { useNavigate, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getChatsQueryOptions } from "../../queries/getChatsQueryOptions";
-import ReportIcon from "@mui/icons-material/Report";
-import EventNoteIcon from "@mui/icons-material/EventNote";
-import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
-import { useTranslation } from "react-i18next";
-import useChat from "../../hooks/useChat";
-import { useEffect, useState } from "react";
-import ChatDetails from "../ChatDetails";
-import Note from "../Note";
-import ReportModal from "../../../report/components/ReportModal";
-import toast from "react-hot-toast";
+import EventNoteIcon from '@mui/icons-material/EventNote';
+import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
+import MenuIcon from '@mui/icons-material/Menu';
+import ReportIcon from '@mui/icons-material/Report';
+import { Box, IconButton, Tooltip, useTheme } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
+import { useCallback, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
+import { useNavigate, useParams } from 'react-router-dom';
+import Logo from '../../../../assets/static/logo_small.webp';
+import ReportModal from '../../../report/components/ReportModal';
+import { Permissions } from '../../../shared/constants';
+import usePermissions from '../../../shared/hooks/usePermissions';
+import useChat from '../../hooks/useChat';
+import { getChatsQueryOptions } from '../../queries/getChatsQueryOptions';
+import Chat from '../Chat';
+import ChatDetails from '../ChatDetails';
+import ChatSidebar from '../ChatSidebar';
+import Note from '../Note';
 
 const ChatWindow = () => {
     const theme = useTheme();
     const { id } = useParams<{ id: string }>();
-    const { data, isLoading } = useQuery(
-        getChatsQueryOptions({ size: 50, page: 1 })
-    );
+    const { data, isLoading } = useQuery(getChatsQueryOptions({ size: 50, page: 1 }));
     const [showDetails, setShowDetails] = useState(false);
     const [showNote, setShowNote] = useState(false);
     const [showReportModal, setShowReportModal] = useState(false);
     const { t } = useTranslation();
-    const [chatId, setChatId] = useState(
-        id || (data && data.items[0].id) || ""
-    );
+    const [chatId, setChatId] = useState(id || (data && data.items[0].id) || '');
     const navigate = useNavigate();
+    const [showSidebar, setShowSidebar] = useState(false);
+    const { hasPermissions } = usePermissions();
+    const { messages, connectionStatus, send, selectedChat } = useChat(Number(chatId));
 
-    const { messages, connectionStatus, send, selectedChat } = useChat(
-        Number(chatId)
+    const handleChangeChat = useCallback(
+        (id: string) => {
+            setShowNote(false);
+            setChatId(id);
+        },
+        [setChatId, setShowNote]
     );
-
-    const handleChangeChat = (id: string) => {
-        setShowNote(false);
-        setChatId(id);
-    };
 
     if (!isLoading && (!data || data.total === 0)) {
-        toast(t("chat.no_available_chats_found"));
-        navigate("/");
+        toast(t('chat.no_available_chats_found'));
+        navigate('/');
     }
 
     useEffect(() => {
@@ -60,58 +54,69 @@ const ChatWindow = () => {
 
     return (
         <>
-            {" "}
+            {' '}
             {showNote && selectedChat && (
-                <Note
-                    key={selectedChat.id}
-                    onClose={() => setShowNote(false)}
-                    chat={selectedChat}
-                />
+                <Note key={selectedChat.id} onClose={() => setShowNote(false)} chat={selectedChat} />
             )}
             <Box
                 sx={{
                     backgroundColor: theme.palette.colors.dark,
-                    display: "flex",
-                    gap: "15px",
-                    padding: "15px",
-                    borderRadius: "10px",
+                    display: 'flex',
+                    gap: { xs: '4px', md: '15px' },
+                    padding: { xs: '4px', md: '15px' },
+                    borderRadius: '10px',
+                    flexDirection: { xs: 'column', md: 'row' },
                 }}
             >
                 {/* sidebar dark */}
                 <Box
                     sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "15px",
+                        display: 'flex',
+                        flexDirection: { xs: 'row', md: 'column' },
+                        gap: '15px',
                     }}
                 >
                     <Box
                         sx={{
                             backgroundColor: theme.palette.background.default,
-                            borderRadius: "8px",
+                            borderRadius: '8px',
                             boxShadow: `0 0 10px 5px ${theme.palette.shadows.box}`,
-                            width: "55px",
-                            height: "55px",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
+                            width: '55px',
+                            height: '55px',
+                            display: { xs: 'none', md: 'flex' },
+                            justifyContent: 'center',
+                            alignItems: 'center',
                         }}
                     >
                         <img src={Logo} alt="logo" width={45} height={41} />
                     </Box>
 
-                    <Tooltip title={t("chat.notes")}>
+                    <Tooltip title={t('chat.show_more_chats')}>
                         <IconButton
-                            onClick={() => setShowNote(!showNote)}
+                            onClick={() => setShowSidebar((prev) => !prev)}
                             sx={{
+                                display: { xs: 'flex', md: 'none' },
                                 color: theme.palette.text.primary,
                             }}
                         >
-                            <EventNoteIcon fontSize="large" />
+                            <MenuIcon fontSize="large" />
                         </IconButton>
                     </Tooltip>
 
-                    <Tooltip title={t("chat.report")}>
+                    {hasPermissions(Permissions.EDIT_CHAT_NOTE) && (
+                        <Tooltip title={t('chat.notes')}>
+                            <IconButton
+                                onClick={() => setShowNote(!showNote)}
+                                sx={{
+                                    color: theme.palette.text.primary,
+                                }}
+                            >
+                                <EventNoteIcon fontSize="large" />
+                            </IconButton>
+                        </Tooltip>
+                    )}
+
+                    <Tooltip title={t('chat.report')}>
                         <IconButton
                             sx={{
                                 color: theme.palette.text.primary,
@@ -121,7 +126,7 @@ const ChatWindow = () => {
                             <ReportIcon fontSize="large" />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title={t("chat.contract")}>
+                    <Tooltip title={t('chat.contract')}>
                         <IconButton
                             disabled
                             sx={{
@@ -132,58 +137,16 @@ const ChatWindow = () => {
                         </IconButton>
                     </Tooltip>
                 </Box>
+                <ChatSidebar
+                    handleDrawerToggle={() => setShowSidebar((prev) => !prev)}
+                    showSidebar={showSidebar}
+                    data={data}
+                    onChangeChat={handleChangeChat}
+                    currentChatId={Number(chatId)}
+                />
                 <Box
                     sx={{
-                        backgroundColor: theme.palette.background.default,
-                        borderRadius: "8px",
-                    }}
-                >
-                    {/* sidebar light */}
-                    <Box
-                        sx={{
-                            width: "350px",
-                            padding: "10px",
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                paddingBottom: "15px",
-                            }}
-                        >
-                            <TextField
-                                fullWidth
-                                label={t("common.search")}
-                                variant="filled"
-                                sx={{
-                                    color: theme.palette.text.primary,
-                                }}
-                            />
-                        </Box>
-                        <List
-                            style={{
-                                maxHeight: "75vh",
-                                minHeight: "500px",
-                                overflow: "auto",
-                            }}
-                        >
-                            {data &&
-                                data.items.map((chat) => (
-                                    <ChatItem
-                                        onChange={(id) => handleChangeChat(id)}
-                                        selected={
-                                            !!selectedChat &&
-                                            chat.id === selectedChat.id
-                                        }
-                                        chat={chat}
-                                        key={chat.id}
-                                    />
-                                ))}
-                        </List>
-                    </Box>
-                </Box>
-                <Box
-                    sx={{
-                        width: "100%",
+                        width: '100%',
                     }}
                 >
                     <Chat
@@ -195,17 +158,9 @@ const ChatWindow = () => {
                     />
                 </Box>
                 {showDetails && selectedChat && (
-                    <ChatDetails
-                        onClose={() => setShowDetails(false)}
-                        chat={selectedChat}
-                    />
+                    <ChatDetails onClose={() => setShowDetails(false)} chat={selectedChat} />
                 )}
-                {showReportModal && (
-                    <ReportModal
-                        open={showReportModal}
-                        onClose={() => setShowReportModal(false)}
-                    />
-                )}
+                {showReportModal && <ReportModal open={showReportModal} onClose={() => setShowReportModal(false)} />}
             </Box>
         </>
     );
