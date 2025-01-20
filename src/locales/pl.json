@@ -53,6 +53,9 @@
         "is_assigned_to_chat": "Przypisany do czatu",
         "yes": "Tak",
         "next": "Dalej",
+        "cookies_policy": "Polityka cookies",
+        "cookies_message": "Ta strona korzysta z plików cookie, aby zapewnić najlepszą jakość korzystania z naszej witryny. Korzystając dalej z witryny wyrażasz zgodę na ich użycie. Dowiedz się więcej",
+        "accept_cookies": "Akceptuję",
         "no": "Nie",
         "compare_changes": {
             "title": "Porównaj zmiany",
@@ -146,6 +149,14 @@
         "note_title": "Notatki",
         "no_available_chats_found": "Nie znaleziono dostępnych czatów. Skontakuj się z administratorem"
     },
+    "tos": {
+        "title": "Regulamin",
+        "subtitle": "Zapoznaj się z regulaminem serwisu klikając w poniższe linki.",
+        "clause": "Klauzula informacyjna",
+        "privacy_policy": "Polityka prywatności",
+        "data_processing": "Zasady przetwarzania danych osobowych",
+        "terms": "Regulamin serwisu"
+    },
     "profile": {
         "settings_subtitle": "Informacje o Twoim koncie",
         "settings_acc_name": "Nazwa konta: {{name}}",
@@ -235,6 +246,14 @@
         "email": "Email",
         "empty_full_name_warning": "Pozostawienia pustego pola Imię jest niepoprawne i powinno być używane tylko w uzasadnionych przypadkach. "
     },
+    "footer": {
+        "social": "Znajdź nas na",
+        "about_us": "O nas",
+        "privacy_policy": "Polityka prywatności",
+        "terms_of_service": "Regulamin",
+        "contact": "Kontakt",
+        "rights_reserved": "Fundacja Peryskop - wszelkie prawa zastrzeżone"
+    },
     "homepage": {
         "choose_mentee_button": "Dołącz teraz",
         "choose_volunteer_button": "Zostań wolontariuszem",
@@ -242,11 +261,32 @@
         "desc": "Dołacz do grona podopiecznych, lub zostań wolontariuszem",
         "about_us": {
             "learn_more_button": "Dowiedz się więcej",
-            "about_us_card": {
-                "subtitle": "O nas",
-                "title": "Pomysł na powstanie projektu narodził się w wyniku kryzysu osobistego i potrzeby wsparcia w trudnym czasie",
-                "text": "Z doświadczenia wiemy, jak ogromną rolę odgrywają w takiej sytuacji towarzyszące nam osoby. Jesteśmy także świadomi potencjału kryjącego się w trudnych momentach życia, który, choć na początku niedostrzegalny, może stanowić przełom ku zmianie na lepsze. Fundację Peryskop współtworzymy z myślą o wszystkich, którzy pomimo dynamicznego rozwoju mediów społecznościowych i rosnącego zainteresowania psychologią w przestrzeni publicznej, w kryzysie psychicznym wciąż czują się pozostawieni sami sobie. Chcemy przestrzeni bez tabu, w której spotykamy się na najgłębszym poziomie. Wiemy, że posiadamy idealne warunki, by zadbać o dobrostan psychiczny osób takich jak my, bo tak naprawdę wszystkich nas łączą podobne troski i wyzwania, świadczące o naszym człowieczeństwie. Z psychologią jesteśmy za pan brat. Dołącz do nas, jeśli potrzebujesz pomocy lub chcesz pomagać. Rola, w którą się u nas wcielisz, nie musi pozostać na zawsze taka sama. Każdy z nas, bez wyjątku, podlega procesowi ciągłych zmian, a kryzys często okazuje się stanem przejściowym. Możemy tworzyć wspólnie unikalne miejsce, w którym osoby doświadczające trudnych emocji będą zaopiekowane przez naszych wolontariuszy, pozostających pod stałą opieką superwizyjną. Razem widzimy więcej, możemy więcej i jesteśmy lepiej przygotowani do stawiania czoła nieustannej podróży, jaką jest życie."
-            }
+            "small_cards": [
+                {
+                    "title": "Wolontariusze",
+                    "desc": "Szkolimy wolontariuszy, oraz pomagamy im rozwijać się w obszarze niesienia pomocy psychologicznej"
+                },
+                {
+                    "title": "Osoby w kryzysie",
+                    "desc": "Oferujemy osobom w kryzysie darmowe wsparcie pełne uwagi i empatii, bez oceny"
+                },
+                {
+                    "title": "Baza wiedzy",
+                    "desc": "Tworzymy bazę wiedzy przy współpracy ze specjalistami dla tych, którzy lubią wiedzieć więcej"
+                }
+            ],
+            "cards": [
+                {
+                    "title": "Czym jest Fundacja Peryskop?",
+                    "subtitle": "O nas",
+                    "desc": "Pomysł na powstanie projektu narodził się w wyniku kryzysu osobistego i potrzeby wsparcia w trudnym czasie. Z doświadczenia wiemy, jak ogromną rolę odgrywają w takiej sytuacji towarzyszące nam osoby. Jesteśmy także świadomi potencjału kryjącego się w trudnych momentach życia, który, choć na początku niedostrzegalny, może stanowić przełom ku zmianie na lepsze. Fundację Peryskop współtworzymy z myślą o wszystkich, którzy pomimo dynamicznego rozwoju mediów społecznościowych i rosnącego zainteresowania psychologią w przestrzeni publicznej, w kryzysie psychicznym wciąż czują się pozostawieni sami sobie. Chcemy przestrzeni bez tabu, w której spotykamy się na najgłębszym poziomie. Wiemy, że posiadamy idealne warunki, by zadbać o dobrostan psychiczny osób takich jak my, bo tak naprawdę wszystkich nas łączą podobne troski i wyzwania, świadczące o naszym człowieczeństwie. Z psychologią jesteśmy za pan brat. Dołącz do nas, jeśli potrzebujesz pomocy lub chcesz pomagać. Rola, w którą się u nas wcielisz, nie musi pozostać na zawsze taka sama. Każdy z nas, bez wyjątku, podlega procesowi ciągłych zmian, a kryzys często okazuje się stanem przejściowym. Możemy tworzyć wspólnie unikalne miejsce, w którym osoby doświadczające trudnych emocji będą zaopiekowane przez naszych wolontariuszy, pozostających pod stałą opieką superwizyjną. Razem widzimy więcej, możemy więcej i jesteśmy lepiej przygotowani do stawiania czoła nieustannej podróży, jaką jest życie."
+                },
+                {
+                    "title": "Jak działamy",
+                    "subtitle": "Nasze cele",
+                    "desc": "Zalążek naszego projektu powstał przez Internet i także tu, w sieci, chcemy tworzyć naszą społeczność. Choć mieszkamy w różnych rejonach Polski, pracujemy razem nad wspólnym celem i wiemy, że skutecznie pomagać można także online. Dla niektórych właśnie taka forma może okazać się jedyną dostępną. Stworzyliśmy bezpieczną platformę w formie czatu przeznaczoną do kontaktu pomiędzy osobami będącymi w kryzysie a wolontariuszami niosącymi wsparcie. Istota takiej pomocy sprowadza się do rozmów jeden na jeden w regularnych odstępach czasu. Jeśli, podobnie jak my, uważasz, że nowe technologie mogą mieć także dobroczynny wpływ na zdrowie psychiczne, to witaj na pokładzie!"
+                }
+            ]
         }
     },
     "admin": {

@@ -8,6 +8,7 @@ import ManageVolunteerFormsScreen from '../../screens/ManageVolunteerFormsScreen
 import MenteeFormScreen from '../../screens/MenteeFormScreen';
 import NotFoundScreen from '../../screens/NotFoundScreen';
 import RegisterScreen from '../../screens/RegisterScreen';
+import TosScreen from '../../screens/TosScreen';
 import VolunteerFormScreen from '../../screens/VolunteerFormScreen';
 import { Permissions } from './constants';
 import { RouteType } from './types';
@@ -47,6 +48,11 @@ const routes: RouteType[] = [
     {
         url: '/auth/register',
         onRender: <RegisterScreen />,
+        requiresAuth: false,
+    },
+    {
+        url: '/tos',
+        onRender: <TosScreen />,
         requiresAuth: false,
     },
     {
