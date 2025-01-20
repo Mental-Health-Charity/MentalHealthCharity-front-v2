@@ -1,6 +1,6 @@
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import { Box, Button, IconButton } from '@mui/material';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import PeopleIcon from '../../../../assets/static/landing_icon.png';
@@ -13,10 +13,50 @@ const AboutUs = () => {
     const { t } = useTranslation();
     const theme = useTheme();
 
+    const cards = useMemo(
+        () => [
+            {
+                title: t('homepage.about_us.cards.0.title'),
+                subtitle: t('homepage.about_us.cards.0.subtitle'),
+                text: t('homepage.about_us.cards.0.desc'),
+                id: 0,
+            },
+            {
+                title: t('homepage.about_us.cards.1.title'),
+                subtitle: t('homepage.about_us.cards.1.subtitle'),
+                text: t('homepage.about_us.cards.1.desc'),
+                id: 1,
+            },
+        ],
+        [t]
+    );
+
+    const smallCards = useMemo(
+        () => [
+            {
+                title: t('homepage.about_us.small_cards.0.title'),
+                text: t('homepage.about_us.small_cards.0.desc'),
+                id: 0,
+            },
+            {
+                title: t('homepage.about_us.small_cards.1.title'),
+                text: t('homepage.about_us.small_cards.1.desc'),
+                id: 1,
+            },
+            {
+                title: t('homepage.about_us.small_cards.2.title'),
+                text: t('homepage.about_us.small_cards.2.desc'),
+                id: 2,
+            },
+        ],
+        [t]
+    );
+
     return (
         <Box
             width="100%"
             maxWidth={1600}
+            id="about-us"
             sx={{
                 margin: '0 auto',
                 display: 'flex',
@@ -37,26 +77,9 @@ const AboutUs = () => {
                     margin: '50px 0',
                 }}
             >
-                {Array.from({ length: 2 }).map((_, index) => (
-                    <Box display="flex" gap={10}>
-                        <Card
-                            sx={{ width: '100%' }}
-                            key={index}
-                            title="Baza wiedzy"
-                            subtitle="Szkolimy wolontariuszy oraz pomagamy im rozwijać się w obszarze niesienia pomocy psychologicznej."
-                        >
-                            <Box
-                                sx={{
-                                    width: '100%',
-                                    display: 'flex',
-                                    justifyContent: 'flex-end',
-                                }}
-                            >
-                                <Button component={Link} to="./" sx={{ gap: '10px' }}>
-                                    {t('homepage.about_us.learn_more_button')} <ArrowForwardIcon />
-                                </Button>
-                            </Box>
-                        </Card>
+                {smallCards.map(({ id, text, title }) => (
+                    <Box key={id} display="flex" gap={10} flexDirection={id % 2 === 0 ? 'row' : 'row-reverse'}>
+                        <Card sx={{ width: '100%' }} title={title} subtitle={text}></Card>
                         <ImageWrapperControl>
                             <StyledImageWrapper>
                                 <img width={180} loading="lazy" height={200} alt="People icon" src={PeopleIcon} />
@@ -72,13 +95,8 @@ const AboutUs = () => {
                 ))}
             </Box>
             <Box zIndex={1} display="flex" gap={8} flexDirection="column">
-                {Array.from({ length: 2 }).map((_, index) => (
-                    <SimpleCard
-                        key={index}
-                        subtitle={t('homepage.about_us.about_us_card.subtitle')}
-                        title={t('homepage.about_us.about_us_card.title')}
-                        text={t('homepage.about_us.about_us_card.text')}
-                    >
+                {cards.map(({ id, text, title, subtitle }) => (
+                    <SimpleCard key={id} subtitle={subtitle} title={title} text={text}>
                         <Box
                             sx={{
                                 marginTop: '20px',
@@ -91,15 +109,21 @@ const AboutUs = () => {
                         >
                             <Box
                                 sx={{
-                                    flexWrap: { xs: 'wrap', md: 'nowrap' },
+                                    flexWrap: {
+                                        xs: 'wrap',
+                                        md: 'nowrap',
+                                        width: '100%',
+                                        maxWidth: '700px',
+                                        marginTop: '10px',
+                                    },
                                 }}
                                 display="flex"
                                 gap={2}
                             >
-                                <Button fullWidth variant="contained">
+                                <Button component={Link} variant="contained" to="/form/volunteer" fullWidth>
                                     {t('homepage.choose_volunteer_button')}
                                 </Button>
-                                <Button fullWidth variant="outlined">
+                                <Button component={Link} to="/form/mentee" fullWidth variant="outlined">
                                     {t('homepage.choose_mentee_button')}
                                 </Button>
                             </Box>
