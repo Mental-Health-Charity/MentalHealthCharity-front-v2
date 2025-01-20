@@ -23,7 +23,6 @@ import Logo from '../../../../assets/static/logo_small.webp';
 import useTheme from '../../../../theme';
 import { useUser } from '../../../auth/components/AuthProvider';
 import { getChatsQueryOptions } from '../../../chat/queries/getChatsQueryOptions';
-import { Roles } from '../../../users/constants';
 import { Permissions } from '../../constants';
 import usePermissions from '../../hooks/usePermissions';
 import NavLink from '../NavLink';
@@ -41,7 +40,7 @@ const Navbar = () => {
         getChatsQueryOptions(
             { size: 50, page: 1 },
             {
-                enabled: !!user && user.user_role !== Roles.USER,
+                enabled: !!user,
                 queryKey: ['chats'],
             }
         )
