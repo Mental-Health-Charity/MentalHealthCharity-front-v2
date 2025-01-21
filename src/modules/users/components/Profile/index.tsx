@@ -1,6 +1,6 @@
-import { Box, Typography } from "@mui/material";
-import { Roles } from "../../constants";
-import ChangeAvatar from "../ChangeAvatar";
+import { Box, Typography } from '@mui/material';
+import { Roles, translatedRoles } from '../../constants';
+import ChangeAvatar from '../ChangeAvatar';
 
 interface Props {
     username: string;
@@ -10,36 +10,25 @@ interface Props {
     onSubmit: (values: { avatar: string }) => void;
 }
 
-const UserProfileHeading = ({
-    role,
-    username,
-    avatar_url,
-    isOwner,
-    onSubmit,
-}: Props) => {
+const UserProfileHeading = ({ role, username, avatar_url, isOwner, onSubmit }: Props) => {
     return (
         <Box>
             <Box
                 sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "flex-end",
-                    gap: "20px",
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'flex-end',
+                    gap: '20px',
                 }}
             >
-                <ChangeAvatar
-                    disabled={!isOwner}
-                    avatar={avatar_url}
-                    username={username}
-                    onSubmit={onSubmit}
-                />
+                <ChangeAvatar disabled={!isOwner} avatar={avatar_url} username={username} onSubmit={onSubmit} />
                 <Box>
                     <Typography
                         color="text.secondary"
                         sx={{
-                            fontSize: "24px",
-                            fontWeight: "bold",
-                            textTransform: "uppercase",
+                            fontSize: '24px',
+                            fontWeight: 'bold',
+                            textTransform: 'uppercase',
                         }}
                     >
                         {username}
@@ -47,12 +36,12 @@ const UserProfileHeading = ({
                     <Typography
                         color="text.secondary"
                         sx={{
-                            fontSize: "20px",
-                            fontWeight: "bold",
-                            textTransform: "uppercase",
+                            fontSize: '20px',
+                            fontWeight: 'bold',
+                            textTransform: 'uppercase',
                         }}
                     >
-                        {role}
+                        {translatedRoles[role]}
                     </Typography>
                 </Box>
             </Box>

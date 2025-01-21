@@ -1,6 +1,6 @@
-import { User } from "../auth/types";
-import { DefaultPaginationOptions } from "../shared/types";
-import { ArticleRequiredRoles, ArticleStatus } from "./constants";
+import { User } from '../auth/types';
+import { DefaultPaginationOptions } from '../shared/types';
+import { ArticleRequiredRoles, ArticleStatus } from './constants';
 
 export interface ReadArticlesOptions extends DefaultPaginationOptions {
     status: ArticleStatus;
@@ -30,15 +30,16 @@ export interface UpdateArticleBannerOptions {
 export interface CreateArticlePayload {
     title: string;
     content: string;
-    banner_url: string;
+
+    banner_base64: string;
     video_url: string;
     article_category_id: number;
+    banner_url: string;
     required_role: ArticleRequiredRoles;
     status: ArticleStatus;
 }
 
-export interface UpdateArticlePayload
-    extends Omit<CreateArticlePayload, "banner_url"> {
+export interface UpdateArticlePayload extends Omit<CreateArticlePayload, 'banner_url'> {
     article_id: number;
 }
 export interface ArticleCategoryOptions {

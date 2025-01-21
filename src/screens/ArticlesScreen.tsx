@@ -1,10 +1,11 @@
 import { Box, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import debounce from 'lodash.debounce';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ArticleCard from '../modules/articles/components/ArticleCard';
 import ArticlesHeading from '../modules/articles/components/ArticlesHeading';
+import { ArticleStatus } from '../modules/articles/constants';
 import { articlesQueryOptions } from '../modules/articles/queries/articlesQueryOptions';
 import Container from '../modules/shared/components/Container';
 
@@ -27,6 +28,12 @@ const ArticlesScreen = () => {
 
     const { data, isLoading } = useQuery(articlesQueryOptions({ q: debouncedQuery, page, size: 50 }));
 
+    // TODO: Waiting for backend to fix
+    const published = useMemo(
+        () => data?.items.filter((article) => article.status === ArticleStatus.PUBLISHED),
+        [data]
+    );
+
     return (
         <Container
             sx={{
@@ -43,8 +50,10 @@ const ArticlesScreen = () => {
                     gap: 2,
                 }}
             >
-                {!isLoading && (!data || data.items.length === 0) && <Typography>{t('common.not_found')}</Typography>}
-                {data && data.items.map((article) => <ArticleCard article={article} key={article.id} />)}
+                {!isLoading && (!published || published.length === 0) && (
+                    <Typography>{t('common.not_found')}</Typography>
+                )}
+                {published && published.map((article) => <ArticleCard article={article} key={article.id} />)}
             </Box>
         </Container>
     );

@@ -15,6 +15,7 @@ import UserProfileDescription from '../modules/users/components/UserProfileDescr
 import UserProfileSettings from '../modules/users/components/UserProfileSettings';
 import { editPublicProfileMutation } from '../modules/users/queries/editPublicProfileMutation';
 import { readPublicProfileQueryOptions } from '../modules/users/queries/readPublicProfileQueryOptions';
+import updateAvatarMutation from '../modules/users/queries/updateAvatarMutation';
 
 const ProfileScreen = () => {
     const { userId } = useParams();
@@ -38,6 +39,14 @@ const ProfileScreen = () => {
 
     const { mutate: updateProfile } = useMutation({
         mutationFn: editPublicProfileMutation,
+        onSuccess() {
+            toast.success(t('profile.profile_updated'));
+            refreshProfile();
+        },
+    });
+
+    const { mutate: updateAvatar } = useMutation({
+        mutationFn: updateAvatarMutation,
         onSuccess() {
             toast.success(t('profile.profile_updated'));
             refreshProfile();
@@ -121,10 +130,9 @@ const ProfileScreen = () => {
                 {username && role && (
                     <UserProfileHeading
                         onSubmit={({ avatar }) =>
-                            updateProfile({
-                                description: data ? data.description : '',
+                            updateAvatar({
                                 id: Number(userId),
-                                avatar_url: avatar,
+                                avatar,
                             })
                         }
                         isOwner={isOwner}

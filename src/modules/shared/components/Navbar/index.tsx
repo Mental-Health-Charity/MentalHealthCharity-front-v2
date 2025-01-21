@@ -70,6 +70,8 @@ const Navbar = () => {
         pages.push({ name: t('common.navigation.chat'), path: '/chat' });
     }
 
+    console.log('chats', chats);
+
     useEffect(() => {
         toggleDrawer(false);
     }, [location]);

@@ -15,7 +15,7 @@ const Container = ({ waves, parentProps, ...props }: Props) => {
             sx={{
                 width: '100%',
                 display: 'flex',
-
+                paddingBottom: '60px',
                 justifyContent: 'center',
                 minHeight: '100vh',
                 position: 'relative',

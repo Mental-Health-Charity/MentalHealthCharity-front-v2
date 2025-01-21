@@ -1,4 +1,4 @@
-import buildQuery from "./helpers/buildQuery";
+import buildQuery from './helpers/buildQuery';
 import {
     ArticleCategoryOptions,
     ReadArticleOptions,
@@ -6,7 +6,7 @@ import {
     ReadPublicArticlesOptions,
     SearchPublicArticlesOptions,
     UpdateArticleOptions,
-} from "./modules/articles/types";
+} from './modules/articles/types';
 import {
     ChatContractOptions,
     ChatNoteOptions,
@@ -15,16 +15,16 @@ import {
     GetChatMessagesOptions,
     ParticipantOptions,
     ReadChatOptions,
-} from "./modules/chat/types";
-import { FormOptions, ReadAllFormOptions } from "./modules/forms/types";
-import { ChangeReportStatusPayload } from "./modules/report/types";
-import { DefaultPaginationOptions } from "./modules/shared/types";
+} from './modules/chat/types';
+import { FormOptions, ReadAllFormOptions } from './modules/forms/types';
+import { ChangeReportStatusPayload } from './modules/report/types';
+import { DefaultPaginationOptions } from './modules/shared/types';
 import {
     PublicProfileOptions,
     ReadSearchUsersOptions,
     ReadUserByIdOptions,
     ReadUsersReportsOptions,
-} from "./modules/users/types";
+} from './modules/users/types';
 
 export const baseUrl = import.meta.env.VITE_BASE_URL as string;
 export const websocketUrl = import.meta.env.VITE_BASE_WS_URL as string;
@@ -57,6 +57,9 @@ export const url = {
         },
         updateUser({ id }: ReadUserByIdOptions) {
             return `${baseUrl}/api/v1/users/${id}`;
+        },
+        updateUserAvatar({ id }: ReadUserByIdOptions) {
+            return `${baseUrl}/api/v1/user-public-profile/${id}/avatar`;
         },
         updateUserByAdmin({ id }: ReadUserByIdOptions) {
             return `${baseUrl}/api/v1/users/${id}/edit-as-admin`;

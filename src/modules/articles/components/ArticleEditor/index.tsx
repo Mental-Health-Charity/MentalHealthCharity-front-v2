@@ -10,6 +10,7 @@ import { useUser } from '../../../auth/components/AuthProvider';
 import ChangeImageInput from '../../../shared/components/ChangeImageInput';
 import Loader from '../../../shared/components/Loader';
 import Markdown from '../../../shared/components/Markdown';
+import { Roles } from '../../../users/constants';
 import {
     ArticleRequiredRoles,
     ArticleStatus,
@@ -71,6 +72,36 @@ const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft }: Props) => {
     if (isLoading || !user) {
         return <Loader variant="fullscreen" />;
     }
+
+    const allowedStatuses = useMemo(
+        () => [
+            {
+                value: ArticleStatus.SENT,
+                role: [Roles.ADMIN, Roles.REDACTOR, Roles.VOLUNTEER, Roles.VOLUNTEERSUPERVISOR],
+            },
+            {
+                value: ArticleStatus.PUBLISHED,
+                role: [Roles.ADMIN, Roles.REDACTOR, Roles.VOLUNTEERSUPERVISOR],
+            },
+            {
+                value: ArticleStatus.REJECTED,
+                role: [Roles.ADMIN, Roles.REDACTOR, Roles.VOLUNTEERSUPERVISOR],
+            },
+            {
+                value: ArticleStatus.DRAFT,
+                role: [Roles.ADMIN, Roles.REDACTOR, Roles.VOLUNTEER, Roles.VOLUNTEERSUPERVISOR],
+            },
+            {
+                value: ArticleStatus.CORRECTED,
+                role: [Roles.ADMIN, Roles.REDACTOR, Roles.VOLUNTEER, Roles.VOLUNTEERSUPERVISOR],
+            },
+            {
+                value: ArticleStatus.DELETED,
+                role: [Roles.ADMIN, Roles.REDACTOR, Roles.VOLUNTEERSUPERVISOR],
+            },
+        ],
+        [t, ArticleStatus]
+    );
 
     return (
         <Box component="form" onSubmit={formik.handleSubmit}>
@@ -234,11 +265,13 @@ const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft }: Props) => {
                             onBlur={formik.handleBlur}
                             error={formik.touched.status && Boolean(formik.errors.status)}
                         >
-                            {Object.values(ArticleStatus).map((status) => (
-                                <MenuItem key={status} value={status}>
-                                    {translatedArticleStatus[status]}
-                                </MenuItem>
-                            ))}
+                            {allowedStatuses
+                                .filter(({ role }) => role.includes(user.user_role))
+                                .map(({ value }) => (
+                                    <MenuItem key={value} value={value}>
+                                        {translatedArticleStatus[value]}
+                                    </MenuItem>
+                                ))}
                         </Select>
                     </FormControl>
                 </Box>

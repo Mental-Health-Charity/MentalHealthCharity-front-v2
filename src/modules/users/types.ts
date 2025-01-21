@@ -1,4 +1,4 @@
-import { User } from "../auth/types";
+import { User } from '../auth/types';
 
 export interface ReadSearchUsersOptions {
     query: string;
@@ -36,4 +36,8 @@ export interface editPublicProfilePayload {
 export interface EditUserFormValues {
     full_name: string;
     user_role: string;
+}
+
+export interface EditUserAvatar {
+    avatar: string; // base64
 }
