@@ -20,6 +20,7 @@ const ArticlesScreen = React.lazy(() => import("../../screens/ArticlesScreen"));
 const ChatScreen = React.lazy(() => import("../../screens/ChatScreen"));
 const HomepageScreen = React.lazy(() => import("../../screens/HomepageScreen"));
 const LoginScreen = React.lazy(() => import("../../screens/LoginScreen"));
+const ChangePasswordScreen = React.lazy(() => import("../../screens/ChangePasswordScreen"));
 const ProfileScreen = React.lazy(() => import("../../screens/ProfileScreen"));
 const ReportsScreen = React.lazy(() => import("../../screens/ReportsScreen"));
 const UserEditorScreen = React.lazy(
@@ -154,6 +155,11 @@ const routes: RouteType[] = [
     {
         url: "/users/:id",
         onRender: <div>User</div>,
+        requiresAuth: true,
+    },
+    {
+        url: "/users/change-password",
+        onRender: <ChangePasswordScreen />,
         requiresAuth: true,
     },
     {

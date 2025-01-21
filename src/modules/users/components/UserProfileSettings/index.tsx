@@ -50,7 +50,7 @@ const UserProfileSettings = ({ email, username }: Props) => {
                 </Box>
                 <Tooltip title={t('common.comming_soon')}>
                     <Box>
-                        <Button disabled variant="contained">
+                        <Button variant="contained" href="/users/change-password">
                             {t('common.change_pass')}
                         </Button>
                     </Box>

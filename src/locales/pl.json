@@ -72,6 +72,8 @@
         "incorrect_password_format": "Hasło musi zawierać co najmniej 8 znaków",
         "min_one_number": "Hasło musi zawierać co najmniej jedną cyfrę np. 1",
         "password_confirmation": "Hasła muszą być takie same",
+        "old_password": "Niepoprawne stare hasło",
+        "invalid_old_password": "Stare hasło jest niepoprawne",
         "first_name": "Imię musi zawierać co najmniej 2 znaki",
         "last_name": "Nazwisko musi zawierać co najmniej 2 znaki",
         "phone": "Podaj poprawny numer telefonu",
@@ -96,7 +98,8 @@
         "consent": {
             "required": "Musisz zaakceptować zgodę."
         },
-        "message": "Wiadomość musi zawierać co najmniej 10 znaków"
+        "message": "Wiadomość musi zawierać co najmniej 10 znaków",
+        "policy_confirm": "Oznajmiam że zapoznałem się z regulaminem portalu oraz akceptuję jego warunki"
     },
     "errors": {
         "failed_to_fetch_chat_note": "Wystąpił problem podczas wczytywania notatek. Spróbuj ponownie później",
@@ -157,6 +160,7 @@
         "empty_description_placeholder": "Ten użytkownik nie napisał jeszcze nic o sobie",
         "change_avatar_title": "Zmień zdjęcie profilowe",
         "profile_updated": "Profil zaktualizowany",
+        "changed_password": "Hasło zostało pomyślnie zmienione",
         "change_avatar_label": "Bezpośredni link do zdjęcia",
         "change_avatar_tutorial": "Aby zmienić zdjęcie profilowe, wklej bezpośredni link do zdjęcia w pole poniżej. Aby uzyskać link do zdjęcia, kliknij prawym przyciskiem myszy na zdjęcie, które chcesz użyć i wybierz opcję 'Kopiuj adres obrazu'."
     },

@@ -24,6 +24,8 @@ const RegisterForm = ({ onSubmit, initial }: Props) => {
         email: validation.email,
         password: validation.password,
         confirmPassword: validation.confirmPassword,
+        policy_confirm: Yup.boolean().default(false).required(t("policy.confirm"))
+        
     });
 
     const initialValues: RegisterFormValues = {
@@ -31,6 +33,7 @@ const RegisterForm = ({ onSubmit, initial }: Props) => {
         password: "",
         confirmPassword: "",
         full_name: "",
+        policy_confirm: false,
         ...initial,
     };
 
@@ -109,7 +112,14 @@ const RegisterForm = ({ onSubmit, initial }: Props) => {
                             control={<Checkbox defaultChecked />}
                             label="Zapamiętaj mnie"
                         />
+                        
                     </Box>
+                    <FormControlLabel
+                        style={{marginBottom: "20px"}}
+                        control={<Checkbox />}
+                        label={t("validation.policy_confirm")}
+                        
+                    />
 
                     <Button
                         type="submit"

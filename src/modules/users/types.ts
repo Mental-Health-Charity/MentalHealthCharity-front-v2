@@ -37,3 +37,8 @@ export interface EditUserFormValues {
     full_name: string;
     user_role: string;
 }
+
+export interface ChangePasswordValues {
+    old_password: string;
+    new_password: string;
+}
