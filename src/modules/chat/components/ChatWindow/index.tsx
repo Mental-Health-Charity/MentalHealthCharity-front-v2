@@ -18,6 +18,7 @@ import Chat from '../Chat';
 import ChatDetails from '../ChatDetails';
 import ChatSidebar from '../ChatSidebar';
 import Note from '../Note';
+import ContractModal from '../ContractModal/ContractModal';
 
 const ChatWindow = () => {
     const theme = useTheme();
@@ -26,6 +27,7 @@ const ChatWindow = () => {
     const [showDetails, setShowDetails] = useState(false);
     const [showNote, setShowNote] = useState(false);
     const [showReportModal, setShowReportModal] = useState(false);
+    const [showContractModal, setShowContractModal] = useState(false);
     const { t } = useTranslation();
     const [chatId, setChatId] = useState(id || (data && data.items[0].id) || '');
     const navigate = useNavigate();
@@ -128,10 +130,10 @@ const ChatWindow = () => {
                     </Tooltip>
                     <Tooltip title={t('chat.contract')}>
                         <IconButton
-                            disabled
                             sx={{
                                 color: theme.palette.text.primary,
                             }}
+                            onClick={() => setShowContractModal(!showContractModal)}
                         >
                             <HistoryEduIcon fontSize="large" />
                         </IconButton>
@@ -161,6 +163,7 @@ const ChatWindow = () => {
                     <ChatDetails onClose={() => setShowDetails(false)} chat={selectedChat} />
                 )}
                 {showReportModal && <ReportModal open={showReportModal} onClose={() => setShowReportModal(false)} />}
+                <ContractModal isOpen={showContractModal} onClose={() => setShowContractModal(false)} />
             </Box>
         </>
     );

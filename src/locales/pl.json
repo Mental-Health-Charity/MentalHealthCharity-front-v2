@@ -147,7 +147,8 @@
         "add_participant_success": "Uczestnik został dodany",
         "add_participant": "Dodaj uczestnika",
         "note_title": "Notatki",
-        "no_available_chats_found": "Nie znaleziono dostępnych czatów. Skontakuj się z administratorem"
+        "no_available_chats_found": "Nie znaleziono dostępnych czatów. Skontakuj się z administratorem",
+        "accept_contract": "Akceptuj kontrakt"
     },
     "tos": {
         "title": "Regulamin",
