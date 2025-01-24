@@ -160,7 +160,8 @@
         "no_available_chats_found": "Nie znaleziono dostępnych czatów. Skontakuj się z administratorem",
         "customize_chat": {
             "title": "Dostosuj czat"
-        }
+        },
+        "accept_contract": "Akceptuj kontrakt"
     },
     "auth": {
         "reset_token_modal": {
@@ -186,7 +187,8 @@
                 "title": "1) Udostępnij nasz projekt",
                 "subtitle": "Podziel się naszym projektem ze znajomymi i rodziną. Im więcej osób nas pozna, tym więcej osób możemy pomóc. Kliknij w poniższy przycisk, aby udostępnić nasz projekt w mediach społecznościowych."
             }
-        }
+        },
+        "no_available_chats_found": "Nie znaleziono dostępnych czatów. Skontakuj się z administratorem"
     },
     "tos": {
         "title": "Regulamin",

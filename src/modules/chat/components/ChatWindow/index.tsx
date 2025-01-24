@@ -20,6 +20,7 @@ import ChatDetails from '../ChatDetails';
 import ChatSidebar from '../ChatSidebar';
 import CustomizeChatModal from '../CustomizeChatModal';
 import Note from '../Note';
+import ContractModal from '../ContractModal/ContractModal';
 
 interface Props {
     onChangeWallpaper?: (wallpaper: string) => void;
@@ -33,6 +34,7 @@ const ChatWindow = ({ onChangeWallpaper }: Props) => {
     const [showNote, setShowNote] = useState(false);
     const [showReportModal, setShowReportModal] = useState(false);
     const [showCustomizeModal, setShowCustomizeModal] = useState(false);
+    const [showContractModal, setShowContractModal] = useState(false);
     const { t } = useTranslation();
     const [chatId, setChatId] = useState(id || (data && data.items[0].id) || '');
     const navigate = useNavigate();
@@ -148,10 +150,10 @@ const ChatWindow = ({ onChangeWallpaper }: Props) => {
                     )}
                     <Tooltip title={t('chat.contract')}>
                         <IconButton
-                            disabled
                             sx={{
                                 color: theme.palette.text.primary,
                             }}
+                            onClick={() => setShowContractModal(!showContractModal)}
                         >
                             <HistoryEduIcon fontSize="large" />
                         </IconButton>
@@ -186,6 +188,13 @@ const ChatWindow = ({ onChangeWallpaper }: Props) => {
                         onChangeWallpaper={onChangeWallpaper}
                         open={showCustomizeModal}
                         onClose={() => setShowCustomizeModal(false)}
+                    />
+                )}
+                {showContractModal && (
+                    <ContractModal
+                        chatId={chatId.toString()}
+                        isOpen={showContractModal}
+                        onClose={() => setShowContractModal(false)}
                     />
                 )}
             </Box>
