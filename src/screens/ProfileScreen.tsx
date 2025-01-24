@@ -13,6 +13,7 @@ import UserProfileHeading from '../modules/users/components/Profile';
 import UserProfileArticles from '../modules/users/components/UserProfileArticles';
 import UserProfileDescription from '../modules/users/components/UserProfileDescription';
 import UserProfileSettings from '../modules/users/components/UserProfileSettings';
+import { Roles } from '../modules/users/constants';
 import { editPublicProfileMutation } from '../modules/users/queries/editPublicProfileMutation';
 import { readPublicProfileQueryOptions } from '../modules/users/queries/readPublicProfileQueryOptions';
 import updateAvatarMutation from '../modules/users/queries/updateAvatarMutation';
@@ -23,6 +24,8 @@ const ProfileScreen = () => {
     const { user } = useUser();
     const { t } = useTranslation();
 
+    const shouldFetchProfile = Number(userId) !== user?.id || user?.user_role !== Roles.USER;
+
     const {
         data,
         isLoading,
@@ -32,7 +35,7 @@ const ProfileScreen = () => {
         readPublicProfileQueryOptions(
             { id: Number(userId) || -1 },
             {
-                enabled: !!userId,
+                enabled: !!userId && shouldFetchProfile,
             }
         )
     );

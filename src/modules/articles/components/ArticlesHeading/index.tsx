@@ -23,7 +23,7 @@ const ArticlesHeading = ({ onSearch, search }: Props) => {
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     width: '100%',
-                    margin: '20px auto',
+                    margin: { xs: '0', md: '20px auto' },
                     padding: '15px',
                     borderRadius: '10px',
                     display: 'flex',

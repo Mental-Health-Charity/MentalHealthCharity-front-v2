@@ -1,6 +1,6 @@
-import { User } from "../auth/types";
-import { DefaultPaginationOptions } from "../shared/types";
-import { ReadyState } from "react-use-websocket";
+import { ReadyState } from 'react-use-websocket';
+import { User } from '../auth/types';
+import { DefaultPaginationOptions } from '../shared/types';
 
 export interface ReadChatOptions {
     id: number | string;
@@ -41,6 +41,10 @@ export interface GetChatMessagesOptions extends DefaultPaginationOptions {
 export interface ConnectOptions {
     token: string;
     chat_id: string;
+}
+
+export interface ConnectUnreadMessagesOptions {
+    token: string;
 }
 
 export interface Message {

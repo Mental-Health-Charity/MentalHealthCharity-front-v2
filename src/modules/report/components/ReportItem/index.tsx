@@ -69,7 +69,13 @@ const ReportCard = ({ report }: Props) => {
                             {report.subject}
                         </Typography>
 
-                        <Typography variant="body2" color="textSecondary">
+                        <Typography
+                            sx={{
+                                wordBreak: 'break-word',
+                            }}
+                            variant="body2"
+                            color="textSecondary"
+                        >
                             {report.description}
                         </Typography>
                     </Box>
@@ -148,6 +154,13 @@ const ReportCard = ({ report }: Props) => {
                         flexDirection: 'column',
                     }}
                 >
+                    <Typography
+                        sx={{
+                            maxWidth: '700px',
+                        }}
+                    >
+                        {t('report.confirmation_modal_text')}
+                    </Typography>
                     {loading && (
                         <Box>
                             <Typography>{t('common.loading')}</Typography>
@@ -160,6 +173,7 @@ const ReportCard = ({ report }: Props) => {
                         }}
                     >
                         <Button
+                            variant="contained"
                             onClick={() =>
                                 mutate({
                                     user_report_id: report.id,
@@ -168,7 +182,7 @@ const ReportCard = ({ report }: Props) => {
                         >
                             {t('common.confirm')}
                         </Button>
-                        <Button>{t('common.cancel')}</Button>
+                        <Button variant="outlined">{t('common.cancel')}</Button>
                     </Box>
                 </Box>
             </Modal>

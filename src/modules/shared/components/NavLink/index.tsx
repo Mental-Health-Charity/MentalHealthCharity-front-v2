@@ -5,11 +5,12 @@ import { Link, useLocation } from 'react-router-dom';
 interface Props {
     name: string;
     to: string;
+    fullWidth?: boolean;
 }
 
 const reloadDocumentRoutes = ['/admin/'];
 
-const NavLink = ({ name, to }: Props) => {
+const NavLink = ({ name, to, fullWidth }: Props) => {
     const location = useLocation();
     const isCurrentRoute = location.pathname === to;
     const theme = useTheme();
@@ -22,6 +23,7 @@ const NavLink = ({ name, to }: Props) => {
             to={to}
             component={Link}
             reloadDocument={reloadDocument}
+            fullWidth={fullWidth}
             sx={{
                 color: 'text.secondary',
                 display: 'block',
@@ -38,7 +40,7 @@ const NavLink = ({ name, to }: Props) => {
                     minHeight: '5px',
                     borderRadius: '5px',
                     left: 0,
-                    bottom: 15,
+                    bottom: fullWidth ? 2 : 15,
                     zIndex: -1,
                     width: isCurrentRoute ? '100%' : 0,
                     background: isCurrentRoute ? theme.palette.colors.accent : 'transparent',

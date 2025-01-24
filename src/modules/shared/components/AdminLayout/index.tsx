@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { useState } from 'react';
-import BgImage from '../../../,./../../assets/static/admin_panel_bg.svg';
+import BgImage from '../../../../assets/static/admin_panel_bg.svg';
 import useTheme from '../../../../theme';
 import { AdminSidebar } from '../AdminSidebar';
 

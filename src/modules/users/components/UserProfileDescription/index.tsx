@@ -43,7 +43,7 @@ const UserProfileDescription = ({ content, isOwner, onSubmit }: Props) => {
                 <form onSubmit={formik.handleSubmit}>
                     <FormControl
                         sx={{
-                            height: '600px',
+                            minHeight: '600px',
                             display: 'block',
                             zIndex: 99999,
                             position: 'relative',

@@ -95,7 +95,11 @@ const ArticleDashboardScreen = () => {
                                                 width: '100%',
                                             }}
                                         >
-                                            <ArticleCard article={article} key={article.id} />
+                                            <ArticleCard
+                                                draft={key === ArticleStatus.DRAFT}
+                                                article={article}
+                                                key={article.id}
+                                            />
                                             {article.reject_message !== '' && <Box>{article.reject_message}</Box>}
                                         </Box>
                                     ))}

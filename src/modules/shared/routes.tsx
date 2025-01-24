@@ -1,7 +1,9 @@
 import React from 'react';
+import AboutChatScreen from '../../screens/AboutChatScreen';
 import ArticleDashboardScreen from '../../screens/ArticlesDashboardScreen';
 import CreateArticleScreen from '../../screens/CreateArticleScreen';
 import EditArticleScreen from '../../screens/EditArticleScreen';
+import ForgetPasswordScreen from '../../screens/ForgetPasswordScreen';
 import ManageArticlesScreen from '../../screens/ManageArticlesScreen';
 import ManageMenteeFormsScreen from '../../screens/ManageMenteeFormsScreen';
 import ManageVolunteerFormsScreen from '../../screens/ManageVolunteerFormsScreen';
@@ -36,9 +38,19 @@ const routes: RouteType[] = [
         requiresAuth: false,
     },
     {
+        url: '/about-chat',
+        onRender: <AboutChatScreen />,
+        requiresAuth: false,
+    },
+    {
         url: '/form/volunteer',
         onRender: <VolunteerFormScreen />,
         requiresAuth: true,
+    },
+    {
+        url: '/auth/forget-password',
+        onRender: <ForgetPasswordScreen />,
+        requiresAuth: false,
     },
     {
         url: '/login',

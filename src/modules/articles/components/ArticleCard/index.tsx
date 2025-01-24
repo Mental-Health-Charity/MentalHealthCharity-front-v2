@@ -32,9 +32,10 @@ import { Article } from '../../types';
 interface Props {
     article: Article;
     onRefetch?: () => void;
+    draft?: boolean;
 }
 
-const ArticleCard = ({ article, onRefetch }: Props) => {
+const ArticleCard = ({ article, onRefetch, draft }: Props) => {
     const theme = useTheme();
     const { user } = useUser();
     const { t } = useTranslation();
@@ -50,6 +51,7 @@ const ArticleCard = ({ article, onRefetch }: Props) => {
     const handleDeleteArticle = useCallback(() => {
         mutate({
             article_id: article.id,
+            banner_base64: article.banner_url,
             title: article.title,
             content: article.content,
             video_url: article.video_url,
@@ -63,7 +65,8 @@ const ArticleCard = ({ article, onRefetch }: Props) => {
 
     return (
         <Link
-            to={`/article/${article.id}`}
+            to={draft ? `/articles/edit/${article.id}/` : `/article/${article.id}`}
+            reloadDocument
             style={{
                 textDecoration: 'none',
                 width: '100%',
@@ -124,8 +127,20 @@ const ArticleCard = ({ article, onRefetch }: Props) => {
                         {article.title}
                     </Typography>
 
-                    <Typography variant="body1" color="text.secondary" fontSize={20} sx={{ minHeight: '60px' }}>
-                        {article.content.length > 100 ? `${article.content.substring(0, 100)}...` : article.content}
+                    <Typography
+                        variant="body1"
+                        color="text.secondary"
+                        fontSize={20}
+                        sx={{
+                            minHeight: '60px',
+                            wordBreak: 'break-word',
+                            // max 1 line
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            display: '-webkit-box',
+                        }}
+                    >
+                        {article.content.length > 100 ? `${article.content.substring(0, 103)}...` : article.content}
                     </Typography>
                     <Divider
                         sx={{

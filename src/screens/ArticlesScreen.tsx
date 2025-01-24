@@ -48,10 +48,20 @@ const ArticlesScreen = () => {
                     display: 'grid',
                     gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
                     gap: 2,
+                    minHeight: '600px',
                 }}
             >
                 {!isLoading && (!published || published.length === 0) && (
-                    <Typography>{t('common.not_found')}</Typography>
+                    <Typography
+                        sx={{
+                            textAlign: 'center',
+                            marginTop: '50px',
+                        }}
+                        variant="h6"
+                        component="p"
+                    >
+                        {t('common.not_found')}
+                    </Typography>
                 )}
                 {published && published.map((article) => <ArticleCard article={article} key={article.id} />)}
             </Box>

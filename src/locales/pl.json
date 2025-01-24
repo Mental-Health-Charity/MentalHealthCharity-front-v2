@@ -7,6 +7,7 @@
             "my_account": "Moje konto",
             "logout": "Wyloguj",
             "articles": "Artykuły",
+            "chat_with_volunteer": "Otrzymaj pomoc",
             "chat": "Czat",
             "admin": "Zarządaj stroną"
         },
@@ -107,6 +108,8 @@
         "failed_to_save_note": "Wystąpił problem podczas zapisywania notatki. Spróbuj ponownie później",
         "unknown": "Wystąpił nieznany błąd. Spróbuj ponownie później",
         "incorrect_email_or_password": "Nieprawidłowy email lub hasło",
+        "article_category_not_found": "Najpierw dodaj kategorię do artykułu",
+        "username_already_exists": "Użytkownik o tej nazwie już istnieje",
         "article_category_with_that_name_already_exists": "Kategoria o tej nazwie już istnieje",
         "article_category_in_use": "Błąd, nie można przeprowadzić tej operacji na kategorii, ponieważ wybrana kategoria jest używana przez jakiś artykuł.",
         "failed_to_fetch_chat": "Wystąpił problem podczas wczytywania rozmowy. Spróbuj ponownie później"
@@ -121,7 +124,8 @@
         "bug": "Błąd",
         "abuse": "Nadużycie",
         "crisis_situation": "Sytuacja kryzysowa",
-        "confirmation_modal_title": "Czy na pewno chcesz zamknąć zgłoszenie?"
+        "confirmation_modal_title": "Czy na pewno chcesz zamknąć zgłoszenie?",
+        "confirmation_modal_text": "Zgłoszenie zostanie zamknięte i nie będzie można go ponownie otworzyć. Czy na pewno chcesz zamknąć zgłoszenie jako rozwiązane?"
     },
     "chat": {
         "conntecting": "Łączenie z rozmówcą...",
@@ -129,6 +133,11 @@
         "admin_chat": "Czat koordynacyjny",
         "show_more_chats": "Lista czatów",
         "remove_participant_success": "Uczestnik został usunięty",
+        "about": {
+            "title": "Jak otrzymać pomoc?",
+            "subtitle": "W naszym serwisie znajdziesz darmowe wsparcie psychologiczne w formie czatu. Wystarczy, że wypełnisz krótki formularz, a my dobierzemy dla Ciebie odpowiedniego wolontariusza, który będzie Cię wspierał w trudnych chwilach. Wszystkie rozmowy są anonimowe i pełne empatii. Nie musisz się martwić o ocenę, krytykę czy zrozumienie. Jesteśmy tu po to, aby Ci pomóc.",
+            "tutorial": "Kliknij przycisk Dołącz Teraz, wypełnij formularz, poczekaj, aż przydzielimy Ci starannie dobranego wolontariusza i zacznij rozmowę. To takie proste!"
+        },
         "edit_chat": "Edytuj czat",
         "remove_from_chat": "Usuń z czatu",
         "edit_chat_success": "Czat został zaktualizowany",
@@ -147,7 +156,26 @@
         "add_participant_success": "Uczestnik został dodany",
         "add_participant": "Dodaj uczestnika",
         "note_title": "Notatki",
-        "no_available_chats_found": "Nie znaleziono dostępnych czatów. Skontakuj się z administratorem"
+        "customize": "Dostosuj",
+        "no_available_chats_found": "Nie znaleziono dostępnych czatów. Skontakuj się z administratorem",
+        "customize_chat": {
+            "title": "Dostosuj czat"
+        }
+    },
+    "auth": {
+        "reset_token_modal": {
+            "title": "Pomyślnie zarejestrowano!",
+            "subtitle": "To jedyna okazja, aby pobrać lub skopiować jednorazowy kod odzyskania konta. Jeśli zapomnisz hasła, to jedyna deska ratunku. Nigdy nie podawaj tego kodu nikomu.",
+            "copy": "Skopiuj kod odzyskania konta",
+            "download": "Pobierz kod odzyskania konta",
+            "copied": "Skopiowano kod odzyskania konta do schowka, pamiętaj, aby go zapisać w bezpiecznym miejscu.",
+            "downloaded": "Pobrano kod odzyskania konta na te urządzenie."
+        },
+        "reset_password": {
+            "title": "Zresetuj hasło",
+            "subtitle": "Wprowadź nowe hasło do swojego konta. Aby to zrobić wprowadź kod odzyskania konta, który otrzymałeś podczas rejestracji.",
+            "success": "Hasło zostało zresetowane. Zaloguj się na swoje konto."
+        }
     },
     "tos": {
         "title": "Regulamin",
@@ -175,6 +203,7 @@
         "read_more": "Czytaj więcej",
         "title": "Tworzymy przestrzeń bez tabu, dla Ciebie!",
         "add_article": "Nowy artykuł",
+        "category_required": "Kategoria jest wymagana",
         "more_articles": "Więcej artykułów",
         "article_created": "Pomyślnie wysłano artykuł. Zaraz zostaniesz przekierowany.",
         "send": "Wyślij artykuł",

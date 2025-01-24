@@ -1,6 +1,7 @@
 import { useMutation, UseMutationResult, useQuery, UseQueryResult } from '@tanstack/react-query';
 import Cookies from 'js-cookie';
 import React, { createContext, ReactNode, useContext, useState } from 'react';
+import Loader from '../../../shared/components/Loader';
 import fetchUserData from '../../queries/fetchUserDataQuery';
 import { registerMutation } from '../../queries/registerMutation';
 import { loginMutation } from '../../queries/tokenMutation';
@@ -73,6 +74,7 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
     return (
         <UserContext.Provider value={{ user, login, isLoading, error, logout, register }}>
             {children}
+            {isLoading && <Loader variant="fullscreen" />}
         </UserContext.Provider>
     );
 };

@@ -128,6 +128,10 @@ const AboutUs = () => {
                                 </Button>
                             </Box>
                             <IconButton
+                                component="a"
+                                href="https://www.facebook.com/groups/1340769720143310"
+                                target="_blank"
+                                rel="noreferrer"
                                 sx={{
                                     color: theme.palette.text.primary,
                                     padding: '10px',

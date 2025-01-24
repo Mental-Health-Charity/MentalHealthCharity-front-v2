@@ -3,6 +3,7 @@ import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } fro
 import { useQuery } from '@tanstack/react-query';
 import { useFormik } from 'formik';
 import { useMemo, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import useTheme from '../../../../theme';
@@ -224,7 +225,19 @@ const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft }: Props) => {
                     <Button variant="contained" color="primary" type="submit">
                         {t('articles.send')}
                     </Button>
-                    <Button onClick={() => onSaveDraft(formik.values)} variant="outlined" color="primary" type="button">
+                    <Button
+                        onClick={() => {
+                            if (!formik.values.article_category_id) {
+                                toast.error(t('articles.category_required'));
+                                return;
+                            }
+
+                            onSaveDraft(formik.values);
+                        }}
+                        variant="outlined"
+                        color="primary"
+                        type="button"
+                    >
                         {t('articles.save_draft')}
                     </Button>
                 </Box>

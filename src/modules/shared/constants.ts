@@ -18,8 +18,10 @@ const Errors = {
     [ErrorMessage.ARTICLE_CATEGORY_WITH_THAT_NAME_ALREADY_EXISTS]: i18n.t(
         'errors.article_category_with_that_name_already_exists'
     ),
+    [ErrorMessage.ARTICLE_CATEGORY_NOT_FOUND]: i18n.t('errors.article_category_not_found'),
     [ErrorMessage.FAILED_TO_EDIT_CHAT]: i18n.t('errors.failed_to_edit_chat'),
     [ErrorMessage.FAILED_TO_FETCH_REPORTS]: i18n.t('errors.failed_to_fetch_reports'),
+    [ErrorMessage.THE_USER_WITH_THIS_USERNAME_ALREADY_EXISTS_IN_THE_SYSTEM]: i18n.t('errors.username_already_exists'),
 };
 
 export default Errors;
@@ -89,4 +91,5 @@ export const validation = {
         .oneOf([Yup.ref('password'), undefined], i18n.t('validation.passwords_must_match'))
         .required(i18n.t('validation.required')),
     email: Yup.string().email(i18n.t('validation.invalid_email')).required(i18n.t('validation.required')),
+    token: Yup.string().required(i18n.t('validation.required')),
 };

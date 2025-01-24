@@ -1,4 +1,4 @@
-import { Roles } from "../users/constants";
+import { Roles } from '../users/constants';
 
 export interface LoginFormValues {
     email: string;
@@ -28,4 +28,10 @@ export interface User {
     is_assigned_to_chat: boolean;
     chat_avatar_url?: string;
     id: number;
+}
+
+export interface ResetPasswordPayload {
+    email: string;
+    token: string;
+    new_password: string;
 }

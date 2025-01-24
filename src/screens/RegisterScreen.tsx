@@ -1,19 +1,22 @@
 import { Box, Link, Typography, useTheme } from '@mui/material';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import login_background from '../assets/static/login_bg.svg';
 import { useUser } from '../modules/auth/components/AuthProvider';
 import RegisterForm from '../modules/auth/components/RegisterForm';
+import ResetTokenModal from '../modules/auth/components/ResetTokenModal';
 import { RegisterFormValues } from '../modules/auth/types';
 
 const RegisterScreen = () => {
     const theme = useTheme();
     const { register } = useUser();
     const navigate = useNavigate();
+    const [restoreToken, setRestoreToken] = useState<string | null>(null);
 
     const handleSubmit = (values: RegisterFormValues) => {
         register.mutate(values, {
-            onSuccess: () => {
-                navigate('/');
+            onSuccess: ({ reset_token }) => {
+                setRestoreToken(reset_token);
             },
         });
     };
@@ -62,6 +65,7 @@ const RegisterScreen = () => {
                     </Typography>
                 </Box>
             </Box>
+            <ResetTokenModal token={restoreToken || ''} open={!!restoreToken} onClose={() => navigate('/')} />
         </Box>
     );
 };

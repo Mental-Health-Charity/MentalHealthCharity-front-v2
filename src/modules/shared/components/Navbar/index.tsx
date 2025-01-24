@@ -1,3 +1,4 @@
+import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
     Avatar,
@@ -63,14 +64,14 @@ const Navbar = () => {
     const pages = [
         { name: t('common.navigation.home'), path: '/' },
         { name: t('common.navigation.articles'), path: '/articles' },
+
         { name: t('common.navigation.admin'), path: '/admin/', permissions: Permissions.ADMIN_DASHBOARD },
+        ...(!user ? [{ name: t('common.navigation.chat_with_volunteer'), path: '/about-chat' }] : []),
     ];
 
     if (chats && chats.total > 0) {
         pages.push({ name: t('common.navigation.chat'), path: '/chat' });
     }
-
-    console.log('chats', chats);
 
     useEffect(() => {
         toggleDrawer(false);
@@ -110,54 +111,84 @@ const Navbar = () => {
                         <IconButton
                             sx={{ color: theme.palette.text.secondary }}
                             size="large"
-                            onClick={toggleDrawer(true)}
+                            onClick={toggleDrawer(!isDrawerOpen)}
                             color="inherit"
                         >
-                            <MenuIcon />
+                            {isDrawerOpen ? <CloseIcon /> : <MenuIcon />}
                         </IconButton>
-                        {isDrawerOpen && (
-                            <SwipeableDrawer
-                                anchor="left"
-                                open={isDrawerOpen}
-                                onClose={toggleDrawer(false)}
-                                onOpen={toggleDrawer(true)}
+
+                        <SwipeableDrawer
+                            anchor="top"
+                            open={isDrawerOpen}
+                            onClose={toggleDrawer(false)}
+                            onOpen={toggleDrawer(true)}
+                            ModalProps={{
+                                sx: {
+                                    zIndex: 99,
+                                },
+                            }}
+                            // TODO FIX THIS
+                            key={location}
+                        >
+                            <Box
+                                sx={{
+                                    width: '100vw',
+                                    padding: '10px',
+                                    backgroundPosition: 'center',
+                                    backgroundSize: '50%',
+                                    backgroundRepeat: 'no-repeat',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'space-between',
+                                    height: '100%',
+                                    minHeight: '50vh',
+                                    marginTop: '70px',
+                                    gap: 2,
+                                }}
+                                role="presentation"
+                                onClick={toggleDrawer(false)}
+                                onKeyDown={toggleDrawer(false)}
                             >
-                                <Box
+                                <List
                                     sx={{
-                                        width: 250,
-                                        padding: '10px',
                                         display: 'flex',
                                         flexDirection: 'column',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'space-between',
-                                        height: '100%',
-                                        gap: 2,
+                                        gap: 1,
                                     }}
-                                    role="presentation"
-                                    onClick={toggleDrawer(false)}
-                                    onKeyDown={toggleDrawer(false)}
                                 >
-                                    <List>
-                                        {pages
-                                            .filter((page) => !page.permissions || hasPermissions(page.permissions))
-                                            .map(({ name, path }) => (
-                                                <ListItem key={path} disablePadding>
-                                                    <NavLink name={name} to={path} />
-                                                </ListItem>
-                                            ))}
-                                    </List>
+                                    {pages
+                                        .filter((page) => !page.permissions || hasPermissions(page.permissions))
+                                        .map(({ name, path }) => (
+                                            <ListItem
+                                                sx={{
+                                                    backgroundColor: theme.palette.colors.border + '4A',
+                                                    borderRadius: 1,
+                                                }}
+                                                key={path}
+                                                disablePadding
+                                            >
+                                                <NavLink fullWidth name={name} to={path} />
+                                            </ListItem>
+                                        ))}
+                                </List>
 
-                                    {user && (
-                                        <Box>
-                                            <NavLink to="/profile" name={t('common.navigation.my_account')} />
-                                            <Button variant="contained" fullWidth color="error" onClick={logout}>
-                                                {t('common.navigation.logout')}
-                                            </Button>
-                                        </Box>
-                                    )}
-                                </Box>
-                            </SwipeableDrawer>
-                        )}
+                                {user ? (
+                                    <Box>
+                                        <NavLink to={`/profile/${user.id}`} name={t('common.navigation.my_account')} />
+                                        <Button variant="contained" fullWidth color="error" onClick={logout}>
+                                            {t('common.navigation.logout')}
+                                        </Button>
+                                    </Box>
+                                ) : (
+                                    <Box>
+                                        <Button variant="contained" fullWidth component={Link} to="/articles/dashboard">
+                                            {t('common.join_us')}
+                                        </Button>
+                                    </Box>
+                                )}
+                            </Box>
+                        </SwipeableDrawer>
                     </Box>
 
                     {/* Desktop Menu */}

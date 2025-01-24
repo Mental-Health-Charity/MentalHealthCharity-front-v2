@@ -6,6 +6,8 @@ interface Props extends BoxProps {
     parentProps?: BoxProps;
 }
 
+const FOOTER_Y_SIZE = '200px';
+
 const Container = ({ waves, parentProps, ...props }: Props) => {
     const theme = useTheme();
 
@@ -17,7 +19,7 @@ const Container = ({ waves, parentProps, ...props }: Props) => {
                 display: 'flex',
                 paddingBottom: '60px',
                 justifyContent: 'center',
-                minHeight: '100vh',
+                minHeight: `calc(100vh - ${FOOTER_Y_SIZE})`,
                 position: 'relative',
                 background: waves ? `${theme.palette.primary.main}1A` : 'inherit',
 

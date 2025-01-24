@@ -11,6 +11,7 @@ import {
     ChatContractOptions,
     ChatNoteOptions,
     ConnectOptions,
+    ConnectUnreadMessagesOptions,
     EditChatOptions,
     GetChatMessagesOptions,
     ParticipantOptions,
@@ -117,6 +118,10 @@ export const url = {
         connect(options: ConnectOptions) {
             const query = buildQuery(options);
             return `${websocketUrl}/ws-chat?${query}`;
+        },
+        connectUnreadMessages(options: ConnectUnreadMessagesOptions) {
+            const query = buildQuery(options);
+            return `${websocketUrl}/ws-unread-chats?${query}`;
         },
         createChat: `${baseUrl}/api/v1/chat/`,
     },

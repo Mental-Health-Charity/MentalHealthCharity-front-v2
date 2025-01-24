@@ -2,6 +2,7 @@ import EventNoteIcon from '@mui/icons-material/EventNote';
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import MenuIcon from '@mui/icons-material/Menu';
 import ReportIcon from '@mui/icons-material/Report';
+import TuneIcon from '@mui/icons-material/Tune';
 import { Box, IconButton, Tooltip, useTheme } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
@@ -17,15 +18,21 @@ import { getChatsQueryOptions } from '../../queries/getChatsQueryOptions';
 import Chat from '../Chat';
 import ChatDetails from '../ChatDetails';
 import ChatSidebar from '../ChatSidebar';
+import CustomizeChatModal from '../CustomizeChatModal';
 import Note from '../Note';
 
-const ChatWindow = () => {
+interface Props {
+    onChangeWallpaper?: (wallpaper: string) => void;
+}
+
+const ChatWindow = ({ onChangeWallpaper }: Props) => {
     const theme = useTheme();
     const { id } = useParams<{ id: string }>();
     const { data, isLoading } = useQuery(getChatsQueryOptions({ size: 50, page: 1 }));
     const [showDetails, setShowDetails] = useState(false);
     const [showNote, setShowNote] = useState(false);
     const [showReportModal, setShowReportModal] = useState(false);
+    const [showCustomizeModal, setShowCustomizeModal] = useState(false);
     const { t } = useTranslation();
     const [chatId, setChatId] = useState(id || (data && data.items[0].id) || '');
     const navigate = useNavigate();
@@ -109,6 +116,7 @@ const ChatWindow = () => {
                                 onClick={() => setShowNote(!showNote)}
                                 sx={{
                                     color: theme.palette.text.primary,
+                                    display: { xs: 'none', md: 'flex' },
                                 }}
                             >
                                 <EventNoteIcon fontSize="large" />
@@ -126,6 +134,18 @@ const ChatWindow = () => {
                             <ReportIcon fontSize="large" />
                         </IconButton>
                     </Tooltip>
+                    {onChangeWallpaper && (
+                        <Tooltip title={t('chat.customize')}>
+                            <IconButton
+                                sx={{
+                                    color: theme.palette.text.primary,
+                                }}
+                                onClick={() => setShowCustomizeModal(!showCustomizeModal)}
+                            >
+                                <TuneIcon fontSize="large" />
+                            </IconButton>
+                        </Tooltip>
+                    )}
                     <Tooltip title={t('chat.contract')}>
                         <IconButton
                             disabled
@@ -161,6 +181,13 @@ const ChatWindow = () => {
                     <ChatDetails onClose={() => setShowDetails(false)} chat={selectedChat} />
                 )}
                 {showReportModal && <ReportModal open={showReportModal} onClose={() => setShowReportModal(false)} />}
+                {showCustomizeModal && onChangeWallpaper && (
+                    <CustomizeChatModal
+                        onChangeWallpaper={onChangeWallpaper}
+                        open={showCustomizeModal}
+                        onClose={() => setShowCustomizeModal(false)}
+                    />
+                )}
             </Box>
         </>
     );

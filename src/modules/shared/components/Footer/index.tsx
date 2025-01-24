@@ -18,7 +18,14 @@ const Footer = () => {
                     marginTop: 2,
                 }}
             >
-                <Grid container spacing={4} justifyContent="space-between">
+                <Grid
+                    sx={{
+                        textAlign: { xs: 'center', sm: 'left' },
+                    }}
+                    container
+                    spacing={4}
+                    justifyContent="space-between"
+                >
                     <Grid item xs={12} sm={4}>
                         <Typography variant="h6" sx={{ mb: 2 }}>
                             Fundacja Peryskop

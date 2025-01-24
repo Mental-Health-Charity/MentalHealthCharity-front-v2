@@ -7,6 +7,7 @@ async function handleApiError(error: unknown): Promise<Error> {
         const errorDetails = (error as { detail: string }).detail;
         const errorCode = errorDetails.toUpperCase().replace(/ /g, '_');
         const name = ErrorMessage[errorCode as keyof typeof ErrorMessage];
+
         const message = Errors[name] || Errors[ErrorMessage.UNKNOWN];
         toast.error(message);
         throw { message, name };
