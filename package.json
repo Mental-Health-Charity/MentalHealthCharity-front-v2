@@ -41,6 +41,7 @@
         "react-confetti": "^6.1.0",
         "react-dom": "^18.3.1",
         "react-draggable": "^4.4.6",
+        "react-ga": "^3.3.1",
         "react-hot-toast": "^2.4.1",
         "react-i18next": "^15.0.3",
         "react-loading-skeleton": "^3.5.0",

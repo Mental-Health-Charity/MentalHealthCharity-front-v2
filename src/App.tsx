@@ -1,13 +1,14 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import RootRouter from "./modules/shared/components/RootRouter";
-import Navbar from "./modules/shared/components/Navbar";
-import { ThemeProvider } from "@mui/material";
-import Layout from "./modules/shared/components/Layout";
-import useTheme from "./theme";
-import { BrowserRouter } from "react-router-dom";
-import { UserProvider } from "./modules/auth/components/AuthProvider";
-import { Suspense } from "react";
-import Loader from "./modules/shared/components/Loader";
+import { ThemeProvider } from '@mui/material';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Suspense, useEffect } from 'react';
+import ReactGA from 'react-ga';
+import { BrowserRouter } from 'react-router-dom';
+import { UserProvider } from './modules/auth/components/AuthProvider';
+import Layout from './modules/shared/components/Layout';
+import Loader from './modules/shared/components/Loader';
+import Navbar from './modules/shared/components/Navbar';
+import RootRouter from './modules/shared/components/RootRouter';
+import useTheme from './theme';
 
 const queryClient = new QueryClient({
     // defaultOptions: {
@@ -21,6 +22,14 @@ const queryClient = new QueryClient({
 
 function App() {
     const theme = useTheme();
+
+    // GOOGLE ANALYTICS
+    const TRACKING_ID = 'G-E3RQD3DF0T';
+    ReactGA.initialize(TRACKING_ID);
+
+    useEffect(() => {
+        ReactGA.pageview(window.location.pathname + window.location.search);
+    }, []);
 
     return (
         <Suspense fallback={<Loader variant="fullscreen" />}>
