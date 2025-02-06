@@ -124,17 +124,19 @@ const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft }: Props) => {
                 }}
             >
                 {/* {!isMobile && <ArticleAuthor user={user} />} */}
-                <Box
-                    sx={{
-                        display: 'flex',
-                        gap: '20px',
-                    }}
-                >
-                    <ChangeImageInput
-                        value={typeof formik.values.banner_url === 'string' ? undefined : formik.values.banner_url}
-                        onChange={(image) => formik.setFieldValue('banner_url', image)}
-                    />
-                </Box>
+                {!initialValues && (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            gap: '20px',
+                        }}
+                    >
+                        <ChangeImageInput
+                            value={typeof formik.values.banner_url === 'string' ? undefined : formik.values.banner_url}
+                            onChange={(image) => formik.setFieldValue('banner_url', image)}
+                        />
+                    </Box>
+                )}
             </Box>
             <Box flexWrap={{ md: 'nowrap', xs: 'wrap' }} sx={{ margin: '20px 0', display: 'flex', gap: '20px' }}>
                 <TextField

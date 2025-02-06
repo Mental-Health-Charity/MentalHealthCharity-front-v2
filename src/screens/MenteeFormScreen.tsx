@@ -6,10 +6,12 @@ import MenteeForm from '../modules/forms/components/MenteeForm';
 import sendFormMutation from '../modules/forms/queries/sendFormMutation';
 import { formTypes, MenteeForm as MenteeFormType, MenteeFormValues } from '../modules/forms/types';
 import Container from '../modules/shared/components/Container';
+import { SessionStorage } from '../modules/shared/types';
 
 const MenteeFormScreen = () => {
     const [showConfetti, setShowConfetti] = useState(false);
-    const [step, setStep] = useState(0);
+    const isFormSend = localStorage.getItem(SessionStorage.SEND_FORM);
+    const [step, setStep] = useState(isFormSend ? 5 : 0);
 
     const { mutate } = useMutation({
         mutationFn: sendFormMutation,
@@ -17,6 +19,7 @@ const MenteeFormScreen = () => {
         onSuccess: () => {
             setShowConfetti(true);
             setStep((prev) => prev + 1);
+            localStorage.setItem(SessionStorage.SEND_FORM, 'true');
         },
     });
 

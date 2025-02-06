@@ -1,20 +1,21 @@
 import React from 'react';
-import AboutChatScreen from '../../screens/AboutChatScreen';
-import ArticleDashboardScreen from '../../screens/ArticlesDashboardScreen';
-import CreateArticleScreen from '../../screens/CreateArticleScreen';
-import EditArticleScreen from '../../screens/EditArticleScreen';
-import ForgetPasswordScreen from '../../screens/ForgetPasswordScreen';
-import ManageArticlesScreen from '../../screens/ManageArticlesScreen';
-import ManageMenteeFormsScreen from '../../screens/ManageMenteeFormsScreen';
-import ManageVolunteerFormsScreen from '../../screens/ManageVolunteerFormsScreen';
-import MenteeFormScreen from '../../screens/MenteeFormScreen';
-import NotFoundScreen from '../../screens/NotFoundScreen';
-import RegisterScreen from '../../screens/RegisterScreen';
-import TosScreen from '../../screens/TosScreen';
-import VolunteerFormScreen from '../../screens/VolunteerFormScreen';
+import SupportUsScreen from '../../screens/SupportUsScreen';
 import { Permissions } from './constants';
 import { RouteType } from './types';
 
+const AboutChatScreen = React.lazy(() => import('../../screens/AboutChatScreen'));
+const ArticleDashboardScreen = React.lazy(() => import('../../screens/ArticlesDashboardScreen'));
+const CreateArticleScreen = React.lazy(() => import('../../screens/CreateArticleScreen'));
+const EditArticleScreen = React.lazy(() => import('../../screens/EditArticleScreen'));
+const ForgetPasswordScreen = React.lazy(() => import('../../screens/ForgetPasswordScreen'));
+const ManageArticlesScreen = React.lazy(() => import('../../screens/ManageArticlesScreen'));
+const ManageMenteeFormsScreen = React.lazy(() => import('../../screens/ManageMenteeFormsScreen'));
+const ManageVolunteerFormsScreen = React.lazy(() => import('../../screens/ManageVolunteerFormsScreen'));
+const MenteeFormScreen = React.lazy(() => import('../../screens/MenteeFormScreen'));
+const NotFoundScreen = React.lazy(() => import('../../screens/NotFoundScreen'));
+const RegisterScreen = React.lazy(() => import('../../screens/RegisterScreen'));
+const TosScreen = React.lazy(() => import('../../screens/TosScreen'));
+const VolunteerFormScreen = React.lazy(() => import('../../screens/VolunteerFormScreen'));
 const ManageChatsScreen = React.lazy(() => import('../../screens/ManageChatsScreen'));
 const AdminScreen = React.lazy(() => import('../../screens/AdminScreen'));
 const ArticleScreen = React.lazy(() => import('../../screens/ArticleScreen'));
@@ -70,6 +71,11 @@ const routes: RouteType[] = [
     {
         url: '/register',
         onRender: <div>Register</div>,
+        requiresAuth: false,
+    },
+    {
+        url: '/support',
+        onRender: <SupportUsScreen />,
         requiresAuth: false,
     },
     {

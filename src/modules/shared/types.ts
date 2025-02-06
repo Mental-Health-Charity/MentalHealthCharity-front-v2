@@ -65,3 +65,7 @@ export enum ErrorMessage {
     FAILED_TO_EDIT_CHAT = 'failed_to_edit_chat',
     UNKNOWN = 'unknown',
 }
+
+export enum SessionStorage {
+    SEND_FORM = 'send_form',
+}

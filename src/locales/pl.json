@@ -177,6 +177,17 @@
             "success": "Hasło zostało zresetowane. Zaloguj się na swoje konto."
         }
     },
+    "support_us": {
+        "title": "Pomóż nam rozwijać się i dotrzeć do większej liczby osób!",
+        "subtitle": "Fundacja Peryskop to projekt non-profit, który działa dzięki wsparciu wolontariuszy i darczyńców. Jeśli chcesz wesprzeć naszą działalność, możesz to zrobić na kilka sposobów.",
+        "options": {
+            "share": {
+                "copy": "Skopiuj link do schowka",
+                "title": "1) Udostępnij nasz projekt",
+                "subtitle": "Podziel się naszym projektem ze znajomymi i rodziną. Im więcej osób nas pozna, tym więcej osób możemy pomóc. Kliknij w poniższy przycisk, aby udostępnić nasz projekt w mediach społecznościowych."
+            }
+        }
+    },
     "tos": {
         "title": "Regulamin",
         "subtitle": "Zapoznaj się z regulaminem serwisu klikając w poniższe linki.",
@@ -199,6 +210,7 @@
         "change_avatar_label": "Bezpośredni link do zdjęcia",
         "change_avatar_tutorial": "Aby zmienić zdjęcie profilowe, wklej bezpośredni link do zdjęcia w pole poniżej. Aby uzyskać link do zdjęcia, kliknij prawym przyciskiem myszy na zdjęcie, które chcesz użyć i wybierz opcję 'Kopiuj adres obrazu'."
     },
+
     "articles": {
         "read_more": "Czytaj więcej",
         "title": "Tworzymy przestrzeń bez tabu, dla Ciebie!",
@@ -287,6 +299,7 @@
         "choose_mentee_button": "Dołącz teraz",
         "choose_volunteer_button": "Zostań wolontariuszem",
         "title": "Darmowe i anonimowe wsparcie psychologiczne w formie czatu",
+        "chat_now": "Rozmawiaj teraz",
         "desc": "Dołacz do grona podopiecznych, lub zostań wolontariuszem",
         "about_us": {
             "learn_more_button": "Dowiedz się więcej",
@@ -477,5 +490,10 @@
         "themes": "Problemy",
         "reason": "Powód dołączenia",
         "did_help": "Czy pomogał wcześniej"
+    },
+    "form_status": {
+        "accepted": "Zaakceptowany",
+        "rejected": "Odrzucony",
+        "waited": "Oczekujący"
     }
 }

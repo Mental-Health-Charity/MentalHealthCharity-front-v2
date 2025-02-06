@@ -3,7 +3,9 @@ import { Box, Button, IconButton } from '@mui/material';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import PeopleIcon from '../../../../assets/static/landing_icon.png';
+import CardImage01 from '../../../../assets/static/head_1.svg';
+import CardImage02 from '../../../../assets/static/head_2.svg';
+import CardImage03 from '../../../../assets/static/head_3.svg';
 import useTheme from '../../../../theme';
 import Card from '../Card';
 import SimpleCard from '../SimpleCard';
@@ -36,16 +38,19 @@ const AboutUs = () => {
             {
                 title: t('homepage.about_us.small_cards.0.title'),
                 text: t('homepage.about_us.small_cards.0.desc'),
+                img: CardImage01,
                 id: 0,
             },
             {
                 title: t('homepage.about_us.small_cards.1.title'),
                 text: t('homepage.about_us.small_cards.1.desc'),
+                img: CardImage02,
                 id: 1,
             },
             {
                 title: t('homepage.about_us.small_cards.2.title'),
                 text: t('homepage.about_us.small_cards.2.desc'),
+                img: CardImage03,
                 id: 2,
             },
         ],
@@ -77,18 +82,18 @@ const AboutUs = () => {
                     margin: '50px 0',
                 }}
             >
-                {smallCards.map(({ id, text, title }) => (
+                {smallCards.map(({ id, text, title, img }) => (
                     <Box key={id} display="flex" gap={10} flexDirection={id % 2 === 0 ? 'row' : 'row-reverse'}>
                         <Card sx={{ width: '100%' }} title={title} subtitle={text}></Card>
                         <ImageWrapperControl>
                             <StyledImageWrapper>
-                                <img width={180} loading="lazy" height={200} alt="People icon" src={PeopleIcon} />
+                                <img width={180} loading="lazy" height={200} alt="People icon" src={img} />
                             </StyledImageWrapper>
                             <StyledImageWrapper>
-                                <img width={180} loading="lazy" height={200} alt="People icon" src={PeopleIcon} />
+                                <img width={180} loading="lazy" height={200} alt="People icon" src={img} />
                             </StyledImageWrapper>
                             <StyledImageWrapper>
-                                <img width={180} loading="lazy" height={200} alt="People icon" src={PeopleIcon} />
+                                <img width={180} loading="lazy" height={200} alt="People icon" src={img} />
                             </StyledImageWrapper>
                         </ImageWrapperControl>
                     </Box>

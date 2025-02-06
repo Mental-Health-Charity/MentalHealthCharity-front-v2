@@ -12,7 +12,7 @@ const WindowListVirtualizer = ({ rowCount, onRender, rowHeight = 30 }: Props) =>
 
     return (
         <div style={{ overflow: 'scroll' }}>
-            <div style={{ minWidth: '800px' }}>
+            <div>
                 <WindowScroller ref={ref} scrollElement={window}>
                     {({
                         height,

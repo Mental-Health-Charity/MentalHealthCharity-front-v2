@@ -1,22 +1,22 @@
-import { Box, Button, Chip, Typography } from "@mui/material";
-import WindowListVirtualizer from "../../../shared/components/WindowListVirtualizer";
-import { Pagination } from "../../../shared/types";
-import { useTranslation } from "react-i18next";
-import useTheme from "../../../../theme";
-import EditIcon from "@mui/icons-material/Edit";
-import { Index, ListRowProps } from "react-virtualized";
-import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
-import { Chat } from "../../types";
-import formatDate from "../../../shared/helpers/formatDate";
-import ActionMenu from "../../../shared/components/ActionMenu";
-import DeleteIcon from "@mui/icons-material/Delete";
-import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
-import AddIcon from "@mui/icons-material/Add";
-import UserTableItem from "../../../users/components/UserTableItem";
-import { useNavigate } from "react-router-dom";
-import PauseIcon from "@mui/icons-material/Pause";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import { User } from "../../../auth/types";
+import AddIcon from '@mui/icons-material/Add';
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import PauseIcon from '@mui/icons-material/Pause';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { Box, Button, Chip, Typography, useMediaQuery } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { Index, ListRowProps } from 'react-virtualized';
+import useTheme from '../../../../theme';
+import { User } from '../../../auth/types';
+import ActionMenu from '../../../shared/components/ActionMenu';
+import WindowListVirtualizer from '../../../shared/components/WindowListVirtualizer';
+import formatDate from '../../../shared/helpers/formatDate';
+import { Pagination } from '../../../shared/types';
+import UserTableItem from '../../../users/components/UserTableItem';
+import { Chat } from '../../types';
 
 interface Props {
     data?: Pagination<Chat>;
@@ -37,12 +37,15 @@ const ChatManager = ({
 }: Props) => {
     const { t } = useTranslation();
     const theme = useTheme();
+    const isMobile = useMediaQuery('(max-width: 600px)');
 
     const navigate = useNavigate();
+    const userHeight = isMobile ? 110 : 70;
+    const padding = isMobile ? 200 : 150;
 
     const getRowHeight = ({ index }: Index) => {
         const chat = data && data.items[index];
-        return chat ? chat.participants.length * 70 + 150 : 0;
+        return chat ? chat.participants.length * userHeight + padding : 0;
     };
 
     const onRender = ({ index, key, style }: ListRowProps) => {
@@ -53,13 +56,13 @@ const ChatManager = ({
             <Box
                 key={key}
                 sx={{
-                    padding: "15px 15px",
+                    padding: '15px 15px',
                     backgroundColor: theme.palette.background.paper,
                     border: `2px solid ${theme.palette.colors.border}`,
-                    borderRadius: "8px",
-                    display: "flex",
-                    alignItems: "start",
-                    flexDirection: "column",
+                    borderRadius: '8px',
+                    display: 'flex',
+                    alignItems: 'start',
+                    flexDirection: 'column',
                     color: theme.palette.text.secondary,
                     maxHeight: getRowHeight({ index }) - 10,
                     ...style,
@@ -67,10 +70,11 @@ const ChatManager = ({
             >
                 <Box
                     width="100%"
+                    flexWrap="wrap"
                     sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
                     }}
                 >
                     <Box display="flex" alignItems="center" gap={2}>
@@ -80,10 +84,9 @@ const ChatManager = ({
                                 alignItems="center"
                                 justifyContent="center"
                                 sx={{
-                                    backgroundColor:
-                                        theme.palette.colors.border,
-                                    borderRadius: "4px",
-                                    padding: "14px",
+                                    backgroundColor: theme.palette.colors.border,
+                                    borderRadius: '4px',
+                                    padding: '14px',
                                 }}
                             >
                                 <ChatBubbleIcon
@@ -97,66 +100,53 @@ const ChatManager = ({
                         </Box>
                     </Box>
                     <Box display="flex" alignItems="center" gap={2}>
-                        <Chip
-                            color="info"
-                            label={formatDate(chat.creation_date)}
-                        />
-                        {chat.is_supervisor_chat && (
-                            <Chip color="error" label={t("chat.admin_chat")} />
-                        )}
+                        <Chip color="info" label={formatDate(chat.creation_date)} />
+                        {chat.is_supervisor_chat && <Chip color="error" label={t('chat.admin_chat')} />}
 
                         <Chip
-                            color={chat.is_active ? "success" : "error"}
-                            label={
-                                chat.is_active
-                                    ? t("common.active")
-                                    : t("common.inactive")
-                            }
+                            color={chat.is_active ? 'success' : 'error'}
+                            label={chat.is_active ? t('common.active') : t('common.inactive')}
                         />
 
                         <ActionMenu
                             actions={[
                                 {
-                                    id: "edit",
-                                    label: t("common.edit"),
+                                    id: 'edit',
+                                    label: t('common.edit'),
                                     onClick: () => onEditChat(chat),
                                     icon: <EditIcon />,
                                 },
 
                                 {
-                                    id: "go_to_chat",
-                                    label: t("chat.go_to_chat"),
+                                    id: 'go_to_chat',
+                                    label: t('chat.go_to_chat'),
                                     href: `/chat/${chat.id}`,
                                     icon: <ArrowCircleRightIcon />,
                                 },
 
                                 {
-                                    id: "disable",
-                                    variant: "divider",
-                                    label: chat.is_active
-                                        ? t("common.disable")
-                                        : t("common.enable"),
+                                    id: 'disable',
+                                    variant: 'divider',
+                                    label: chat.is_active ? t('common.disable') : t('common.enable'),
                                     onClick: () => onToggleChat(chat),
                                     icon: chat.is_active ? (
                                         <PauseIcon
                                             sx={{
-                                                color: theme.palette.warning
-                                                    .main,
+                                                color: theme.palette.warning.main,
                                             }}
                                         />
                                     ) : (
                                         <PlayArrowIcon
                                             sx={{
-                                                color: theme.palette.success
-                                                    .main,
+                                                color: theme.palette.success.main,
                                             }}
                                         />
                                     ),
                                 },
                                 {
-                                    id: "remove",
-                                    variant: "divider",
-                                    label: t("common.remove"),
+                                    id: 'remove',
+                                    variant: 'divider',
+                                    label: t('common.remove'),
                                     onClick: () => onRemoveChat(chat),
                                     icon: (
                                         <DeleteIcon
@@ -172,23 +162,23 @@ const ChatManager = ({
                 </Box>
                 <Box
                     sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "start",
-                        width: "100%",
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'start',
+                        width: '100%',
                         gap: 2,
-                        marginTop: "20px",
-                        position: "relative",
+                        marginTop: '20px',
+                        position: 'relative',
 
-                        "&::before": {
+                        '&::before': {
                             content: '""',
-                            display: "block",
-                            position: "absolute",
-                            width: "5px",
-                            minHeight: "calc(100% - 81px)",
+                            display: 'block',
+                            position: 'absolute',
+                            width: '5px',
+                            minHeight: 'calc(100% - 81px)',
                             backgroundColor: theme.palette.colors.border,
-                            marginBottom: "20px",
-                            left: "0px",
+                            marginBottom: '20px',
+                            left: '0px',
                         },
                     }}
                 >
@@ -197,19 +187,14 @@ const ChatManager = ({
                             <UserTableItem
                                 additionalActions={[
                                     {
-                                        id: "remove",
-                                        label: t("chat.remove_from_chat"),
-                                        variant: "divider",
-                                        onClick: () =>
-                                            onRemoveParticipant(
-                                                chat,
-                                                participant
-                                            ),
+                                        id: 'remove',
+                                        label: t('chat.remove_from_chat'),
+                                        variant: 'divider',
+                                        onClick: () => onRemoveParticipant(chat, participant),
                                         icon: (
                                             <DeleteIcon
                                                 sx={{
-                                                    color: theme.palette.error
-                                                        .main,
+                                                    color: theme.palette.error.main,
                                                 }}
                                             />
                                         ),
@@ -217,33 +202,25 @@ const ChatManager = ({
                                 ]}
                                 user={participant}
                                 sx={{
-                                    padding: "0 0 0 35px",
-                                    border: "none",
-                                    width: "100%",
+                                    padding: '0 0 0 35px',
+                                    border: 'none',
+                                    width: '100%',
 
-                                    "&::after": {
+                                    '&::after': {
                                         content: '""',
-                                        display: "block",
-                                        position: "absolute",
-                                        width: "25px",
-                                        height: "4px",
-                                        backgroundColor:
-                                            theme.palette.colors.border,
-                                        left: "00px",
+                                        display: 'block',
+                                        position: 'absolute',
+                                        width: '25px',
+                                        height: '4px',
+                                        backgroundColor: theme.palette.colors.border,
+                                        left: '00px',
                                     },
                                 }}
-                                onEdit={() =>
-                                    navigate(
-                                        `/admin/users?search=${participant.email}`
-                                    )
-                                }
+                                onEdit={() => navigate(`/admin/users?search=${participant.email}`)}
                             />
                         ))}
-                    <Button
-                        onClick={() => onAddParticipant(chat)}
-                        variant="text"
-                    >
-                        <AddIcon /> {t("chat.add_participant")}
+                    <Button onClick={() => onAddParticipant(chat)} variant="text">
+                        <AddIcon /> {t('chat.add_participant')}
                     </Button>
                 </Box>
             </Box>
@@ -251,7 +228,7 @@ const ChatManager = ({
     };
 
     return (
-        <div style={{ minHeight: "100vh" }}>
+        <div style={{ minHeight: '100vh' }}>
             <WindowListVirtualizer
                 rowCount={data ? data.items.length : 0}
                 rowHeight={getRowHeight}
