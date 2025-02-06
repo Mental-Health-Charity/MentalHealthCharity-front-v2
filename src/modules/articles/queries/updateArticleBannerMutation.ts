@@ -1,19 +1,22 @@
-import { url } from "../../../api";
-import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
-import handleApiError from "../../shared/helpers/handleApiError";
-import { Article, UpdateArticlePayload } from "../types";
+import { url } from '../../../api';
+import getAuthHeaders from '../../auth/helpers/getAuthHeaders';
+import handleApiError from '../../shared/helpers/handleApiError';
+import { Article, UpdateArticleBannerOptions } from '../types';
 
-const updateArticleMutation = async ({
-    article_id,
-    ...payload
-}: UpdateArticlePayload): Promise<Article> => {
+const updateArticleBannerMutation = async ({ article_id, banner }: UpdateArticleBannerOptions): Promise<Article> => {
     const headers = getAuthHeaders();
 
+    const formData = new FormData();
+    formData.append('banner', banner); // banner może być Base64 lub plikiem
+
     try {
-        const res = await fetch(url.articles.update({ id: article_id }), {
-            method: "PUT",
-            headers,
-            body: JSON.stringify(payload),
+        const res = await fetch(url.articles.updateBanner({ id: article_id }), {
+            method: 'PUT',
+            headers: {
+                ...headers,
+                'Content-Type': 'multipart/form-data',
+            },
+            body: formData,
         });
 
         if (!res.ok) {
@@ -22,9 +25,9 @@ const updateArticleMutation = async ({
 
         return await res.json();
     } catch (e) {
-        console.error("While updating article banner:", e);
+        console.error('While updating article banner:', e);
         throw e;
     }
 };
 
-export default updateArticleMutation;
+export default updateArticleBannerMutation;

@@ -3,9 +3,10 @@ import loading_icon from '../../../../assets/static/loading.svg';
 
 interface Props extends BoxProps {
     variant?: 'small' | 'fullscreen';
+    size?: number;
 }
 
-const Loader = ({ variant = 'small', ...props }: Props) => {
+const Loader = ({ variant = 'small', size = 60, ...props }: Props) => {
     const theme = useTheme();
     if (variant === 'fullscreen') {
         return (
@@ -34,8 +35,8 @@ const Loader = ({ variant = 'small', ...props }: Props) => {
         return (
             <Box
                 sx={{
-                    height: '60px',
-                    width: '60px',
+                    height: size,
+                    width: size,
                     margin: 'auto auto',
                     ...props.sx,
                 }}

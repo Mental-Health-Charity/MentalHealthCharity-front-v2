@@ -81,6 +81,7 @@ const MenteeForm = ({ onSubmit, setStep, step }: Props) => {
                                 email: values.email,
                                 full_name: values.name,
                                 password: values.password,
+                                policy_confirm: true,
                             },
                             {
                                 onSuccess: () => {

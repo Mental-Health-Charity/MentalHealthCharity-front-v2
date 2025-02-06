@@ -26,7 +26,7 @@ import { Permissions } from '../../../shared/constants';
 import formatDate from '../../../shared/helpers/formatDate';
 import usePermissions from '../../../shared/hooks/usePermissions';
 import { ArticleStatus } from '../../constants';
-import updateArticleMutation from '../../queries/updateArticleBannerMutation';
+import updateArticleMutation from '../../queries/updateArticleMutation';
 import { Article } from '../../types';
 
 interface Props {

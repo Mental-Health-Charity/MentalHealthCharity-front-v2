@@ -2,6 +2,7 @@ import { Box } from '@mui/material';
 import React from 'react';
 import { Toaster } from 'react-hot-toast';
 import useTheme from '../../../../theme';
+import Announcement from '../Announcement';
 import CookiesBar from '../CookiesBar';
 import Footer from '../Footer';
 
@@ -24,6 +25,7 @@ const Layout = ({ children }: Props) => {
             {children}
             {!isAdminScreen && <Footer />}
             <CookiesBar />
+            <Announcement />
         </Box>
     );
 };

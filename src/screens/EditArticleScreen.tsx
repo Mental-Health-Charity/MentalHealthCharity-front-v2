@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import ArticleEditor from '../modules/articles/components/ArticleEditor';
 import { ArticleRequiredRoles, ArticleStatus } from '../modules/articles/constants';
 import { getArticleByIdQueryOptions } from '../modules/articles/queries/getArticleByIdQueryOptions';
-import updateArticleMutation from '../modules/articles/queries/updateArticleBannerMutation';
+import updateArticleMutation from '../modules/articles/queries/updateArticleMutation';
 import { CreateArticleValues, UpdateArticlePayload } from '../modules/articles/types';
 import Container from '../modules/shared/components/Container';
 import Loader from '../modules/shared/components/Loader';
@@ -74,7 +74,7 @@ const EditArticleScreen = () => {
     const initialValues: CreateArticleValues = {
         title: data?.title || '',
         content: data?.content || '',
-        banner_url: '',
+        banner_url: data?.banner_url,
         article_category_id: data?.article_category.id || 0,
         status: ArticleStatus.CORRECTED,
         required_role: data?.required_role || ArticleRequiredRoles.ANYONE,
@@ -110,6 +110,7 @@ const EditArticleScreen = () => {
                     <ArticleEditor
                         initialValues={initialValues}
                         onSaveDraft={handleCreateDraft}
+                        articleId={Number(id)}
                         onSubmit={(values) => handleEditArticle(values)}
                     />
                 )}

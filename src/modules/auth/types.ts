@@ -10,6 +10,7 @@ export interface RegisterFormValues {
     email: string;
     full_name: string;
     confirmPassword: string;
+    policy_confirm: boolean;
 }
 
 export interface LoginAccessTokenResponse {
