@@ -29,6 +29,7 @@ import {
 
 export const baseUrl = import.meta.env.VITE_BASE_URL as string;
 export const websocketUrl = import.meta.env.VITE_BASE_WS_URL as string;
+export const posthogKey = import.meta.env.VITE_POSTHOG_KEY as string;
 
 export const url = {
     login: {
