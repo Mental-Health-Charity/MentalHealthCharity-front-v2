@@ -1,50 +1,58 @@
-# React + TypeScript + Vite
+# Peryskop Foundation Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Peryskop Foundation Frontend is a platform designed to bridge the gap in accessibility to free psychological support. Users can submit requests to be paired with a competent volunteer via an integrated chat system. Administrators and Supervisors manage these pairings as well as overall user administration.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Table of Contents
 
-## Expanding the ESLint configuration
+- [Overview](#overview)
+- [Features](#features)
+- [User Roles](#user-roles)
+- [Built With](#built-with)
+- [Installation](#installation)
+- [Screenshots](#screenshots)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+---
 
-- Configure the top-level `parserOptions` property like this:
+## Overview
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+The platform addresses the shortage of free psychological help by connecting individuals in need with qualified volunteers. With a dedicated chat system, pairing functionality, specialized forms for joining the beneficiary network, a ticket system for managing reports, and a content management system for articles, the application covers a broad range of features to ensure timely and effective support.
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+---
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## Features
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+- **Dedicated Chat System:** Real-time communication between users and volunteers.
+- **User Pairing:** Request and pair users with appropriate volunteers.
+- **Custom Join Forms:** Specialized forms for individuals wishing to become beneficiaries.
+- **Ticket System:** Manage support requests and reports efficiently.
+- **Content Management:** Create, manage, and edit articles to provide valuable information.
+
+---
+
+## User Roles
+
+The system supports several roles, each with specific responsibilities:
+
+- **Administrator:**
+  - Manage join forms for beneficiaries.
+  - Oversee chats.
+  - Handle user management and ticket processing.
+  
+- **Supervisor:**
+  - Manage join forms for beneficiaries.
+  - Oversee chats.
+  - Handle user management and ticket processing.
+  
+- **Editor:**
+  - Manage and edit articles.
+  
+- **Volunteer:**
+  - Create articles.
+  - Provide support through the chat system to beneficiaries.
+
+---
