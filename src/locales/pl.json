@@ -23,6 +23,7 @@
         "search": "Wyszukaj...",
         "login": "Zaloguj",
         "comming_soon": "Wkrótce dostępne",
+        "saved": "Zapisano",
         "create_new_account": "Załóż konto",
         "try_again": "Spróbuj ponownie",
         "sending": "Wysyłanie...",
@@ -132,6 +133,7 @@
         "open": "Połaczono",
         "admin_chat": "Czat koordynacyjny",
         "show_more_chats": "Lista czatów",
+        "contract_confirmed": "Kontrakt został potwierdzony",
         "remove_participant_success": "Uczestnik został usunięty",
         "about": {
             "title": "Jak otrzymać pomoc?",

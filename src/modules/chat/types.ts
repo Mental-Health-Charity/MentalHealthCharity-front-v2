@@ -68,7 +68,7 @@ export interface SocketMessage {
 }
 
 export interface Contract {
-    isConfirmed: boolean;
+    is_confirmed: boolean;
     content: string;
     id: number;
 }

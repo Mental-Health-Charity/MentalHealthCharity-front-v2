@@ -1,16 +1,17 @@
-import Modal from '../../../shared/components/Modal';
-import Markdown from '../../../shared/components/Markdown';
-import { t } from 'i18next';
-import { Button } from '@mui/material';
-import { useEffect, useLayoutEffect, useState } from 'react';
-import { getContractForChat } from '../../queries/getContractForChat';
+import { Box, Button } from '@mui/material';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import usePermissions from '../../../shared/hooks/usePermissions';
+import { t } from 'i18next';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import Loader from '../../../shared/components/Loader';
+import Markdown from '../../../shared/components/Markdown';
+import Modal from '../../../shared/components/Modal';
 import { Permissions } from '../../../shared/constants';
 import useDebounce from '../../../shared/hooks/useDebounce';
-import toast from 'react-hot-toast';
-import { editContractForChatMutation } from '../../queries/editContractForChat';
+import usePermissions from '../../../shared/hooks/usePermissions';
 import { confirmContractForChatMutation } from '../../queries/confirmContractForChat';
+import { editContractForChatMutation } from '../../queries/editContractForChat';
+import { getContractForChat } from '../../queries/getContractForChat';
 
 interface Props {
     onClose: () => void;
@@ -35,15 +36,16 @@ const ContractModal = ({ isOpen, onClose, chatId }: Props) => {
     };
 
     useEffect(() => {
-        if (debouncedModalContent && !data?.isConfirmed) {
+        if (debouncedModalContent && data && !data.is_confirmed && debouncedModalContent !== data.content) {
             editContractForChat({ id: chatId, body: modalContent });
         }
-    }, [debouncedModalContent]);
+    }, [debouncedModalContent, data]);
 
     const { mutate: editContractForChat } = useMutation({
         mutationFn: editContractForChatMutation,
         onSuccess: () => {
-            toast.success('Edited contract');
+            toast.success(t('common.saved'));
+
             refetch();
         },
     });
@@ -51,7 +53,7 @@ const ContractModal = ({ isOpen, onClose, chatId }: Props) => {
     const { mutate } = useMutation({
         mutationFn: confirmContractForChatMutation,
         onSuccess: () => {
-            toast.success('Confirmed contract');
+            toast.success(t('chat.contract_confirmed'));
             refetch();
         },
     });
@@ -65,25 +67,25 @@ const ContractModal = ({ isOpen, onClose, chatId }: Props) => {
         });
     };
 
-    if (isLoading) {
-        return <div>Loading...</div>;
+    if (isLoading || !data) {
+        return <Loader />;
     }
 
     return (
         <Modal title="Contract" onClose={onClose} open={isOpen}>
-            <>
+            <Box sx={{ width: '800px' }}>
                 <Markdown
                     onChange={handleModalContentChange}
                     content={modalContent}
                     className="markdown-editor"
-                    readOnly={false}
-                ></Markdown>
+                    readOnly={data.is_confirmed}
+                />
                 {hasPermissions(Permissions.CAN_CONFIRM_CONTRACT) && (
-                    <Button variant="contained" onClick={handleConfirmContract} disabled={(data as any).is_confirmed}>
+                    <Button variant="contained" onClick={handleConfirmContract} disabled={data.is_confirmed}>
                         {t('chat.accept_contract')}
                     </Button>
                 )}
-            </>
+            </Box>
         </Modal>
     );
 };
