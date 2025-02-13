@@ -42,6 +42,7 @@ export enum Permissions {
     READ_OWN_CHATS = 'READ_OWN_CHATS',
     MANAGE_MENTEE_FORMS = 'MANAGE_MENTEE_FORMS',
     MANAGE_VOLUNTEER_FORMS = 'MANAGE_VOLUNTEER_FORMS',
+    CAN_CONFIRM_CONTRACT = 'CAN_CONFIRM_CONTRACT',
 }
 
 export const groupedPermissions = {
@@ -61,6 +62,7 @@ export const groupedPermissions = {
         Permissions.SEARCH_USERS,
         Permissions.READ_OWN_CHATS,
         Permissions.EDIT_CHAT_NOTE,
+        Permissions.CAN_CONFIRM_CONTRACT,
     ],
     [Roles.VOLUNTEER]: [
         Permissions.CREATE_ARTICLE,
@@ -68,6 +70,7 @@ export const groupedPermissions = {
         Permissions.DELETE_ARTICLE,
         Permissions.READ_OWN_CHATS,
         Permissions.EDIT_CHAT_NOTE,
+        Permissions.CAN_CONFIRM_CONTRACT,
     ],
     [Roles.REDACTOR]: [
         Permissions.CREATE_ARTICLE,

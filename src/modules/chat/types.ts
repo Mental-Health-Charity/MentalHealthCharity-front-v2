@@ -67,6 +67,12 @@ export interface SocketMessage {
     is_read: boolean;
 }
 
+export interface Contract {
+    is_confirmed: boolean;
+    content: string;
+    id: number;
+}
+
 export interface Chat {
     name: string;
     id: number;
