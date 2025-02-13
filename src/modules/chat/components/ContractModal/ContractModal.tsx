@@ -1,4 +1,4 @@
-import { Box, Button } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { t } from 'i18next';
 import { useEffect, useLayoutEffect, useState } from 'react';
@@ -12,7 +12,6 @@ import usePermissions from '../../../shared/hooks/usePermissions';
 import { confirmContractForChatMutation } from '../../queries/confirmContractForChat';
 import { editContractForChatMutation } from '../../queries/editContractForChat';
 import { getContractForChat } from '../../queries/getContractForChat';
-
 interface Props {
     onClose: () => void;
     isOpen: boolean;
@@ -72,7 +71,7 @@ const ContractModal = ({ isOpen, onClose, chatId }: Props) => {
     }
 
     return (
-        <Modal title="Contract" onClose={onClose} open={isOpen}>
+        <Modal title="Kontrakt" onClose={onClose} open={isOpen}>
             <Box sx={{ width: '800px' }}>
                 <Markdown
                     onChange={handleModalContentChange}
@@ -80,11 +79,21 @@ const ContractModal = ({ isOpen, onClose, chatId }: Props) => {
                     className="markdown-editor"
                     readOnly={data.is_confirmed}
                 />
-                {hasPermissions(Permissions.CAN_CONFIRM_CONTRACT) && (
-                    <Button variant="contained" onClick={handleConfirmContract} disabled={data.is_confirmed}>
-                        {t('chat.accept_contract')}
-                    </Button>
-                )}
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '20px',
+                        justifyContent: 'space-between',
+                    }}
+                >
+                    {hasPermissions(Permissions.CAN_CONFIRM_CONTRACT) && (
+                        <Button variant="contained" onClick={handleConfirmContract} disabled={data.is_confirmed}>
+                            {t('chat.accept_contract')}
+                        </Button>
+                    )}
+                    {data.is_confirmed && <Typography color="success">{t('chat.contract_confirmed_desc')}</Typography>}
+                </Box>
             </Box>
         </Modal>
     );

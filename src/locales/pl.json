@@ -134,6 +134,7 @@
         "admin_chat": "Czat koordynacyjny",
         "show_more_chats": "Lista czatów",
         "contract_confirmed": "Kontrakt został potwierdzony",
+        "contract_confirmed_desc": "Kontrakt został potwierdzony. Nie można go już edytować.",
         "remove_participant_success": "Uczestnik został usunięty",
         "about": {
             "title": "Jak otrzymać pomoc?",
