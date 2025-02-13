@@ -84,14 +84,8 @@ const AboutUs = () => {
             >
                 {smallCards.map(({ id, text, title, img }) => (
                     <Box key={id} display="flex" gap={10} flexDirection={id % 2 === 0 ? 'row' : 'row-reverse'}>
-                        <Card sx={{ width: '100%' }} title={title} subtitle={text}></Card>
+                        <Card textAlign="justify" sx={{ width: '100%' }} title={title} subtitle={text}></Card>
                         <ImageWrapperControl>
-                            <StyledImageWrapper>
-                                <img width={180} loading="lazy" height={200} alt="People icon" src={img} />
-                            </StyledImageWrapper>
-                            <StyledImageWrapper>
-                                <img width={180} loading="lazy" height={200} alt="People icon" src={img} />
-                            </StyledImageWrapper>
                             <StyledImageWrapper>
                                 <img width={180} loading="lazy" height={200} alt="People icon" src={img} />
                             </StyledImageWrapper>
@@ -101,7 +95,18 @@ const AboutUs = () => {
             </Box>
             <Box zIndex={1} display="flex" gap={8} flexDirection="column">
                 {cards.map(({ id, text, title, subtitle }) => (
-                    <SimpleCard key={id} subtitle={subtitle} title={title} text={text}>
+                    <SimpleCard
+                        titleProps={{
+                            sx: {
+                                textAlign: 'start',
+                            },
+                        }}
+                        textAlign="justify"
+                        key={id}
+                        subtitle={subtitle}
+                        title={title}
+                        text={text}
+                    >
                         <Box
                             sx={{
                                 marginTop: '20px',
