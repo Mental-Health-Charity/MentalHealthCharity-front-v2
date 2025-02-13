@@ -53,7 +53,7 @@ const EmojiPicker = ({ onChange, textFieldRef }: Props) => {
                 sx={{
                     position: 'absolute',
                     bottom: '40px',
-                    right: '30px',
+                    right: { xs: '-70px', sm: '30px' },
                     zIndex: 10,
                 }}
             >
