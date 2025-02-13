@@ -1,8 +1,8 @@
 import { Box, Button, Checkbox, FormControlLabel, TextField, Typography } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
+import InternalLink from '../../../shared/components/InternalLink/styles';
 import { validation } from '../../../shared/constants';
 import { LoginFormValues, RegisterFormValues } from '../../types';
 
@@ -95,7 +95,7 @@ const RegisterForm = ({ onSubmit, initial }: Props) => {
                             label={
                                 <Typography>
                                     Rejestrując się wyrażam zgodę na{' '}
-                                    <Link to="/tos">warunki użytkowania i politykę prywatności</Link>
+                                    <InternalLink to="/tos">warunki użytkowania i politykę prywatności</InternalLink>
                                 </Typography>
                             }
                         />

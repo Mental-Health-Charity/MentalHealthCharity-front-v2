@@ -19,7 +19,7 @@
             "volunteer_supervisor": "Koordynator"
         },
         "submit": "Wyślij",
-        "join_us": "Dołącz teraz",
+        "join_us": "Uzyskaj wsparcie",
         "search": "Wyszukaj...",
         "login": "Zaloguj",
         "comming_soon": "Wkrótce dostępne",
@@ -161,7 +161,8 @@
         "customize": "Dostosuj",
         "no_available_chats_found": "Nie znaleziono dostępnych czatów. Skontakuj się z administratorem",
         "customize_chat": {
-            "title": "Dostosuj czat"
+            "title": "Dostosuj czat",
+            "desc": "Ta funkcja jest testowa i będzie rozszerzana w przyszłości"
         },
         "accept_contract": "Akceptuj kontrakt"
     },
@@ -188,6 +189,11 @@
                 "copy": "Skopiuj link do schowka",
                 "title": "1) Udostępnij nasz projekt",
                 "subtitle": "Podziel się naszym projektem ze znajomymi i rodziną. Im więcej osób nas pozna, tym więcej osób możemy pomóc. Kliknij w poniższy przycisk, aby udostępnić nasz projekt w mediach społecznościowych."
+            },
+            "donate": {
+                "title": "2) Przekaż datek na nasze działania",
+                "subtitle": "Jeśli chcesz wesprzeć naszą działalność finansowo, możesz przekazać datek na nasze konto bankowe. Numer konta znajduje się pod spodem, można kliknąć, aby skopiować.",
+                "content": "Numer konta"
             }
         },
         "no_available_chats_found": "Nie znaleziono dostępnych czatów. Skontakuj się z administratorem"
@@ -300,11 +306,11 @@
         "rights_reserved": "Fundacja Peryskop - wszelkie prawa zastrzeżone"
     },
     "homepage": {
-        "choose_mentee_button": "Dołącz teraz",
+        "choose_mentee_button": "Uzyskaj wsparcie",
         "choose_volunteer_button": "Zostań wolontariuszem",
         "title": "Darmowe i anonimowe wsparcie psychologiczne w formie czatu",
         "chat_now": "Rozmawiaj teraz",
-        "desc": "Dołacz do grona podopiecznych, lub zostań wolontariuszem",
+        "desc": "Uzyskaj pomoc, lub zostań wolontariuszem już teraz",
         "about_us": {
             "learn_more_button": "Dowiedz się więcej",
             "small_cards": [

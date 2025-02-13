@@ -1,7 +1,7 @@
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Box, Button, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import InternalLink from '../InternalLink/styles';
 import { StyledAnnouncementWrapper } from './style';
 
 const Announcement = () => {
@@ -34,7 +34,7 @@ const Announcement = () => {
         <StyledAnnouncementWrapper>
             <Box className="announcement-content">
                 <Typography color="text.secondary">Chcesz nas wesprzeć?</Typography>
-                <Link to="/support">Kliknij tutaj</Link>
+                <InternalLink to="/support">Kliknij tutaj</InternalLink>
             </Box>
             <Box sx={{ padding: '10px' }}>
                 <Button style={{ color: 'white', padding: 0, margin: 0 }}>

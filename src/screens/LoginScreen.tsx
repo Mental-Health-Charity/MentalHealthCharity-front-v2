@@ -1,10 +1,11 @@
-import { Box, Link, Typography, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import login_background from '../assets/static/login_bg.svg';
 import { useUser } from '../modules/auth/components/AuthProvider';
 import LoginForm from '../modules/auth/components/LoginForm';
 import { LoginFormValues } from '../modules/auth/types';
+import InternalLink from '../modules/shared/components/InternalLink/styles';
 
 const LoginScreen = () => {
     const theme = useTheme();
@@ -64,9 +65,9 @@ const LoginScreen = () => {
                 <Box mt="200px" display="flex" width="100%" alignItems="center" justifyContent="center">
                     <Typography variant="body1">
                         Nie masz konta?{' '}
-                        <Link underline="none" sx={{ fontWeight: 'bold' }} href="/auth/register">
+                        <InternalLink sx={{ fontWeight: 'bold' }} to="/auth/register">
                             Zarejestruj się
-                        </Link>
+                        </InternalLink>
                     </Typography>
                 </Box>
             </Box>

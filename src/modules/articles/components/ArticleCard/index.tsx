@@ -18,10 +18,10 @@ import { useMutation } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import { baseUrl } from '../../../../api';
 import { useUser } from '../../../auth/components/AuthProvider';
 import ActionMenu from '../../../shared/components/ActionMenu';
+import InternalLink from '../../../shared/components/InternalLink/styles';
 import { Permissions } from '../../../shared/constants';
 import formatDate from '../../../shared/helpers/formatDate';
 import usePermissions from '../../../shared/hooks/usePermissions';
@@ -64,7 +64,7 @@ const ArticleCard = ({ article, onRefetch, draft }: Props) => {
     const canManageArticle = hasPermissions(Permissions.MANAGE_ARTICLES) || user?.id === article.created_by.id;
 
     return (
-        <Link
+        <InternalLink
             to={draft ? `/articles/edit/${article.id}/` : `/article/${article.id}`}
             reloadDocument
             style={{
@@ -198,7 +198,7 @@ const ArticleCard = ({ article, onRefetch, draft }: Props) => {
                     </Box>
                 </CardContent>
             </Card>
-        </Link>
+        </InternalLink>
     );
 };
 

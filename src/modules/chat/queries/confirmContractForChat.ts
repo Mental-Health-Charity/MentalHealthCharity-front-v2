@@ -1,7 +1,6 @@
-import { ChatContractOptions } from '../types';
+import { url } from '../../../api';
 import getAuthHeaders from '../../auth/helpers/getAuthHeaders';
 import handleApiError from '../../shared/helpers/handleApiError';
-import { url } from '../../../api';
 
 export const confirmContractForChatMutation = async ({ id, body }: any) => {
     const headers = getAuthHeaders();

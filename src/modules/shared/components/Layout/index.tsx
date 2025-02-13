@@ -21,7 +21,16 @@ const Layout = ({ children }: Props) => {
                 backgroundColor: theme.palette.background.default,
             }}
         >
-            <Toaster position="top-center" reverseOrder={false} />
+            <Toaster
+                toastOptions={{
+                    style: {
+                        fontFamily: theme.typography.fontFamily,
+                        fontSize: '18px',
+                    },
+                }}
+                position="top-center"
+                reverseOrder={false}
+            />
             {children}
             {!isAdminScreen && <Footer />}
             <CookiesBar />
