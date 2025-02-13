@@ -8,12 +8,14 @@ import {
     MenuItem,
     Select,
     TextField,
+    Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
+import InternalLink from '../../../shared/components/InternalLink/styles';
 import { VolunteerFormValues } from '../../types';
 import FormWrapper from '../FormWrapper';
 
@@ -284,7 +286,14 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                                     color="primary"
                                 />
                             }
-                            label={t('form.consent_label')}
+                            label={
+                                <Typography>
+                                    Wyrażam zgodę na{' '}
+                                    <InternalLink target="_blank" to="/tos">
+                                        warunki użytkowania i politykę prywatności
+                                    </InternalLink>
+                                </Typography>
+                            }
                         />
                         {formik.touched.tos && formik.errors.tos && (
                             <span style={{ color: 'red' }}>{formik.errors.tos}</span>
