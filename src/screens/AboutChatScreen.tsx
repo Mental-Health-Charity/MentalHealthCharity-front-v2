@@ -1,4 +1,4 @@
-import { Button, Typography } from '@mui/material';
+import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import background from '../assets/static/admin_panel_bg.svg';
@@ -20,10 +20,10 @@ const AboutChatScreen = () => {
             }}
         >
             <Card title={t('chat.about.title')} subtitle={t('chat.about.subtitle')}>
-                <Typography sx={{ marginTop: '20px' }}>{t('chat.about.tutorial')}</Typography>
                 <Button
                     sx={{
                         width: { xs: '100%', md: 'auto' },
+                        marginTop: '20px',
                     }}
                     component={Link}
                     variant="contained"

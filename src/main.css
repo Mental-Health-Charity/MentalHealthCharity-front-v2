@@ -34,7 +34,7 @@
 
     & .mdxeditor-root-contenteditable {
         height: 100%;
-        min-height: 300px;
+        min-height: 100%;
 
         & > div {
             height: 100%;
@@ -62,7 +62,7 @@
 
 .markdown-editable {
     height: 100%;
-    min-height: 500px;
+    min-height: 100%;
 }
 
 .markdown-editable img {

@@ -234,9 +234,11 @@ const Navbar = () => {
                                 </Button>
                             </Tooltip>
                         ) : (
-                            <Button variant="contained" component={Link} to="/articles/dashboard">
-                                {t('common.join_us')}
-                            </Button>
+                            <Box sx={{ display: 'flex', gap: 2 }}>
+                                <Button variant="contained" component={Link} to="/articles/dashboard">
+                                    {t('common.join_us')}
+                                </Button>
+                            </Box>
                         )}
                         {user && (
                             <Menu

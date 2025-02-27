@@ -1,14 +1,27 @@
 import { Box, Button, Typography } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import dots from '../../../../assets/static/card_dots.svg';
 import banner from '../../../../assets/static/hero_image.webp';
 import waves from '../../../../assets/static/waves.svg';
+import { useUser } from '../../../auth/components/AuthProvider';
+import { getChatsQueryOptions } from '../../../chat/queries/getChatsQueryOptions';
 import Card from '../Card';
 import { HeroLogoContainer } from './styles';
 
 const Hero = () => {
     const { t } = useTranslation();
+    const { user } = useUser();
+    const { data: chats } = useQuery(
+        getChatsQueryOptions(
+            { size: 50, page: 1 },
+            {
+                enabled: !!user,
+                queryKey: ['chats'],
+            }
+        )
+    );
 
     return (
         <Box
@@ -99,27 +112,35 @@ const Hero = () => {
                     <Box
                         sx={{ marginTop: '25px', display: 'flex', gap: '15px', flexWrap: { xs: 'wrap', md: 'nowrap' } }}
                     >
-                        <Button
-                            sx={{
-                                width: { xs: '100%', md: 'auto' },
-                            }}
-                            component={Link}
-                            variant="contained"
-                            to="/form/mentee"
-                        >
-                            {t('homepage.choose_mentee_button')}
-                        </Button>
-                        <Button
-                            sx={{
-                                width: { xs: '100%', md: 'auto' },
-                            }}
-                            fullWidth
-                            component={Link}
-                            variant="outlined"
-                            to="/form/volunteer"
-                        >
-                            {t('homepage.choose_volunteer_button')}
-                        </Button>
+                        {chats && chats.total > 0 ? (
+                            <Button component={Link} to="/chat/" variant="contained" fullWidth>
+                                {t('homepage.chat_now')}
+                            </Button>
+                        ) : (
+                            <>
+                                <Button
+                                    sx={{
+                                        width: { xs: '100%', md: 'auto' },
+                                    }}
+                                    component={Link}
+                                    variant="contained"
+                                    to="/form/mentee"
+                                >
+                                    {t('homepage.choose_mentee_button')}
+                                </Button>
+                                <Button
+                                    sx={{
+                                        width: { xs: '100%', md: 'auto' },
+                                    }}
+                                    fullWidth
+                                    component={Link}
+                                    variant="outlined"
+                                    to="/form/volunteer"
+                                >
+                                    {t('homepage.choose_volunteer_button')}
+                                </Button>
+                            </>
+                        )}
                     </Box>
                 </Card>
                 <HeroLogoContainer>

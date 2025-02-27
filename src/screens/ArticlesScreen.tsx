@@ -29,10 +29,11 @@ const ArticlesScreen = () => {
     const { data, isLoading } = useQuery(articlesQueryOptions({ q: debouncedQuery, page, size: 50 }));
 
     // TODO: Waiting for backend to fix
-    const published = useMemo(
-        () => data?.items.filter((article) => article.status === ArticleStatus.PUBLISHED),
-        [data]
-    );
+    const published = useMemo(() => {
+        return data?.items
+            .filter((article) => article.status === ArticleStatus.PUBLISHED)
+            .sort((a, b) => new Date(b.creation_date).getTime() - new Date(a.creation_date).getTime());
+    }, [data]);
 
     return (
         <Container

@@ -18,15 +18,16 @@ import { useMutation } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import { baseUrl } from '../../../../api';
 import { useUser } from '../../../auth/components/AuthProvider';
 import ActionMenu from '../../../shared/components/ActionMenu';
+import InternalLink from '../../../shared/components/InternalLink/styles';
+import Markdown from '../../../shared/components/Markdown';
 import { Permissions } from '../../../shared/constants';
 import formatDate from '../../../shared/helpers/formatDate';
 import usePermissions from '../../../shared/hooks/usePermissions';
 import { ArticleStatus } from '../../constants';
-import updateArticleMutation from '../../queries/updateArticleBannerMutation';
+import updateArticleMutation from '../../queries/updateArticleMutation';
 import { Article } from '../../types';
 
 interface Props {
@@ -64,7 +65,7 @@ const ArticleCard = ({ article, onRefetch, draft }: Props) => {
     const canManageArticle = hasPermissions(Permissions.MANAGE_ARTICLES) || user?.id === article.created_by.id;
 
     return (
-        <Link
+        <InternalLink
             to={draft ? `/articles/edit/${article.id}/` : `/article/${article.id}`}
             reloadDocument
             style={{
@@ -127,21 +128,12 @@ const ArticleCard = ({ article, onRefetch, draft }: Props) => {
                         {article.title}
                     </Typography>
 
-                    <Typography
-                        variant="body1"
-                        color="text.secondary"
-                        fontSize={20}
-                        sx={{
-                            minHeight: '60px',
-                            wordBreak: 'break-word',
-                            // max 1 line
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            display: '-webkit-box',
-                        }}
-                    >
-                        {article.content.length > 100 ? `${article.content.substring(0, 103)}...` : article.content}
-                    </Typography>
+                    <Markdown
+                        readOnly
+                        content={
+                            article.content.length > 100 ? `${article.content.substring(0, 103)}...` : article.content
+                        }
+                    />
                     <Divider
                         sx={{
                             margin: '10px 0',
@@ -198,7 +190,7 @@ const ArticleCard = ({ article, onRefetch, draft }: Props) => {
                     </Box>
                 </CardContent>
             </Card>
-        </Link>
+        </InternalLink>
     );
 };
 

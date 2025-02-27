@@ -1,9 +1,9 @@
 import CookieIcon from '@mui/icons-material/Cookie';
-import { Box, Button, Container, Link, Stack, Typography } from '@mui/material';
+import { Box, Button, Container, Stack, Typography } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link as ReactRouterDomLink } from 'react-router-dom';
 import useTheme from '../../../../theme';
+import InternalLink from '../InternalLink/styles';
 
 const CookiesBar = () => {
     const { t } = useTranslation();
@@ -55,9 +55,7 @@ const CookiesBar = () => {
                     >
                         <CookieIcon />
                         {t('common.cookies_message')}
-                        <Link component={ReactRouterDomLink} to="/tos" color="inherit">
-                            {t('common.cookies_policy')}{' '}
-                        </Link>
+                        <InternalLink to="/tos">{t('common.cookies_policy')} </InternalLink>
                     </Typography>
                     <Button variant="contained" size="small" color="primary" onClick={handleAcceptCookies}>
                         {t('common.accept_cookies')}

@@ -1,6 +1,7 @@
-import { Box, Grid, Link, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Grid, Stack, Typography, useTheme } from '@mui/material';
 import { t } from 'i18next';
 import Container from '../Container';
+import InternalLink, { ExternalLink } from '../InternalLink/styles';
 
 const Footer = () => {
     const theme = useTheme();
@@ -31,15 +32,15 @@ const Footer = () => {
                             Fundacja Peryskop
                         </Typography>
                         <Stack spacing={1}>
-                            <Link href="/#about-us" color="inherit" underline="hover">
+                            <InternalLink color="secondary" to="/#about-us">
                                 {t('footer.about_us')}
-                            </Link>
-                            <Link href="/tos" color="inherit" underline="hover">
+                            </InternalLink>
+                            <InternalLink color="secondary" to="/tos">
                                 {t('footer.privacy_policy')}
-                            </Link>
-                            <Link href="/tos" color="inherit" underline="hover">
+                            </InternalLink>
+                            <InternalLink color="secondary" to="/tos">
                                 {t('footer.terms_of_service')}
-                            </Link>
+                            </InternalLink>
                         </Stack>
                     </Grid>
 
@@ -48,33 +49,30 @@ const Footer = () => {
                             {t('footer.social')}
                         </Typography>
                         <Stack spacing={1}>
-                            <Link
+                            <ExternalLink
                                 href="https://www.facebook.com/groups/1340769720143310"
-                                color="inherit"
                                 target="_blank"
+                                color="secondary"
                                 rel="noopener noreferrer"
-                                underline="hover"
                             >
                                 Facebook
-                            </Link>
-                            <Link
+                            </ExternalLink>
+                            <ExternalLink
                                 href="https://www.facebook.com/groups/1340769720143310"
-                                color="inherit"
                                 target="_blank"
+                                color="secondary"
                                 rel="noopener noreferrer"
-                                underline="hover"
                             >
                                 Twitter
-                            </Link>
-                            <Link
+                            </ExternalLink>
+                            <ExternalLink
                                 href="https://www.linkedin.com/company/fundacja-peryskop"
-                                color="inherit"
                                 target="_blank"
+                                color="secondary"
                                 rel="noopener noreferrer"
-                                underline="hover"
                             >
                                 LinkedIn
-                            </Link>
+                            </ExternalLink>
                         </Stack>
                     </Grid>
 
@@ -84,9 +82,9 @@ const Footer = () => {
                         </Typography>
                         <Typography variant="body2">
                             Email:{' '}
-                            <Link href="mailto:kontakt@fundacjaperyskop.org" color="inherit">
+                            <ExternalLink color="secondary" href="mailto:kontakt@fundacjaperyskop.org">
                                 kontakt@fundacjaperyskop.org
-                            </Link>
+                            </ExternalLink>
                         </Typography>
                     </Grid>
                 </Grid>

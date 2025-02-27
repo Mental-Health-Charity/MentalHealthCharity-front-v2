@@ -1,6 +1,6 @@
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useFormik } from 'formik';
 import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -11,6 +11,7 @@ import { useUser } from '../../../auth/components/AuthProvider';
 import ChangeImageInput from '../../../shared/components/ChangeImageInput';
 import Loader from '../../../shared/components/Loader';
 import Markdown from '../../../shared/components/Markdown';
+import fileToBase64 from '../../../shared/helpers/fileToBase64';
 import { Roles } from '../../../users/constants';
 import {
     ArticleRequiredRoles,
@@ -19,6 +20,7 @@ import {
     translatedArticleStatus,
 } from '../../constants';
 import { getCategoriesQueryOptions } from '../../queries/getCategoriesQueryOptions';
+import updateArticleBannerMutation from '../../queries/updateArticleBannerMutation';
 import { CreateArticleValues } from '../../types';
 import CreateArticleCategoryModal from '../CreateCategoryModal';
 import Videoplayer from '../Videoplayer';
@@ -27,14 +29,32 @@ interface Props {
     initialValues?: CreateArticleValues;
     onSubmit: (values: CreateArticleValues) => void;
     onSaveDraft: (values: CreateArticleValues) => void;
+    articleId?: number;
 }
 
-const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft }: Props) => {
+const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft, articleId }: Props) => {
     const theme = useTheme();
     const { t } = useTranslation();
     const { user, isLoading } = useUser();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { data: categories, isLoading: isCategoriesLoading, refetch } = useQuery(getCategoriesQueryOptions());
+    const { mutate: updateArticleBanner, isPending: isArticleBannerUpdatePending } = useMutation({
+        mutationFn: updateArticleBannerMutation,
+        onSuccess: () => {
+            toast.success(t('articles.article_banner_updated'));
+        },
+    });
+
+    const handleUpdateApiArticleBanner = async (banner: File) => {
+        if (!articleId) return;
+
+        const newBanner = await fileToBase64(banner);
+
+        updateArticleBanner({
+            article_id: articleId,
+            banner: newBanner,
+        });
+    };
 
     const formik = useFormik<CreateArticleValues>({
         initialValues: {
@@ -123,7 +143,6 @@ const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft }: Props) => {
                     flexWrap: 'wrap',
                 }}
             >
-                {/* {!isMobile && <ArticleAuthor user={user} />} */}
                 <Box
                     sx={{
                         display: 'flex',
@@ -132,7 +151,14 @@ const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft }: Props) => {
                 >
                     <ChangeImageInput
                         value={typeof formik.values.banner_url === 'string' ? undefined : formik.values.banner_url}
-                        onChange={(image) => formik.setFieldValue('banner_url', image)}
+                        isLoading={isArticleBannerUpdatePending}
+                        onChange={(image) => {
+                            if (articleId && image) {
+                                handleUpdateApiArticleBanner(image);
+                            } else {
+                                formik.setFieldValue('banner_url', image);
+                            }
+                        }}
                     />
                 </Box>
             </Box>
@@ -197,6 +223,7 @@ const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft }: Props) => {
             <Box
                 sx={{
                     minHeight: '500px',
+
                     outline:
                         formik.touched.content && formik.errors.content
                             ? `2px solid ${theme.palette.colors.danger}`

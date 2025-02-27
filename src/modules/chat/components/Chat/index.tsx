@@ -1,15 +1,17 @@
-import { Box, Button, IconButton, TextField, Typography, useTheme } from '@mui/material';
-import { Chat as ChatType, ConnectionStatus, Message } from '../../types';
-import { useFormik } from 'formik';
-import ChatMessage from '../Message';
-import { useTranslation } from 'react-i18next';
-import SendIcon from '@mui/icons-material/Send';
-import ConnectionModal from '../ConnectionModal';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import SendIcon from '@mui/icons-material/Send';
+import { Box, Button, IconButton, TextField, Typography, useTheme } from '@mui/material';
+import { useFormik } from 'formik';
+import { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
+import { useUser } from '../../../auth/components/AuthProvider';
+import EmojiPicker from '../../../shared/components/EmojiPicker';
 import Loader from '../../../shared/components/Loader';
 import Skeleton from '../../../shared/components/Skeleton';
-import { useUser } from '../../../auth/components/AuthProvider';
+import { Chat as ChatType, ConnectionStatus, Message } from '../../types';
+import ConnectionModal from '../ConnectionModal';
+import ChatMessage from '../Message';
 
 interface Props {
     chat?: ChatType;
@@ -19,15 +21,16 @@ interface Props {
     onShowDetails?: () => void;
 }
 
-const Chat = ({ chat, messages, onSendMessage, status, onShowDetails }: Props) => {
+const Chat = ({ chat, messages, onSendMessage, onShowDetails, status }: Props) => {
     const theme = useTheme();
     const { t } = useTranslation();
     const { user } = useUser();
-
+    const textFieldRef = useRef<HTMLInputElement | null>(null);
     const validationSchema = Yup.object({
         message: Yup.string().max(1500).required(),
     });
 
+    // formik initialization
     const formik = useFormik({
         initialValues: {
             message: '',
@@ -94,7 +97,7 @@ const Chat = ({ chat, messages, onSendMessage, status, onShowDetails }: Props) =
                 {messages ? messages.map((message) => <ChatMessage message={message} key={message.id} />) : <Loader />}
             </Box>
 
-            <Box sx={{ display: 'flex', gap: '20px' }}>
+            <Box sx={{ display: 'flex', gap: '20px', alignItems: 'center', position: 'relative' }}>
                 <TextField
                     slotProps={{
                         htmlInput: {
@@ -107,8 +110,9 @@ const Chat = ({ chat, messages, onSendMessage, status, onShowDetails }: Props) =
                     label={t('chat.enter_message_label')}
                     name="message"
                     value={formik.values.message}
-                    onChange={formik.handleChange}
+                    onChange={(e) => formik.setFieldValue('message', e.target.value)}
                     onBlur={formik.handleBlur}
+                    inputRef={textFieldRef}
                     onKeyDown={(event) => {
                         if (event.key === 'Enter') {
                             formik.handleSubmit();
@@ -116,6 +120,11 @@ const Chat = ({ chat, messages, onSendMessage, status, onShowDetails }: Props) =
                         }
                     }}
                 />
+
+                <Box>
+                    <EmojiPicker onChange={(val) => formik.setFieldValue('message', val)} textFieldRef={textFieldRef} />
+                </Box>
+
                 <Button
                     sx={{
                         gap: '10px',

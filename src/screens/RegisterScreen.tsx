@@ -1,4 +1,4 @@
-import { Box, Link, Typography, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import login_background from '../assets/static/login_bg.svg';
@@ -6,6 +6,7 @@ import { useUser } from '../modules/auth/components/AuthProvider';
 import RegisterForm from '../modules/auth/components/RegisterForm';
 import ResetTokenModal from '../modules/auth/components/ResetTokenModal';
 import { RegisterFormValues } from '../modules/auth/types';
+import InternalLink from '../modules/shared/components/InternalLink/styles';
 
 const RegisterScreen = () => {
     const theme = useTheme();
@@ -56,12 +57,12 @@ const RegisterScreen = () => {
                     </Box>
                     <RegisterForm onSubmit={handleSubmit} />
                 </Box>
-                <Box mt="200px" display="flex" width="100%" alignItems="center" justifyContent="center">
+                <Box mt="50px" display="flex" width="100%" alignItems="center" justifyContent="center">
                     <Typography variant="body1">
                         Masz już konto?{' '}
-                        <Link underline="none" sx={{ fontWeight: 'bold' }} href="/login">
+                        <InternalLink sx={{ fontWeight: 'bold' }} to="/login">
                             Zaloguj się
-                        </Link>
+                        </InternalLink>
                     </Typography>
                 </Box>
             </Box>

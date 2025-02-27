@@ -1,24 +1,23 @@
-import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
-import Confetti from "react-confetti";
-import bgImg from "../assets/static/line_bg.webp";
-import VolunteerForm from "../modules/forms/components/VolunteerForm";
-import sendFormMutation from "../modules/forms/queries/sendFormMutation";
-import {
-    formTypes,
-    VolunteerForm as VolunteerFormType,
-    VolunteerFormValues,
-} from "../modules/forms/types";
-import Container from "../modules/shared/components/Container";
+import { useMutation } from '@tanstack/react-query';
+import { useState } from 'react';
+import Confetti from 'react-confetti';
+import bgImg from '../assets/static/line_bg.webp';
+import VolunteerForm from '../modules/forms/components/VolunteerForm';
+import sendFormMutation from '../modules/forms/queries/sendFormMutation';
+import { formTypes, VolunteerForm as VolunteerFormType, VolunteerFormValues } from '../modules/forms/types';
+import Container from '../modules/shared/components/Container';
+import { SessionStorage } from '../modules/shared/types';
 
 const VolunteerFormScreen = () => {
     const [showConfetti, setShowConfetti] = useState(false);
+    const isFormSend = localStorage.getItem(SessionStorage.SEND_FORM);
 
     const { mutate } = useMutation({
         mutationFn: sendFormMutation,
 
         onSuccess: () => {
             setShowConfetti(true);
+            localStorage.setItem(SessionStorage.SEND_FORM, 'true');
         },
     });
 
@@ -46,27 +45,21 @@ const VolunteerFormScreen = () => {
             parentProps={{
                 sx: {
                     backgroundImage: `url(${bgImg})`,
-                    backgroundSize: "100% auto",
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    alignItems: "center",
+                    backgroundSize: '100% auto',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center',
+                    alignItems: 'center',
 
-                    backgroundAttachment: "fixed",
+                    backgroundAttachment: 'fixed',
                 },
             }}
             sx={{
-                width: "fit-content",
+                width: 'fit-content',
             }}
         >
-            <VolunteerForm onSubmit={handleSubmit} />
+            <VolunteerForm initStep={isFormSend ? 6 : 0} onSubmit={handleSubmit} />
 
-            {showConfetti && (
-                <Confetti
-                    recycle={false}
-                    width={window.innerWidth}
-                    height={window.innerHeight}
-                />
-            )}
+            {showConfetti && <Confetti recycle={false} width={window.innerWidth} height={window.innerHeight} />}
         </Container>
     );
 };

@@ -16,33 +16,17 @@ export const ImageWrapperControl = styled(Box)`
     justify-content: center;
     align-items: center;
 
-    & > *:first-child {
-        margin-right: -120px;
-        opacity: 0.5;
-    }
-
-    & > *:nth-child(2) { 
-        opacity 0.1;
- 
-    }
-
-    & > *:last-child {
-        margin-left: -100px;
-        opacity: 1;
-    }
-
-    @media (max-width: 980px) { 
+    @media (max-width: 980px) {
         & > *:first-child {
             display: none;
         }
 
-        & > *:nth-child(2) { 
+        & > *:nth-child(2) {
             display: none;
-    
         }
     }
 
-    @media (max-width: 600px) { 
+    @media (max-width: 600px) {
         display: none;
     }
 `;

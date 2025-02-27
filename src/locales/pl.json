@@ -19,10 +19,12 @@
             "volunteer_supervisor": "Koordynator"
         },
         "submit": "Wyślij",
-        "join_us": "Dołącz teraz",
+        "join_us": "Zaloguj się",
+        "sign_up": "Zarejestruj się",
         "search": "Wyszukaj...",
         "login": "Zaloguj",
         "comming_soon": "Wkrótce dostępne",
+        "saved": "Zapisano",
         "create_new_account": "Załóż konto",
         "try_again": "Spróbuj ponownie",
         "sending": "Wysyłanie...",
@@ -132,6 +134,8 @@
         "open": "Połaczono",
         "admin_chat": "Czat koordynacyjny",
         "show_more_chats": "Lista czatów",
+        "contract_confirmed": "Kontrakt został potwierdzony",
+        "contract_confirmed_desc": "Kontrakt został potwierdzony. Nie można go już edytować.",
         "remove_participant_success": "Uczestnik został usunięty",
         "about": {
             "title": "Jak otrzymać pomoc?",
@@ -159,8 +163,10 @@
         "customize": "Dostosuj",
         "no_available_chats_found": "Nie znaleziono dostępnych czatów. Skontakuj się z administratorem",
         "customize_chat": {
-            "title": "Dostosuj czat"
-        }
+            "title": "Dostosuj czat",
+            "desc": "Ta funkcja jest testowa i będzie rozszerzana w przyszłości"
+        },
+        "accept_contract": "Akceptuj kontrakt"
     },
     "auth": {
         "reset_token_modal": {
@@ -176,6 +182,23 @@
             "subtitle": "Wprowadź nowe hasło do swojego konta. Aby to zrobić wprowadź kod odzyskania konta, który otrzymałeś podczas rejestracji.",
             "success": "Hasło zostało zresetowane. Zaloguj się na swoje konto."
         }
+    },
+    "support_us": {
+        "title": "Pomóż nam rozwijać się i dotrzeć do większej liczby osób!",
+        "subtitle": "Fundacja Peryskop to projekt non-profit, który działa dzięki wsparciu wolontariuszy i darczyńców. Jeśli chcesz wesprzeć naszą działalność, możesz to zrobić na kilka sposobów.",
+        "options": {
+            "share": {
+                "copy": "Skopiuj link do schowka",
+                "title": "1) Udostępnij nasz projekt",
+                "subtitle": "Podziel się naszym projektem ze znajomymi i rodziną. Im więcej osób nas pozna, tym więcej osób możemy pomóc. Kliknij w poniższy przycisk, aby udostępnić nasz projekt w mediach społecznościowych."
+            },
+            "donate": {
+                "title": "2) Przekaż datek na nasze działania",
+                "subtitle": "Jeśli chcesz wesprzeć naszą działalność finansowo, możesz przekazać datek na nasze konto bankowe. Numer konta znajduje się pod spodem, można kliknąć, aby skopiować.",
+                "content": "Numer konta"
+            }
+        },
+        "no_available_chats_found": "Nie znaleziono dostępnych czatów. Skontakuj się z administratorem"
     },
     "tos": {
         "title": "Regulamin",
@@ -199,6 +222,7 @@
         "change_avatar_label": "Bezpośredni link do zdjęcia",
         "change_avatar_tutorial": "Aby zmienić zdjęcie profilowe, wklej bezpośredni link do zdjęcia w pole poniżej. Aby uzyskać link do zdjęcia, kliknij prawym przyciskiem myszy na zdjęcie, które chcesz użyć i wybierz opcję 'Kopiuj adres obrazu'."
     },
+
     "articles": {
         "read_more": "Czytaj więcej",
         "title": "Tworzymy przestrzeń bez tabu, dla Ciebie!",
@@ -284,10 +308,11 @@
         "rights_reserved": "Fundacja Peryskop - wszelkie prawa zastrzeżone"
     },
     "homepage": {
-        "choose_mentee_button": "Dołącz teraz",
+        "choose_mentee_button": "Uzyskaj wsparcie",
         "choose_volunteer_button": "Zostań wolontariuszem",
         "title": "Darmowe i anonimowe wsparcie psychologiczne w formie czatu",
-        "desc": "Dołacz do grona podopiecznych, lub zostań wolontariuszem",
+        "chat_now": "Rozmawiaj teraz",
+        "desc": "Uzyskaj pomoc, lub zostań wolontariuszem już teraz",
         "about_us": {
             "learn_more_button": "Dowiedz się więcej",
             "small_cards": [
@@ -378,7 +403,7 @@
         },
         "mentee": {
             "subtitle": [
-                "To pierwszy krok ku lepszemu jutra! Dołacz do nas i uzyskaj darmowe wsparcie, które może działać dzięki pomocy wolontariuszom z całego świata. To pierwszy krok ku lepszemu jutra! Dołacz do nas i uzyskaj darmowe wsparcie.",
+                "Dziękujemy za Twoje zaufanie. Wypełnij krótki formularz, aby uzyskać pomoc. Dołącz do nas i otrzymaj darmowe wsparcie, które działa dzięki wolontariuszom z całej Polski. To pierwszy krok ku zmianie na lepsze",
                 "Jak możemy poinformować Cię gdy zostanie przydzielony dla Ciebie odpowiedni wolontariusz?",
                 "Wybierz jak najlepiej rodzaj problemu, abyśmy mogli dopasować Ci najlepszego wolontariusza! Możesz wybrać kilka.",
                 "Opisz jak najlepiej swój problem, abyśmy mogli dopasować Ci najlepszego wolontariusza!",
@@ -394,7 +419,7 @@
                 "Dziękujemy za wypełnienie formularza!"
             ],
             "subtitle_new_user": [
-                "To pierwszy krok ku lepszemu jutra! Dołacz do nas i uzyskaj darmowe wsparcie, które może działać dzięki pomocy wolontariuszom z całego świata. To pierwszy krok ku lepszemu jutra! Dołacz do nas i uzyskaj darmowe wsparcie.",
+                "Dziękujemy za Twoje zaufanie. Wypełnij krótki formularz, aby uzyskać pomoc. Dołącz do nas i otrzymaj darmowe wsparcie, które działa dzięki wolontariuszom z całej Polski. To pierwszy krok ku zmianie na lepsze",
                 "Jak możemy poinformować Cię gdy zostanie przydzielony dla Ciebie odpowiedni wolontariusz?",
                 "Wybierz jak najlepiej rodzaj problemu, abyśmy mogli dopasować Ci najlepszego wolontariusza! Możesz wybrać kilka.",
                 "Opisz jak najlepiej swój problem, abyśmy mogli dopasować Ci najlepszego wolontariusza!",
@@ -477,5 +502,10 @@
         "themes": "Problemy",
         "reason": "Powód dołączenia",
         "did_help": "Czy pomogał wcześniej"
+    },
+    "form_status": {
+        "accepted": "Zaakceptowany",
+        "rejected": "Odrzucony",
+        "waited": "Oczekujący"
     }
 }

@@ -1,17 +1,14 @@
-import { url } from "../../../api";
-import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
-import handleApiError from "../../shared/helpers/handleApiError";
-import { Article, UpdateArticlePayload } from "../types";
+import { url } from '../../../api';
+import getAuthHeaders from '../../auth/helpers/getAuthHeaders';
+import handleApiError from '../../shared/helpers/handleApiError';
+import { Article, UpdateArticlePayload } from '../types';
 
-const updateArticleMutation = async ({
-    article_id,
-    ...payload
-}: UpdateArticlePayload): Promise<Article> => {
+const updateArticleMutation = async ({ article_id, ...payload }: UpdateArticlePayload): Promise<Article> => {
     const headers = getAuthHeaders();
 
     try {
         const res = await fetch(url.articles.update({ id: article_id }), {
-            method: "POST",
+            method: 'PUT',
             headers,
             body: JSON.stringify(payload),
         });
@@ -22,7 +19,7 @@ const updateArticleMutation = async ({
 
         return await res.json();
     } catch (e) {
-        console.error("While updating article:", e);
+        console.error('While updating article:', e);
         throw e;
     }
 };
