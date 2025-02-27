@@ -57,7 +57,7 @@ const RegisterScreen = () => {
                     </Box>
                     <RegisterForm onSubmit={handleSubmit} />
                 </Box>
-                <Box mt="200px" display="flex" width="100%" alignItems="center" justifyContent="center">
+                <Box mt="50px" display="flex" width="100%" alignItems="center" justifyContent="center">
                     <Typography variant="body1">
                         Masz już konto?{' '}
                         <InternalLink sx={{ fontWeight: 'bold' }} to="/login">

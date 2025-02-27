@@ -223,6 +223,7 @@ const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft, articleId }: Prop
             <Box
                 sx={{
                     minHeight: '500px',
+
                     outline:
                         formik.touched.content && formik.errors.content
                             ? `2px solid ${theme.palette.colors.danger}`

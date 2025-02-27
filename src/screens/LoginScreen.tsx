@@ -62,7 +62,7 @@ const LoginScreen = () => {
                     </Box>
                     <LoginForm disabled={loading} onSubmit={handleSubmit} />
                 </Box>
-                <Box mt="200px" display="flex" width="100%" alignItems="center" justifyContent="center">
+                <Box mt="50px" display="flex" width="100%" alignItems="center" justifyContent="center">
                     <Typography variant="body1">
                         Nie masz konta?{' '}
                         <InternalLink sx={{ fontWeight: 'bold' }} to="/auth/register">

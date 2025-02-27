@@ -22,6 +22,7 @@ import { baseUrl } from '../../../../api';
 import { useUser } from '../../../auth/components/AuthProvider';
 import ActionMenu from '../../../shared/components/ActionMenu';
 import InternalLink from '../../../shared/components/InternalLink/styles';
+import Markdown from '../../../shared/components/Markdown';
 import { Permissions } from '../../../shared/constants';
 import formatDate from '../../../shared/helpers/formatDate';
 import usePermissions from '../../../shared/hooks/usePermissions';
@@ -127,21 +128,12 @@ const ArticleCard = ({ article, onRefetch, draft }: Props) => {
                         {article.title}
                     </Typography>
 
-                    <Typography
-                        variant="body1"
-                        color="text.secondary"
-                        fontSize={20}
-                        sx={{
-                            minHeight: '60px',
-                            wordBreak: 'break-word',
-                            // max 1 line
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            display: '-webkit-box',
-                        }}
-                    >
-                        {article.content.length > 100 ? `${article.content.substring(0, 103)}...` : article.content}
-                    </Typography>
+                    <Markdown
+                        readOnly
+                        content={
+                            article.content.length > 100 ? `${article.content.substring(0, 103)}...` : article.content
+                        }
+                    />
                     <Divider
                         sx={{
                             margin: '10px 0',

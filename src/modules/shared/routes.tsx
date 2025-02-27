@@ -151,7 +151,7 @@ const routes: RouteType[] = [
     {
         url: '/article/:id',
         onRender: <ArticleScreen />,
-        requiresAuth: true,
+        requiresAuth: false,
     },
     {
         url: '/chat/:id',
