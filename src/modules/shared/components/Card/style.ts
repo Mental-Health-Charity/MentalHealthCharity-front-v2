@@ -26,7 +26,7 @@ export const StyledCard = styled(Box)<{
         top: 20px;
         width: 60px;
         height: 15px;
-        background-image: url(${dots_three});
+        background-image: url('${dots_three}');
         background-repeat: no-repeat;
     }
 
@@ -35,7 +35,7 @@ export const StyledCard = styled(Box)<{
         position: absolute;
         width: 86px;
         height: 86px;
-        background-image: url(${dots});
+        background-image: url('${dots}');
         background-repeat: no-repeat;
         ${({ variant }) =>
             variant === 'default'

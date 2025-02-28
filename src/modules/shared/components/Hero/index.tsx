@@ -105,7 +105,6 @@ const Hero = () => {
                             }}
                         >
                             {t('homepage.desc')}
-                            {/* dodaje sobie coś */}
                         </Typography>
                     </Box>
 
