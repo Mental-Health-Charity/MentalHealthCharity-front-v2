@@ -1,7 +1,6 @@
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import SendIcon from '@mui/icons-material/Send';
-import { Box, Button, IconButton, TextField, Typography, useMediaQuery, useTheme } from '@mui/material';
-
+import { Box, Button, IconButton, TextField, Typography, useTheme } from '@mui/material';
 import { useFormik } from 'formik';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -22,11 +21,10 @@ interface Props {
     onShowDetails?: () => void;
 }
 
-const Chat = ({ chat, messages, onSendMessage, status, onShowDetails }: Props) => {
+const Chat = ({ chat, messages, onSendMessage, onShowDetails, status }: Props) => {
     const theme = useTheme();
     const { t } = useTranslation();
     const { user } = useUser();
-    const isMobile = useMediaQuery('(max-width: 600px)');
     const textFieldRef = useRef<HTMLInputElement | null>(null);
     const validationSchema = Yup.object({
         message: Yup.string().max(1500).required(),
@@ -99,7 +97,7 @@ const Chat = ({ chat, messages, onSendMessage, status, onShowDetails }: Props) =
                 {messages ? messages.map((message) => <ChatMessage message={message} key={message.id} />) : <Loader />}
             </Box>
 
-            <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', position: 'relative' }}>
+            <Box sx={{ display: 'flex', gap: '20px', alignItems: 'center', position: 'relative' }}>
                 <TextField
                     slotProps={{
                         htmlInput: {
@@ -134,7 +132,7 @@ const Chat = ({ chat, messages, onSendMessage, status, onShowDetails }: Props) =
                     variant="contained"
                     onClick={() => formik.handleSubmit()}
                 >
-                    {isMobile ? '' : t('chat.send')}{' '}
+                    {t('chat.send')}{' '}
                     <SendIcon
                         sx={{
                             marginTop: '-3px',
