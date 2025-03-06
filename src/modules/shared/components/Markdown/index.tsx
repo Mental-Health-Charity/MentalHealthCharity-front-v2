@@ -19,11 +19,11 @@ import {
     tablePlugin,
     thematicBreakPlugin,
     toolbarPlugin,
-} from '@mdxeditor/editor';
-import '@mdxeditor/editor/style.css';
-import { forwardRef } from 'react';
+} from "@mdxeditor/editor";
+import "@mdxeditor/editor/style.css";
+import { forwardRef } from "react";
 
-interface Props extends Omit<MDXEditorProps, 'markdown'> {
+interface Props extends Omit<MDXEditorProps, "markdown"> {
     content: string;
     readonly?: boolean;
 }
@@ -41,8 +41,8 @@ const Markdown = forwardRef<MDXEditorMethods, Props>(({ content, readonly = true
                 linkDialogPlugin(),
                 imagePlugin({
                     imageAutocompleteSuggestions: [
-                        'https://via.placeholder.com/150',
-                        'https://via.placeholder.com/150',
+                        "https://via.placeholder.com/150",
+                        "https://via.placeholder.com/150",
                     ],
                 }),
                 tablePlugin(),
@@ -55,22 +55,22 @@ const Markdown = forwardRef<MDXEditorMethods, Props>(({ content, readonly = true
                           }),
                       ]),
                 frontmatterPlugin(),
-                codeBlockPlugin({ defaultCodeBlockLanguage: 'txt' }),
+                codeBlockPlugin({ defaultCodeBlockLanguage: "txt" }),
 
                 codeMirrorPlugin({
                     codeBlockLanguages: {
-                        js: 'JavaScript',
-                        css: 'CSS',
-                        txt: 'text',
-                        tsx: 'TypeScript',
+                        js: "JavaScript",
+                        css: "CSS",
+                        txt: "text",
+                        tsx: "TypeScript",
                     },
                 }),
                 directivesPlugin({
                     directiveDescriptors: [AdmonitionDirectiveDescriptor],
                 }),
                 diffSourcePlugin({
-                    viewMode: 'rich-text',
-                    diffMarkdown: 'boo',
+                    viewMode: "rich-text",
+                    diffMarkdown: "boo",
                 }),
                 markdownShortcutPlugin(),
             ]}

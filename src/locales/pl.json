@@ -312,6 +312,7 @@
         "choose_volunteer_button": "Zostań wolontariuszem",
         "title": "Darmowe i anonimowe wsparcie psychologiczne w formie czatu",
         "chat_now": "Rozmawiaj teraz",
+
         "desc": "Uzyskaj pomoc, lub zostań wolontariuszem już teraz",
         "about_us": {
             "learn_more_button": "Dowiedz się więcej",
@@ -465,7 +466,8 @@
         "back": "Wróć",
         "next": "Dalej",
         "submit": "Wyślij",
-        "homepage": "Powrót na stronę główną"
+        "homepage": "Powrót na stronę główną",
+        "retry": "Kliknij tutaj, aby wypełnić formularz jeszcze raz"
     },
     "not_found_screen": {
         "title": "Ups! Nie znaleziono podstrony.",

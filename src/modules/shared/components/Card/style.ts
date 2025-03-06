@@ -1,9 +1,9 @@
-import { Box, styled } from '@mui/material';
-import dots from '../../../../assets/static/card_dots.svg';
-import dots_three from '../../../../assets/static/card_dots_three.svg';
+import { Box, styled } from "@mui/material";
+import dots from "../../../../assets/static/card_dots.svg";
+import dots_three from "../../../../assets/static/card_dots_three.svg";
 
 export const StyledCard = styled(Box)<{
-    variant: 'default' | 'secondary';
+    variant: "default" | "secondary";
 }>`
     background-color: ${({ theme }) => theme.palette.background.paper};
     z-index: 1;
@@ -19,26 +19,26 @@ export const StyledCard = styled(Box)<{
     }
 
     &::before {
-        display: ${({ variant }) => (variant === 'default' ? 'block' : 'none')};
-        content: '';
+        display: ${({ variant }) => (variant === "default" ? "block" : "none")};
+        content: "";
         position: absolute;
         right: 20px;
         top: 20px;
         width: 60px;
         height: 15px;
-        background-image: url('${dots_three}');
+        background-image: url("${dots_three}");
         background-repeat: no-repeat;
     }
 
     &::after {
-        content: '';
+        content: "";
         position: absolute;
         width: 86px;
         height: 86px;
-        background-image: url('${dots}');
+        background-image: url("${dots}");
         background-repeat: no-repeat;
         ${({ variant }) =>
-            variant === 'default'
+            variant === "default"
                 ? `
             left: -43px;
             bottom: -43px;

@@ -1,5 +1,5 @@
-import { Box, BoxProps, Typography, TypographyProps } from '@mui/material';
-import useTheme from '../../../../theme';
+import { Box, BoxProps, Typography, TypographyProps } from "@mui/material";
+import useTheme from "../../../../theme";
 
 interface Props extends BoxProps {
     subtitle?: string;
@@ -17,10 +17,10 @@ const SimpleCard = ({ text, title, subtitle, titleProps, textProps, subtitleProp
         <Box
             {...props}
             sx={{
-                padding: { xs: '20px', md: '30px 50px' },
+                padding: { xs: "20px", md: "30px 50px" },
                 border: `2px solid ${theme.palette.colors.border}`,
                 backgroundColor: theme.palette.background.paper,
-                borderRadius: '8px',
+                borderRadius: "8px",
                 ...props.sx,
             }}
             component="article"
@@ -28,9 +28,9 @@ const SimpleCard = ({ text, title, subtitle, titleProps, textProps, subtitleProp
             <Box
                 width="100%"
                 sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '10px',
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "10px",
                 }}
             >
                 {subtitle && (

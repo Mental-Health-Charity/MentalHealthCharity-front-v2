@@ -319,9 +319,22 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                         </>
                     )}
                     {step === 6 && (
-                        <Button component={Link} fullWidth type="button" to="/" variant="contained">
-                            {t('form.homepage')}
-                        </Button>
+                        <Box width="100%" display="flex" flexDirection="column" gap="10px">
+                            <Button component={Link} fullWidth type="button" to="/" variant="contained">
+                                {t('form.homepage')}
+                            </Button>
+                            <Button
+                                fullWidth
+                                type="button"
+                                onClick={() => {
+                                    setStep(0);
+                                    formik.resetForm();
+                                }}
+                                variant="text"
+                            >
+                                {t('form.retry')}
+                            </Button>
+                        </Box>
                     )}
                 </Box>
             </form>

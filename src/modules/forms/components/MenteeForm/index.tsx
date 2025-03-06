@@ -360,9 +360,22 @@ const MenteeForm = ({ onSubmit, setStep, step }: Props) => {
                         </>
                     )}
                     {step === 5 && (
-                        <Button fullWidth type="button" component={Link} to="/" variant="contained">
-                            {t('form.homepage')}
-                        </Button>
+                        <Box width="100%" display="flex" flexDirection="column" gap="10px">
+                            <Button fullWidth type="button" component={Link} to="/" variant="contained">
+                                {t('form.homepage')}
+                            </Button>
+                            <Button
+                                fullWidth
+                                type="button"
+                                onClick={() => {
+                                    setStep(0);
+                                    formik.resetForm();
+                                }}
+                                variant="text"
+                            >
+                                {t('form.retry')}
+                            </Button>
+                        </Box>
                     )}
                 </Box>
             </form>
