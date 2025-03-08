@@ -512,6 +512,7 @@
         "description": "Opis",
         "age": "Wiek",
         "phone": "Numer telefonu",
+        "creation_date": "Data wysłania",
         "themes": "Problemy",
         "reason": "Powód dołączenia",
         "did_help": "Czy pomogał wcześniej"
