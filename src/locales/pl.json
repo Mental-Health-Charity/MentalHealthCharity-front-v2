@@ -202,7 +202,7 @@
     },
     "tos": {
         "title": "Regulamin",
-        "subtitle": "Zapoznaj się z regulaminem serwisu klikając w poniższe linki.",
+        "subtitle": "Zapoznaj się z regulaminem serwisu klikając w poniższe hiperłącza.",
         "clause": "Klauzula informacyjna",
         "privacy_policy": "Polityka prywatności",
         "data_processing": "Zasady przetwarzania danych osobowych",
@@ -281,7 +281,7 @@
             "change_banner": "Zmień zdjęcie",
             "content": "Twoja treść..."
         },
-        "subtitle": "W naszym serwisie znajdziesz artykuły na temat psychologii, które pomogą Ci zrozumieć siebie i innych. Wszystkie prace są autorstwa naszych wolontariuszy, którzy chcą pomóc Ci w trudnych chwilach. Każdy artykuł weryfikujemy pod kątem merytorycznym, aby zapewnić Ci najwyższą jakość treści."
+        "subtitle": "W naszym serwisie znajdziesz artykuły na temat psychologii, które pomogą Ci zrozumieć siebie i innych. Wszystkie prace są autorstwa naszych wolontariuszy, którzy chcą pomóc Ci w trudnych chwilach."
     },
     "admin_screen": {
         "user_list_subtitle": "Lista użytkowników",
@@ -363,7 +363,7 @@
                 "Twoje zgłoszenie to cegiełka do budowy lepszej dostępności pomocy psychologicznej dla każdego. Powiadomimy Cię o dalszych krokach na {{contact}}. Dziękujemy za zaufanie!"
             ],
             "title": [
-                "Dziękujemy, że chcesz dołączyć do grona naszych wolontariuszy! Wypełnij krótki formularz, abyśmy mogli Cię lepiej poznać.",
+                "Dołacz do grona wolontariuszy z misją, aby pomagać!",
                 "Twój poziom wykształcenia",
                 "Podaj numer telefonu",
                 "Dlaczego chcesz do nas dołączyć?",
@@ -382,12 +382,23 @@
             },
             "prior_experience_label": "Czy masz doświadczenie w pomocy psychologicznej?",
             "reason_label": "Dlaczego chcesz do nas dołączyć?",
-            "issues_to_avoid_label": "Czy są jakieś tematy z którymi nie chcesz się mierzyć?",
+            "issues_to_avoid_label": "Problemy, które chcesz unikać",
             "issues_to_avoid": {
-                "academic": "Problemy akademickie",
-                "personal": "Problemy osobiste",
-                "career": "Problemy zawodowe",
-                "other": "Inne"
+                "no": "Nie mam przeciwwskazań",
+                "depression": "Depresja",
+                "alcoholism": "Alkoholizm",
+                "drug_addiction": "Uzależnienie od narkotyków",
+                "self_harm": "Samookaleczenia",
+                "suicidal_thoughts": "Myśli samobójcze",
+                "eating_disorders": "Zaburzenia odżywiania",
+                "domestic_violence": "Przemoc domowa",
+                "homelessness": "Bezdomność",
+                "sexual_assault": "Przemoc seksualna",
+                "grief_loss": "Żałoba i strata",
+                "trauma": "Trauma",
+                "anxiety": "Lęk",
+                "burnout": "Wypalenie zawodowe",
+                "loneliness": "Samotność"
             },
             "prior_experience": {
                 "yes_professional": "Tak, zawodowe",
@@ -412,7 +423,7 @@
                 "To wszystko! Już w krótce otrzymasz informacje na temat dalszych kroków na {{contact}} gdy znajdziemy dla Ciebie odpowiedniego wolontariusza. Dziękujemy za zaufanie!"
             ],
             "title": [
-                "Dziękujemy, że postanowiłeś do nas dołączyć. Wypełnij krótki formularz, aby dołączyć do zespołu podopiecznych!",
+                "Otrzymaj darmowe wsparcie",
                 "Wybierz formę kontaktu",
                 "Wybierz rodzaj problemu",
                 "Opisz swój problem",
@@ -420,7 +431,7 @@
                 "Dziękujemy za wypełnienie formularza!"
             ],
             "subtitle_new_user": [
-                "Dziękujemy za Twoje zaufanie. Wypełnij krótki formularz, aby uzyskać pomoc. Dołącz do nas i otrzymaj darmowe wsparcie, które działa dzięki wolontariuszom z całej Polski. To pierwszy krok ku zmianie na lepsze",
+                "Dziękujemy za Twoje zaufanie. Wypełnij krótki formularz, aby uzyskać pomoc realizowaną przez wolontariuszy z całego świata.",
                 "Jak możemy poinformować Cię gdy zostanie przydzielony dla Ciebie odpowiedni wolontariusz?",
                 "Wybierz jak najlepiej rodzaj problemu, abyśmy mogli dopasować Ci najlepszego wolontariusza! Możesz wybrać kilka.",
                 "Opisz jak najlepiej swój problem, abyśmy mogli dopasować Ci najlepszego wolontariusza!",
@@ -428,7 +439,7 @@
                 "To wszystko! Już w krótce otrzymasz informacje na temat dalszych kroków na {{contact}} gdy znajdziemy dla Ciebie odpowiedniego wolontariusza. Dziękujemy za zaufanie!"
             ],
             "title_new_user": [
-                "Dziękujemy, że postanowiłeś do nas dołączyć. Wypełnij krótki formularz, aby dołączyć do zespołu podopiecznych!",
+                "Otrzymaj darmowe wsparcie",
                 "Wybierz formę kontaktu",
                 "Wybierz rodzaj problemu",
                 "Opisz swój problem",

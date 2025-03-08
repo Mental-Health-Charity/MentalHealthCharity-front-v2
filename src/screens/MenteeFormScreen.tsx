@@ -1,12 +1,12 @@
-import { useMutation } from '@tanstack/react-query';
-import { useState } from 'react';
-import Confetti from 'react-confetti';
-import bgImg from '../assets/static/line_bg.webp';
-import MenteeForm from '../modules/forms/components/MenteeForm';
-import sendFormMutation from '../modules/forms/queries/sendFormMutation';
-import { formTypes, MenteeForm as MenteeFormType, MenteeFormValues } from '../modules/forms/types';
-import Container from '../modules/shared/components/Container';
-import { SessionStorage } from '../modules/shared/types';
+import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
+import Confetti from "react-confetti";
+import bgImg from "../assets/static/admin_panel_bg.svg";
+import MenteeForm from "../modules/forms/components/MenteeForm";
+import sendFormMutation from "../modules/forms/queries/sendFormMutation";
+import { formTypes, MenteeForm as MenteeFormType, MenteeFormValues } from "../modules/forms/types";
+import Container from "../modules/shared/components/Container";
+import { SessionStorage } from "../modules/shared/types";
 
 const MenteeFormScreen = () => {
     const [showConfetti, setShowConfetti] = useState(false);
@@ -19,7 +19,7 @@ const MenteeFormScreen = () => {
         onSuccess: () => {
             setShowConfetti(true);
             setStep((prev) => prev + 1);
-            localStorage.setItem(SessionStorage.SEND_FORM, 'true');
+            localStorage.setItem(SessionStorage.SEND_FORM, "true");
         },
     });
 
@@ -35,7 +35,7 @@ const MenteeFormScreen = () => {
                 name: theme,
                 value: theme,
             })),
-            phone: rest.phone !== '' ? rest.phone : '0',
+            phone: rest.phone !== "" ? rest.phone : "0",
         };
 
         mutate({
@@ -49,16 +49,16 @@ const MenteeFormScreen = () => {
             parentProps={{
                 sx: {
                     backgroundImage: `url(${bgImg})`,
-                    backgroundSize: '100% auto',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center',
-                    alignItems: 'center',
-
-                    backgroundAttachment: 'fixed',
+                    backgroundSize: "100% auto",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    alignItems: "center",
+                    backgroundAttachment: "fixed",
+                    minHeight: { xs: "100vh", md: "calc(100vh - 100px)" },
                 },
             }}
             sx={{
-                width: 'fit-content',
+                width: "fit-content",
             }}
         >
             <MenteeForm onSubmit={handleSubmit} step={step} setStep={setStep} />

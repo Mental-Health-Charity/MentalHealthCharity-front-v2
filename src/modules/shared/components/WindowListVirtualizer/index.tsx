@@ -1,17 +1,25 @@
-import { useRef } from 'react';
-import { AutoSizer, Index, List, ListRowRenderer, WindowScroller } from 'react-virtualized';
+import { useRef } from "react";
+import { AutoSizer, CellMeasurerCache, List, ListRowProps, WindowScroller } from "react-virtualized";
+
+export interface CachedListRowProps extends ListRowProps {
+    cache: CellMeasurerCache;
+}
 
 interface Props {
     rowCount: number;
-    onRender: ListRowRenderer;
-    rowHeight?: number | ((params: Index) => number);
+    onRender: (params: CachedListRowProps) => React.ReactNode;
 }
 
-const WindowListVirtualizer = ({ rowCount, onRender, rowHeight = 30 }: Props) => {
+const WindowListVirtualizer = ({ rowCount, onRender }: Props) => {
     const ref = useRef<WindowScroller>(null);
 
+    const cache = new CellMeasurerCache({
+        fixedWidth: true,
+        defaultHeight: 300,
+    });
+
     return (
-        <div style={{ overflow: 'scroll' }}>
+        <div style={{ overflow: "scroll" }}>
             <div>
                 <WindowScroller ref={ref} scrollElement={window}>
                     {({
@@ -30,10 +38,11 @@ const WindowListVirtualizer = ({ rowCount, onRender, rowHeight = 30 }: Props) =>
                                             height={height}
                                             isScrolling={isScrolling}
                                             onScroll={onChildScroll}
-                                            overscanRowCount={2}
+                                            overscanRowCount={4}
+                                            deferredMeasurementCache={cache}
                                             rowCount={rowCount}
-                                            rowHeight={rowHeight}
-                                            rowRenderer={onRender}
+                                            rowHeight={cache.rowHeight}
+                                            rowRenderer={(props) => onRender({ ...props, cache })}
                                             scrollTop={scrollTop}
                                             width={width}
                                         />

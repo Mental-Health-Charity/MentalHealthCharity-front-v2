@@ -1,8 +1,8 @@
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import { Avatar, Box, Typography, useTheme } from '@mui/material';
-import { useUser } from '../../../auth/components/AuthProvider';
-import formatDate from '../../../shared/helpers/formatDate';
-import { Message } from '../../types';
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import { Avatar, Box, Typography, useTheme } from "@mui/material";
+import { useUser } from "../../../auth/components/AuthProvider";
+import formatDate from "../../../shared/helpers/formatDate";
+import { Message } from "../../types";
 
 interface Props {
     message: Message;
@@ -16,11 +16,11 @@ const ChatMessage = ({ message }: Props) => {
     return (
         <Box
             sx={{
-                display: 'flex',
-                gap: '15px',
-                width: '100%',
-                flexDirection: senderIsCurrentUser ? 'row-reverse' : 'row',
-                alignItems: 'flex-end',
+                display: "flex",
+                gap: "15px",
+                width: "100%",
+                flexDirection: senderIsCurrentUser ? "row-reverse" : "row",
+                alignItems: "flex-end",
             }}
         >
             {!senderIsCurrentUser && (
@@ -29,22 +29,22 @@ const ChatMessage = ({ message }: Props) => {
                     src={message.sender.full_name}
                     alt={message.sender.full_name}
                     sx={{
-                        fontSize: '24px',
-                        width: '50px',
-                        height: '50px',
+                        fontSize: "24px",
+                        width: "50px",
+                        height: "50px",
                     }}
                 />
             )}
             <Box
                 sx={{
                     backgroundColor: senderIsCurrentUser ? `${theme.palette.secondary.main}9A` : `#F5F5F5`,
-                    padding: '15px 30px',
-                    boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.05)',
-                    borderRadius: '10px',
-                    width: 'auto',
-                    maxWidth: { xs: '100%', md: '70%' },
+                    padding: "15px 30px",
+                    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.05)",
+                    borderRadius: "10px",
+                    width: "auto",
+                    maxWidth: { xs: "100%", md: "70%" },
                     color: senderIsCurrentUser ? theme.palette.text.primary : theme.palette.text.secondary,
-                    textAlign: senderIsCurrentUser ? 'right' : 'left',
+                    textAlign: senderIsCurrentUser ? "right" : "left",
                 }}
             >
                 <Box
@@ -54,25 +54,33 @@ const ChatMessage = ({ message }: Props) => {
                 >
                     <Box
                         sx={{
-                            display: 'flex',
-                            justifyContent: 'flex-end',
-                            alignItems: 'center',
-                            flexDirection: senderIsCurrentUser ? 'row' : 'row-reverse',
-                            gap: '10px',
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            alignItems: "center",
+                            flexWrap: { xs: "wrap-reverse", md: "nowrap" },
+                            flexDirection: senderIsCurrentUser ? "row" : "row-reverse",
+                            gap: { xs: "0", md: "10px" },
                         }}
                     >
-                        <Typography>{formatDate(message.creation_date, 'dd/MM/yyyy HH:mm')}</Typography>
+                        <Typography
+                            sx={{
+                                width: { xs: "100%", md: "auto" },
+                            }}
+                        >
+                            {formatDate(message.creation_date, "dd/MM/yyyy HH:mm")}
+                        </Typography>
                         <FiberManualRecordIcon
                             sx={{
-                                fontSize: '10px',
-                                marginBottom: '2px',
+                                fontSize: "10px",
+                                marginBottom: "2px",
+                                display: { xs: "none", md: "block" },
                             }}
                         />
                         <Typography
                             sx={{
                                 fontWeight: 600,
-                                fontSize: '18px',
-                                marginTop: '-3px',
+                                fontSize: "18px",
+                                marginTop: "-3px",
                             }}
                         >
                             {message.sender.full_name}
@@ -82,7 +90,7 @@ const ChatMessage = ({ message }: Props) => {
 
                 <Typography
                     sx={{
-                        wordBreak: 'break-word',
+                        wordBreak: "break-word",
                     }}
                     fontSize="18px"
                     textAlign="start"

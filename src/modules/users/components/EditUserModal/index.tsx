@@ -1,14 +1,14 @@
-import { useTranslation } from "react-i18next";
-import Modal from "../../../shared/components/Modal";
-import { Box, Button, MenuItem, TextField, Typography } from "@mui/material";
-import { User } from "../../../auth/types";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
-import { Roles, translatedRoles } from "../../constants";
-import useTheme from "../../../../theme";
 import WarningIcon from "@mui/icons-material/Warning";
+import { Box, Button, MenuItem, TextField, Typography } from "@mui/material";
+import { Form, Formik } from "formik";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import * as Yup from "yup";
+import useTheme from "../../../../theme";
+import { User } from "../../../auth/types";
 import DataComparison from "../../../shared/components/CompareChanges";
+import Modal from "../../../shared/components/Modal";
+import { Roles, translatedRoles } from "../../constants";
 import { EditUserFormValues } from "../../types";
 
 interface Props {
@@ -48,28 +48,13 @@ const EditUserModal = ({ onClose, open, user, onSubmit }: Props) => {
         <Modal
             onClose={onClose}
             open={open}
-            title={
-                step === 0
-                    ? t("users.edit_modal_title")
-                    : t("common.compare_changes.title")
-            }
+            title={step === 0 ? t("users.edit_modal_title") : t("common.compare_changes.title")}
             modalContentProps={{
                 width: 500,
             }}
         >
-            <Formik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
-                onSubmit={handleSubmit}
-            >
-                {({
-                    values,
-                    errors,
-                    touched,
-                    handleChange,
-                    handleBlur,
-                    dirty,
-                }) => (
+            <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
+                {({ values, errors, touched, handleChange, handleBlur, dirty }) => (
                     <Form>
                         <Box display="flex" flexDirection="column" gap={2}>
                             {step === 0 && (
@@ -90,21 +75,13 @@ const EditUserModal = ({ onClose, open, user, onSubmit }: Props) => {
                                         value={values.full_name}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
-                                        error={
-                                            touched.full_name &&
-                                            Boolean(errors.full_name)
-                                        }
-                                        helperText={
-                                            touched.full_name &&
-                                            errors.full_name
-                                        }
+                                        error={touched.full_name && Boolean(errors.full_name)}
+                                        helperText={touched.full_name && errors.full_name}
                                     />
                                     {values.full_name === "" && (
                                         <Box
                                             sx={{
-                                                backgroundColor:
-                                                    theme.palette.colors
-                                                        .warning,
+                                                backgroundColor: theme.palette.colors.warning,
                                                 display: "flex",
                                                 alignItems: "center",
                                                 padding: theme.spacing(2),
@@ -114,14 +91,11 @@ const EditUserModal = ({ onClose, open, user, onSubmit }: Props) => {
                                         >
                                             <WarningIcon
                                                 sx={{
-                                                    color: theme.palette.text
-                                                        .secondary,
+                                                    color: theme.palette.text.secondary,
                                                 }}
                                             />
                                             <Typography color="text.secondary">
-                                                {t(
-                                                    "users.empty_full_name_warning"
-                                                )}
+                                                {t("users.empty_full_name_warning")}
                                             </Typography>
                                         </Box>
                                     )}
@@ -134,14 +108,8 @@ const EditUserModal = ({ onClose, open, user, onSubmit }: Props) => {
                                         value={values.user_role}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
-                                        error={
-                                            touched.user_role &&
-                                            Boolean(errors.user_role)
-                                        }
-                                        helperText={
-                                            touched.user_role &&
-                                            errors.user_role
-                                        }
+                                        error={touched.user_role && Boolean(errors.user_role)}
+                                        helperText={touched.user_role && errors.user_role}
                                     >
                                         {Object.values(Roles).map((role) => (
                                             <MenuItem key={role} value={role}>
@@ -159,12 +127,7 @@ const EditUserModal = ({ onClose, open, user, onSubmit }: Props) => {
                                     />
                                 </>
                             )}
-                            {step === 1 && (
-                                <DataComparison
-                                    dataA={values}
-                                    dataB={initialValues}
-                                />
-                            )}
+                            {step === 1 && <DataComparison dataA={initialValues} dataB={values} />}
 
                             <Box display="flex" justifyContent="space-between">
                                 <Button
@@ -175,9 +138,7 @@ const EditUserModal = ({ onClose, open, user, onSubmit }: Props) => {
                                     color="primary"
                                     disabled={!dirty}
                                 >
-                                    {step === 0
-                                        ? t("common.next")
-                                        : t("common.save")}
+                                    {step === 0 ? t("common.next") : t("common.save")}
                                 </Button>
                             </Box>
                         </Box>

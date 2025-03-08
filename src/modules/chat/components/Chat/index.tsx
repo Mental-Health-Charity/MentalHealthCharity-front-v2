@@ -1,17 +1,17 @@
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import SendIcon from '@mui/icons-material/Send';
-import { Box, Button, IconButton, TextField, Typography, useTheme } from '@mui/material';
-import { useFormik } from 'formik';
-import { useRef } from 'react';
-import { useTranslation } from 'react-i18next';
-import * as Yup from 'yup';
-import { useUser } from '../../../auth/components/AuthProvider';
-import EmojiPicker from '../../../shared/components/EmojiPicker';
-import Loader from '../../../shared/components/Loader';
-import Skeleton from '../../../shared/components/Skeleton';
-import { Chat as ChatType, ConnectionStatus, Message } from '../../types';
-import ConnectionModal from '../ConnectionModal';
-import ChatMessage from '../Message';
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import SendIcon from "@mui/icons-material/Send";
+import { Box, Button, IconButton, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { useFormik } from "formik";
+import { useRef } from "react";
+import { useTranslation } from "react-i18next";
+import * as Yup from "yup";
+import { useUser } from "../../../auth/components/AuthProvider";
+import EmojiPicker from "../../../shared/components/EmojiPicker";
+import Loader from "../../../shared/components/Loader";
+import Skeleton from "../../../shared/components/Skeleton";
+import { Chat as ChatType, ConnectionStatus, Message } from "../../types";
+import ConnectionModal from "../ConnectionModal";
+import ChatMessage from "../Message";
 
 interface Props {
     chat?: ChatType;
@@ -26,6 +26,7 @@ const Chat = ({ chat, messages, onSendMessage, onShowDetails, status }: Props) =
     const { t } = useTranslation();
     const { user } = useUser();
     const textFieldRef = useRef<HTMLInputElement | null>(null);
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const validationSchema = Yup.object({
         message: Yup.string().max(1500).required(),
     });
@@ -33,7 +34,7 @@ const Chat = ({ chat, messages, onSendMessage, onShowDetails, status }: Props) =
     // formik initialization
     const formik = useFormik({
         initialValues: {
-            message: '',
+            message: "",
         },
         validationSchema,
         onSubmit: (values, { resetForm }) => {
@@ -46,28 +47,28 @@ const Chat = ({ chat, messages, onSendMessage, onShowDetails, status }: Props) =
         <Box
             sx={{
                 backgroundColor: theme.palette.background.paper,
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                gap: '15px',
-                padding: '15px',
-                borderRadius: '10px',
-                flexDirection: 'column',
-                position: 'relative',
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                gap: "15px",
+                padding: "15px",
+                borderRadius: "10px",
+                flexDirection: "column",
+                position: "relative",
             }}
         >
             <Box
                 sx={{
-                    height: '40px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
+                    height: "40px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
                 }}
             >
                 {chat ? (
                     <Typography
                         sx={{
-                            fontSize: '20px',
+                            fontSize: "20px",
                             fontWeight: 600,
                         }}
                     >
@@ -85,19 +86,19 @@ const Chat = ({ chat, messages, onSendMessage, onShowDetails, status }: Props) =
 
             <Box
                 sx={{
-                    width: '100%',
-                    gap: '10px',
-                    display: 'flex',
-                    flexDirection: 'column-reverse',
-                    height: '70vh',
-                    overflowY: 'auto',
-                    padding: '10px 15px 10px 0',
+                    width: "100%",
+                    gap: "10px",
+                    display: "flex",
+                    flexDirection: "column-reverse",
+                    height: "70vh",
+                    overflowY: "auto",
+                    padding: "10px 15px 10px 0",
                 }}
             >
                 {messages ? messages.map((message) => <ChatMessage message={message} key={message.id} />) : <Loader />}
             </Box>
 
-            <Box sx={{ display: 'flex', gap: '20px', alignItems: 'center', position: 'relative' }}>
+            <Box sx={{ display: "flex", gap: "20px", alignItems: "center", position: "relative" }}>
                 <TextField
                     slotProps={{
                         htmlInput: {
@@ -107,14 +108,14 @@ const Chat = ({ chat, messages, onSendMessage, onShowDetails, status }: Props) =
                     fullWidth
                     variant="filled"
                     disabled={!chat || !user || !chat.participants.some((p) => p.id === user.id)}
-                    label={t('chat.enter_message_label')}
+                    label={t("chat.enter_message_label")}
                     name="message"
                     value={formik.values.message}
-                    onChange={(e) => formik.setFieldValue('message', e.target.value)}
+                    onChange={(e) => formik.setFieldValue("message", e.target.value)}
                     onBlur={formik.handleBlur}
                     inputRef={textFieldRef}
                     onKeyDown={(event) => {
-                        if (event.key === 'Enter') {
+                        if (event.key === "Enter") {
                             formik.handleSubmit();
                             event.preventDefault();
                         }
@@ -122,20 +123,21 @@ const Chat = ({ chat, messages, onSendMessage, onShowDetails, status }: Props) =
                 />
 
                 <Box>
-                    <EmojiPicker onChange={(val) => formik.setFieldValue('message', val)} textFieldRef={textFieldRef} />
+                    <EmojiPicker onChange={(val) => formik.setFieldValue("message", val)} textFieldRef={textFieldRef} />
                 </Box>
 
                 <Button
                     sx={{
-                        gap: '10px',
+                        gap: "10px",
+                        height: "100%",
                     }}
                     variant="contained"
                     onClick={() => formik.handleSubmit()}
                 >
-                    {t('chat.send')}{' '}
+                    {!isMobile && t("chat.send")}{" "}
                     <SendIcon
                         sx={{
-                            marginTop: '-3px',
+                            marginTop: "-3px",
                         }}
                     />
                 </Button>

@@ -1,20 +1,20 @@
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import { Box, Button, useMediaQuery } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ListRowProps } from 'react-virtualized';
-import FormTableItem from '../modules/forms/components/FormTableItem';
-import { translatedFormStatus } from '../modules/forms/constants';
-import { getFormsQueryOptions } from '../modules/forms/queries/getFormsQueryOptions';
-import { formStatus, formTypes } from '../modules/forms/types';
-import AdminLayout from '../modules/shared/components/AdminLayout';
-import SimpleCard from '../modules/shared/components/SimpleCard';
-import WindowListVirtualizer from '../modules/shared/components/WindowListVirtualizer';
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import { Box, Button, useMediaQuery } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { CellMeasurer } from "react-virtualized";
+import FormTableItem from "../modules/forms/components/FormTableItem";
+import { translatedFormStatus } from "../modules/forms/constants";
+import { getFormsQueryOptions } from "../modules/forms/queries/getFormsQueryOptions";
+import { formStatus, formTypes } from "../modules/forms/types";
+import AdminLayout from "../modules/shared/components/AdminLayout";
+import SimpleCard from "../modules/shared/components/SimpleCard";
+import WindowListVirtualizer, { CachedListRowProps } from "../modules/shared/components/WindowListVirtualizer";
 
 const ManageVolunteerFormsScreen = () => {
     const { t } = useTranslation();
-    const isMobile = useMediaQuery('(max-width: 600px)');
+    const isMobile = useMediaQuery("(max-width: 600px)");
     const [status, setStatus] = useState(formStatus.WAITED);
 
     const { data, refetch } = useQuery(
@@ -26,31 +26,33 @@ const ManageVolunteerFormsScreen = () => {
         })
     );
 
-    const onRender = ({ index, key, style }: ListRowProps) => {
+    const onRender = ({ index, key, style, cache, parent }: CachedListRowProps) => {
         const user = data && data.items[index];
         if (!user) return null;
 
         return (
-            <FormTableItem
-                refetch={refetch}
-                sx={{
-                    ...style,
-                }}
-                key={key}
-                form={data.items[index]}
-            />
+            <CellMeasurer cache={cache} parent={parent} columnIndex={0} rowIndex={index} key={key}>
+                <div
+                    style={{
+                        ...style,
+                        padding: "10px 0",
+                    }}
+                >
+                    <FormTableItem refetch={refetch} form={data.items[index]} />
+                </div>
+            </CellMeasurer>
         );
     };
 
     return (
         <AdminLayout>
-            <SimpleCard title={t('manage_volunteer_forms.title')} subtitle={t('manage_volunteer_forms.subtitle')} />
+            <SimpleCard title={t("manage_volunteer_forms.title")} subtitle={t("manage_volunteer_forms.subtitle")} />
             <Box display="flex" gap={2}>
                 {Object.keys(formStatus).map((option) => (
                     <Button
                         sx={{
-                            backgroundColor: 'primary.main',
-                            color: 'white',
+                            backgroundColor: "primary.main",
+                            color: "white",
                             opacity: option === status ? 1 : 0.5,
                         }}
                         onClick={() => setStatus(option as formStatus)}
@@ -62,14 +64,10 @@ const ManageVolunteerFormsScreen = () => {
             </Box>
             <Box
                 sx={{
-                    minHeight: '100vh',
+                    minHeight: "100vh",
                 }}
             >
-                <WindowListVirtualizer
-                    rowHeight={isMobile ? 900 : 750}
-                    onRender={onRender}
-                    rowCount={data ? data.items.length : 0}
-                />
+                <WindowListVirtualizer onRender={onRender} rowCount={data ? data.items.length : 0} />
             </Box>
         </AdminLayout>
     );

@@ -1,6 +1,6 @@
-import { Box, Button, Tooltip, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
-import SimpleCard from '../../../shared/components/SimpleCard';
+import { Box, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
+import SimpleCard from "../../../shared/components/SimpleCard";
 
 interface Props {
     username: string;
@@ -12,56 +12,56 @@ const UserProfileSettings = ({ email, username }: Props) => {
     return (
         <SimpleCard
             subtitleProps={{
-                fontSize: '20px',
+                fontSize: "20px",
             }}
             sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '10px',
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
             }}
-            subtitle={t('profile.settings_subtitle')}
+            subtitle={t("profile.settings_subtitle")}
         >
             <Box
                 sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
                 }}
             >
                 <Box>
                     <Typography
                         color="text.secondary"
                         sx={{
-                            fontSize: '18px',
+                            fontSize: "18px",
                         }}
                     >
-                        {t('profile.settings_acc_name', { name: username })}
+                        {t("profile.settings_acc_name", { name: username })}
                     </Typography>
                     <Typography
                         color="text.secondary"
                         sx={{
-                            fontSize: '18px',
+                            fontSize: "18px",
                         }}
                     >
-                        {t('profile.settings_acc_email', {
+                        {t("profile.settings_acc_email", {
                             email: email,
                         })}
                     </Typography>
                 </Box>
-                <Tooltip title={t('common.comming_soon')}>
+                {/* <Tooltip title={t('common.comming_soon')}>
                     <Box>
                         <Button disabled variant="contained">
                             {t('common.change_pass')}
                         </Button>
                     </Box>
-                </Tooltip>
+                </Tooltip> */}
             </Box>
             <Typography
                 sx={{
-                    fontSize: '18px',
+                    fontSize: "18px",
                 }}
             >
-                {t('profile.this_section_is_private')}
+                {t("profile.this_section_is_private")}
             </Typography>
         </SimpleCard>
     );

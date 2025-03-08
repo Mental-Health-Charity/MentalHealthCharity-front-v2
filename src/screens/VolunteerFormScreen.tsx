@@ -1,12 +1,12 @@
-import { useMutation } from '@tanstack/react-query';
-import { useState } from 'react';
-import Confetti from 'react-confetti';
-import bgImg from '../assets/static/line_bg.webp';
-import VolunteerForm from '../modules/forms/components/VolunteerForm';
-import sendFormMutation from '../modules/forms/queries/sendFormMutation';
-import { formTypes, VolunteerForm as VolunteerFormType, VolunteerFormValues } from '../modules/forms/types';
-import Container from '../modules/shared/components/Container';
-import { SessionStorage } from '../modules/shared/types';
+import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
+import Confetti from "react-confetti";
+import bgImg from "../assets/static/admin_panel_bg.svg";
+import VolunteerForm from "../modules/forms/components/VolunteerForm";
+import sendFormMutation from "../modules/forms/queries/sendFormMutation";
+import { formTypes, VolunteerForm as VolunteerFormType, VolunteerFormValues } from "../modules/forms/types";
+import Container from "../modules/shared/components/Container";
+import { SessionStorage } from "../modules/shared/types";
 
 const VolunteerFormScreen = () => {
     const [showConfetti, setShowConfetti] = useState(false);
@@ -17,7 +17,7 @@ const VolunteerFormScreen = () => {
 
         onSuccess: () => {
             setShowConfetti(true);
-            localStorage.setItem(SessionStorage.SEND_FORM, 'true');
+            localStorage.setItem(SessionStorage.SEND_FORM, "true");
         },
     });
 
@@ -45,16 +45,16 @@ const VolunteerFormScreen = () => {
             parentProps={{
                 sx: {
                     backgroundImage: `url(${bgImg})`,
-                    backgroundSize: '100% auto',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center',
-                    alignItems: 'center',
-
-                    backgroundAttachment: 'fixed',
+                    backgroundSize: "100% auto",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    alignItems: "center",
+                    minHeight: { xs: "100vh", md: "calc(100vh - 100px)" },
+                    backgroundAttachment: "fixed",
                 },
             }}
             sx={{
-                width: 'fit-content',
+                width: "fit-content",
             }}
         >
             <VolunteerForm initStep={isFormSend ? 6 : 0} onSubmit={handleSubmit} />

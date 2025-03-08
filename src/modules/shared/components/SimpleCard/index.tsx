@@ -44,7 +44,7 @@ const SimpleCard = ({ text, title, subtitle, titleProps, textProps, subtitleProp
                     </Typography>
                 )}
                 {text && (
-                    <Typography fontWeight={500} fontSize={18} color="text.secondary" {...textProps}>
+                    <Typography fontWeight={500} fontSize={20} color="text.secondary" {...textProps}>
                         {text}
                     </Typography>
                 )}
