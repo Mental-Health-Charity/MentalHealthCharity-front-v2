@@ -515,7 +515,8 @@
         "creation_date": "Data wysłania",
         "themes": "Problemy",
         "reason": "Powód dołączenia",
-        "did_help": "Czy pomogał wcześniej"
+        "did_help": "Czy pomogał wcześniej",
+        "education": "Wykształcenie"
     },
     "form_status": {
         "accepted": "Zaakceptowany",
