@@ -1,5 +1,5 @@
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import { Box, Button, useMediaQuery } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -14,7 +14,6 @@ import WindowListVirtualizer, { CachedListRowProps } from "../modules/shared/com
 
 const ManageVolunteerFormsScreen = () => {
     const { t } = useTranslation();
-    const isMobile = useMediaQuery("(max-width: 600px)");
     const [status, setStatus] = useState(formStatus.WAITED);
 
     const { data, refetch } = useQuery(

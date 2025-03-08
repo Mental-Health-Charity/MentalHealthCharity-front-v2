@@ -121,16 +121,17 @@ const Hero = () => {
                             </Button>
                         ) : (
                             <>
-                                <StyledPulseButton
-                                    sx={{
-                                        width: { xs: "100%", md: "auto" },
-                                    }}
-                                    component={Link}
-                                    variant="contained"
-                                    to="/form/mentee"
-                                >
-                                    {t("homepage.choose_mentee_button")}
-                                </StyledPulseButton>
+                                {/* todo fix */}
+                                <Link to="/form/mentee">
+                                    <StyledPulseButton
+                                        sx={{
+                                            width: { xs: "100%", md: "auto" },
+                                        }}
+                                        variant="contained"
+                                    >
+                                        {t("homepage.choose_mentee_button")}
+                                    </StyledPulseButton>
+                                </Link>
                                 <Button
                                     sx={{
                                         width: { xs: "100%", md: "auto" },

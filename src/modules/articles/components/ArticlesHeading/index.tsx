@@ -1,5 +1,5 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { Box, Button, Card, TextField, useTheme } from "@mui/material";
+import { Box, Button, Card, TextField } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Permissions } from "../../../shared/constants";
@@ -12,7 +12,6 @@ interface Props {
 
 const ArticlesHeading = ({ onSearch, search }: Props) => {
     const { t } = useTranslation();
-    const theme = useTheme();
     const { hasPermissions } = usePermissions();
 
     return (
