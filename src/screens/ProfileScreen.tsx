@@ -1,22 +1,22 @@
-import { Box } from '@mui/material';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
-import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
-import wave_bg from '../assets/static/wave_bg.webp';
-import { ArticleStatus } from '../modules/articles/constants';
-import { articlesByUserQueryOptions } from '../modules/articles/queries/articlesByUserQueryOptions';
-import { useUser } from '../modules/auth/components/AuthProvider';
-import Container from '../modules/shared/components/Container';
-import Loader from '../modules/shared/components/Loader';
-import UserProfileHeading from '../modules/users/components/Profile';
-import UserProfileArticles from '../modules/users/components/UserProfileArticles';
-import UserProfileDescription from '../modules/users/components/UserProfileDescription';
-import UserProfileSettings from '../modules/users/components/UserProfileSettings';
-import { Roles } from '../modules/users/constants';
-import { editPublicProfileMutation } from '../modules/users/queries/editPublicProfileMutation';
-import { readPublicProfileQueryOptions } from '../modules/users/queries/readPublicProfileQueryOptions';
-import updateAvatarMutation from '../modules/users/queries/updateAvatarMutation';
+import { Box } from "@mui/material";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
+import { useNavigate, useParams } from "react-router-dom";
+import wave_bg from "../assets/static/wave_bg.webp";
+import { ArticleStatus } from "../modules/articles/constants";
+import { articlesByUserQueryOptions } from "../modules/articles/queries/articlesByUserQueryOptions";
+import { useUser } from "../modules/auth/components/AuthProvider";
+import Container from "../modules/shared/components/Container";
+import Loader from "../modules/shared/components/Loader";
+import UserProfileHeading from "../modules/users/components/Profile";
+import UserProfileArticles from "../modules/users/components/UserProfileArticles";
+import UserProfileDescription from "../modules/users/components/UserProfileDescription";
+import UserProfileSettings from "../modules/users/components/UserProfileSettings";
+import { Roles } from "../modules/users/constants";
+import { editPublicProfileMutation } from "../modules/users/queries/editPublicProfileMutation";
+import { readPublicProfileQueryOptions } from "../modules/users/queries/readPublicProfileQueryOptions";
+import updateAvatarMutation from "../modules/users/queries/updateAvatarMutation";
 
 const ProfileScreen = () => {
     const { userId } = useParams();
@@ -43,7 +43,7 @@ const ProfileScreen = () => {
     const { mutate: updateProfile } = useMutation({
         mutationFn: editPublicProfileMutation,
         onSuccess() {
-            toast.success(t('profile.profile_updated'));
+            toast.success(t("profile.profile_updated"));
             refreshProfile();
         },
     });
@@ -51,7 +51,7 @@ const ProfileScreen = () => {
     const { mutate: updateAvatar } = useMutation({
         mutationFn: updateAvatarMutation,
         onSuccess() {
-            toast.success(t('profile.profile_updated'));
+            toast.success(t("profile.profile_updated"));
             refreshProfile();
         },
         onError(error) {
@@ -73,7 +73,7 @@ const ProfileScreen = () => {
             {
                 enabled: isPublicProfile,
                 queryKey: [
-                    'articlesByUser',
+                    "articlesByUser",
                     {
                         status: ArticleStatus.SENT,
                         author: Number(userId) || -1,
@@ -84,7 +84,7 @@ const ProfileScreen = () => {
     );
 
     if (!userId || (!data && !isOwner)) {
-        navigate('/404');
+        navigate("/404");
         return null;
     }
 
@@ -99,20 +99,20 @@ const ProfileScreen = () => {
     return (
         <Box
             sx={{
-                width: '100%',
+                width: "100%",
             }}
         >
             <Box
                 sx={{
-                    width: '100%',
-                    maxHeight: '280px',
-                    overflow: 'hidden',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'flex-start',
+                    width: "100%",
+                    maxHeight: "280px",
+                    overflow: "hidden",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "flex-start",
 
-                    '& img': {
-                        opacity: '0.8',
+                    "& img": {
+                        opacity: "0.8",
                     },
                 }}
             >
@@ -121,13 +121,13 @@ const ProfileScreen = () => {
             <Container
                 parentProps={{
                     sx: {
-                        marginTop: '-185px',
+                        marginTop: "-185px",
                     },
                 }}
                 sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "20px",
                 }}
             >
                 {username && role && (
