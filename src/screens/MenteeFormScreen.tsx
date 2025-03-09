@@ -49,7 +49,7 @@ const MenteeFormScreen = () => {
             parentProps={{
                 sx: {
                     backgroundImage: `url(${bgImg})`,
-                    backgroundSize: "100% auto",
+                    backgroundSize: { xs: "cover", md: "100% auto" },
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
                     alignItems: "center",
