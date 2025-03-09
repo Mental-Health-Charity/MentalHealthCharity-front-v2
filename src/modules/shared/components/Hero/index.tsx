@@ -1,7 +1,7 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Link, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link as ReactRouterLink } from "react-router-dom";
 import dots from "../../../../assets/static/card_dots.svg";
 import banner from "../../../../assets/static/hero_image.webp";
 import waves from "../../../../assets/static/waves.svg";
@@ -79,6 +79,7 @@ const Hero = () => {
                     variant="secondary"
                     sx={{
                         backgroundColor: "rgba(255, 255, 255, 0.9)",
+                        padding: { xs: "20px", md: "30px" },
                     }}
                 >
                     <Box
@@ -113,16 +114,30 @@ const Hero = () => {
                     </Box>
 
                     <Box
-                        sx={{ marginTop: "25px", display: "flex", gap: "15px", flexWrap: { xs: "wrap", md: "nowrap" } }}
+                        sx={{
+                            marginTop: "25px",
+                            display: "flex",
+                            gap: "15px",
+                            flexWrap: { xs: "wrap", md: "nowrap" },
+                        }}
                     >
                         {chats && chats.total > 0 ? (
-                            <Button component={Link} to="/chat/" variant="contained" fullWidth>
+                            <Button component={ReactRouterLink} to="/chat/" variant="contained" fullWidth>
                                 {t("homepage.chat_now")}
                             </Button>
                         ) : (
                             <>
                                 {/* todo fix */}
-                                <Link to="/form/mentee">
+                                <Link
+                                    component={ReactRouterLink}
+                                    sx={{
+                                        width: {
+                                            xs: "100%",
+                                            md: "auto",
+                                        },
+                                    }}
+                                    to="/form/mentee"
+                                >
                                     <StyledPulseButton
                                         sx={{
                                             width: { xs: "100%", md: "auto" },
@@ -137,7 +152,7 @@ const Hero = () => {
                                         width: { xs: "100%", md: "auto" },
                                     }}
                                     fullWidth
-                                    component={Link}
+                                    component={ReactRouterLink}
                                     variant="outlined"
                                     to="/form/volunteer"
                                 >

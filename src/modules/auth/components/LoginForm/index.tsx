@@ -1,9 +1,9 @@
-import { Box, Button, Checkbox, FormControlLabel, TextField } from '@mui/material';
-import { Field, Form, Formik } from 'formik';
-import { useTranslation } from 'react-i18next';
-import * as Yup from 'yup';
-import { StyledLink } from '../../../shared/components/StyledLink/styles';
-import { LoginFormValues } from '../../types';
+import { Box, Button, Checkbox, FormControlLabel, TextField } from "@mui/material";
+import { Field, Form, Formik } from "formik";
+import { useTranslation } from "react-i18next";
+import * as Yup from "yup";
+import { StyledLink } from "../../../shared/components/StyledLink/styles";
+import { LoginFormValues } from "../../types";
 
 interface Props {
     onSubmit: (values: LoginFormValues) => void;
@@ -15,13 +15,13 @@ const LoginForm = ({ onSubmit, initial, disabled }: Props) => {
     const { t } = useTranslation();
 
     const validationSchema = Yup.object({
-        email: Yup.string().email(t('validation.invalid_email')).required(t('validation.required')),
-        password: Yup.string().min(8, t('validation.incorrect_password_format')).required(t('validation.required')),
+        email: Yup.string().email(t("validation.invalid_email")).required(t("validation.required")),
+        password: Yup.string().min(8, t("validation.incorrect_password_format")).required(t("validation.required")),
     });
 
     const initialValues = {
-        email: '',
-        password: '',
+        email: "",
+        password: "",
         ...initial,
     };
 
@@ -61,7 +61,7 @@ const LoginForm = ({ onSubmit, initial, disabled }: Props) => {
                     </Box>
 
                     <Button type="submit" variant="contained" color="primary" fullWidth disabled={disabled}>
-                        Login
+                        Zaloguj
                     </Button>
                 </Form>
             )}

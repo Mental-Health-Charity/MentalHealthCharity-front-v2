@@ -1,5 +1,5 @@
-import CloseIcon from '@mui/icons-material/Close';
-import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from "@mui/icons-material/Close";
+import MenuIcon from "@mui/icons-material/Menu";
 import {
     Avatar,
     Box,
@@ -15,25 +15,25 @@ import {
     Toolbar,
     Tooltip,
     Typography,
-} from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import React, { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-import Logo from '../../../../assets/static/logo_small.webp';
-import useTheme from '../../../../theme';
-import { useUser } from '../../../auth/components/AuthProvider';
-import { getChatsQueryOptions } from '../../../chat/queries/getChatsQueryOptions';
-import { Permissions } from '../../constants';
-import usePermissions from '../../hooks/usePermissions';
-import NavLink from '../NavLink';
-import { StyledAppBar } from './styles';
+} from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import Logo from "../../../../assets/static/logo_small.webp";
+import useTheme from "../../../../theme";
+import { useUser } from "../../../auth/components/AuthProvider";
+import { getChatsQueryOptions } from "../../../chat/queries/getChatsQueryOptions";
+import { Permissions } from "../../constants";
+import usePermissions from "../../hooks/usePermissions";
+import NavLink from "../NavLink";
+import { StyledAppBar } from "./styles";
 
 const Navbar = () => {
     const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
     const location = window.location.pathname;
     const { user, logout } = useUser();
-    const isAdminPanel = window.location.pathname.includes('/admin');
+    const isAdminPanel = window.location.pathname.includes("/admin");
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
     const handleCloseUserMenu = () => setAnchorElUser(null);
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => setAnchorElUser(event.currentTarget);
@@ -42,7 +42,7 @@ const Navbar = () => {
             { size: 50, page: 1 },
             {
                 enabled: !!user,
-                queryKey: ['chats'],
+                queryKey: ["chats"],
             }
         )
     );
@@ -53,8 +53,8 @@ const Navbar = () => {
 
     const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
         if (
-            event.type === 'keydown' &&
-            ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')
+            event.type === "keydown" &&
+            ((event as React.KeyboardEvent).key === "Tab" || (event as React.KeyboardEvent).key === "Shift")
         ) {
             return;
         }
@@ -62,15 +62,15 @@ const Navbar = () => {
     };
 
     const pages = [
-        { name: t('common.navigation.home'), path: '/' },
-        { name: t('common.navigation.articles'), path: '/articles' },
+        { name: t("common.navigation.home"), path: "/" },
+        { name: t("common.navigation.articles"), path: "/articles" },
 
-        { name: t('common.navigation.admin'), path: '/admin/', permissions: Permissions.ADMIN_DASHBOARD },
-        ...(!user ? [{ name: t('common.navigation.chat_with_volunteer'), path: '/about-chat' }] : []),
+        { name: t("common.navigation.admin"), path: "/admin/", permissions: Permissions.ADMIN_DASHBOARD },
+        ...(!user ? [{ name: t("common.navigation.chat_with_volunteer"), path: "/about-chat" }] : []),
     ];
 
     if (chats && chats.total > 0) {
-        pages.push({ name: t('common.navigation.chat'), path: '/chat' });
+        pages.push({ name: t("common.navigation.chat"), path: "/chat" });
     }
 
     useEffect(() => {
@@ -84,10 +84,10 @@ const Navbar = () => {
             <Container maxWidth={false}>
                 <Toolbar
                     sx={{
-                        position: 'relative',
-                        width: '100%',
-                        display: 'flex',
-                        justifyContent: 'space-between',
+                        position: "relative",
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "space-between",
                     }}
                     disableGutters
                 >
@@ -96,8 +96,8 @@ const Navbar = () => {
                     <Link to="/">
                         <Box
                             sx={{
-                                display: 'flex',
-                                alignItems: 'center',
+                                display: "flex",
+                                alignItems: "center",
                                 gap: 2,
                                 flexGrow: { xs: 1, md: 0 },
                             }}
@@ -107,7 +107,7 @@ const Navbar = () => {
                     </Link>
 
                     {/* Mobile Menu */}
-                    <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+                    <Box sx={{ display: { xs: "flex", md: "none" } }}>
                         <IconButton
                             sx={{ color: theme.palette.text.secondary }}
                             size="large"
@@ -132,18 +132,18 @@ const Navbar = () => {
                         >
                             <Box
                                 sx={{
-                                    width: '100vw',
-                                    padding: '10px',
-                                    backgroundPosition: 'center',
-                                    backgroundSize: '50%',
-                                    backgroundRepeat: 'no-repeat',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'space-between',
-                                    height: '100%',
-                                    minHeight: '50vh',
-                                    marginTop: '70px',
+                                    width: "100vw",
+                                    padding: "10px",
+                                    backgroundPosition: "center",
+                                    backgroundSize: "50%",
+                                    backgroundRepeat: "no-repeat",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between",
+                                    alignItems: "space-between",
+                                    height: "100%",
+                                    minHeight: "50vh",
+                                    marginTop: "70px",
                                     gap: 2,
                                 }}
                                 role="presentation"
@@ -152,8 +152,8 @@ const Navbar = () => {
                             >
                                 <List
                                     sx={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
+                                        display: "flex",
+                                        flexDirection: "column",
                                         gap: 1,
                                     }}
                                 >
@@ -162,7 +162,7 @@ const Navbar = () => {
                                         .map(({ name, path }) => (
                                             <ListItem
                                                 sx={{
-                                                    backgroundColor: theme.palette.colors.border + '4A',
+                                                    backgroundColor: theme.palette.colors.border + "4A",
                                                     borderRadius: 1,
                                                 }}
                                                 key={path}
@@ -175,15 +175,18 @@ const Navbar = () => {
 
                                 {user ? (
                                     <Box>
-                                        <NavLink to={`/profile/${user.id}`} name={t('common.navigation.my_account')} />
+                                        <NavLink to={`/profile/${user.id}`} name={t("common.navigation.my_account")} />
                                         <Button variant="contained" fullWidth color="error" onClick={logout}>
-                                            {t('common.navigation.logout')}
+                                            {t("common.navigation.logout")}
                                         </Button>
                                     </Box>
                                 ) : (
-                                    <Box>
-                                        <Button variant="contained" fullWidth component={Link} to="/articles/dashboard">
-                                            {t('common.join_us')}
+                                    <Box sx={{ gap: "10px", display: "flex", flexDirection: "column" }}>
+                                        <Button variant="contained" fullWidth component={Link} to="/login">
+                                            {t("common.join_us")}
+                                        </Button>
+                                        <Button variant="outlined" fullWidth component={Link} to="/auth/register">
+                                            {t("common.sign_up")}
                                         </Button>
                                     </Box>
                                 )}
@@ -194,13 +197,13 @@ const Navbar = () => {
                     {/* Desktop Menu */}
                     <Box
                         sx={{
-                            display: { xs: 'none', md: 'flex' },
+                            display: { xs: "none", md: "flex" },
                             gap: 3,
                             flexGrow: 1,
-                            justifyContent: 'center',
-                            position: 'absolute',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
+                            justifyContent: "center",
+                            position: "absolute",
+                            left: "50%",
+                            transform: "translateX(-50%)",
                         }}
                     >
                         {pages
@@ -211,16 +214,16 @@ const Navbar = () => {
                     </Box>
 
                     {/* User Menu */}
-                    <Box sx={{ flexGrow: 0, display: { md: 'block', xs: 'none' } }}>
+                    <Box sx={{ flexGrow: 0, display: { md: "block", xs: "none" } }}>
                         {user ? (
                             <Tooltip title={user.email}>
                                 <Button
                                     onClick={handleOpenUserMenu}
                                     sx={{
                                         p: 1,
-                                        display: 'flex',
+                                        display: "flex",
                                         gap: 1,
-                                        alignItems: 'center',
+                                        alignItems: "center",
                                         backgroundColor: theme.palette.background.default,
                                         borderRadius: 2,
                                     }}
@@ -234,9 +237,9 @@ const Navbar = () => {
                                 </Button>
                             </Tooltip>
                         ) : (
-                            <Box sx={{ display: 'flex', gap: 2 }}>
-                                <Button variant="contained" component={Link} to="/articles/dashboard">
-                                    {t('common.join_us')}
+                            <Box sx={{ display: "flex", gap: 2 }}>
+                                <Button variant="contained" component={Link} to="/login">
+                                    {t("common.join_us")}
                                 </Button>
                             </Box>
                         )}
@@ -246,21 +249,21 @@ const Navbar = () => {
                                 open={Boolean(anchorElUser)}
                                 onClose={handleCloseUserMenu}
                                 anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
+                                    vertical: "top",
+                                    horizontal: "right",
                                 }}
                                 transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
+                                    vertical: "top",
+                                    horizontal: "right",
                                 }}
                             >
                                 <MenuItem>
                                     <MuiLink href={`/profile/${user.id}`} underline="none">
-                                        {t('common.navigation.my_account')}
+                                        {t("common.navigation.my_account")}
                                     </MuiLink>
                                 </MenuItem>
                                 <MenuItem onClick={logout}>
-                                    <Typography textAlign="center">{t('common.navigation.logout')}</Typography>
+                                    <Typography textAlign="center">{t("common.navigation.logout")}</Typography>
                                 </MenuItem>
                             </Menu>
                         )}

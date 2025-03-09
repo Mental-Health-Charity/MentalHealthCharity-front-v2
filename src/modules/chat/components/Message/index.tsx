@@ -17,7 +17,7 @@ const ChatMessage = ({ message }: Props) => {
         <Box
             sx={{
                 display: "flex",
-                gap: "15px",
+                gap: { xs: "10px", md: "15px" },
                 width: "100%",
                 flexDirection: senderIsCurrentUser ? "row-reverse" : "row",
                 alignItems: "flex-end",
@@ -30,18 +30,20 @@ const ChatMessage = ({ message }: Props) => {
                     alt={message.sender.full_name}
                     sx={{
                         fontSize: "24px",
-                        width: "50px",
-                        height: "50px",
+                        width: { xs: "30px", md: "50px" },
+                        height: { xs: "30px", md: "50px" },
                     }}
                 />
             )}
             <Box
                 sx={{
-                    backgroundColor: senderIsCurrentUser ? `${theme.palette.secondary.main}9A` : `#F5F5F5`,
-                    padding: "15px 30px",
+                    backgroundColor: senderIsCurrentUser
+                        ? `${theme.palette.secondary.main}9A`
+                        : `${theme.palette.colors.border}66`,
+                    padding: { xs: "10px", md: "15px 30px" },
                     boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.05)",
                     borderRadius: "10px",
-                    width: "auto",
+                    width: { xs: "100%", md: "auto" },
                     maxWidth: { xs: "100%", md: "70%" },
                     color: senderIsCurrentUser ? theme.palette.text.primary : theme.palette.text.secondary,
                     textAlign: senderIsCurrentUser ? "right" : "left",
@@ -55,15 +57,15 @@ const ChatMessage = ({ message }: Props) => {
                     <Box
                         sx={{
                             display: "flex",
-                            justifyContent: "flex-end",
+                            justifyContent: { xs: "space-between", md: "flex-end" },
                             alignItems: "center",
-                            flexWrap: { xs: "wrap-reverse", md: "nowrap" },
                             flexDirection: senderIsCurrentUser ? "row" : "row-reverse",
-                            gap: { xs: "0", md: "10px" },
+                            gap: { xs: "5px", md: "10px" },
                         }}
                     >
                         <Typography
                             sx={{
+                                fontSize: { xs: "14px", md: "16px" },
                                 width: { xs: "100%", md: "auto" },
                             }}
                         >
@@ -78,8 +80,9 @@ const ChatMessage = ({ message }: Props) => {
                         />
                         <Typography
                             sx={{
+                                fontSize: { xs: "14px", md: "18px" },
                                 fontWeight: 600,
-                                fontSize: "18px",
+
                                 marginTop: "-3px",
                             }}
                         >

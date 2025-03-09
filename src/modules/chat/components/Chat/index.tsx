@@ -51,7 +51,7 @@ const Chat = ({ chat, messages, onSendMessage, onShowDetails, status }: Props) =
                 height: "100%",
                 display: "flex",
                 gap: "15px",
-                padding: "15px",
+                padding: { xs: "5px", md: "15px" },
                 borderRadius: "10px",
                 flexDirection: "column",
                 position: "relative",
@@ -87,12 +87,12 @@ const Chat = ({ chat, messages, onSendMessage, onShowDetails, status }: Props) =
             <Box
                 sx={{
                     width: "100%",
-                    gap: "10px",
+                    gap: { md: "10px", xs: "5px" },
                     display: "flex",
                     flexDirection: "column-reverse",
                     height: "70vh",
                     overflowY: "auto",
-                    padding: "10px 15px 10px 0",
+                    padding: { xs: "0", md: "10px 15px 10px 0" },
                 }}
             >
                 {messages ? messages.map((message) => <ChatMessage message={message} key={message.id} />) : <Loader />}
@@ -122,7 +122,11 @@ const Chat = ({ chat, messages, onSendMessage, onShowDetails, status }: Props) =
                     }}
                 />
 
-                <Box>
+                <Box
+                    sx={{
+                        display: { xs: "none", md: "flex" },
+                    }}
+                >
                     <EmojiPicker onChange={(val) => formik.setFieldValue("message", val)} textFieldRef={textFieldRef} />
                 </Box>
 
