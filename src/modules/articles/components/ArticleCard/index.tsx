@@ -140,7 +140,11 @@ const ArticleCard = ({ article, onRefetch, draft }: Props) => {
                             display: '-webkit-box',
                         }}
                     >
-                        {article.content.length > 100 ? `${article.content.substring(0, 103)}...` : article.content}
+                        {article.content.length > 100
+                            ? article.content.indexOf('.', 0) > 300 || article.content.indexOf('.') === -1
+                                ? `${article.content.substring(0, Math.min(300, article.content.length))}...`
+                                : `${article.content.substring(0, article.content.indexOf('.', 0) + 1)}`
+                            : article.content}
                     </Typography>
                     <Divider
                         sx={{
