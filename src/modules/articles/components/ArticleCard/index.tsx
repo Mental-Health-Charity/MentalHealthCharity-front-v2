@@ -141,19 +141,21 @@ const ArticleCard = ({ article, onRefetch, draft }: Props) => {
                             display: '-webkit-box',
                         }}
                     >
-                    <Markdown
-                        readOnly
-                        content={
-                            article.content.length > 100
-                                ? `${article.content.substring(0, 103)}...`
-                                : article.content
-                        }
-                    />
+                        <Markdown
+                            readOnly
+                            content={
+                                article.content.length > 100
+                                    ? article.content.indexOf('.') > 300 || article.content.indexOf('.') === -1
+                                        ? `${article.content.substring(0, 103)}...`
+                                        : `${article.content.substring(0, article.content.indexOf('.') + 1)}`
+                                    : article.content
+                            }
+                        />
                     </Typography>
                     <Divider
                         sx={{
                             margin: '10px 0',
-                            }}
+                        }}
                     />
                     <Box
                         sx={{
