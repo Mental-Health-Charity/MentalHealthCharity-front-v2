@@ -28,6 +28,7 @@ import usePermissions from '../../../shared/hooks/usePermissions';
 import { ArticleStatus } from '../../constants';
 import updateArticleMutation from '../../queries/updateArticleBannerMutation';
 import { Article } from '../../types';
+import Markdown from '../../../shared/components/Markdown';
 
 interface Props {
     article: Article;
@@ -130,7 +131,7 @@ const ArticleCard = ({ article, onRefetch, draft }: Props) => {
                     <Typography
                         variant="body1"
                         color="text.secondary"
-                        fontSize={20}
+                        fontSize={16}
                         sx={{
                             minHeight: '60px',
                             wordBreak: 'break-word',
@@ -140,17 +141,19 @@ const ArticleCard = ({ article, onRefetch, draft }: Props) => {
                             display: '-webkit-box',
                         }}
                     >
-                        {article.content.length > 100
-                            ? article.content.indexOf('.') > 300 || article.content.indexOf('.') === -1
+                    <Markdown
+                        readOnly
+                        content={
+                            article.content.length > 100
                                 ? `${article.content.substring(0, 103)}...`
-                                : `${article.content.substring(0, article.content.indexOf('.') + 1)}` 
-                            : article.content}{' '}
-                            {/* poprawa wyswietlania  */}
+                                : article.content
+                        }
+                    />
                     </Typography>
                     <Divider
                         sx={{
                             margin: '10px 0',
-                        }}
+                            }}
                     />
                     <Box
                         sx={{
