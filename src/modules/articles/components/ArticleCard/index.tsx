@@ -141,11 +141,11 @@ const ArticleCard = ({ article, onRefetch, draft }: Props) => {
                         }}
                     >
                         {article.content.length > 100
-                            ? article.content.indexOf('.', 0) > 300 || article.content.indexOf('.') === -1
-                                ? `${article.content.substring(0, Math.min(300, article.content.length))}...`
-                                : `${article.content.substring(0, article.content.indexOf('.', 0) + 1)}`
+                            ? article.content.indexOf('.') > 300 || article.content.indexOf('.') === -1
+                                ? `${article.content.substring(0, 103)}...`
+                                : `${article.content.substring(0, article.content.indexOf('.') + 1)}` 
                             : article.content}{' '}
-                        // wrzucic do zmiennych ? czy zagniezdzenia sa ok czy zmienic ?
+                            {/* poprawa wyswietlania  */}
                     </Typography>
                     <Divider
                         sx={{
