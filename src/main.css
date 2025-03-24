@@ -73,3 +73,12 @@ p,
 .markdown-editable img {
     max-width: 100%;
 }
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #00d8bd;
+    color: #fff !important;
+}

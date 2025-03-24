@@ -20,6 +20,8 @@ export interface ReadAllFormOptions {
     form_type_id: formTypes;
     page: number;
     size: number;
+    // Sorting options: 'min_stage' (ascending order by current_step), 'max_stage' (descending order by current_step), 'newest' (descending order by creation_date), 'oldest' (ascending order by creation_date)
+    sort?: "min_stage" | "max_stage" | "newest" | "oldest";
 }
 
 export interface VolunteerFormValues {
@@ -85,6 +87,7 @@ export interface FormResponse<T> {
     current_step: number;
     fields: T;
     form_status: formStatus;
+    notes: FormNote;
     form_type: {
         form_type: formTypes;
         id: number;
@@ -93,6 +96,23 @@ export interface FormResponse<T> {
     };
     id: number;
     message: string | null;
+}
+
+export enum formNoteFields {
+    INTERVIEW_DESCRIPTION = "interview_description",
+    WORK_AREA = "work_area",
+    AVAILABILITY = "availability",
+}
+
+export type FormNote =
+    | {
+          [key in formNoteFields]?: string;
+      }
+    | null;
+
+export interface FormNotePayload {
+    notes: FormNote;
+    id: number;
 }
 
 export enum formTypes {

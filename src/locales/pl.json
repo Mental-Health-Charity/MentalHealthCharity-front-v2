@@ -27,8 +27,10 @@
         "saved": "Zapisano",
         "create_new_account": "Załóż konto",
         "try_again": "Spróbuj ponownie",
+        "preview": "Podgląd",
         "sending": "Wysyłanie...",
         "confirm": "Potwierdź",
+        "no_data": "Brak danych",
         "make_changes_to_save": "Dokonaj zmian, aby zapisać",
         "check_connected_chats": "Sprawdź połączone czaty",
         "success": "Sukces",
@@ -352,6 +354,10 @@
         }
     },
     "form": {
+        "reject": "Odrzuć zgłoszenie",
+        "next_step": "Przenieś na następny etap",
+        "manage_forms_title": "Zarządzaj rekrutacją",
+        "manage_forms_subtitle": "Zdecyduj co chcesz zrobić z tym zgłoszeniem. Możesz je odrzucić, lub przenieść na następny etap: {{step}}.",
         "volunteer": {
             "subtitle": [
                 "W celu dołączenia do naszego zespołu wolontariuszy, wypełnij krótki formularz, abyśmy mogli Cię lepiej poznać.",
@@ -504,12 +510,30 @@
     },
     "manage_volunteer_forms": {
         "title": "Rekrutuj nowych wolontariuszy",
-        "subtitle": "Zarządzaj formularzami wolontariuszy"
+        "subtitle": "Zarządzaj formularzami wolontariuszy",
+        "steps": [
+            "Sprawdź formularz",
+            "Rozmowa rekrutacyjna",
+            "Podpisz kontrakt",
+            "Wyślij podręcznik",
+            "Szkolenie",
+            "Przypisz podopiecznego",
+            "Zakończone - opieka interwizyjna"
+        ]
     },
     "forms_fields": {
         "source": "Skąd nas poznał",
         "contacts": "Preferowana forma kontaktu",
         "description": "Opis",
+        "name": "Imię",
+        "interview_description": "Opis po rozmowie rekrutacyjnej",
+        "work_area": "Obszar pracy",
+        "availability": "Dostępność czasowa",
+        "email": "Email",
+        "actions": "Akcje",
+        "manage": "Zarządzaj",
+        "role": "Rola",
+        "progress": "Etap",
         "age": "Wiek",
         "phone": "Numer telefonu",
         "creation_date": "Data wysłania",
