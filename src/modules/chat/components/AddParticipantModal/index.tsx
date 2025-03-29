@@ -1,13 +1,13 @@
 import { Box, Button } from "@mui/material";
-import Modal from "../../../shared/components/Modal";
+import { useMutation } from "@tanstack/react-query";
+import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
-import { useFormik } from "formik";
-import { Chat } from "../../types";
-import { useMutation } from "@tanstack/react-query";
-import addParticipantMutation from "../../queries/addParticipantMutation";
-import SearchUser from "../../../users/components/SearchUser";
 import { User } from "../../../auth/types";
+import Modal from "../../../shared/components/Modal";
+import SearchUser from "../../../users/components/SearchUser";
+import addParticipantMutation from "../../queries/addParticipantMutation";
+import { Chat } from "../../types";
 
 interface Props {
     open: boolean;
@@ -65,22 +65,17 @@ const AddParticipantModal = ({ chat, onSuccess, ...props }: Props) => {
                 >
                     <SearchUser
                         onChange={(user) => {
-                            console.log("user", user);
                             formik.setFieldValue("participant", user);
                         }}
                         value={formik.values.participant}
                     />
                     <Button
-                        onClick={() =>
-                            console.log(formik.errors, formik.values)
-                        }
+                        onClick={() => console.log(formik.errors, formik.values)}
                         disabled={!formik.dirty}
                         type="submit"
                         variant="contained"
                     >
-                        {!formik.dirty
-                            ? t("common.make_changes_to_save")
-                            : t("common.submit")}
+                        {!formik.dirty ? t("common.make_changes_to_save") : t("common.submit")}
                     </Button>
                 </Box>
             </Box>

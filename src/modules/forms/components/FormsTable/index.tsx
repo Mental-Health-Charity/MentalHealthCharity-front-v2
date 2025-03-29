@@ -84,14 +84,12 @@ const FormsTable = ({ data, renderStepAddnotation, onRefetch, formNoteKeys }: Pr
     const handleCellsChanged = useCallback(
         (changes: CellChange[]) => {
             changes.forEach((change) => {
-                console.log(change.rowId);
                 const rowIndex = parseInt((change.rowId as string).split("-")[1], 10);
                 const form = forms[rowIndex];
                 if (!form) return;
 
                 if (formNoteKeys.includes(change.columnId as formNoteFields)) {
                     const newValue = (change.newCell as TextCell).text;
-                    console.log(newValue);
 
                     setNotes((prev) => {
                         const newNoteForForm = { ...prev[form.id], [change.columnId]: newValue };

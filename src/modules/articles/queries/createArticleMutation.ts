@@ -3,12 +3,8 @@ import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
 import handleApiError from "../../shared/helpers/handleApiError";
 import { Article, CreateArticlePayload } from "../types";
 
-const createArticleMutation = async (
-    payload: CreateArticlePayload
-): Promise<Article> => {
+const createArticleMutation = async (payload: CreateArticlePayload): Promise<Article> => {
     const headers = getAuthHeaders();
-
-    console.log("payload", payload);
 
     try {
         const res = await fetch(url.articles.create, {

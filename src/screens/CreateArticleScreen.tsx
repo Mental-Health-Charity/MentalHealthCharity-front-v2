@@ -52,8 +52,6 @@ const CreateArticleScreen = () => {
             article_category_id: values.article_category_id || 0,
         };
 
-        console.log(transformValues);
-
         createArticle(transformValues);
     };
 
