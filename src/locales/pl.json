@@ -513,19 +513,31 @@
         "subtitle": "Zarządzaj formularzami wolontariuszy",
         "steps": [
             "Sprawdź formularz",
-            "Rozmowa rekrutacyjna",
-            "Podpisz kontrakt",
+            "Wyślij mail o terminie rozmowy",
+            "Ustal termin rozmowy",
+            "Wyślij umowę",
+            "Podpisz umowę",
             "Wyślij podręcznik",
-            "Szkolenie",
-            "Przypisz podopiecznego",
-            "Zakończone - opieka interwizyjna"
+            "Szkolenie i nadanie roli",
+            "Przyporządkuj do podopiecznego",
+            "Przyporządkowany - interwizja"
         ]
+    },
+    "form_sorting": {
+        "min_stage": "Od najmniejszego etapu",
+        "max_stage": "Od największego etapu",
+        "newest": "Od najnowszych",
+        "oldest": "Od najstarszych"
+    },
+    "manage_volunteer_mentee": {
+        "steps": ["Sprawdź formularz i dodaj do czatu", "Nadzór czatu"]
     },
     "forms_fields": {
         "source": "Skąd nas poznał",
         "contacts": "Preferowana forma kontaktu",
         "description": "Opis",
         "name": "Imię",
+        "note": "Notatka",
         "interview_description": "Opis po rozmowie rekrutacyjnej",
         "work_area": "Obszar pracy",
         "availability": "Dostępność czasowa",

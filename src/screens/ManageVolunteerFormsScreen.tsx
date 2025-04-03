@@ -1,13 +1,13 @@
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, MenuItem, Select, Typography } from "@mui/material";
 import "@silevis/reactgrid/styles.css";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import FormsTable from "../modules/forms/components/FormsTable";
-import { translatedFormStatus } from "../modules/forms/constants";
+import { translatedFormStatus, translateFormSorting } from "../modules/forms/constants";
 import { getFormsQueryOptions } from "../modules/forms/queries/getFormsQueryOptions";
-import { formNoteFields, formStatus, formTypes } from "../modules/forms/types";
+import { formNoteFields, formSorting, formStatus, formTypes } from "../modules/forms/types";
 import AdminLayout from "../modules/shared/components/AdminLayout";
 import Loader from "../modules/shared/components/Loader";
 import SimpleCard from "../modules/shared/components/SimpleCard";
@@ -15,12 +15,13 @@ import SimpleCard from "../modules/shared/components/SimpleCard";
 const ManageVolunteerFormsScreen = () => {
     const { t } = useTranslation();
     const [status, setStatus] = useState<formStatus>(formStatus.WAITED);
+    const [sort, setSort] = useState<formSorting>(formSorting.MIN_STAGE);
 
     const { data, isLoading, isError, refetch } = useQuery(
         getFormsQueryOptions({
             form_status: status,
             form_type_id: formTypes.VOLUNTEER,
-            sort: "min_stage",
+            sort,
             page: 1,
             size: 100,
         })
@@ -44,6 +45,13 @@ const ManageVolunteerFormsScreen = () => {
                         {translatedFormStatus[option as formStatus]}
                     </Button>
                 ))}
+                <Select value={sort}>
+                    {Object.values(formSorting).map((option) => (
+                        <MenuItem key={option} value={option} onClick={() => setSort(option)}>
+                            {translateFormSorting[option]}
+                        </MenuItem>
+                    ))}
+                </Select>
             </Box>
             {isLoading && <Loader />}
             <Box

@@ -48,7 +48,6 @@ const FormsTable = ({ data, renderStepAddnotation, onRefetch, formNoteKeys }: Pr
         }, {});
     }, [forms, formNoteKeys]);
 
-    // Inicjalizacja notatek na podstawie formularzy
     const [notes, setNotes] = useState<{ [key: number]: FormNote }>(initializeNotes());
 
     useEffect(() => {
@@ -58,7 +57,6 @@ const FormsTable = ({ data, renderStepAddnotation, onRefetch, formNoteKeys }: Pr
     const { mutate: updateNote } = useMutation({
         mutationFn: updateFormNoteMutation,
         onSuccess: () => {
-            // onRefetch && onRefetch();
             toast.success(t("common.success"));
         },
     });
@@ -108,12 +106,12 @@ const FormsTable = ({ data, renderStepAddnotation, onRefetch, formNoteKeys }: Pr
         { columnId: "email", width: 220, resizable: true, reorderable: true },
         { columnId: "role", width: 110, resizable: true, reorderable: true },
         { columnId: "date", width: 110, resizable: true, reorderable: true },
-        { columnId: "progress", width: 250, resizable: true, reorderable: true },
+        { columnId: "progress", width: 340, resizable: true, reorderable: true },
         ...formNoteKeys.map(
             (key) =>
                 ({
                     columnId: key,
-                    width: key.length * 13,
+                    width: key.length * 13 > 100 ? key.length * 13 : 200,
                     resizable: true,
                     reorderable: true,
                 }) as Column
@@ -154,8 +152,6 @@ const FormsTable = ({ data, renderStepAddnotation, onRefetch, formNoteKeys }: Pr
         return menuOptions.filter((option) => option.id === "copy");
     };
 
-    // Wiersze tabeli – dla komórek z notatkami ustawiamy editable: true,
-    // aby umożliwić edycję, a ReactGrid zadba o wywołanie onCellsChanged przy zmianach.
     const getRows = (forms: FormResponse<VolunteerForm | MenteeForm>[]): Row[] => [
         headerRow,
         ...forms.map<Row>((form, idx) => ({
@@ -182,14 +178,13 @@ const FormsTable = ({ data, renderStepAddnotation, onRefetch, formNoteKeys }: Pr
                             props
                         ),
                 },
-                // Dla każdego klucza notatki – komórka edytowalna
+
                 ...formNoteKeys.map(
                     (key) =>
                         ({
                             type: "text",
                             text: notes[form.id]?.[key] || "",
-                            // Ustawiamy editable: true, aby umożliwić edycję.
-                            // Edycja odbywa się "wewnątrz" ReactGrid, a zmiany trafiają do onCellsChanged.
+
                             editable: true,
                         }) as TextCell
                 ),

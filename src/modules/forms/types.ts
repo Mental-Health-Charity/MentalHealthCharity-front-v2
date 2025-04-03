@@ -10,6 +10,13 @@ export enum formStatus {
     REJECTED = "REJECTED",
 }
 
+export enum formSorting {
+    MIN_STAGE = "min_stage",
+    MAX_STAGE = "max_stage",
+    NEWEST = "newest",
+    OLDEST = "oldest",
+}
+
 export interface FormOption {
     name: string;
     value: string;
@@ -102,6 +109,7 @@ export enum formNoteFields {
     INTERVIEW_DESCRIPTION = "interview_description",
     WORK_AREA = "work_area",
     AVAILABILITY = "availability",
+    NOTE = "note",
 }
 
 export type FormNote =
