@@ -228,7 +228,15 @@ const FormsTable = ({ data, renderStepAddnotation, onRefetch, formNoteKeys }: Pr
                 onCellsChanged={handleCellsChanged}
             />
             <Modal title={t("common.preview")} open={!!showForm} onClose={() => setShowForm(null)}>
-                <Box sx={{ maxWidth: "900px", display: "flex", justifyContent: "center" }}>
+                <Box
+                    sx={{
+                        maxWidth: "900px",
+                        display: "flex",
+                        justifyContent: "center",
+                        maxHeight: "80vh",
+                        overflowY: "auto",
+                    }}
+                >
                     <FormTableItem form={showForm!} />
                 </Box>
             </Modal>
@@ -242,6 +250,7 @@ const FormsTable = ({ data, renderStepAddnotation, onRefetch, formNoteKeys }: Pr
                         sx={{
                             maxWidth: "900px",
                             display: "flex",
+
                             justifyContent: "center",
                             flexDirection: "column",
                         }}
@@ -251,12 +260,17 @@ const FormsTable = ({ data, renderStepAddnotation, onRefetch, formNoteKeys }: Pr
                                 step: renderStepAddnotation(showManageModal.current_step + 1),
                             })}
                         </Typography>
-                        <Box marginTop={2} display="flex" gap={2}>
-                            <Button onClick={() => acceptForm(showManageModal)} variant="contained">
-                                {t("form.next_step")}
-                            </Button>
-                            <Button onClick={() => rejectForm(showManageModal)} variant="outlined" color="primary">
-                                {t("form.reject")}
+                        <Box marginTop={2} gap={1} display="flex" flexDirection="column">
+                            <Box display="flex" gap={2}>
+                                <Button onClick={() => acceptForm(showManageModal)} variant="contained">
+                                    {t("form.next_step")}
+                                </Button>
+                                <Button onClick={() => rejectForm(showManageModal)} variant="outlined" color="primary">
+                                    {t("form.reject")}
+                                </Button>
+                            </Box>
+                            <Button variant="text" onClick={() => setShowForm(showManageModal)}>
+                                {t("forms_fields.show_form")}
                             </Button>
                         </Box>
                     </Box>

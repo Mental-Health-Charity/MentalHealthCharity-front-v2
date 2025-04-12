@@ -1,10 +1,10 @@
-import CloseIcon from '@mui/icons-material/Close';
-import { Box, Drawer, IconButton, List, TextField, useMediaQuery } from '@mui/material';
-import { t } from 'i18next';
-import useTheme from '../../../../theme';
-import { Pagination } from '../../../shared/types';
-import { Chat } from '../../types';
-import ChatItem from '../ChatItem';
+import CloseIcon from "@mui/icons-material/Close";
+import { Box, Drawer, IconButton, List, TextField, useMediaQuery } from "@mui/material";
+import { t } from "i18next";
+import useTheme from "../../../../theme";
+import { Pagination } from "../../../shared/types";
+import { Chat } from "../../types";
+import ChatItem from "../ChatItem";
 
 interface Props {
     data?: Pagination<Chat>;
@@ -16,24 +16,24 @@ interface Props {
 
 const ChatSidebar = ({ data, onChangeChat, currentChatId, showSidebar, handleDrawerToggle }: Props) => {
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Czy urządzenie jest mobilne
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Czy urządzenie jest mobilne
 
     const sidebarContent = (
         <Box
             sx={{
                 backgroundColor: theme.palette.background.default,
-                borderRadius: { sm: '8px', xs: 0 }, // Bez zaokrąglenia na mobilkach
-                display: 'flex',
-                width: '100%',
-                padding: '10px',
-                height: '100%',
+                borderRadius: { sm: "8px", xs: 0 }, // Bez zaokrąglenia na mobilkach
+                display: "flex",
+                width: "100%",
+                padding: "10px",
+                height: "100%",
             }}
         >
-            <Box sx={{ width: '100%' }}>
-                <Box display="flex" gap={2} alignItems="center" sx={{ paddingBottom: '15px' }}>
+            <Box sx={{ width: "100%" }}>
+                <Box display="flex" gap={2} alignItems="center" sx={{ paddingBottom: "15px" }}>
                     <TextField
                         fullWidth
-                        label={t('common.search')}
+                        label={t("common.search")}
                         variant="filled"
                         sx={{
                             color: theme.palette.text.primary,
@@ -41,7 +41,7 @@ const ChatSidebar = ({ data, onChangeChat, currentChatId, showSidebar, handleDra
                     />
                     <Box
                         sx={{
-                            display: { sm: 'none', md: 'none' },
+                            display: { sm: "none", md: "none" },
                         }}
                     >
                         <IconButton
@@ -56,15 +56,20 @@ const ChatSidebar = ({ data, onChangeChat, currentChatId, showSidebar, handleDra
                 </Box>
                 <List
                     style={{
-                        maxHeight: '75vh',
-                        minHeight: '500px',
-                        overflow: 'auto',
+                        maxHeight: "75vh",
+                        minHeight: "500px",
+                        overflow: "auto",
                     }}
                 >
                     {data &&
                         data.items.map((chat) => (
                             <ChatItem
-                                onChange={(id) => onChangeChat(id)}
+                                onChange={(id) => {
+                                    onChangeChat(id);
+                                    if (isMobile) {
+                                        handleDrawerToggle?.();
+                                    }
+                                }}
                                 selected={!!currentChatId && chat.id === currentChatId}
                                 chat={chat}
                                 key={chat.id}
@@ -88,8 +93,8 @@ const ChatSidebar = ({ data, onChangeChat, currentChatId, showSidebar, handleDra
                             keepMounted: true,
                         }}
                         sx={{
-                            '& .MuiDrawer-paper': {
-                                width: '100%',
+                            "& .MuiDrawer-paper": {
+                                width: "100%",
                             },
                         }}
                     >
@@ -97,7 +102,7 @@ const ChatSidebar = ({ data, onChangeChat, currentChatId, showSidebar, handleDra
                     </Drawer>
                 </>
             ) : (
-                <Box sx={{ width: '350px', height: '100%' }}>{sidebarContent}</Box>
+                <Box sx={{ width: "350px", height: "100%" }}>{sidebarContent}</Box>
             )}
         </>
     );
