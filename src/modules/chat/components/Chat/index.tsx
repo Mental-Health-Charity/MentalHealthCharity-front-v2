@@ -4,14 +4,17 @@ import { Box, Button, IconButton, TextField, Typography, useMediaQuery, useTheme
 import { useFormik } from "formik";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { ReadyState } from "react-use-websocket";
 import * as Yup from "yup";
 import { useUser } from "../../../auth/components/AuthProvider";
 import EmojiPicker from "../../../shared/components/EmojiPicker";
 import Loader from "../../../shared/components/Loader";
 import Skeleton from "../../../shared/components/Skeleton";
+import { translatedConnectionStatus } from "../../constants";
 import { Chat as ChatType, ConnectionStatus, Message } from "../../types";
 import ConnectionModal from "../ConnectionModal";
 import ChatMessage from "../Message";
+import { StyledAlert } from "./style";
 
 interface Props {
     chat?: ChatType;
@@ -63,6 +66,7 @@ const Chat = ({ chat, messages, onSendMessage, onShowDetails, status }: Props) =
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
+                    position: "relative",
                 }}
             >
                 {chat ? (
@@ -81,6 +85,11 @@ const Chat = ({ chat, messages, onSendMessage, onShowDetails, status }: Props) =
                     <IconButton onClick={onShowDetails}>
                         <PeopleAltIcon />
                     </IconButton>
+                )}
+                {status.state !== ReadyState.OPEN && (
+                    <StyledAlert variant={status.state === ReadyState.CONNECTING ? "info" : "danger"}>
+                        {translatedConnectionStatus[status.state]}
+                    </StyledAlert>
                 )}
             </Box>
 

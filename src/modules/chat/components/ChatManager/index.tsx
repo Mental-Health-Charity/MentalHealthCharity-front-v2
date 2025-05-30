@@ -12,7 +12,8 @@ import { CellMeasurer, Index } from "react-virtualized";
 import useTheme from "../../../../theme";
 import { User } from "../../../auth/types";
 import ActionMenu from "../../../shared/components/ActionMenu";
-import WindowListVirtualizer, { CachedListRowProps } from "../../../shared/components/WindowListVirtualizer";
+import WindowListInfiniteLoader from "../../../shared/components/WindowListInfiniteLoader";
+import { CachedListRowProps } from "../../../shared/components/WindowListVirtualizer";
 import formatDate from "../../../shared/helpers/formatDate";
 import { Pagination } from "../../../shared/types";
 import UserTableItem from "../../../users/components/UserTableItem";
@@ -25,6 +26,7 @@ interface Props {
     onToggleChat: (chat: Chat) => void;
     onAddParticipant: (chat: Chat) => void;
     onRemoveParticipant: (chat: Chat, participant: User) => void;
+    onLoadMore: () => void;
 }
 
 const ChatManager = ({
@@ -34,6 +36,7 @@ const ChatManager = ({
     onToggleChat,
     onAddParticipant,
     onRemoveParticipant,
+    onLoadMore,
 }: Props) => {
     const { t } = useTranslation();
     const theme = useTheme();
@@ -237,7 +240,7 @@ const ChatManager = ({
 
     return (
         <div style={{ minHeight: "100vh" }}>
-            <WindowListVirtualizer rowCount={data ? data.items.length : 0} onRender={onRender} />
+            <WindowListInfiniteLoader data={data} onLoadMore={onLoadMore} onRender={onRender} />
         </div>
     );
 };

@@ -135,10 +135,18 @@
         "conntecting": "Łączenie z rozmówcą...",
         "open": "Połaczono",
         "admin_chat": "Czat koordynacyjny",
+        "connection_closed": "Przerwano połączenie z rozmówcą. Sprawdź swoje połączenie internetowe. Spróbuj odświeżyć stronę",
+        "connection_closing": "Połączenie z rozmówcą zostało przerwane. Sprawdź swoje połączenie internetowe. Aby naprawić problem odśwież stronę",
+        "connection_connecting": "Łączenie z rozmówcą... Jeśli trwa to za długo - sprawdź swoje połączenie z internetem lub spróbuj odświeżyć stronę",
+        "connection_open": "Połączono z rozmówcą",
+        "connection_uninstantiated": "Nie można połączyć z rozmówcą. Sprawdź swoje połączenie internetowe. Spróbuj odświeżyć stronę",
         "show_more_chats": "Lista czatów",
         "contract_confirmed": "Kontrakt został potwierdzony",
         "contract_confirmed_desc": "Kontrakt został potwierdzony. Nie można go już edytować.",
         "remove_participant_success": "Uczestnik został usunięty",
+        "connection": {
+            "admin_hint": "Jesteś administratorem, ten komunikat jest może oznaczać, że nie jesteś dodany do czatu"
+        },
         "about": {
             "title": "Jak otrzymać pomoc?",
             "subtitle": "W naszym serwisie znajdziesz darmowe wsparcie psychologiczne w formie czatu. Wystarczy, że wypełnisz krótki formularz, a my dobierzemy dla Ciebie odpowiedniego wolontariusza, który będzie Cię wspierał w trudnych chwilach. Wszystkie rozmowy są anonimowe i pełne empatii. Nie musisz się martwić o ocenę, krytykę czy zrozumienie. Jesteśmy tu po to, aby Ci pomóc.",

@@ -1,6 +1,6 @@
-import { ReadyState } from 'react-use-websocket';
-import { User } from '../auth/types';
-import { DefaultPaginationOptions } from '../shared/types';
+import { ReadyState } from "react-use-websocket";
+import { User } from "../auth/types";
+import { DefaultPaginationOptions } from "../shared/types";
 
 export interface ReadChatOptions {
     id: number | string;
@@ -52,6 +52,8 @@ export interface Message {
     id: number;
     sender: User;
     creation_date: string;
+    isPending?: boolean;
+    chat_id: number;
 }
 
 export interface Note {

@@ -45,6 +45,7 @@ const ChatMessage = ({ message }: Props) => {
                     borderRadius: "10px",
                     width: { xs: "100%", md: "auto" },
                     maxWidth: { xs: "100%", md: "70%" },
+                    opacity: message.isPending ? 0.5 : 1,
                     color: senderIsCurrentUser ? theme.palette.text.primary : theme.palette.text.secondary,
                     textAlign: senderIsCurrentUser ? "right" : "left",
                 }}
@@ -100,6 +101,19 @@ const ChatMessage = ({ message }: Props) => {
                 >
                     {message.content}
                 </Typography>
+                {message.isPending && (
+                    <Box>
+                        <Typography
+                            sx={{
+                                fontSize: "14px",
+                                textAlign: "start",
+                            }}
+                            color="info"
+                        >
+                            Wysyłanie...
+                        </Typography>
+                    </Box>
+                )}
             </Box>
         </Box>
     );
