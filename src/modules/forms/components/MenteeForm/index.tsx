@@ -18,6 +18,7 @@ import * as Yup from "yup";
 import { useUser } from "../../../auth/components/AuthProvider";
 import InternalLink from "../../../shared/components/InternalLink/styles";
 import { validation } from "../../../shared/constants";
+import handleApiError from "../../../shared/helpers/handleApiError";
 import { MenteeFormValues } from "../../types";
 import FormWrapper from "../FormWrapper";
 
@@ -102,6 +103,8 @@ const MenteeForm = ({ onSubmit, setStep, step }: Props) => {
                         password: t("validation.registration_failed"),
                         confirmPassword: t("validation.registration_failed"),
                     });
+
+                    handleApiError(error);
                 }
             } else if (step === validationSchemas.length - 1) {
                 onSubmit(values);

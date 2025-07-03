@@ -1,17 +1,17 @@
-import { useQuery } from '@tanstack/react-query';
-import { useCallback } from 'react';
-import { useParams } from 'react-router-dom';
-import ArticleView from '../modules/articles/components/ArticleView';
-import { ArticleStatus } from '../modules/articles/constants';
-import { articlesQueryOptions } from '../modules/articles/queries/articlesQueryOptions';
-import { getArticleByIdQueryOptions } from '../modules/articles/queries/getArticleByIdQueryOptions';
-import Loader from '../modules/shared/components/Loader';
-import NotFoundScreen from './NotFoundScreen';
+import { useQuery } from "@tanstack/react-query";
+import { useCallback } from "react";
+import { useParams } from "react-router-dom";
+import ArticleView from "../modules/articles/components/ArticleView";
+import { ArticleStatus } from "../modules/articles/constants";
+import { articlesQueryOptions } from "../modules/articles/queries/articlesQueryOptions";
+import { getArticleByIdQueryOptions } from "../modules/articles/queries/getArticleByIdQueryOptions";
+import Loader from "../modules/shared/components/Loader";
+import NotFoundScreen from "./NotFoundScreen";
 
 const ArticleScreen = () => {
     const { id } = useParams<{ id: string }>();
     const { data } = useQuery(getArticleByIdQueryOptions({ id: Number(id) || -1 }, {}));
-    const { data: articles, isLoading } = useQuery(articlesQueryOptions({ q: '', page: 1, size: 50 }));
+    const { data: articles, isLoading } = useQuery(articlesQueryOptions({ q: "", page: 1, size: 50 }));
 
     const getRandomArticles = useCallback(() => {
         // TODO: Waiting for backend to fix

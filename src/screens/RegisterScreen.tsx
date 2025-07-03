@@ -1,12 +1,12 @@
-import { Box, Typography, useTheme } from '@mui/material';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import login_background from '../assets/static/login_bg.svg';
-import { useUser } from '../modules/auth/components/AuthProvider';
-import RegisterForm from '../modules/auth/components/RegisterForm';
-import ResetTokenModal from '../modules/auth/components/ResetTokenModal';
-import { RegisterFormValues } from '../modules/auth/types';
-import InternalLink from '../modules/shared/components/InternalLink/styles';
+import { Box, Typography, useTheme } from "@mui/material";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import login_background from "../assets/static/login_bg.svg";
+import { useUser } from "../modules/auth/components/AuthProvider";
+import RegisterForm from "../modules/auth/components/RegisterForm";
+import ResetTokenModal from "../modules/auth/components/ResetTokenModal";
+import { RegisterFormValues } from "../modules/auth/types";
+import InternalLink from "../modules/shared/components/InternalLink/styles";
 
 const RegisterScreen = () => {
     const theme = useTheme();
@@ -23,22 +23,22 @@ const RegisterScreen = () => {
     };
 
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: "flex" }}>
             <Box
                 sx={{
-                    overflow: 'hidden',
-                    maxWidth: { xs: '0%', md: '50%' },
+                    overflow: "hidden",
+                    maxWidth: { xs: "0%", md: "50%" },
                     boxShadow: `3px 4px 4px ${theme.palette.shadows.box}`,
                 }}
             >
-                <img height="100%" style={{ height: '100vh' }} src={login_background} alt="Logo" />
+                <img height="100%" style={{ height: "100vh" }} src={login_background} alt="Logo" />
             </Box>
 
             <Box
                 sx={{
-                    minHeight: '100vh',
+                    minHeight: "100vh",
                     backgroundColor: theme.palette.background.default,
-                    padding: '120px 20px',
+                    padding: "120px 20px",
                 }}
                 width="100%"
                 display="flex"
@@ -59,14 +59,14 @@ const RegisterScreen = () => {
                 </Box>
                 <Box mt="50px" display="flex" width="100%" alignItems="center" justifyContent="center">
                     <Typography variant="body1">
-                        Masz już konto?{' '}
-                        <InternalLink sx={{ fontWeight: 'bold' }} to="/login">
+                        Masz już konto?{" "}
+                        <InternalLink sx={{ fontWeight: "bold" }} to="/login">
                             Zaloguj się
                         </InternalLink>
                     </Typography>
                 </Box>
             </Box>
-            <ResetTokenModal token={restoreToken || ''} open={!!restoreToken} onClose={() => navigate('/')} />
+            <ResetTokenModal token={restoreToken || ""} open={!!restoreToken} onClose={() => navigate("/")} />
         </Box>
     );
 };

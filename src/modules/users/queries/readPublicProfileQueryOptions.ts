@@ -1,14 +1,14 @@
-import { queryOptions, UseQueryOptions } from '@tanstack/react-query';
-import { url } from '../../../api';
-import Errors from '../../shared/constants';
-import { PublicProfile, PublicProfileOptions } from '../types';
+import { queryOptions, UseQueryOptions } from "@tanstack/react-query";
+import { url } from "../../../api";
+import Errors from "../../shared/constants";
+import { PublicProfile, PublicProfileOptions } from "../types";
 
 export const readPublicProfileQueryOptions = (
     options: PublicProfileOptions,
-    additional: Omit<UseQueryOptions<PublicProfile>, 'queryKey' | 'queryFn'>
+    additional: Omit<UseQueryOptions<PublicProfile>, "queryKey" | "queryFn">
 ) =>
     queryOptions<PublicProfile>({
-        queryKey: ['publicProfile'],
+        queryKey: ["publicProfile"],
         queryFn: async () => {
             const response = await fetch(url.publicProfiles.read(options));
 

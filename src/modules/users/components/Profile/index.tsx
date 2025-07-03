@@ -1,6 +1,6 @@
-import { Box, Typography } from '@mui/material';
-import { Roles, translatedRoles } from '../../constants';
-import ChangeAvatar from '../ChangeAvatar';
+import { Box, Typography } from "@mui/material";
+import { Roles, translatedRoles } from "../../constants";
+import ChangeAvatar from "../ChangeAvatar";
 
 interface Props {
     username: string;
@@ -15,10 +15,10 @@ const UserProfileHeading = ({ role, username, avatar_url, isOwner, onSubmit }: P
         <Box>
             <Box
                 sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'flex-end',
-                    gap: '20px',
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "flex-end",
+                    gap: "20px",
                 }}
             >
                 <ChangeAvatar disabled={!isOwner} avatar={avatar_url} username={username} onSubmit={onSubmit} />
@@ -26,9 +26,9 @@ const UserProfileHeading = ({ role, username, avatar_url, isOwner, onSubmit }: P
                     <Typography
                         color="text.secondary"
                         sx={{
-                            fontSize: '24px',
-                            fontWeight: 'bold',
-                            textTransform: 'uppercase',
+                            fontSize: "24px",
+                            fontWeight: "bold",
+                            textTransform: "uppercase",
                         }}
                     >
                         {username}
@@ -36,9 +36,9 @@ const UserProfileHeading = ({ role, username, avatar_url, isOwner, onSubmit }: P
                     <Typography
                         color="text.secondary"
                         sx={{
-                            fontSize: '20px',
-                            fontWeight: 'bold',
-                            textTransform: 'uppercase',
+                            fontSize: "20px",
+                            fontWeight: "bold",
+                            textTransform: "uppercase",
                         }}
                     >
                         {translatedRoles[role]}

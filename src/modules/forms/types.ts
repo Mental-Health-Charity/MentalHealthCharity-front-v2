@@ -27,7 +27,7 @@ export interface ReadAllFormOptions {
     form_type_id: formTypes;
     page: number;
     size: number;
-    // Sorting options: 'min_stage' (ascending order by current_step), 'max_stage' (descending order by current_step), 'newest' (descending order by creation_date), 'oldest' (ascending order by creation_date)
+    // Sorting options: "min_stage" (ascending order by current_step), "max_stage" (descending order by current_step), "newest" (descending order by creation_date), "oldest" (ascending order by creation_date)
     sort?: "min_stage" | "max_stage" | "newest" | "oldest";
 }
 

@@ -24,7 +24,8 @@ const MenteeFormScreen = () => {
     });
 
     const handleSubmit = (values: MenteeFormValues) => {
-        const { password, confirmPassword, ...rest } = values;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password: _password, confirmPassword: _confirmPassword, ...rest } = values;
         const fields: MenteeFormType = {
             ...rest,
             contacts: rest.contacts.map((contact) => ({

@@ -3,9 +3,7 @@ import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
 import handleApiError from "../../shared/helpers/handleApiError";
 import { ChangeReportStatusPayload } from "../types";
 
-const changeStatusMutationOptions = async (
-    payload: ChangeReportStatusPayload
-) => {
+const changeStatusMutationOptions = async (payload: ChangeReportStatusPayload) => {
     try {
         const headers = getAuthHeaders();
 

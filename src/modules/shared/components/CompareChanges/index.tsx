@@ -1,13 +1,13 @@
 import {
     Box,
-    Typography,
+    Paper,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
     TableRow,
-    Paper,
+    Typography,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import useTheme from "../../../../theme";
@@ -24,15 +24,18 @@ interface Props {
 const DataComparison = ({ dataA, dataB }: Props) => {
     const { t } = useTranslation();
     const theme = useTheme();
-    const differences = Object.keys(dataA).reduce((acc, key) => {
-        if (dataA[key] !== dataB[key]) {
-            acc[key] = {
-                oldValue: dataA[key],
-                newValue: dataB[key],
-            };
-        }
-        return acc;
-    }, {} as Record<string, { oldValue: any; newValue: any }>);
+    const differences = Object.keys(dataA).reduce(
+        (acc, key) => {
+            if (dataA[key] !== dataB[key]) {
+                acc[key] = {
+                    oldValue: dataA[key],
+                    newValue: dataB[key],
+                };
+            }
+            return acc;
+        },
+        {} as Record<string, { oldValue: unknown; newValue: unknown }>
+    );
 
     return (
         <Box>
@@ -78,26 +81,19 @@ const DataComparison = ({ dataA, dataB }: Props) => {
                                 color: theme.palette.text.secondary,
                             }}
                         >
-                            {Object.entries(differences).map(
-                                ([field, { oldValue, newValue }]) => (
-                                    <TableRow key={field}>
-                                        <TableCell
-                                            sx={{
-                                                color: theme.palette.text
-                                                    .secondary,
-                                            }}
-                                        >
-                                            {field}
-                                        </TableCell>
-                                        <TableCell style={{ color: "red" }}>
-                                            {String(oldValue) || "—"}
-                                        </TableCell>
-                                        <TableCell style={{ color: "green" }}>
-                                            {String(newValue) || "—"}
-                                        </TableCell>
-                                    </TableRow>
-                                )
-                            )}
+                            {Object.entries(differences).map(([field, { oldValue, newValue }]) => (
+                                <TableRow key={field}>
+                                    <TableCell
+                                        sx={{
+                                            color: theme.palette.text.secondary,
+                                        }}
+                                    >
+                                        {field}
+                                    </TableCell>
+                                    <TableCell style={{ color: "red" }}>{String(oldValue) || "—"}</TableCell>
+                                    <TableCell style={{ color: "green" }}>{String(newValue) || "—"}</TableCell>
+                                </TableRow>
+                            ))}
                         </TableBody>
                     </Table>
                 </TableContainer>

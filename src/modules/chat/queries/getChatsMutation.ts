@@ -19,7 +19,7 @@ const getChatsMutation = async (options: SearchChatQueryOptions): Promise<Pagina
 
         return await res.json();
     } catch (error) {
-        throw error;
+        throw handleApiError(error);
     }
 };
 

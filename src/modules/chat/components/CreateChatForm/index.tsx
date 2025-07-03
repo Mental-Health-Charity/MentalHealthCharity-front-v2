@@ -1,35 +1,29 @@
 import {
     Box,
-    TextField,
-    MenuItem,
-    FormControl,
-    InputLabel,
-    Select,
-    Checkbox,
-    ListItemText,
-    FormHelperText,
     Button,
+    Checkbox,
+    FormControl,
+    FormHelperText,
+    InputLabel,
+    ListItemText,
+    MenuItem,
+    Select,
+    TextField,
 } from "@mui/material";
 import { useFormik } from "formik";
-import * as Yup from "yup";
-import { CreateChatFormValues } from "../../types";
-import { Roles } from "../../../users/constants";
 import { useTranslation } from "react-i18next";
+import * as Yup from "yup";
+import { Roles } from "../../../users/constants";
+import { CreateChatFormValues } from "../../types";
 
-const FLAG_OPTIONS = [
-    { value: "autoGroupChat", label: "Automatyczny czat grupowy" },
-];
+const FLAG_OPTIONS = [{ value: "autoGroupChat", label: "Automatyczny czat grupowy" }];
 
 const validationSchema = Yup.object({
-    name: Yup.string()
-        .min(4, "Nazwa musi zawierać co najmniej 4 znaki")
-        .required("Nazwa jest wymagana"),
+    name: Yup.string().min(4, "Nazwa musi zawierać co najmniej 4 znaki").required("Nazwa jest wymagana"),
     flags: Yup.array().of(Yup.string()).required("Wybór flagi jest wymagany"),
     role: Yup.string().when("flags", (flags, schema) =>
         flags.includes("autoGroupChat")
-            ? schema.required(
-                  "Wybór roli jest wymagany, gdy wybrano Automatyczny czat grupowy"
-              )
+            ? schema.required("Wybór roli jest wymagany, gdy wybrano Automatyczny czat grupowy")
             : schema
     ),
 });
@@ -74,10 +68,7 @@ const CreateChatForm = ({ onSubmit }: Props) => {
                 helperText={formik.touched.name && formik.errors.name}
             />
 
-            <FormControl
-                fullWidth
-                error={formik.touched.flags && Boolean(formik.errors.flags)}
-            >
+            <FormControl fullWidth error={formik.touched.flags && Boolean(formik.errors.flags)}>
                 <InputLabel id="flags-label">Rozszerzenia</InputLabel>
                 <Select
                     labelId="flags-label"
@@ -88,36 +79,21 @@ const CreateChatForm = ({ onSubmit }: Props) => {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     renderValue={(selected) =>
-                        selected
-                            .map(
-                                (flag) =>
-                                    FLAG_OPTIONS.find((f) => f.value === flag)
-                                        ?.label
-                            )
-                            .join(", ")
+                        selected.map((flag) => FLAG_OPTIONS.find((f) => f.value === flag)?.label).join(", ")
                     }
                 >
                     {FLAG_OPTIONS.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
-                            <Checkbox
-                                checked={formik.values.flags.includes(
-                                    option.value
-                                )}
-                            />
+                            <Checkbox checked={formik.values.flags.includes(option.value)} />
                             <ListItemText primary={option.label} />
                         </MenuItem>
                     ))}
                 </Select>
-                {formik.touched.flags && (
-                    <FormHelperText>{formik.errors.flags}</FormHelperText>
-                )}
+                {formik.touched.flags && <FormHelperText>{formik.errors.flags}</FormHelperText>}
             </FormControl>
 
             {formik.values.flags.includes("autoGroupChat") && (
-                <FormControl
-                    fullWidth
-                    error={formik.touched.role && Boolean(formik.errors.role)}
-                >
+                <FormControl fullWidth error={formik.touched.role && Boolean(formik.errors.role)}>
                     <InputLabel id="role-label">Rola</InputLabel>
                     <Select
                         labelId="role-label"
@@ -133,9 +109,7 @@ const CreateChatForm = ({ onSubmit }: Props) => {
                             </MenuItem>
                         ))}
                     </Select>
-                    {formik.touched.role && (
-                        <FormHelperText>{formik.errors.role}</FormHelperText>
-                    )}
+                    {formik.touched.role && <FormHelperText>{formik.errors.role}</FormHelperText>}
                 </FormControl>
             )}
 

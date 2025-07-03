@@ -1,9 +1,9 @@
-import { Route, Routes } from 'react-router-dom';
-import LoginScreen from '../../../../screens/LoginScreen';
-import NotFoundScreen from '../../../../screens/NotFoundScreen';
-import { useUser } from '../../../auth/components/AuthProvider';
-import usePermissions from '../../hooks/usePermissions';
-import routes from '../../routes';
+import { Route, Routes } from "react-router-dom";
+import LoginScreen from "../../../../screens/LoginScreen";
+import NotFoundScreen from "../../../../screens/NotFoundScreen";
+import { useUser } from "../../../auth/components/AuthProvider";
+import usePermissions from "../../hooks/usePermissions";
+import routes from "../../routes";
 
 const RootRouter = () => {
     const { user } = useUser();

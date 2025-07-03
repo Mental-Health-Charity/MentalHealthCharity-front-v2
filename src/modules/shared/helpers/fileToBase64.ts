@@ -8,10 +8,7 @@ const fileToBase64 = async (file?: File): Promise<string> => {
     let binaryString = "";
     const chunkSize = 8192; // Rozmiar bloku
     for (let i = 0; i < uint8Array.length; i += chunkSize) {
-        binaryString += String.fromCharCode.apply(
-            null,
-            uint8Array.slice(i, i + chunkSize) as unknown as number[]
-        );
+        binaryString += String.fromCharCode.apply(null, uint8Array.slice(i, i + chunkSize) as unknown as number[]);
     }
 
     return btoa(binaryString);

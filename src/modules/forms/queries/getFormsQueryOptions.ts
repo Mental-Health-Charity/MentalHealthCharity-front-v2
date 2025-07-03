@@ -1,17 +1,15 @@
 import { queryOptions } from "@tanstack/react-query";
 import { url } from "../../../api";
-import { FormResponse, ReadAllFormOptions, VolunteerForm } from "../types";
-import { Pagination } from "../../shared/types";
-import handleApiError from "../../shared/helpers/handleApiError";
 import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
+import handleApiError from "../../shared/helpers/handleApiError";
+import { Pagination } from "../../shared/types";
+import { FormResponse, ReadAllFormOptions, VolunteerForm } from "../types";
 
 type FormTypeById<T extends number> = T extends 2
     ? Pagination<FormResponse<VolunteerForm>>
     : Pagination<FormResponse<VolunteerForm>>;
 
-export const getFormsQueryOptions = <T extends number>(
-    options: ReadAllFormOptions & { form_type_id: T }
-) =>
+export const getFormsQueryOptions = <T extends number>(options: ReadAllFormOptions & { form_type_id: T }) =>
     queryOptions<FormTypeById<T>>({
         queryKey: ["forms", options],
         queryFn: async () => {

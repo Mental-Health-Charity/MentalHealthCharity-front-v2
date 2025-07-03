@@ -4,13 +4,7 @@ import { User } from "../../auth/types";
 import handleApiError from "../../shared/helpers/handleApiError";
 import { EditUserFormValues } from "../types";
 
-const editUserAsAdminMutation = async ({
-    id,
-    payload,
-}: {
-    id: number;
-    payload: EditUserFormValues;
-}): Promise<User> => {
+const editUserAsAdminMutation = async ({ id, payload }: { id: number; payload: EditUserFormValues }): Promise<User> => {
     const headers = getAuthHeaders();
 
     try {

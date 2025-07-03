@@ -1,13 +1,13 @@
-import { url } from '../../../api';
-import getAuthHeaders from '../../auth/helpers/getAuthHeaders';
-import handleApiError from '../../shared/helpers/handleApiError';
+import { url } from "../../../api";
+import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
+import handleApiError from "../../shared/helpers/handleApiError";
 
-export const confirmContractForChatMutation = async ({ id, body }: any) => {
+export const confirmContractForChatMutation = async ({ id, body }: { id: string; body: Record<string, boolean> }) => {
     const headers = getAuthHeaders();
 
     try {
         const res = await fetch(url.chat.confirmContract({ id }), {
-            method: 'POST',
+            method: "POST",
             body: JSON.stringify(body),
             headers,
         });
@@ -18,7 +18,7 @@ export const confirmContractForChatMutation = async ({ id, body }: any) => {
 
         return await res.json();
     } catch (e) {
-        console.error('Error while confirming contract:', e);
+        console.error("Error while confirming contract:", e);
         throw e;
     }
 };

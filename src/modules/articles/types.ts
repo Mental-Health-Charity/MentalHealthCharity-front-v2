@@ -1,6 +1,6 @@
-import { User } from '../auth/types';
-import { DefaultPaginationOptions } from '../shared/types';
-import { ArticleRequiredRoles, ArticleStatus } from './constants';
+import { User } from "../auth/types";
+import { DefaultPaginationOptions } from "../shared/types";
+import { ArticleRequiredRoles, ArticleStatus } from "./constants";
 
 export interface ReadArticlesOptions extends DefaultPaginationOptions {
     status: ArticleStatus;
@@ -39,7 +39,7 @@ export interface CreateArticlePayload {
     status: ArticleStatus;
 }
 
-export interface UpdateArticlePayload extends Omit<CreateArticlePayload, 'banner_url'> {
+export interface UpdateArticlePayload extends Omit<CreateArticlePayload, "banner_url"> {
     article_id: number;
 }
 export interface ArticleCategoryOptions {

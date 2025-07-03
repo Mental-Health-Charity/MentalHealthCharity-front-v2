@@ -1,8 +1,4 @@
-export const downloadFile = (
-    data: object | string | Blob,
-    fileName: string,
-    fileType: string
-): void => {
+export const downloadFile = (data: object | string | Blob, fileName: string, fileType: string): void => {
     let blob: Blob;
 
     switch (typeof data) {

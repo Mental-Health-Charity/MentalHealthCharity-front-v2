@@ -1,6 +1,6 @@
-import { useCallback } from 'react';
-import { useUser } from '../../auth/components/AuthProvider';
-import { groupedPermissions, Permissions } from '../constants';
+import { useCallback } from "react";
+import { useUser } from "../../auth/components/AuthProvider";
+import { groupedPermissions, Permissions } from "../constants";
 
 const usePermissions = () => {
     const { user } = useUser();

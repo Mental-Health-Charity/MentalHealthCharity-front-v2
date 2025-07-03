@@ -10,12 +10,12 @@ import {
     Typography,
     useTheme,
 } from "@mui/material";
-import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { searchUserQueryOptions } from "../../queries/searchUserQueryOptions";
-import { Roles } from "../../constants";
+import { useEffect, useState } from "react";
 import { User } from "../../../auth/types";
 import useDebounce from "../../../shared/hooks/useDebounce";
+import { Roles } from "../../constants";
+import { searchUserQueryOptions } from "../../queries/searchUserQueryOptions";
 
 interface Props {
     onChange: (user?: User) => void;
@@ -24,12 +24,7 @@ interface Props {
     disabled?: boolean;
 }
 
-const SearchUser = ({
-    onChange,
-    value,
-    onChangeSearchQuery,
-    disabled,
-}: Props) => {
+const SearchUser = ({ onChange, value, onChangeSearchQuery, disabled }: Props) => {
     const [role, setRole] = useState<Roles | undefined>();
     const [username, setUsername] = useState<string>("");
     const [isLoading, setIsLoading] = useState(false);
@@ -73,17 +68,13 @@ const SearchUser = ({
                 disabled={disabled}
                 disablePortal
                 options={data ? data.items : []}
-                getOptionLabel={(option) =>
-                    typeof option === "object" ? option.full_name : option
-                }
+                getOptionLabel={(option) => (typeof option === "object" ? option.full_name : option)}
                 loading={isLoading}
                 loadingText={<p>loading</p>}
                 noOptionsText="Brak wyników"
                 filterOptions={(options) => options}
                 value={value || null}
-                onChange={(_, user) =>
-                    handleOptionChange(user as User | undefined)
-                }
+                onChange={(_, user) => handleOptionChange(user as User | undefined)}
                 renderOption={(props, option) => {
                     return (
                         <li {...props} key={option.id}>
@@ -94,10 +85,7 @@ const SearchUser = ({
                                     gap: 2,
                                 }}
                             >
-                                <Avatar
-                                    variant="rounded"
-                                    src={option.chat_avatar_url || ""}
-                                />
+                                <Avatar variant="rounded" src={option.chat_avatar_url || ""} />
                                 <Box>
                                     <Typography
                                         variant="body1"
@@ -146,13 +134,7 @@ const SearchUser = ({
                                 disabled={disabled}
                                 labelId="Role"
                                 value={role || ""}
-                                onChange={(e) =>
-                                    setRole(
-                                        e.target.value === ""
-                                            ? undefined
-                                            : (e.target.value as Roles)
-                                    )
-                                }
+                                onChange={(e) => setRole(e.target.value === "" ? undefined : (e.target.value as Roles))}
                                 variant="filled"
                             >
                                 <MenuItem value={""}>Każda rola</MenuItem>

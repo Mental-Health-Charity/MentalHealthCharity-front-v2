@@ -1,9 +1,8 @@
 import { queryOptions, UseQueryOptions } from "@tanstack/react-query";
 import { url } from "../../../api";
-import { ReadPublicArticlesOptions } from "../types";
-import { Article } from "../types";
-import { Pagination } from "../../shared/types";
 import handleApiError from "../../shared/helpers/handleApiError";
+import { Pagination } from "../../shared/types";
+import { Article, ReadPublicArticlesOptions } from "../types";
 
 export const readPublicArticlesQueryOptions = (
     options: ReadPublicArticlesOptions,
@@ -13,9 +12,7 @@ export const readPublicArticlesQueryOptions = (
         queryKey: ["public_articles"],
         queryFn: async () => {
             try {
-                const response = await fetch(
-                    url.articles.readPublicArticles(options)
-                );
+                const response = await fetch(url.articles.readPublicArticles(options));
 
                 const data = await response.json();
 

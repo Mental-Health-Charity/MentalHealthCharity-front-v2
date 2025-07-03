@@ -1,18 +1,18 @@
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import { Box, Button, Tooltip, Typography } from '@mui/material';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
-import toast from 'react-hot-toast';
-import { useTranslation } from 'react-i18next';
-import ArticlesManager from '../modules/articles/components/ArticlesManager';
-import { ArticleStatus, translatedAdminArticleStatus } from '../modules/articles/constants';
-import changeStatusMutation from '../modules/articles/queries/changeStatusMutation';
-import { readPublicArticlesQueryOptions } from '../modules/articles/queries/readPublicArticlesQueryOptions';
-import { UpdateStatusFormValues } from '../modules/articles/types';
-import AdminLayout from '../modules/shared/components/AdminLayout';
-import Loader from '../modules/shared/components/Loader';
-import SimpleCard from '../modules/shared/components/SimpleCard';
-import SearchUser from '../modules/users/components/SearchUser';
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import { Box, Button, Tooltip, Typography } from "@mui/material";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
+import ArticlesManager from "../modules/articles/components/ArticlesManager";
+import { ArticleStatus, translatedAdminArticleStatus } from "../modules/articles/constants";
+import changeStatusMutation from "../modules/articles/queries/changeStatusMutation";
+import { readPublicArticlesQueryOptions } from "../modules/articles/queries/readPublicArticlesQueryOptions";
+import { UpdateStatusFormValues } from "../modules/articles/types";
+import AdminLayout from "../modules/shared/components/AdminLayout";
+import Loader from "../modules/shared/components/Loader";
+import SimpleCard from "../modules/shared/components/SimpleCard";
+import SearchUser from "../modules/users/components/SearchUser";
 
 const ManageArticlesScreen = () => {
     const { t } = useTranslation();
@@ -28,7 +28,7 @@ const ManageArticlesScreen = () => {
                 author: filterByUser,
             },
             {
-                queryKey: ['readPublicArticles', { status, page: 1, size: 100, author: filterByUser }],
+                queryKey: ["readPublicArticles", { status, page: 1, size: 100, author: filterByUser }],
             }
         )
     );
@@ -36,7 +36,7 @@ const ManageArticlesScreen = () => {
     const { mutate } = useMutation({
         mutationFn: changeStatusMutation,
         onSuccess: () => {
-            toast.success(t('manage_articles.article_status_changed'));
+            toast.success(t("manage_articles.article_status_changed"));
             refetch();
         },
     });
@@ -47,18 +47,18 @@ const ManageArticlesScreen = () => {
 
     return (
         <AdminLayout>
-            <SimpleCard title={t('manage_articles.title')} subtitle={t('manage_articles.subtitle')}>
-                <Tooltip title={t('common.unavailable_in_beta')}>
+            <SimpleCard title={t("manage_articles.title")} subtitle={t("manage_articles.subtitle")}>
+                <Tooltip title={t("common.unavailable_in_beta")}>
                     <Box>
                         <SearchUser disabled onChange={(user) => setFilterByUser(user?.id)} />
                     </Box>
                 </Tooltip>
-                <Box sx={{ marginTop: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <Box sx={{ marginTop: "20px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
                     {Object.keys(ArticleStatus).map((option) => (
                         <Button
                             sx={{
-                                backgroundColor: 'primary.main',
-                                color: 'white',
+                                backgroundColor: "primary.main",
+                                color: "white",
                                 opacity: option === status ? 1 : 0.5,
                             }}
                             onClick={() => setStatus(option as ArticleStatus)}
@@ -72,7 +72,7 @@ const ManageArticlesScreen = () => {
             {isLoading && <Loader />}
             {data && data.total === 0 && (
                 <Typography color="textSecondary" variant="h6" textAlign="center">
-                    {t('common.not_found')}
+                    {t("common.not_found")}
                 </Typography>
             )}
             {data && data.items && <ArticlesManager onChangeStatus={handleChangeStatus} articles={data.items} />}

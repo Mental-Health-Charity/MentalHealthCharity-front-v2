@@ -3,10 +3,7 @@ import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
 import handleApiError from "../../shared/helpers/handleApiError";
 import { EditNotePayload } from "../types";
 
-const editNoteMutation = async ({
-    content,
-    id,
-}: EditNotePayload): Promise<string> => {
+const editNoteMutation = async ({ content, id }: EditNotePayload): Promise<string> => {
     try {
         const headers = getAuthHeaders();
 

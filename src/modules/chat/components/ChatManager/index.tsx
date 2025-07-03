@@ -180,7 +180,7 @@ const ChatManager = ({
                                 position: "relative",
 
                                 "&::before": {
-                                    content: '""',
+                                    content: "",
                                     display: "block",
                                     position: "absolute",
                                     width: "5px",
@@ -216,7 +216,7 @@ const ChatManager = ({
                                             width: "100%",
 
                                             "&::after": {
-                                                content: '""',
+                                                content: "",
                                                 display: "block",
                                                 position: "absolute",
                                                 width: "25px",

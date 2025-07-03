@@ -1,16 +1,8 @@
-import {
-    Divider,
-    IconButton,
-    ListItemIcon,
-    ListItemText,
-    Menu,
-    MenuItem,
-    MenuList,
-} from "@mui/material";
-import { ComponentAction } from "../../types";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import { Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, MenuList } from "@mui/material";
 import { MouseEvent, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { ComponentAction } from "../../types";
 
 interface Props {
     actions: ComponentAction[];

@@ -12,7 +12,7 @@ import Container from "../modules/shared/components/Container";
 const ArticlesScreen = () => {
     const [query, setQuery] = useState("");
     const [debouncedQuery, setDebouncedQuery] = useState(query);
-    const [page, _setPage] = useState(1);
+    const page = 1;
     const { t } = useTranslation();
 
     const debouncedSetQuery = useCallback(

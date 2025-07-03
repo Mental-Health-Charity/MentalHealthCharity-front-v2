@@ -1,15 +1,15 @@
-import { queryOptions, UseQueryOptions } from '@tanstack/react-query';
-import { url } from '../../../api';
-import { ChatContractOptions, Contract } from '../types';
-import getAuthHeaders from '../../auth/helpers/getAuthHeaders';
-import handleApiError from '../../shared/helpers/handleApiError';
+import { queryOptions, UseQueryOptions } from "@tanstack/react-query";
+import { url } from "../../../api";
+import { ChatContractOptions, Contract } from "../types";
+import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
+import handleApiError from "../../shared/helpers/handleApiError";
 
 export const getContractForChat = (
     options: ChatContractOptions,
-    additionals?: Omit<UseQueryOptions<Contract>, 'queryFn'>
+    additionals?: Omit<UseQueryOptions<Contract>, "queryFn">
 ) =>
     queryOptions<Contract>({
-        queryKey: ['chats', options],
+        queryKey: ["chats", options],
         queryFn: async () => {
             try {
                 const headers = getAuthHeaders();
@@ -25,7 +25,7 @@ export const getContractForChat = (
 
                 return data;
             } catch (error) {
-                console.error('Error fetching chats:', error);
+                console.error("Error fetching chats:", error);
                 throw error;
             }
         },

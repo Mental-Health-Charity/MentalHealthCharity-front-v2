@@ -1,17 +1,17 @@
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { Box, Button, Divider, TextField, Typography } from "@mui/material";
-import Modal from "../../../shared/components/Modal";
-import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import createArticleCategoryMutation from "../../queries/createArticleCategoryMutation";
-import { CreateArticleCategoryPayload } from "../../types";
 import { useFormik } from "formik";
+import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 import Loader from "../../../shared/components/Loader";
-import { getCategoriesQueryOptions } from "../../queries/getCategoriesQueryOptions";
-import CategoryItem from "../CategoryItem";
+import Modal from "../../../shared/components/Modal";
+import createArticleCategoryMutation from "../../queries/createArticleCategoryMutation";
 import deleteArticleCategoryMutation from "../../queries/deleteArticleCategoryMutation";
+import { getCategoriesQueryOptions } from "../../queries/getCategoriesQueryOptions";
 import updateArticleCategoryMutation from "../../queries/updateArticleCategoryMutation";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { CreateArticleCategoryPayload } from "../../types";
+import CategoryItem from "../CategoryItem";
 
 interface Props {
     open: boolean;
@@ -91,22 +91,12 @@ const CreateArticleCategoryModal = ({ onSuccess, ...props }: Props) => {
                             value={formik.values.name}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={
-                                formik.touched.name &&
-                                Boolean(formik.errors.name)
-                            }
-                            helperText={
-                                formik.touched.name && formik.errors.name
-                            }
+                            error={formik.touched.name && Boolean(formik.errors.name)}
+                            helperText={formik.touched.name && formik.errors.name}
                             margin="normal"
                         />
                     )}
-                    <Box
-                        marginTop={1}
-                        display="flex"
-                        justifyContent="flex-end"
-                        gap="10px"
-                    >
+                    <Box marginTop={1} display="flex" justifyContent="flex-end" gap="10px">
                         <Button
                             fullWidth
                             variant="contained"

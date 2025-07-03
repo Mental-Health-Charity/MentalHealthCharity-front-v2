@@ -1,17 +1,17 @@
-import { Box, Button, Typography } from '@mui/material';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { t } from 'i18next';
-import { useEffect, useLayoutEffect, useState } from 'react';
-import toast from 'react-hot-toast';
-import Loader from '../../../shared/components/Loader';
-import Markdown from '../../../shared/components/Markdown';
-import Modal from '../../../shared/components/Modal';
-import { Permissions } from '../../../shared/constants';
-import useDebounce from '../../../shared/hooks/useDebounce';
-import usePermissions from '../../../shared/hooks/usePermissions';
-import { confirmContractForChatMutation } from '../../queries/confirmContractForChat';
-import { editContractForChatMutation } from '../../queries/editContractForChat';
-import { getContractForChat } from '../../queries/getContractForChat';
+import { Box, Button, Typography } from "@mui/material";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { t } from "i18next";
+import { useEffect, useLayoutEffect, useState } from "react";
+import toast from "react-hot-toast";
+import Loader from "../../../shared/components/Loader";
+import Markdown from "../../../shared/components/Markdown";
+import Modal from "../../../shared/components/Modal";
+import { Permissions } from "../../../shared/constants";
+import useDebounce from "../../../shared/hooks/useDebounce";
+import usePermissions from "../../../shared/hooks/usePermissions";
+import { confirmContractForChatMutation } from "../../queries/confirmContractForChat";
+import { editContractForChatMutation } from "../../queries/editContractForChat";
+import { getContractForChat } from "../../queries/getContractForChat";
 interface Props {
     onClose: () => void;
     isOpen: boolean;
@@ -19,7 +19,7 @@ interface Props {
 }
 
 const ContractModal = ({ isOpen, onClose, chatId }: Props) => {
-    const [modalContent, setModalContent] = useState('');
+    const [modalContent, setModalContent] = useState("");
     const { data, isLoading, refetch } = useQuery(getContractForChat({ id: chatId }));
     const { hasPermissions } = usePermissions();
     const debouncedModalContent = useDebounce(modalContent, 1000);
@@ -43,7 +43,7 @@ const ContractModal = ({ isOpen, onClose, chatId }: Props) => {
     const { mutate: editContractForChat } = useMutation({
         mutationFn: editContractForChatMutation,
         onSuccess: () => {
-            toast.success(t('common.saved'));
+            toast.success(t("common.saved"));
 
             refetch();
         },
@@ -52,7 +52,7 @@ const ContractModal = ({ isOpen, onClose, chatId }: Props) => {
     const { mutate } = useMutation({
         mutationFn: confirmContractForChatMutation,
         onSuccess: () => {
-            toast.success(t('chat.contract_confirmed'));
+            toast.success(t("chat.contract_confirmed"));
             refetch();
         },
     });
@@ -72,7 +72,7 @@ const ContractModal = ({ isOpen, onClose, chatId }: Props) => {
 
     return (
         <Modal title="Kontrakt" onClose={onClose} open={isOpen}>
-            <Box sx={{ width: '800px' }}>
+            <Box sx={{ width: "800px" }}>
                 <Markdown
                     onChange={handleModalContentChange}
                     content={modalContent}
@@ -81,18 +81,18 @@ const ContractModal = ({ isOpen, onClose, chatId }: Props) => {
                 />
                 <Box
                     sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '20px',
-                        justifyContent: 'space-between',
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "20px",
+                        justifyContent: "space-between",
                     }}
                 >
                     {hasPermissions(Permissions.CAN_CONFIRM_CONTRACT) && (
                         <Button variant="contained" onClick={handleConfirmContract} disabled={data.is_confirmed}>
-                            {t('chat.accept_contract')}
+                            {t("chat.accept_contract")}
                         </Button>
                     )}
-                    {data.is_confirmed && <Typography color="success">{t('chat.contract_confirmed_desc')}</Typography>}
+                    {data.is_confirmed && <Typography color="success">{t("chat.contract_confirmed_desc")}</Typography>}
                 </Box>
             </Box>
         </Modal>
