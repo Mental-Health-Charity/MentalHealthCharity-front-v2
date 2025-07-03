@@ -430,15 +430,15 @@
         "mentee": {
             "subtitle": [
                 "Dziękujemy za Twoje zaufanie. Wypełnij krótki formularz, aby uzyskać pomoc. Dołącz do nas i otrzymaj darmowe wsparcie, które działa dzięki wolontariuszom z całej Polski. To pierwszy krok ku zmianie na lepsze",
-                "Jak możemy poinformować Cię gdy zostanie przydzielony dla Ciebie odpowiedni wolontariusz?",
+                "Na ten adres email wyślemy Ci informacje, gdy znajdziemy dla Ciebie odpowiedniego wolontariusza.",
                 "Wybierz jak najlepiej rodzaj problemu, abyśmy mogli dopasować Ci najlepszego wolontariusza! Możesz wybrać kilka.",
                 "Opisz jak najlepiej swój problem, abyśmy mogli dopasować Ci najlepszego wolontariusza!",
                 "Skąd dowiedziałeś się o naszej fundacji? Pomóż nam rozwijać się i dotrzeć do większej liczby osób!",
-                "To wszystko! Już w krótce otrzymasz informacje na temat dalszych kroków na {{contact}} gdy znajdziemy dla Ciebie odpowiedniego wolontariusza. Dziękujemy za zaufanie!"
+                "To wszystko! Już wkrótce otrzymasz informacje na temat dalszych kroków na {{contact}} gdy znajdziemy dla Ciebie odpowiedniego wolontariusza. Dziękujemy za zaufanie!"
             ],
             "title": [
                 "Otrzymaj darmowe wsparcie",
-                "Wybierz formę kontaktu",
+                "Kontakt",
                 "Wybierz rodzaj problemu",
                 "Opisz swój problem",
                 "Skąd się o nas dowiedziałeś?",
@@ -446,15 +446,15 @@
             ],
             "subtitle_new_user": [
                 "Dziękujemy za Twoje zaufanie. Wypełnij krótki formularz, aby uzyskać pomoc realizowaną przez wolontariuszy z całego świata.",
-                "Jak możemy poinformować Cię gdy zostanie przydzielony dla Ciebie odpowiedni wolontariusz?",
+                "Na ten adres email wyślemy Ci informacje, gdy znajdziemy dla Ciebie odpowiedniego wolontariusza.",
                 "Wybierz jak najlepiej rodzaj problemu, abyśmy mogli dopasować Ci najlepszego wolontariusza! Możesz wybrać kilka.",
                 "Opisz jak najlepiej swój problem, abyśmy mogli dopasować Ci najlepszego wolontariusza!",
                 "Musisz utworzyć konto, aby dołączyć i korzystać w pełni z naszych usług",
-                "To wszystko! Już w krótce otrzymasz informacje na temat dalszych kroków na {{contact}} gdy znajdziemy dla Ciebie odpowiedniego wolontariusza. Dziękujemy za zaufanie!"
+                "To wszystko! Już wkrótce otrzymasz informacje na temat dalszych kroków na {{contact}} gdy znajdziemy dla Ciebie odpowiedniego wolontariusza. Dziękujemy za zaufanie!"
             ],
             "title_new_user": [
                 "Otrzymaj darmowe wsparcie",
-                "Wybierz formę kontaktu",
+                "Kontakt",
                 "Wybierz rodzaj problemu",
                 "Opisz swój problem",
                 "Zarejestruj się, aby dołączyć do zespołu podopiecznych!",

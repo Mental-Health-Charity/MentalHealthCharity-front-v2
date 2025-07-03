@@ -16,13 +16,13 @@ interface Props {
 
 const ChatSidebar = ({ data, onChangeChat, currentChatId, showSidebar, handleDrawerToggle }: Props) => {
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Czy urządzenie jest mobilne
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     const sidebarContent = (
         <Box
             sx={{
                 backgroundColor: theme.palette.background.default,
-                borderRadius: { sm: "8px", xs: 0 }, // Bez zaokrąglenia na mobilkach
+                borderRadius: { sm: "8px", xs: 0 },
                 display: "flex",
                 width: "100%",
                 padding: "10px",

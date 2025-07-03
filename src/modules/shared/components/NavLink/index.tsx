@@ -35,7 +35,7 @@ const NavLink = ({ name, to, fullWidth }: Props) => {
 
                 "&::after": {
                     position: "absolute",
-                    content: "",
+                    content: "''",
                     display: "block",
                     minHeight: "5px",
                     borderRadius: "5px",

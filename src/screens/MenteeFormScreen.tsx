@@ -13,7 +13,7 @@ const MenteeFormScreen = () => {
     const isFormSend = localStorage.getItem(SessionStorage.SEND_FORM);
     const [step, setStep] = useState(isFormSend ? 5 : 0);
 
-    const { mutate } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: sendFormMutation,
 
         onSuccess: () => {
@@ -62,7 +62,7 @@ const MenteeFormScreen = () => {
                 width: "fit-content",
             }}
         >
-            <MenteeForm onSubmit={handleSubmit} step={step} setStep={setStep} />
+            <MenteeForm isLoading={isPending} onSubmit={handleSubmit} step={step} setStep={setStep} />
 
             {showConfetti && <Confetti recycle={false} width={window.innerWidth} height={window.innerHeight} />}
         </Container>
