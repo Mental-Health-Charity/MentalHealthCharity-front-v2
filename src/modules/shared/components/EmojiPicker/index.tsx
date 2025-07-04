@@ -1,7 +1,7 @@
-import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
-import { Box, IconButton } from '@mui/material';
-import Picker, { EmojiClickData, EmojiStyle, Theme } from 'emoji-picker-react';
-import { useEffect, useRef, useState } from 'react';
+import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
+import { Box, IconButton } from "@mui/material";
+import Picker, { EmojiClickData, EmojiStyle, Theme } from "emoji-picker-react";
+import { useEffect, useRef, useState } from "react";
 
 interface Props {
     onChange: (val: string) => void;
@@ -36,9 +36,9 @@ const EmojiPicker = ({ onChange, textFieldRef }: Props) => {
             }
         };
 
-        document.addEventListener('click', handleClickOutside);
+        document.addEventListener("click", handleClickOutside);
         return () => {
-            document.removeEventListener('click', handleClickOutside);
+            document.removeEventListener("click", handleClickOutside);
         };
     }, [setShowEmojiPicker, containerRef]);
 
@@ -46,14 +46,14 @@ const EmojiPicker = ({ onChange, textFieldRef }: Props) => {
         <Box
             ref={containerRef}
             sx={{
-                position: 'relative',
+                position: "relative",
             }}
         >
             <Box
                 sx={{
-                    position: 'absolute',
-                    bottom: '40px',
-                    right: { xs: '-70px', sm: '30px' },
+                    position: "absolute",
+                    bottom: "40px",
+                    right: { xs: "-70px", sm: "30px" },
                     zIndex: 10,
                 }}
             >
@@ -65,7 +65,7 @@ const EmojiPicker = ({ onChange, textFieldRef }: Props) => {
                     lazyLoadEmojis
                 />
             </Box>
-            <IconButton onClick={() => setShowEmojiPicker((prev) => !prev)} sx={{ height: 'fit-content' }}>
+            <IconButton onClick={() => setShowEmojiPicker((prev) => !prev)} sx={{ height: "fit-content" }}>
                 <EmojiEmotionsIcon />
             </IconButton>
         </Box>

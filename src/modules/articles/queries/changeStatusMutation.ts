@@ -3,10 +3,7 @@ import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
 import handleApiError from "../../shared/helpers/handleApiError";
 import { Article, ChangeArticleStatusPayload } from "../types";
 
-const changeStatusMutation = async ({
-    id,
-    ...payload
-}: ChangeArticleStatusPayload): Promise<Article | undefined> => {
+const changeStatusMutation = async ({ id, ...payload }: ChangeArticleStatusPayload): Promise<Article | undefined> => {
     const headers = getAuthHeaders();
 
     try {

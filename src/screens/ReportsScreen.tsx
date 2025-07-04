@@ -1,10 +1,10 @@
+import { Box } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
+import ReportItem from "../modules/report/components/ReportItem";
 import { getReportsQueryOptions } from "../modules/report/queries/getReportsQueryOptions";
 import AdminLayout from "../modules/shared/components/AdminLayout";
 import SimpleCard from "../modules/shared/components/SimpleCard";
-import { useTranslation } from "react-i18next";
-import { Box } from "@mui/material";
-import ReportItem from "../modules/report/components/ReportItem";
 
 const ReportsScreen = () => {
     const { data } = useQuery(
@@ -31,10 +31,7 @@ const ReportsScreen = () => {
                 }}
                 width="100%"
             >
-                {data &&
-                    data.items.map((report) => (
-                        <ReportItem report={report} key={report.id} />
-                    ))}
+                {data && data.items.map((report) => <ReportItem report={report} key={report.id} />)}
             </Box>
         </AdminLayout>
     );

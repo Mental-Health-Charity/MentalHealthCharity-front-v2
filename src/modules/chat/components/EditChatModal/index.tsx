@@ -1,8 +1,8 @@
 import { Box, Button, TextField } from "@mui/material";
-import Modal from "../../../shared/components/Modal";
+import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
-import { useFormik } from "formik";
+import Modal from "../../../shared/components/Modal";
 import { Chat, EditChatPayload } from "../../types";
 
 interface Props {
@@ -13,9 +13,7 @@ interface Props {
 }
 
 const validationSchema = Yup.object({
-    name: Yup.string()
-        .min(4, "Nazwa musi zawierać co najmniej 4 znaki")
-        .required("Nazwa jest wymagana"),
+    name: Yup.string().min(4, "Nazwa musi zawierać co najmniej 4 znaki").required("Nazwa jest wymagana"),
     is_active: Yup.boolean().required("Status jest wymagany"),
     id: Yup.number().required("Id jest wymagane"),
 });
@@ -55,19 +53,11 @@ const EditChatModal = ({ onSubmit, chat, ...props }: Props) => {
                         value={formik.values.name}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={
-                            formik.touched.name && Boolean(formik.errors.name)
-                        }
+                        error={formik.touched.name && Boolean(formik.errors.name)}
                         helperText={formik.touched.name && formik.errors.name}
                     />
-                    <Button
-                        disabled={!formik.dirty}
-                        type="submit"
-                        variant="contained"
-                    >
-                        {!formik.dirty
-                            ? t("common.make_changes_to_save")
-                            : t("chat.edit_chat")}
+                    <Button disabled={!formik.dirty} type="submit" variant="contained">
+                        {!formik.dirty ? t("common.make_changes_to_save") : t("chat.edit_chat")}
                     </Button>
                 </Box>
             </Box>

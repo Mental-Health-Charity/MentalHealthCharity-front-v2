@@ -15,6 +15,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
+import { useUser } from "../../../auth/components/AuthProvider";
 import InternalLink from "../../../shared/components/InternalLink/styles";
 import { VolunteerFormValues } from "../../types";
 import FormWrapper from "../FormWrapper";
@@ -26,12 +27,13 @@ interface Props {
 
 const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
     const { t } = useTranslation();
+    const { user } = useUser();
 
     const [step, setStep] = useState(initStep);
 
     const initialValues: VolunteerFormValues = {
         age: "",
-        contacts: [],
+        contacts: ["-"],
         description: "",
         did_help: "",
         reason: "",
@@ -87,10 +89,10 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
     return (
         <FormWrapper
             subtitle={t(`form.volunteer.subtitle.${step}`, {
-                contact: formik.values.phone,
+                contact: user?.email,
             })}
             title={t(`form.volunteer.title.${step}`, {
-                contact: formik.values.phone,
+                contact: user?.email,
             })}
             progress={(step / validationSchemas.length) * 100}
         >
@@ -163,7 +165,7 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                             helperText={formik.touched.phone && formik.errors.phone}
                             fullWidth
                         />
-                        <FormControl>
+                        {/* <FormControl>
                             <InputLabel id="contacts">{t("form.volunteer.contact_label")}</InputLabel>
                             <Select
                                 label={t("form.volunteer.contact_label")}
@@ -178,7 +180,7 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                                 <MenuItem value="email">{t("form.volunteer.contact_options.email")}</MenuItem>
                                 <MenuItem value="phone">{t("form.volunteer.contact_options.phone")}</MenuItem>
                             </Select>
-                        </FormControl>
+                        </FormControl> */}
                     </Box>
                 )}
 

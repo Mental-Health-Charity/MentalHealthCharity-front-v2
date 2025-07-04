@@ -1,9 +1,9 @@
-import { createTheme, LinkProps, Theme } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom';
-import UbuntuRegular from '/fonts/Ubuntu/Ubuntu-Regular.ttf';
+import { createTheme, LinkProps, Theme } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Link as RouterLink, LinkProps as RouterLinkProps } from "react-router-dom";
+import UbuntuRegular from "/fonts/Ubuntu/Ubuntu-Regular.ttf";
 
-const LinkBehavior = React.forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, 'to'> & { href: RouterLinkProps['to'] }>(
+const LinkBehavior = React.forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, "to"> & { href: RouterLinkProps["to"] }>(
     (props, ref) => {
         const { href, ...other } = props;
         // Map href (Material UI) -> to (react-router)
@@ -11,7 +11,7 @@ const LinkBehavior = React.forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, '
     }
 );
 
-declare module '@mui/material/styles' {
+declare module "@mui/material/styles" {
     interface Theme {
         colors: {
             accent: string;
@@ -90,14 +90,14 @@ declare module '@mui/material/styles' {
 const useTheme = () => {
     const customTheme = createTheme({
         typography: {
-            fontFamily: 'Ubuntu, sans-serif',
+            fontFamily: "Ubuntu, sans-serif",
         },
         components: {
             MuiBackdrop: {
                 styleOverrides: {
                     root: {
-                        '&[style*="opacity: 0"]': {
-                            pointerEvents: 'none',
+                        "&[style*='opacity: 0']": {
+                            pointerEvents: "none",
                         },
                     },
                 },
@@ -120,21 +120,21 @@ const useTheme = () => {
             MuiSelect: {
                 styleOverrides: {
                     select: {
-                        color: '#153243',
+                        color: "#153243",
                     },
                 },
             },
             MuiTextField: {
                 defaultProps: {
-                    variant: 'filled',
+                    variant: "filled",
                 },
                 styleOverrides: {
                     root: {
                         input: {
-                            color: '#153243',
+                            color: "#153243",
                         },
                         textarea: {
-                            color: '#153243',
+                            color: "#153243",
                         },
                     },
                 },
@@ -143,9 +143,9 @@ const useTheme = () => {
             MuiChip: {
                 styleOverrides: {
                     root: {
-                        borderRadius: '4px',
+                        borderRadius: "4px",
                         fontWeight: 700,
-                        fontSize: '15px',
+                        fontSize: "15px",
                     },
                 },
             },
@@ -153,83 +153,83 @@ const useTheme = () => {
             MuiMenuItem: {
                 styleOverrides: {
                     root: {
-                        color: '#153243',
+                        color: "#153243",
                     },
                 },
             },
             MuiAvatar: {
                 styleOverrides: {
                     root: {
-                        backgroundColor: '#FFC05C',
+                        backgroundColor: "#FFC05C",
                     },
                 },
             },
             MuiButton: {
                 styleOverrides: {
                     colorPrimary: {
-                        backgroundColor: '#FFC05C',
+                        backgroundColor: "#FFC05C",
                     },
                     containedPrimary: {
-                        backgroundColor: '#FFC05C',
-                        color: '#F5F9F9',
-                        padding: '10px 20px',
-                        borderRadius: '4px',
-                        fontSize: '20px',
+                        backgroundColor: "#FFC05C",
+                        color: "#F5F9F9",
+                        padding: "10px 20px",
+                        borderRadius: "4px",
+                        fontSize: "20px",
                         fontWeight: 700,
                     },
                     outlinedPrimary: {
-                        border: '4px solid #FFC05C',
-                        color: '#FFC05C',
-                        padding: '6px 20px',
-                        borderRadius: '4px',
-                        fontSize: '20px',
+                        border: "4px solid #FFC05C",
+                        color: "#FFC05C",
+                        padding: "6px 20px",
+                        borderRadius: "4px",
+                        fontSize: "20px",
                         fontWeight: 700,
                     },
                 },
             },
             MuiCssBaseline: {
                 styleOverrides: {
-                    '@font-face': {
-                        fontFamily: 'Ubuntu',
-                        src: `url(${UbuntuRegular}) format('truetype')`,
+                    "@font-face": {
+                        fontFamily: "Ubuntu",
+                        src: `url(${UbuntuRegular}) format("truetype")`,
                     },
-                    '::-webkit-scrollbar': { width: '8px' },
+                    "::-webkit-scrollbar": { width: "8px" },
                 },
             },
         },
         palette: {
-            mode: 'light',
+            mode: "light",
             text: {
-                primary: '#F5F9F9',
-                secondary: '#153243',
-                light: '#275D7C',
+                primary: "#F5F9F9",
+                secondary: "#153243",
+                light: "#275D7C",
             },
             primary: {
-                main: '#00D8BD',
+                main: "#00D8BD",
             },
             secondary: {
-                main: '#06B7A7',
+                main: "#06B7A7",
             },
             background: {
-                default: '#F5F9F9',
-                paper: '#FAFAFA',
+                default: "#F5F9F9",
+                paper: "#FAFAFA",
             },
             colors: {
-                accent: '#FFC05C',
-                danger: '#F24E39',
-                info: '#4AD9F2',
-                warning: '#FFFF00',
-                success: '#15FF54',
-                dark: '#153243',
-                border: '#E0E1E5',
+                accent: "#FFC05C",
+                danger: "#F24E39",
+                info: "#4AD9F2",
+                warning: "#FFFF00",
+                success: "#15FF54",
+                dark: "#153243",
+                border: "#E0E1E5",
             },
             gradients: {
-                primary: 'linear-gradient(90deg, #00D8BD 100%, #00BDA5 100%)',
-                dark: 'rgba(0, 0, 0, 0.25)',
+                primary: "linear-gradient(90deg, #00D8BD 100%, #00BDA5 100%)",
+                dark: "rgba(0, 0, 0, 0.25)",
             },
             shadows: {
-                text: 'rgba(0, 0, 0, 0.25)',
-                box: 'rgba(0, 0, 0, 0.25)',
+                text: "rgba(0, 0, 0, 0.25)",
+                box: "rgba(0, 0, 0, 0.25)",
             },
         },
     });

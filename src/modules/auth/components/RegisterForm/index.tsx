@@ -1,10 +1,10 @@
-import { Box, Button, Checkbox, FormControlLabel, TextField, Typography } from '@mui/material';
-import { Field, Form, Formik } from 'formik';
-import { useTranslation } from 'react-i18next';
-import * as Yup from 'yup';
-import InternalLink from '../../../shared/components/InternalLink/styles';
-import { validation } from '../../../shared/constants';
-import { LoginFormValues, RegisterFormValues } from '../../types';
+import { Box, Button, Checkbox, FormControlLabel, TextField, Typography } from "@mui/material";
+import { Field, Form, Formik } from "formik";
+import { useTranslation } from "react-i18next";
+import * as Yup from "yup";
+import InternalLink from "../../../shared/components/InternalLink/styles";
+import { validation } from "../../../shared/constants";
+import { LoginFormValues, RegisterFormValues } from "../../types";
 
 interface Props {
     onSubmit: (values: RegisterFormValues) => void;
@@ -15,21 +15,21 @@ const RegisterForm = ({ onSubmit, initial }: Props) => {
     const { t } = useTranslation();
 
     const validationSchema = Yup.object({
-        full_name: Yup.string().required(t('validation.required')),
+        full_name: Yup.string().required(t("validation.required")),
         email: validation.email,
         password: validation.password,
         confirmPassword: validation.confirmPassword,
         policy_confirm: Yup.boolean()
-            .oneOf([true], t('validation.required')) // Checkbox musi być zaznaczony
-            .required(t('validation.required')),
+            .oneOf([true], t("validation.required")) // Checkbox musi być zaznaczony
+            .required(t("validation.required")),
     });
 
     const initialValues: RegisterFormValues = {
-        email: '',
-        password: '',
-        confirmPassword: '',
+        email: "",
+        password: "",
+        confirmPassword: "",
         policy_confirm: false,
-        full_name: '',
+        full_name: "",
         ...initial,
     };
 
@@ -94,7 +94,7 @@ const RegisterForm = ({ onSubmit, initial }: Props) => {
                             control={<Field as={Checkbox} name="policy_confirm" color="primary" />}
                             label={
                                 <Typography>
-                                    Rejestrując się wyrażam zgodę na{' '}
+                                    Rejestrując się wyrażam zgodę na{" "}
                                     <InternalLink to="/tos">warunki użytkowania i politykę prywatności</InternalLink>
                                 </Typography>
                             }

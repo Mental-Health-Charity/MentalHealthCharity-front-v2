@@ -3,11 +3,7 @@ import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
 import handleApiError from "../../shared/helpers/handleApiError";
 import { Form, MenteeForm, VolunteerForm } from "../types";
 
-const rejectFormMutation = async ({
-    id,
-}: {
-    id: number;
-}): Promise<Form<MenteeForm | VolunteerForm> | undefined> => {
+const rejectFormMutation = async ({ id }: { id: number }): Promise<Form<MenteeForm | VolunteerForm> | undefined> => {
     const headers = getAuthHeaders();
 
     try {

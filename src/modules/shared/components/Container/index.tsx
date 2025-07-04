@@ -25,7 +25,7 @@ const Container = ({ waves, parentProps, ...props }: Props) => {
 
                 "&:before": {
                     display: waves ? "block" : "none",
-                    content: '""',
+                    content: "''",
                     position: "absolute",
                     top: 0,
                     left: 0,
@@ -39,7 +39,7 @@ const Container = ({ waves, parentProps, ...props }: Props) => {
                 },
                 "&:after": {
                     display: waves ? "block" : "none",
-                    content: '""',
+                    content: "''",
                     position: "absolute",
                     top: 200,
                     left: 0,

@@ -1,16 +1,8 @@
-import {
-    Avatar,
-    Box,
-    IconButton,
-    List,
-    ListItemButton,
-    Typography,
-    useTheme,
-} from "@mui/material";
-import { Chat } from "../../types";
-import formatDate from "../../../shared/helpers/formatDate";
 import CloseIcon from "@mui/icons-material/Close";
+import { Avatar, Box, IconButton, List, ListItemButton, Typography, useTheme } from "@mui/material";
+import formatDate from "../../../shared/helpers/formatDate";
 import { translatedRoles } from "../../../users/constants";
+import { Chat } from "../../types";
 
 interface Props {
     chat: Chat;
@@ -89,16 +81,10 @@ const ChatDetails = ({ chat, onClose }: Props) => {
                         }}
                         key={participant.id}
                     >
-                        <Avatar
-                            src={participant.chat_avatar_url}
-                            alt={participant.full_name}
-                            variant="rounded"
-                        />
+                        <Avatar src={participant.chat_avatar_url} alt={participant.full_name} variant="rounded" />
                         <Box>
                             <Typography>{participant.full_name}</Typography>
-                            <Typography>
-                                {translatedRoles[participant.user_role]}
-                            </Typography>
+                            <Typography>{translatedRoles[participant.user_role]}</Typography>
                         </Box>
                     </ListItemButton>
                 ))}

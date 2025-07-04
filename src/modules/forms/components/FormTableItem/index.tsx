@@ -11,7 +11,7 @@ interface Props extends BoxProps {
     refetch?: () => void;
 }
 
-const FormTableItem = ({ form, refetch, ...props }: Props) => {
+const FormTableItem = ({ form, ...props }: Props) => {
     const theme = useTheme();
     const navigate = useNavigate();
     const { t } = useTranslation();

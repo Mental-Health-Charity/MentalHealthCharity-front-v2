@@ -1,11 +1,9 @@
-import { LoginAccessTokenResponse, LoginFormValues } from "../types";
-import { url } from "../../../api";
 import Cookies from "js-cookie";
+import { url } from "../../../api";
 import handleApiError from "../../shared/helpers/handleApiError";
+import { LoginAccessTokenResponse, LoginFormValues } from "../types";
 
-export const loginMutation = async (
-    data: LoginFormValues
-): Promise<LoginAccessTokenResponse> => {
+export const loginMutation = async (data: LoginFormValues): Promise<LoginAccessTokenResponse> => {
     try {
         const loginResponse = await fetch(url.login.loginAccessToken, {
             method: "POST",

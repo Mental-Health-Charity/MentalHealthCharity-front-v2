@@ -1,9 +1,9 @@
-import { Box, Button } from "@mui/material";
-import ArticleCard from "../ArticleCard";
-import { Article, UpdateStatusFormValues } from "../../types";
 import GavelIcon from "@mui/icons-material/Gavel";
-import ManageArticleModal from "../ManageArticleModal";
+import { Box, Button } from "@mui/material";
 import { useState } from "react";
+import { Article, UpdateStatusFormValues } from "../../types";
+import ArticleCard from "../ArticleCard";
+import ManageArticleModal from "../ManageArticleModal";
 
 interface Props {
     articles: Article[];
@@ -11,9 +11,7 @@ interface Props {
 }
 
 const ArticlesManager = ({ articles, onChangeStatus }: Props) => {
-    const [articleToManage, setArticleToManage] = useState<Article | null>(
-        null
-    );
+    const [articleToManage, setArticleToManage] = useState<Article | null>(null);
 
     return (
         <Box

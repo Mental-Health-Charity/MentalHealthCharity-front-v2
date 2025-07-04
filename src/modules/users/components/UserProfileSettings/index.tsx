@@ -48,10 +48,10 @@ const UserProfileSettings = ({ email, username }: Props) => {
                         })}
                     </Typography>
                 </Box>
-                {/* <Tooltip title={t('common.comming_soon')}>
+                {/* <Tooltip title={t("common.comming_soon")}>
                     <Box>
                         <Button disabled variant="contained">
-                            {t('common.change_pass')}
+                            {t("common.change_pass")}
                         </Button>
                     </Box>
                 </Tooltip> */}

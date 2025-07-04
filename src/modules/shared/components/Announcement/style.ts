@@ -1,6 +1,6 @@
-import { styled } from '@mui/material';
+import { styled } from "@mui/material";
 
-export const StyledAnnouncementWrapper = styled('div')`
+export const StyledAnnouncementWrapper = styled("div")`
     position: fixed;
     top: 100px;
     background-color: ${({ theme }) => theme.palette.primary.main};

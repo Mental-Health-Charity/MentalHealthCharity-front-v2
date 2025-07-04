@@ -13,7 +13,7 @@ const MenteeFormScreen = () => {
     const isFormSend = localStorage.getItem(SessionStorage.SEND_FORM);
     const [step, setStep] = useState(isFormSend ? 5 : 0);
 
-    const { mutate } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: sendFormMutation,
 
         onSuccess: () => {
@@ -24,7 +24,8 @@ const MenteeFormScreen = () => {
     });
 
     const handleSubmit = (values: MenteeFormValues) => {
-        const { password, confirmPassword, ...rest } = values;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password: _password, confirmPassword: _confirmPassword, ...rest } = values;
         const fields: MenteeFormType = {
             ...rest,
             contacts: rest.contacts.map((contact) => ({
@@ -61,7 +62,7 @@ const MenteeFormScreen = () => {
                 width: "fit-content",
             }}
         >
-            <MenteeForm onSubmit={handleSubmit} step={step} setStep={setStep} />
+            <MenteeForm isLoading={isPending} onSubmit={handleSubmit} step={step} setStep={setStep} />
 
             {showConfetti && <Confetti recycle={false} width={window.innerWidth} height={window.innerHeight} />}
         </Container>

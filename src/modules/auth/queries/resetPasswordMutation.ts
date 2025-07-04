@@ -1,13 +1,13 @@
-import { url } from '../../../api';
-import handleApiError from '../../shared/helpers/handleApiError';
-import { ResetPasswordPayload, User } from '../types';
+import { url } from "../../../api";
+import handleApiError from "../../shared/helpers/handleApiError";
+import { ResetPasswordPayload, User } from "../types";
 
 export const resetPasswordMutation = async (payload: ResetPasswordPayload): Promise<User> => {
     try {
         const registerResponse = await fetch(url.users.resetPassword, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             },
             body: JSON.stringify(payload),
         });
@@ -20,7 +20,7 @@ export const resetPasswordMutation = async (payload: ResetPasswordPayload): Prom
 
         return newUser;
     } catch (error) {
-        console.error('Error logging in:', error);
+        console.error("Error logging in:", error);
         throw error;
     }
 };

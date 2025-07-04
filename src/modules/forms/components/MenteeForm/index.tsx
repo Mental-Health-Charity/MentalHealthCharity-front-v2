@@ -15,9 +15,12 @@ import { Dispatch, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
+import useTheme from "../../../../theme";
 import { useUser } from "../../../auth/components/AuthProvider";
 import InternalLink from "../../../shared/components/InternalLink/styles";
+import Loader from "../../../shared/components/Loader";
 import { validation } from "../../../shared/constants";
+import handleApiError from "../../../shared/helpers/handleApiError";
 import { MenteeFormValues } from "../../types";
 import FormWrapper from "../FormWrapper";
 
@@ -25,16 +28,19 @@ interface Props {
     onSubmit: (values: MenteeFormValues) => void;
     step: number;
     setStep: Dispatch<SetStateAction<number>>;
+    isLoading?: boolean;
 }
 
-const MenteeForm = ({ onSubmit, setStep, step }: Props) => {
+const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
     const { t } = useTranslation();
-    const { user, register } = useUser();
+    const { user, register, isFetchingUser: isLoadingUserSession } = useUser();
+    const theme = useTheme();
+    const isFormDataLoading = (isLoadingUserSession && !user) || isLoading;
 
     const initialValues: MenteeFormValues = {
         age: "",
         name: user?.full_name || "",
-        contacts: [],
+        contacts: ["email"],
         email: user?.email || "",
         phone: "",
         themes: [],
@@ -70,11 +76,13 @@ const MenteeForm = ({ onSubmit, setStep, step }: Props) => {
         }),
     ];
 
+    const LAST_STEP = validationSchemas.length - 1;
+
     const formik = useFormik({
         initialValues,
         validationSchema: validationSchemas[step],
         onSubmit: async (values) => {
-            if (step === 4 && !user) {
+            if (step === LAST_STEP && !user) {
                 try {
                     await new Promise<void>((resolve, reject) => {
                         register.mutate(
@@ -86,34 +94,36 @@ const MenteeForm = ({ onSubmit, setStep, step }: Props) => {
                                 policy_confirm: true,
                             },
                             {
-                                onSuccess: () => {
-                                    resolve();
-                                },
+                                onSuccess: () => resolve(),
                                 onError: (error) => reject(error),
-                                onSettled: () => {
-                                    onSubmit(values);
-                                },
                             }
                         );
                     });
+
+                    onSubmit(values);
+                    return;
                 } catch (error) {
                     formik.setErrors({
                         email: t("validation.registration_failed"),
                         password: t("validation.registration_failed"),
                         confirmPassword: t("validation.registration_failed"),
                     });
+                    handleApiError(error);
+                    return;
                 }
-            } else if (step === validationSchemas.length - 1) {
-                onSubmit(values);
-                setStep(validationSchemas.length);
-            } else {
-                setStep((prevStep) => prevStep + 1);
             }
+
+            if (step === LAST_STEP) {
+                onSubmit(values);
+                return;
+            }
+
+            setStep((prev) => prev + 1);
         },
     });
 
     const handleBack = () => {
-        setStep((prevStep) => (prevStep > 0 ? prevStep - 1 : prevStep));
+        setStep((prev) => (prev > 0 ? prev - 1 : prev));
     };
 
     return (
@@ -165,7 +175,7 @@ const MenteeForm = ({ onSubmit, setStep, step }: Props) => {
                             gap: "20px",
                         }}
                     >
-                        <FormControl>
+                        {/* <FormControl>
                             <InputLabel id="contacts">{t("form.volunteer.contact_label")}</InputLabel>
                             <Select
                                 label={t("form.volunteer.contact_label")}
@@ -180,7 +190,7 @@ const MenteeForm = ({ onSubmit, setStep, step }: Props) => {
                                 <MenuItem value="email">{t("form.volunteer.contact_options.email")}</MenuItem>
                                 <MenuItem value="phone">{t("form.volunteer.contact_options.phone")}</MenuItem>
                             </Select>
-                        </FormControl>
+                        </FormControl> */}
                         {formik.values.contacts.includes("phone") && (
                             <TextField
                                 label={t("form.mentee.contact_detail.phone")}
@@ -350,19 +360,9 @@ const MenteeForm = ({ onSubmit, setStep, step }: Props) => {
                             }
                         />
                         {formik.touched.tos && formik.errors.tos && (
-                            <span style={{ color: "red" }}>{formik.errors.tos}</span>
+                            <span style={{ color: theme.palette.colors.danger }}>{formik.errors.tos}</span>
                         )}
                     </Box>
-                )}
-
-                {step === 5 && (
-                    <Box
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "20px",
-                        }}
-                    ></Box>
                 )}
 
                 <Box
@@ -372,17 +372,18 @@ const MenteeForm = ({ onSubmit, setStep, step }: Props) => {
                         marginTop: "20px",
                     }}
                 >
-                    {step < 5 && (
+                    {step <= LAST_STEP && (
                         <>
                             <Button onClick={handleBack} disabled={step === 0}>
                                 {t("form.back")}
                             </Button>
-                            <Button type="submit" variant="contained">
-                                {step === validationSchemas.length - 1 ? t("form.submit") : t("form.next")}
+                            <Button sx={{ gap: "5px" }} disabled={isFormDataLoading} type="submit" variant="contained">
+                                {step === LAST_STEP ? t("form.submit") : t("form.next")}
+                                {isFormDataLoading && <Loader variant="small" size={30} />}
                             </Button>
                         </>
                     )}
-                    {step === 5 && (
+                    {step > LAST_STEP && (
                         <Box width="100%" display="flex" flexDirection="column" gap="10px">
                             <Button fullWidth type="button" component={Link} to="/" variant="contained">
                                 {t("form.homepage")}

@@ -1,18 +1,18 @@
-import { Box, Grid, Stack, Typography, useTheme } from '@mui/material';
-import { t } from 'i18next';
-import Container from '../Container';
-import InternalLink, { ExternalLink } from '../InternalLink/styles';
+import { Box, Grid, Stack, Typography, useTheme } from "@mui/material";
+import { t } from "i18next";
+import Container from "../Container";
+import InternalLink, { ExternalLink } from "../InternalLink/styles";
 
 const Footer = () => {
     const theme = useTheme();
 
     return (
-        <Box component="footer" sx={{ bgcolor: theme.palette.colors.dark, color: 'white', py: 4 }}>
+        <Box component="footer" sx={{ bgcolor: theme.palette.colors.dark, color: "white", py: 4 }}>
             <Container
                 parentProps={{
                     sx: {
-                        minHeight: 'fit-content',
-                        padding: '0px',
+                        minHeight: "fit-content",
+                        padding: "0px",
                     },
                 }}
                 sx={{
@@ -21,7 +21,7 @@ const Footer = () => {
             >
                 <Grid
                     sx={{
-                        textAlign: { xs: 'center', sm: 'left' },
+                        textAlign: { xs: "center", sm: "left" },
                     }}
                     container
                     spacing={4}
@@ -33,20 +33,20 @@ const Footer = () => {
                         </Typography>
                         <Stack spacing={1}>
                             <InternalLink color="secondary" to="/#about-us">
-                                {t('footer.about_us')}
+                                {t("footer.about_us")}
                             </InternalLink>
                             <InternalLink color="secondary" to="/tos">
-                                {t('footer.privacy_policy')}
+                                {t("footer.privacy_policy")}
                             </InternalLink>
                             <InternalLink color="secondary" to="/tos">
-                                {t('footer.terms_of_service')}
+                                {t("footer.terms_of_service")}
                             </InternalLink>
                         </Stack>
                     </Grid>
 
                     <Grid item xs={12} sm={4}>
                         <Typography variant="h6" sx={{ mb: 2 }}>
-                            {t('footer.social')}
+                            {t("footer.social")}
                         </Typography>
                         <Stack spacing={1}>
                             <ExternalLink
@@ -78,10 +78,10 @@ const Footer = () => {
 
                     <Grid item xs={12} sm={4}>
                         <Typography variant="h6" sx={{ mb: 2 }}>
-                            {t('footer.contact')}
+                            {t("footer.contact")}
                         </Typography>
                         <Typography variant="body2">
-                            Email:{' '}
+                            Email:{" "}
                             <ExternalLink color="secondary" href="mailto:kontakt@fundacjaperyskop.org">
                                 kontakt@fundacjaperyskop.org
                             </ExternalLink>
@@ -89,9 +89,9 @@ const Footer = () => {
                     </Grid>
                 </Grid>
 
-                <Box sx={{ textAlign: 'center', mt: 4 }}>
+                <Box sx={{ textAlign: "center", mt: 4 }}>
                     <Typography variant="body2">
-                        &copy; {new Date().getFullYear()} {t('footer.rights_reserved')}
+                        &copy; {new Date().getFullYear()} {t("footer.rights_reserved")}
                     </Typography>
                 </Box>
             </Container>

@@ -1,14 +1,14 @@
-import { url } from '../../../api';
-import getAuthHeaders from '../../auth/helpers/getAuthHeaders';
-import { User } from '../../auth/types';
-import handleApiError from '../../shared/helpers/handleApiError';
+import { url } from "../../../api";
+import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
+import { User } from "../../auth/types";
+import handleApiError from "../../shared/helpers/handleApiError";
 
 const updateAvatarMutation = async ({ id, avatar }: { id: number; avatar: string }): Promise<User> => {
     const headers = getAuthHeaders();
 
     try {
         const res = await fetch(url.users.updateUserAvatar({ id }), {
-            method: 'PUT',
+            method: "PUT",
             headers,
             body: JSON.stringify({
                 avatar,

@@ -1,11 +1,11 @@
-import { Box, Typography, useTheme } from '@mui/material';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import login_background from '../assets/static/login_bg.svg';
-import { useUser } from '../modules/auth/components/AuthProvider';
-import LoginForm from '../modules/auth/components/LoginForm';
-import { LoginFormValues } from '../modules/auth/types';
-import InternalLink from '../modules/shared/components/InternalLink/styles';
+import { Box, Typography, useTheme } from "@mui/material";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import login_background from "../assets/static/login_bg.svg";
+import { useUser } from "../modules/auth/components/AuthProvider";
+import LoginForm from "../modules/auth/components/LoginForm";
+import { LoginFormValues } from "../modules/auth/types";
+import InternalLink from "../modules/shared/components/InternalLink/styles";
 
 const LoginScreen = () => {
     const theme = useTheme();
@@ -17,7 +17,7 @@ const LoginScreen = () => {
         setLoading(true);
         login.mutate(values, {
             onSuccess: () => {
-                navigate('/');
+                navigate("/");
                 setLoading(false);
             },
             onError: () => {
@@ -27,23 +27,23 @@ const LoginScreen = () => {
     };
 
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: "flex" }}>
             <Box
                 sx={{
-                    overflow: 'hidden',
-                    maxWidth: '50%',
-                    display: { xs: 'none', md: 'block' },
+                    overflow: "hidden",
+                    maxWidth: "50%",
+                    display: { xs: "none", md: "block" },
                     boxShadow: `3px 4px 4px ${theme.palette.shadows.box}`,
                 }}
             >
-                <img height="100%" style={{ height: '100vh' }} src={login_background} alt="Logo" />
+                <img height="100%" style={{ height: "100vh" }} src={login_background} alt="Logo" />
             </Box>
 
             <Box
                 sx={{
-                    minHeight: '100vh',
+                    minHeight: "100vh",
                     backgroundColor: theme.palette.background.default,
-                    padding: '90px 20px',
+                    padding: "90px 20px",
                 }}
                 width="100%"
                 display="flex"
@@ -64,8 +64,8 @@ const LoginScreen = () => {
                 </Box>
                 <Box mt="50px" display="flex" width="100%" alignItems="center" justifyContent="center">
                     <Typography variant="body1">
-                        Nie masz konta?{' '}
-                        <InternalLink sx={{ fontWeight: 'bold' }} to="/auth/register">
+                        Nie masz konta?{" "}
+                        <InternalLink sx={{ fontWeight: "bold" }} to="/auth/register">
                             Zarejestruj się
                         </InternalLink>
                     </Typography>

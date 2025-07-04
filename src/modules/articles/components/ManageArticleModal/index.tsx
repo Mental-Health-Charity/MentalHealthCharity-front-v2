@@ -1,8 +1,8 @@
+import { Box, Button, MenuItem, TextField } from "@mui/material";
+import { Form, Formik } from "formik";
 import { useTranslation } from "react-i18next";
-import Modal from "../../../shared/components/Modal";
-import { Box, MenuItem, TextField, Button } from "@mui/material";
-import { Formik, Form } from "formik";
 import * as Yup from "yup";
+import Modal from "../../../shared/components/Modal";
 import { ArticleStatus } from "../../constants";
 import { UpdateStatusFormValues } from "../../types";
 
@@ -16,9 +16,7 @@ const ManageArticleModal = ({ onClose, open, onSubmit }: Props) => {
     const { t } = useTranslation();
 
     const validationSchema = Yup.object({
-        status: Yup.string().required(
-            t("manage_articles.validation.status_required")
-        ),
+        status: Yup.string().required(t("manage_articles.validation.status_required")),
         reject_message: Yup.string().when("status", (status: unknown) => {
             if (status === ArticleStatus.REJECTED) {
                 return Yup.string();
@@ -45,18 +43,8 @@ const ManageArticleModal = ({ onClose, open, onSubmit }: Props) => {
             onClose={onClose}
         >
             <Box>
-                <Formik
-                    initialValues={initialValues}
-                    validationSchema={validationSchema}
-                    onSubmit={onSubmit}
-                >
-                    {({
-                        values,
-                        errors,
-                        touched,
-                        handleChange,
-                        handleBlur,
-                    }) => (
+                <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+                    {({ values, errors, touched, handleChange, handleBlur }) => (
                         <Form>
                             <Box display="flex" flexDirection="column" gap={2}>
                                 <TextField
@@ -66,9 +54,7 @@ const ManageArticleModal = ({ onClose, open, onSubmit }: Props) => {
                                     value={values.status}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    error={
-                                        touched.status && Boolean(errors.status)
-                                    }
+                                    error={touched.status && Boolean(errors.status)}
                                     helperText={touched.status && errors.status}
                                 >
                                     <MenuItem value={ArticleStatus.PUBLISHED}>
@@ -81,23 +67,15 @@ const ManageArticleModal = ({ onClose, open, onSubmit }: Props) => {
 
                                 {values.status === ArticleStatus.REJECTED && (
                                     <TextField
-                                        label={t(
-                                            "manage_articles.fields.reject_message"
-                                        )}
+                                        label={t("manage_articles.fields.reject_message")}
                                         name="reject_message"
                                         value={values.reject_message}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                         multiline
                                         rows={4}
-                                        error={
-                                            touched.reject_message &&
-                                            Boolean(errors.reject_message)
-                                        }
-                                        helperText={
-                                            touched.reject_message &&
-                                            errors.reject_message
-                                        }
+                                        error={touched.reject_message && Boolean(errors.reject_message)}
+                                        helperText={touched.reject_message && errors.reject_message}
                                     />
                                 )}
 

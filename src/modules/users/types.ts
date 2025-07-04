@@ -1,4 +1,4 @@
-import { User } from '../auth/types';
+import { User } from "../auth/types";
 
 export interface ReadSearchUsersOptions {
     query: string;

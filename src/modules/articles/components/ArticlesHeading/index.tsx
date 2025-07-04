@@ -16,55 +16,6 @@ const ArticlesHeading = ({ onSearch, search }: Props) => {
 
     return (
         <>
-            {/* <Card
-                sx={{
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    width: '100%',
-                    margin: { xs: '0', md: '20px auto' },
-                    padding: '15px',
-                    borderRadius: '10px',
-                    display: 'flex',
-                    alignItems: 'flex-end',
-                    justifyContent: 'start',
-                    gap: '20px',
-                }}
-            >
-                <Box
-                    sx={{
-                        display: { xs: 'none', md: 'block' },
-                    }}
-                >
-                    <Avatar
-                        src={person_image}
-                        variant="rounded"
-                        style={{
-                            width: '160px',
-                            height: '160px',
-                            borderRadius: '10px',
-                            backgroundColor: theme.palette.primary.main,
-                            boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.15)',
-                        }}
-                    />
-                </Box>
-                <Box
-                    sx={{
-                        gap: '6px',
-                        display: 'flex',
-                        flexDirection: 'column',
-
-                        borderRadius: '8px',
-                        padding: '10px',
-                    }}
-                >
-                    <Typography component="h1" color={theme.palette.primary.main} fontWeight={700} variant="h4">
-                        {t('articles.title')}
-                    </Typography>
-                    <Typography color={theme.palette.text.secondary} component="h2" variant="h6">
-                        {t('articles.subtitle')}
-                    </Typography>
-                </Box>
-            </Card> */}
             <Card
                 style={{
                     width: "100%",

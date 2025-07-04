@@ -3,20 +3,14 @@ import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
 import handleApiError from "../../shared/helpers/handleApiError";
 import { ParticipantOptions } from "../types";
 
-const addParticipantMutation = async ({
-    chat_id,
-    participant_id,
-}: ParticipantOptions) => {
+const addParticipantMutation = async ({ chat_id, participant_id }: ParticipantOptions) => {
     const headers = getAuthHeaders();
 
     try {
-        const res = await fetch(
-            url.chat.addParticipant({ chat_id, participant_id }),
-            {
-                method: "POST",
-                headers,
-            }
-        );
+        const res = await fetch(url.chat.addParticipant({ chat_id, participant_id }), {
+            method: "POST",
+            headers,
+        });
 
         if (!res.ok) {
             throw handleApiError(res);

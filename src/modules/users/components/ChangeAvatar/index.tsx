@@ -1,11 +1,11 @@
-import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import { Avatar, Box, Button, Typography, useTheme } from '@mui/material';
-import { Form, Formik } from 'formik';
-import { useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import * as Yup from 'yup';
-import Modal from '../../../shared/components/Modal';
-import { ChangeAvatarButton } from './styles';
+import CameraAltIcon from "@mui/icons-material/CameraAlt";
+import { Avatar, Box, Button, Typography, useTheme } from "@mui/material";
+import { Form, Formik } from "formik";
+import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import * as Yup from "yup";
+import Modal from "../../../shared/components/Modal";
+import { ChangeAvatarButton } from "./styles";
 
 interface Props {
     avatar?: string;
@@ -23,18 +23,18 @@ const ChangeAvatar = ({ avatar, username, disabled, onSubmit }: Props) => {
     const [showModal, setShowModal] = useState(false);
 
     const validationSchema = Yup.object({
-        avatar: Yup.string().required(t('validation.required')),
+        avatar: Yup.string().required(t("validation.required")),
     });
 
     const validateFile = (file: File | null) => {
         if (!file) return null;
 
-        if (!file.type.startsWith('image/')) {
-            return t('validation.invalid_file_type');
+        if (!file.type.startsWith("image/")) {
+            return t("validation.invalid_file_type");
         }
 
         if (file.size > MAX_AVATAR_SIZE) {
-            return t('validation.file_size_limit');
+            return t("validation.file_size_limit");
         }
 
         return null;
@@ -42,7 +42,7 @@ const ChangeAvatar = ({ avatar, username, disabled, onSubmit }: Props) => {
 
     const handleFileChange = (
         event: React.ChangeEvent<HTMLInputElement>,
-        setFieldValue: (field: string, value: any) => void
+        setFieldValue: (field: string, value: unknown) => void
     ) => {
         const file = event.target.files?.[0] ?? null;
         const error = validateFile(file);
@@ -51,15 +51,15 @@ const ChangeAvatar = ({ avatar, username, disabled, onSubmit }: Props) => {
             const reader = new FileReader();
             reader.onloadend = () => {
                 // Set Base64 string as avatar
-                setFieldValue('avatar', reader.result as string);
+                setFieldValue("avatar", reader.result as string);
             };
             reader.readAsDataURL(file); // Read file as Base64
         }
     };
 
     return (
-        <Box sx={{ position: 'relative' }}>
-            <Avatar sx={{ width: '165px', height: '165px' }} src={avatar} variant="rounded" alt={username} />
+        <Box sx={{ position: "relative" }}>
+            <Avatar sx={{ width: "165px", height: "165px" }} src={avatar} variant="rounded" alt={username} />
             <ChangeAvatarButton
                 onClick={() => {
                     setShowModal(true);
@@ -73,10 +73,10 @@ const ChangeAvatar = ({ avatar, username, disabled, onSubmit }: Props) => {
             >
                 <CameraAltIcon fontSize="large" sx={{ color: theme.palette.text.primary }} />
             </ChangeAvatarButton>
-            <Modal open={showModal} onClose={() => setShowModal(false)} title={t('profile.change_avatar_title')}>
+            <Modal open={showModal} onClose={() => setShowModal(false)} title={t("profile.change_avatar_title")}>
                 <Box>
                     <Formik
-                        initialValues={{ avatar: avatar || '' }}
+                        initialValues={{ avatar: avatar || "" }}
                         onSubmit={(values) => {
                             if (values.avatar) {
                                 onSubmit({ avatar: values.avatar });
@@ -89,14 +89,14 @@ const ChangeAvatar = ({ avatar, username, disabled, onSubmit }: Props) => {
                             <Form>
                                 <Box
                                     sx={{
-                                        width: '100%',
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        position: 'relative',
+                                        width: "100%",
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        position: "relative",
                                     }}
                                 >
                                     <Avatar
-                                        sx={{ width: '165px', height: '165px' }}
+                                        sx={{ width: "165px", height: "165px" }}
                                         src={values.avatar || avatar}
                                         variant="rounded"
                                         alt={username}
@@ -118,7 +118,7 @@ const ChangeAvatar = ({ avatar, username, disabled, onSubmit }: Props) => {
                                     onChange={(event) => handleFileChange(event, setFieldValue)}
                                 />
                                 {errors.avatar && touched.avatar && (
-                                    <Typography sx={{ color: 'red', textAlign: 'center', marginTop: '10px' }}>
+                                    <Typography sx={{ color: "red", textAlign: "center", marginTop: "10px" }}>
                                         {errors.avatar}
                                     </Typography>
                                 )}
@@ -126,11 +126,11 @@ const ChangeAvatar = ({ avatar, username, disabled, onSubmit }: Props) => {
                                 <Button
                                     type="submit"
                                     fullWidth
-                                    sx={{ padding: '3px 0', marginTop: '20px' }}
+                                    sx={{ padding: "3px 0", marginTop: "20px" }}
                                     variant="contained"
                                     disabled={!values.avatar || !!errors.avatar}
                                 >
-                                    {t('common.save')}
+                                    {t("common.save")}
                                 </Button>
                             </Form>
                         )}

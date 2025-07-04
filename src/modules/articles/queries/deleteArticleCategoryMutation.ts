@@ -3,9 +3,7 @@ import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
 import handleApiError from "../../shared/helpers/handleApiError";
 import { ArticleCategoryOptions } from "../types";
 
-const deleteArticleCategoryMutation = async (
-    options: ArticleCategoryOptions
-): Promise<void> => {
+const deleteArticleCategoryMutation = async (options: ArticleCategoryOptions): Promise<void> => {
     const headers = getAuthHeaders();
 
     try {

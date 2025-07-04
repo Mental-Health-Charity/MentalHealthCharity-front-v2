@@ -1,10 +1,8 @@
-import { RegisterFormValues, RegisterResponse } from "../types";
 import { url } from "../../../api";
 import handleApiError from "../../shared/helpers/handleApiError";
+import { RegisterFormValues, RegisterResponse } from "../types";
 
-export const registerMutation = async (
-    data: RegisterFormValues
-): Promise<RegisterResponse> => {
+export const registerMutation = async (data: RegisterFormValues): Promise<RegisterResponse> => {
     try {
         const registerResponse = await fetch(url.users.createUserOpen, {
             method: "POST",

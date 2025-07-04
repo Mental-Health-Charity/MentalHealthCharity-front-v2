@@ -17,7 +17,8 @@ export interface CachedListRowProps extends ListRowProps {
 interface Props<T> {
     data?: Pagination<T>;
     onRender: (params: CachedListRowProps) => React.ReactNode;
-    onLoadMore: () => Promise<any> | void;
+
+    onLoadMore: () => Promise<Pagination<T>> | void;
 }
 
 /**
@@ -31,24 +32,17 @@ function WindowListInfiniteLoader<T>({ data, onRender, onLoadMore }: Props<T>) {
         defaultHeight: 300,
     });
 
-    // Total number of rows equals total items in the database
     const rowCount = data?.total ?? 1000;
-    // Number of items already loaded
+
     const loadedCount = data?.items.length ?? 0;
 
-    // Tells InfiniteLoader which rows have already been loaded
     const isRowLoaded: InfiniteLoaderProps["isRowLoaded"] = ({ index }) => {
         return index < loadedCount;
     };
 
-    // Called when more rows need to load
     const loadMoreRows: InfiniteLoaderProps["loadMoreRows"] = () => {
-        // Delegate actual loading to parent
-        console.log("trigger load more");
         return Promise.resolve(onLoadMore());
     };
-
-    console.log("rowCount", rowCount);
 
     return (
         <div style={{ overflow: "auto" }}>

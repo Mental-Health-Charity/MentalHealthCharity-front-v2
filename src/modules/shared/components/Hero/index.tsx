@@ -35,7 +35,7 @@ const Hero = () => {
                 paddingTop: { xs: "0px", md: "40px" },
 
                 "&:before": {
-                    content: '""',
+                    content: "''",
                     position: "absolute",
                     top: 0,
                     left: 0,
@@ -48,7 +48,7 @@ const Hero = () => {
                 },
 
                 "&:after": {
-                    content: '""',
+                    content: "''",
                     position: "absolute",
                     bottom: 0,
                     left: 10,

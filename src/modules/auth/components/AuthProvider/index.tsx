@@ -14,6 +14,7 @@ interface UserContextType {
     error: Error | null;
     register: UseMutationResult<RegisterResponse, Error, RegisterFormValues>;
     logout: () => void;
+    isFetchingUser: boolean;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -58,6 +59,7 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
         data: user,
         refetch,
         isLoading,
+        isFetching,
         error,
     }: UseQueryResult<User, Error> = useQuery({
         queryKey: ["userData"],
@@ -72,7 +74,7 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
     };
 
     return (
-        <UserContext.Provider value={{ user, login, isLoading, error, logout, register }}>
+        <UserContext.Provider value={{ user, login, isLoading, error, logout, register, isFetchingUser: isFetching }}>
             {children}
             {isLoading && <Loader text="Weryfikacja konta, zaraz zostaniesz przekierowany" variant="fullscreen" />}
         </UserContext.Provider>

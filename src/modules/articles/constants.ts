@@ -38,10 +38,6 @@ export const translatedAdminArticleStatus = {
 export const translatedArticleRequiredRoles = {
     [ArticleRequiredRoles.ANYONE]: i18n.t("articles.required_roles.anyone"),
     [ArticleRequiredRoles.ADMIN]: i18n.t("articles.required_roles.admin"),
-    [ArticleRequiredRoles.VOLUNTEER]: i18n.t(
-        "articles.required_roles.volunteer"
-    ),
-    [ArticleRequiredRoles.SUPERVISOR]: i18n.t(
-        "articles.required_roles.supervisor"
-    ),
+    [ArticleRequiredRoles.VOLUNTEER]: i18n.t("articles.required_roles.volunteer"),
+    [ArticleRequiredRoles.SUPERVISOR]: i18n.t("articles.required_roles.supervisor"),
 };

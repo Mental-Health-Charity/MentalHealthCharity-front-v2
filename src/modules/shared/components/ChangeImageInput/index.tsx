@@ -1,11 +1,11 @@
-import DeleteIcon from '@mui/icons-material/Delete';
-import ImageIcon from '@mui/icons-material/Image';
-import { Button } from '@mui/material';
-import { useRef } from 'react';
-import toast from 'react-hot-toast';
-import { useTranslation } from 'react-i18next';
-import useTheme from '../../../../theme';
-import Loader from '../Loader';
+import DeleteIcon from "@mui/icons-material/Delete";
+import ImageIcon from "@mui/icons-material/Image";
+import { Button } from "@mui/material";
+import { useRef } from "react";
+import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
+import useTheme from "../../../../theme";
+import Loader from "../Loader";
 
 interface Props {
     value?: File;
@@ -23,17 +23,17 @@ const ChangeImageInput = ({ onChange, value, isLoading }: Props) => {
         const file = e.target.files && e.target.files[0];
 
         if (!file) {
-            inputRef.current!.value = '';
+            inputRef.current!.value = "";
             return;
         }
 
         if (file.size > MAX_BANNER_SIZE) {
-            toast.error(t('validation.max_size', { size: '3MB' }));
+            toast.error(t("validation.max_size", { size: "3MB" }));
             return;
         }
 
-        if (!file.type.includes('image/')) {
-            toast.error(t('validation.invalid_file', { type: 'webp/jpeg/jpg/png/svg' }));
+        if (!file.type.includes("image/")) {
+            toast.error(t("validation.invalid_file", { type: "webp/jpeg/jpg/png/svg" }));
             return;
         }
 
@@ -49,11 +49,11 @@ const ChangeImageInput = ({ onChange, value, isLoading }: Props) => {
                     disabled={isLoading}
                     onClick={() => {
                         onChange(undefined);
-                        inputRef.current!.value = '';
+                        inputRef.current!.value = "";
                     }}
                     sx={{
                         backgroundColor: theme.palette.colors.danger,
-                        gap: '10px',
+                        gap: "10px",
                     }}
                 >
                     <DeleteIcon fontSize="large" />
@@ -64,17 +64,17 @@ const ChangeImageInput = ({ onChange, value, isLoading }: Props) => {
                 disabled={isLoading}
                 onClick={() => inputRef.current?.click()}
                 sx={{
-                    gap: '10px',
+                    gap: "10px",
                     zIndex: 1,
                     opacity: value ? 0.8 : 1,
 
-                    '&:hover': {
+                    "&:hover": {
                         opacity: 1,
                     },
                 }}
             >
                 {isLoading ? <Loader size={25} /> : <ImageIcon fontSize="large" />}
-                {value ? t('articles.form.change_banner') : t('articles.form.upload_banner')}
+                {value ? t("articles.form.change_banner") : t("articles.form.upload_banner")}
             </Button>
         </>
     );
