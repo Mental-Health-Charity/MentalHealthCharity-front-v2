@@ -32,12 +32,6 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
         onMutate: () => {
             setIsAuthenticated(true);
         },
-        // onSuccess: (res, val) => {
-        //     return login.mutateAsync({
-        //         email: res.email,
-        //         password: val.password,
-        //     });
-        // },
         onError: () => {
             setIsAuthenticated(false);
         },

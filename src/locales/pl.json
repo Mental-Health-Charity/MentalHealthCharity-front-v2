@@ -124,6 +124,7 @@
         "failed_to_create_report": "Wystąpił problem podczas tworzenia zgłoszenia.",
         "failed_to_save_note": "Wystąpił problem podczas zapisywania notatki. Spróbuj ponownie później",
         "unknown": "Wystąpił nieznany błąd. Spróbuj ponownie później",
+        "invalid_or_expired_confirmation_token": "To konto zostało już potwierdzone, lub link wygasł",
         "user_not_found": "Użytkownik o tym adresie email nie został znaleziony",
         "incorrect_email_or_password": "Nieprawidłowy email lub hasło",
         "article_category_not_found": "Najpierw dodaj kategorię do artykułu",

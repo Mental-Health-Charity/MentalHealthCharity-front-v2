@@ -22,7 +22,18 @@ const ConfirmEmailCompleteScreen = () => {
 
     if (isError) {
         return (
-            <Box maxWidth={600} gap={2} display="flex" flexDirection="column">
+            <Box
+                maxWidth={600}
+                sx={{
+                    minHeight: "100vh",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "100%",
+                }}
+                gap={2}
+                display="flex"
+                flexDirection="column"
+            >
                 <Typography textAlign="center" component="h1" variant="h4">
                     {t("confirm_email_complete.error_title")}
                 </Typography>
