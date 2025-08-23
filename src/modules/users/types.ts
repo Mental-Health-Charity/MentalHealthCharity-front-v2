@@ -13,6 +13,10 @@ export interface PublicProfileOptions {
     id: number;
 }
 
+export interface ConfirmEmailCompletePayload {
+    token: string;
+}
+
 export interface PublicProfile {
     avatar_url: string;
     description: string;
@@ -31,6 +35,15 @@ export interface editPublicProfilePayload {
     avatar_url: string;
     description: string;
     id: number;
+}
+
+export interface ChangePasswordBeginPayload {
+    email: string;
+}
+
+export interface ChangePasswordCompletePayload {
+    token: string;
+    new_password: string;
 }
 
 export interface EditUserFormValues {
