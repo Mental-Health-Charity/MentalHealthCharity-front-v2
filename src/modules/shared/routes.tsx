@@ -1,4 +1,8 @@
 import React from "react";
+import ChangePasswordCompleteScreen from "../../screens/ChangePasswordCompleteScreen";
+import ChangePasswordScreen from "../../screens/ChangePasswordScreen";
+import ConfirmEmailCompleteScreen from "../../screens/ConfirmEmailCompleteScreen";
+import ConfirmEmailScreen from "../../screens/ConfirmEmailScreen";
 import SupportUsScreen from "../../screens/SupportUsScreen";
 import { Permissions } from "./constants";
 import { RouteType } from "./types";
@@ -49,8 +53,18 @@ const routes: RouteType[] = [
         requiresAuth: true,
     },
     {
-        url: "/auth/forget-password",
+        url: "/auth/forget-password-classic",
         onRender: <ForgetPasswordScreen />,
+        requiresAuth: false,
+    },
+    {
+        url: "/reset-password",
+        onRender: <ChangePasswordCompleteScreen />,
+        requiresAuth: false,
+    },
+    {
+        url: "/auth/forget-password",
+        onRender: <ChangePasswordScreen />,
         requiresAuth: false,
     },
     {
@@ -71,6 +85,16 @@ const routes: RouteType[] = [
     {
         url: "/register",
         onRender: <div>Register</div>,
+        requiresAuth: false,
+    },
+    {
+        url: "/auth/confirm-email-begin",
+        onRender: <ConfirmEmailScreen />,
+        requiresAuth: false,
+    },
+    {
+        url: "/confirm",
+        onRender: <ConfirmEmailCompleteScreen />,
         requiresAuth: false,
     },
     {

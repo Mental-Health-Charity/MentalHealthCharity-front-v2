@@ -70,6 +70,19 @@
             "no_changes": "Brak zmian"
         }
     },
+    "confirm_email_begin": {
+        "title": "Sprawdź swój email",
+        "description": "Wysłaliśmy na podany adres email link do potwierdzenia konta. Kliknij w niego, aby utworzyć nowe konto. Jeśli nie możesz go znaleźć, sprawdź folder spam.",
+        "footer": "Email nie przyszedł, lub kliknięto już w link?",
+        "change_email": "Zmień adres email",
+        "login": "Zaloguj się"
+    },
+    "confirm_email_complete": {
+        "error_title": "Błąd potwierdzenia emaila",
+        "error_description": "Wystąpił problem z potwierdzeniem twojego adresu email. Spróbuj ponownie później.",
+        "loading_title": "Tworzymy Twoje konto...",
+        "loading_text": "Jeśli trwa to zbyt długo, spróbuj ponownie!"
+    },
     "validation": {
         "required": "To pole jest wymagane",
         "passwords_must_match": "Hasła muszą być takie same",
@@ -111,6 +124,7 @@
         "failed_to_create_report": "Wystąpił problem podczas tworzenia zgłoszenia.",
         "failed_to_save_note": "Wystąpił problem podczas zapisywania notatki. Spróbuj ponownie później",
         "unknown": "Wystąpił nieznany błąd. Spróbuj ponownie później",
+        "user_not_found": "Użytkownik o tym adresie email nie został znaleziony",
         "incorrect_email_or_password": "Nieprawidłowy email lub hasło",
         "article_category_not_found": "Najpierw dodaj kategorię do artykułu",
         "username_already_exists": "Użytkownik o tej nazwie już istnieje",
@@ -567,5 +581,17 @@
         "accepted": "Zaakceptowany",
         "rejected": "Odrzucony",
         "waited": "Oczekujący"
+    },
+    "change_password_screen": {
+        "title": "Rozpocznij zmiane hasła",
+        "description": "Wpisz swój adres email powiązany z kontem, a my wyślemy Ci dalsze instrukcję na podany adres email.",
+        "email_sent_title": "Sprawdź skrzynkę pocztową",
+        "email_sent_description": "Jeśli konto z podanym adresem istnieje, wysłaliśmy dalsze instrukcję na podany adres email. Pamiętaj, aby sprawdzić folder spam",
+        "footer": "Jeśli wiadomość nie dotarła, możesz spróbować ponownie"
+    },
+    "change_password_form_complete": {
+        "new_password": "Nowe hasło",
+        "title": "Zmień hasło",
+        "description": "Wypełnij poniższy formularz, aby zmienić hasło do swojego konta."
     }
 }

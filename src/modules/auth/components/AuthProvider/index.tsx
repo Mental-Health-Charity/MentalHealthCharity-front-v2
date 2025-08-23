@@ -2,6 +2,7 @@ import { useMutation, UseMutationResult, useQuery, UseQueryResult } from "@tanst
 import Cookies from "js-cookie";
 import React, { createContext, ReactNode, useContext, useState } from "react";
 import Loader from "../../../shared/components/Loader";
+import handleApiError from "../../../shared/helpers/handleApiError";
 import fetchUserData from "../../queries/fetchUserDataQuery";
 import { registerMutation } from "../../queries/registerMutation";
 import { loginMutation } from "../../queries/tokenMutation";
@@ -31,12 +32,12 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
         onMutate: () => {
             setIsAuthenticated(true);
         },
-        onSuccess: (res, val) => {
-            return login.mutateAsync({
-                email: res.email,
-                password: val.password,
-            });
-        },
+        // onSuccess: (res, val) => {
+        //     return login.mutateAsync({
+        //         email: res.email,
+        //         password: val.password,
+        //     });
+        // },
         onError: () => {
             setIsAuthenticated(false);
         },
@@ -47,10 +48,14 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
         onMutate: () => {
             setIsAuthenticated(true);
         },
-        onSuccess: () => {
+        onSuccess: (data) => {
+            Cookies.set("token", data.access_token, { expires: 7 });
+            Cookies.set("jwt_type", data.token_type, { expires: 7 });
+
             refetch();
         },
-        onError: () => {
+        onError: (error) => {
+            handleApiError(error);
             setIsAuthenticated(false);
         },
     });
@@ -76,7 +81,7 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
     return (
         <UserContext.Provider value={{ user, login, isLoading, error, logout, register, isFetchingUser: isFetching }}>
             {children}
-            {isLoading && <Loader text="Weryfikacja konta, zaraz zostaniesz przekierowany" variant="fullscreen" />}
+            {isLoading && <Loader text="Trwa logowanie..." variant="fullscreen" />}
         </UserContext.Provider>
     );
 };

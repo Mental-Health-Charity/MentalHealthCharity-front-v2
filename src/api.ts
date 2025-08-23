@@ -67,6 +67,9 @@ export const url = {
             return `${baseUrl}/api/v1/users/${id}/edit-as-admin`;
         },
         createUser: `${baseUrl}/api/v1/users/`,
+        changePasswordBegin: `${baseUrl}/api/v1/users/reset-password-mail`,
+        changePasswordComplete: `${baseUrl}/api/v1/users/change-password`,
+        confirmEmailComplete: `${baseUrl}/api/v1/users/confirm`,
         readUsersMe: `${baseUrl}/api/v1/users/me`,
         updateUserMe: `${baseUrl}/api/v1/users/me`,
         createUserOpen: `${baseUrl}/api/v1/users/open`,

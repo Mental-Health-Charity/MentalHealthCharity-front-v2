@@ -1,21 +1,29 @@
+/* eslint-disable */
 import toast from "react-hot-toast";
 import Errors from "../constants";
 import { ErrorMessage } from "../types";
 
 async function handleApiError(error: unknown): Promise<Error> {
-    if (error && typeof error === "object" && "detail" in error) {
-        const errorDetails = (error as { detail: string }).detail;
-        const errorCode = errorDetails.toUpperCase().replace(/ /g, "_");
-        const name = ErrorMessage[errorCode as keyof typeof ErrorMessage];
+    let detail: string | undefined;
 
-        const message = Errors[name] || Errors[ErrorMessage.UNKNOWN];
-        toast.error(message);
-        throw { message, name };
+    if (error instanceof Error) {
+        detail = error.message;
+    } else if (error && typeof error === "object" && "detail" in error) {
+        detail = (error as { detail: string }).detail;
+    } else if (error && typeof error === "object" && "response" in error) {
+        const errResp = (error as any).response?.data;
+        if (errResp?.detail) {
+            detail = errResp.detail;
+        }
     }
 
-    const message = Errors[ErrorMessage.UNKNOWN];
+    const errorCode = detail ? detail.toUpperCase().replace(/ /g, "_") : ErrorMessage.UNKNOWN;
+
+    const name = ErrorMessage[errorCode as keyof typeof ErrorMessage] ?? ErrorMessage.UNKNOWN;
+    const message = Errors[name] || Errors[ErrorMessage.UNKNOWN];
+
     toast.error(message);
-    throw { name: ErrorMessage.UNKNOWN, message };
+    throw { name, message };
 }
 
 export default handleApiError;

@@ -15,6 +15,7 @@ const Errors = {
     [ErrorMessage.FAILED_TO_CREATE_CHAT]: i18n.t("errors.failed_to_create_chat"),
     [ErrorMessage.INCORRECT_EMAIL_OR_PASSWORD]: i18n.t("errors.incorrect_email_or_password"),
     [ErrorMessage.ARTICLE_CATEGORY_IS_USED]: i18n.t("errors.article_category_in_use"),
+    [ErrorMessage.USER_NOT_FOUND]: i18n.t("errors.user_not_found"),
     [ErrorMessage.ARTICLE_CATEGORY_WITH_THAT_NAME_ALREADY_EXISTS]: i18n.t(
         "errors.article_category_with_that_name_already_exists"
     ),
