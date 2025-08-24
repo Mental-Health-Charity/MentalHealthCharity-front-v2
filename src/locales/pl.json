@@ -128,6 +128,7 @@
         "user_not_found": "Użytkownik o tym adresie email nie został znaleziony",
         "incorrect_email_or_password": "Nieprawidłowy email lub hasło",
         "article_category_not_found": "Najpierw dodaj kategorię do artykułu",
+        "inactive_user": "Te konto nie jest aktywne. Wysłaliśmy wiadomość e-mail z instrukcjami aktywacji.",
         "username_already_exists": "Użytkownik o tej nazwie już istnieje",
         "article_category_with_that_name_already_exists": "Kategoria o tej nazwie już istnieje",
         "article_category_in_use": "Błąd, nie można przeprowadzić tej operacji na kategorii, ponieważ wybrana kategoria jest używana przez jakiś artykuł.",

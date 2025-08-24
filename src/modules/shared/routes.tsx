@@ -40,7 +40,7 @@ const routes: RouteType[] = [
     {
         url: "/form/mentee",
         onRender: <MenteeFormScreen />,
-        requiresAuth: false,
+        requiresAuth: true,
     },
     {
         url: "/about-chat",

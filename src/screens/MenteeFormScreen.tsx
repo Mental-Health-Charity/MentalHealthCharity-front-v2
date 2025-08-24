@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import Confetti from "react-confetti";
 import bgImg from "../assets/static/admin_panel_bg.svg";
+import { useUser } from "../modules/auth/components/AuthProvider";
 import MenteeForm from "../modules/forms/components/MenteeForm";
 import sendFormMutation from "../modules/forms/queries/sendFormMutation";
 import { formTypes, MenteeForm as MenteeFormType, MenteeFormValues } from "../modules/forms/types";
@@ -12,6 +13,7 @@ const MenteeFormScreen = () => {
     const [showConfetti, setShowConfetti] = useState(false);
     const isFormSend = localStorage.getItem(SessionStorage.SEND_FORM);
     const [step, setStep] = useState(isFormSend ? 5 : 0);
+    const { user } = useUser();
 
     const { mutate, isPending } = useMutation({
         mutationFn: sendFormMutation,
@@ -44,6 +46,8 @@ const MenteeFormScreen = () => {
             form_type_id: formTypes.MENTEE,
         });
     };
+
+    console.log("user", user);
 
     return (
         <Container

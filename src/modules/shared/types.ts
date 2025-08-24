@@ -54,6 +54,7 @@ export interface ComponentAction extends MenuItemProps {
 export enum ErrorMessage {
     FAILED_TO_FETCH_CHAT = "failed_to_fetch_chat",
     ARTICLE_CATEGORY_IS_USED = "article_category_is_used",
+    INACTIVE_USER = "inactive_user",
     INVALID_OR_EXPIRED_TOKEN = "invalid_or_expired_confirmation_token",
     ARTICLE_CATEGORY_WITH_THAT_NAME_ALREADY_EXISTS = "article_category_with_that_name_already_exists",
     FAILED_TO_FETCH_CHAT_NOTE = "failed_to_fetch_chat_note",

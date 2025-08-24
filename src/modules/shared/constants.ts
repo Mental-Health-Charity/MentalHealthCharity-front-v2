@@ -19,6 +19,7 @@ const Errors = {
     [ErrorMessage.ARTICLE_CATEGORY_WITH_THAT_NAME_ALREADY_EXISTS]: i18n.t(
         "errors.article_category_with_that_name_already_exists"
     ),
+    [ErrorMessage.INACTIVE_USER]: i18n.t("errors.inactive_user"),
     [ErrorMessage.INVALID_OR_EXPIRED_TOKEN]: i18n.t("errors.invalid_or_expired_confirmation_token"),
     [ErrorMessage.ARTICLE_CATEGORY_NOT_FOUND]: i18n.t("errors.article_category_not_found"),
     [ErrorMessage.FAILED_TO_EDIT_CHAT]: i18n.t("errors.failed_to_edit_chat"),
