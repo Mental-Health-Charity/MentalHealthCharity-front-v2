@@ -1,6 +1,7 @@
 import CloseIcon from "@mui/icons-material/Close";
 import { Box, Drawer, IconButton, List, TextField, useMediaQuery } from "@mui/material";
 import { t } from "i18next";
+import { useState } from "react";
 import useTheme from "../../../../theme";
 import { Pagination } from "../../../shared/types";
 import { Chat } from "../../types";
@@ -17,6 +18,7 @@ interface Props {
 const ChatSidebar = ({ data, onChangeChat, currentChatId, showSidebar, handleDrawerToggle }: Props) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const [readed, setReaded] = useState<{ [key: number]: boolean }>({});
 
     const sidebarContent = (
         <Box
@@ -62,19 +64,23 @@ const ChatSidebar = ({ data, onChangeChat, currentChatId, showSidebar, handleDra
                     }}
                 >
                     {data &&
-                        data.items.map((chat) => (
-                            <ChatItem
-                                onChange={(id) => {
-                                    onChangeChat(id);
-                                    if (isMobile) {
-                                        handleDrawerToggle?.();
-                                    }
-                                }}
-                                selected={!!currentChatId && chat.id === currentChatId}
-                                chat={chat}
-                                key={chat.id}
-                            />
-                        ))}
+                        data.items
+                            .sort((a, b) => (a.is_active === b.is_active ? 0 : a.is_active ? -1 : 1))
+                            .map((chat) => (
+                                <ChatItem
+                                    onChange={(id) => {
+                                        onChangeChat(id);
+                                        setReaded((prev) => ({ ...prev, [chat.id]: true }));
+                                        if (isMobile) {
+                                            handleDrawerToggle?.();
+                                        }
+                                    }}
+                                    selected={!!currentChatId && chat.id === currentChatId}
+                                    readed={readed[chat.id]}
+                                    chat={chat}
+                                    key={chat.id}
+                                />
+                            ))}
                 </List>
             </Box>
         </Box>

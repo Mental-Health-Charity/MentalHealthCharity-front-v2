@@ -92,6 +92,7 @@ const useTheme = () => {
         typography: {
             fontFamily: "Ubuntu, sans-serif",
         },
+
         components: {
             MuiBackdrop: {
                 styleOverrides: {
@@ -110,6 +111,13 @@ const useTheme = () => {
             MuiListItemButton: {
                 defaultProps: {
                     LinkComponent: LinkBehavior,
+                },
+            },
+            MuiListItem: {
+                styleOverrides: {
+                    root: {
+                        fontFamily: "Ubuntu, sans-serif",
+                    },
                 },
             },
             MuiButtonBase: {

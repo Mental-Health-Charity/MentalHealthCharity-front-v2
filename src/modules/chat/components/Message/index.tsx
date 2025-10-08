@@ -1,28 +1,29 @@
+import DeleteIcon from "@mui/icons-material/Delete";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { Avatar, Box, Typography, useTheme } from "@mui/material";
+import { t } from "i18next";
 import { useUser } from "../../../auth/components/AuthProvider";
+import ActionMenu from "../../../shared/components/ActionMenu";
+import { Permissions } from "../../../shared/constants";
 import formatDate from "../../../shared/helpers/formatDate";
+import usePermissions from "../../../shared/hooks/usePermissions";
 import { Message } from "../../types";
+import { StyledMessageWrapper } from "./style";
 
 interface Props {
     message: Message;
+    onDeleteMessage: (id: number) => void;
 }
 
-const ChatMessage = ({ message }: Props) => {
+const ChatMessage = ({ message, onDeleteMessage }: Props) => {
     const theme = useTheme();
     const { user } = useUser();
     const senderIsCurrentUser = user && user.id === message.sender.id;
+    const { hasPermissions } = usePermissions();
+    const canDeleteMessage = senderIsCurrentUser || hasPermissions(Permissions.DELETE_OTHERS_CHAT_MESSAGES);
 
     return (
-        <Box
-            sx={{
-                display: "flex",
-                gap: { xs: "10px", md: "15px" },
-                width: "100%",
-                flexDirection: senderIsCurrentUser ? "row-reverse" : "row",
-                alignItems: "flex-end",
-            }}
-        >
+        <StyledMessageWrapper senderIsUser={senderIsCurrentUser || false}>
             {!senderIsCurrentUser && (
                 <Avatar
                     variant="rounded"
@@ -30,6 +31,7 @@ const ChatMessage = ({ message }: Props) => {
                     alt={message.sender.full_name}
                     sx={{
                         fontSize: "24px",
+                        marginTop: "auto",
                         width: { xs: "30px", md: "50px" },
                         height: { xs: "30px", md: "50px" },
                     }}
@@ -115,7 +117,23 @@ const ChatMessage = ({ message }: Props) => {
                     </Box>
                 )}
             </Box>
-        </Box>
+            {canDeleteMessage && (
+                <div className="message-actions">
+                    <ActionMenu
+                        actions={[
+                            {
+                                label: t("common.remove"),
+                                id: "delete",
+                                disabled: !canDeleteMessage,
+                                variant: "default",
+                                onClick: () => onDeleteMessage(message.id),
+                                icon: <DeleteIcon />,
+                            },
+                        ]}
+                    />
+                </div>
+            )}
+        </StyledMessageWrapper>
     );
 };
 

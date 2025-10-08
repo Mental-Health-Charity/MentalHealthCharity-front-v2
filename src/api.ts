@@ -12,6 +12,7 @@ import {
     ChatNoteOptions,
     ConnectOptions,
     ConnectUnreadMessagesOptions,
+    DeleteMessageOptions,
     EditChatOptions,
     GetChatMessagesOptions,
     ParticipantOptions,
@@ -86,6 +87,9 @@ export const url = {
         },
         readChatUsers({ id }: ReadChatOptions) {
             return `${baseUrl}/api/v1/chat/${id}/user/`;
+        },
+        deleteMessage({ id }: DeleteMessageOptions) {
+            return `${baseUrl}/api/v1/message/${id}`;
         },
         getNoteForChat({ id }: ChatNoteOptions) {
             return `${baseUrl}/api/v1/chat-note/chat/${id}`;

@@ -157,7 +157,18 @@
         "connection_open": "Połączono z rozmówcą",
         "connection_uninstantiated": "Nie można połączyć z rozmówcą. Sprawdź swoje połączenie internetowe. Spróbuj odświeżyć stronę",
         "show_more_chats": "Lista czatów",
+        "auto_delete_info": "Czaty bez wiadomości są automatycznie usuwane po 3 dniach, a te z wiadomościami – po 16 dniach.",
+        "close_chat_when_title": "Zamknij czat, gdy:",
         "contract_confirmed": "Kontrakt został potwierdzony",
+        "chat_closed": "Ten czat został zamknięty i zostanie wkrótce automatycznie usunięty",
+        "close_chat": "Zamknij czat",
+        "close_chat_confirmation": "Potwierdź zamknięcie czatu",
+        "close_reasons": {
+            "close_chat_reason_1": "Rozmowa została zakończona pomyślnie.",
+            "close_chat_reason_2": "Użytkownik nie odpowiada od dłuższego czasu.",
+            "close_chat_reason_3": "Zakończenie rozmowy jest wymagane przez procedurę."
+        },
+        "close_chat_confirmation_text_1": "Czat zostanie zamknięty i nie będzie można go ponownie otworzyć. Czy na pewno chcesz zamknąć czat? Administracja wciąż będzie miała do niego dostęp.",
         "contract_confirmed_desc": "Kontrakt został potwierdzony. Nie można go już edytować.",
         "remove_participant_success": "Uczestnik został usunięty",
         "connection": {

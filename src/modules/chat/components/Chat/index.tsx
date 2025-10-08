@@ -1,8 +1,9 @@
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import SendIcon from "@mui/icons-material/Send";
 import { Box, Button, IconButton, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useFormik } from "formik";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ReadyState } from "react-use-websocket";
 import * as Yup from "yup";
@@ -10,8 +11,11 @@ import { useUser } from "../../../auth/components/AuthProvider";
 import EmojiPicker from "../../../shared/components/EmojiPicker";
 import Loader from "../../../shared/components/Loader";
 import Skeleton from "../../../shared/components/Skeleton";
+import { Permissions } from "../../../shared/constants";
+import usePermissions from "../../../shared/hooks/usePermissions";
 import { translatedConnectionStatus } from "../../constants";
 import { Chat as ChatType, ConnectionStatus, Message } from "../../types";
+import CloseChatModal from "../CloseChatModal";
 import ConnectionModal from "../ConnectionModal";
 import ChatMessage from "../Message";
 import { StyledAlert } from "./style";
@@ -19,12 +23,14 @@ import { StyledAlert } from "./style";
 interface Props {
     chat?: ChatType;
     onSendMessage: (message: string) => void;
+    onDeleteMessage: (id: number) => void;
     messages: Message[];
     status: ConnectionStatus;
     onShowDetails?: () => void;
+    onCloseChat: (chat: ChatType) => void;
 }
 
-const Chat = ({ chat, messages, onSendMessage, onShowDetails, status }: Props) => {
+const Chat = ({ chat, messages, onSendMessage, onShowDetails, status, onDeleteMessage, onCloseChat }: Props) => {
     const theme = useTheme();
     const { t } = useTranslation();
     const { user } = useUser();
@@ -33,6 +39,10 @@ const Chat = ({ chat, messages, onSendMessage, onShowDetails, status }: Props) =
     const validationSchema = Yup.object({
         message: Yup.string().max(1500).required(),
     });
+    const [showChatCloseModal, setShowChatCloseModal] = useState(false);
+    const { hasPermissions } = usePermissions();
+
+    const canEditChat = chat && !chat.is_supervisor_chat && user && hasPermissions(Permissions.EDIT_CHAT_DATA);
 
     // formik initialization
     const formik = useFormik({
@@ -81,11 +91,17 @@ const Chat = ({ chat, messages, onSendMessage, onShowDetails, status }: Props) =
                 ) : (
                     <Skeleton />
                 )}
-                {onShowDetails && (
-                    <IconButton onClick={onShowDetails}>
-                        <PeopleAltIcon />
-                    </IconButton>
-                )}
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <Button onClick={() => setShowChatCloseModal(true)} variant="contained" color="error">
+                        <ReportProblemIcon sx={{ marginRight: "5px" }} />
+                        {t("chat.close_chat")}
+                    </Button>
+                    {onShowDetails && (
+                        <IconButton onClick={onShowDetails}>
+                            <PeopleAltIcon />
+                        </IconButton>
+                    )}
+                </Box>
                 {status.state !== ReadyState.OPEN && (
                     <StyledAlert variant={status.state === ReadyState.CONNECTING ? "info" : "danger"}>
                         {translatedConnectionStatus[status.state]}
@@ -104,58 +120,93 @@ const Chat = ({ chat, messages, onSendMessage, onShowDetails, status }: Props) =
                     padding: { xs: "0", md: "10px 15px 10px 0" },
                 }}
             >
-                {messages ? messages.map((message) => <ChatMessage message={message} key={message.id} />) : <Loader />}
+                {messages ? (
+                    messages.map((message) => (
+                        <ChatMessage onDeleteMessage={onDeleteMessage} message={message} key={message.id} />
+                    ))
+                ) : (
+                    <Loader />
+                )}
             </Box>
 
-            <Box sx={{ display: "flex", gap: "20px", alignItems: "center", position: "relative" }}>
-                <TextField
-                    slotProps={{
-                        htmlInput: {
-                            maxLength: 1500,
-                        },
-                    }}
-                    fullWidth
-                    variant="filled"
-                    disabled={!chat || !user || !chat.participants.some((p) => p.id === user.id)}
-                    label={t("chat.enter_message_label")}
-                    name="message"
-                    value={formik.values.message}
-                    onChange={(e) => formik.setFieldValue("message", e.target.value)}
-                    onBlur={formik.handleBlur}
-                    inputRef={textFieldRef}
-                    onKeyDown={(event) => {
-                        if (event.key === "Enter") {
-                            formik.handleSubmit();
-                            event.preventDefault();
-                        }
-                    }}
-                />
-
+            {!chat?.is_active ? (
                 <Box
                     sx={{
-                        display: { xs: "none", md: "flex" },
+                        backgroundColor: `${theme.palette.error.main}1b`,
+                        padding: "20px",
+                        borderRadius: "8px",
+                        textAlign: "center",
+                        border: `1px solid ${theme.palette.error.main}`,
                     }}
                 >
-                    <EmojiPicker onChange={(val) => formik.setFieldValue("message", val)} textFieldRef={textFieldRef} />
+                    <Typography color="error" fontWeight="bold" textAlign="center">
+                        {t("chat.chat_closed")}
+                    </Typography>
                 </Box>
-
-                <Button
-                    sx={{
-                        gap: "10px",
-                        height: "100%",
-                    }}
-                    variant="contained"
-                    onClick={() => formik.handleSubmit()}
-                >
-                    {!isMobile && t("chat.send")}{" "}
-                    <SendIcon
-                        sx={{
-                            marginTop: "-3px",
+            ) : (
+                <Box sx={{ display: "flex", gap: "20px", alignItems: "center", position: "relative" }}>
+                    <TextField
+                        slotProps={{
+                            htmlInput: {
+                                maxLength: 1500,
+                            },
+                        }}
+                        fullWidth
+                        variant="filled"
+                        disabled={!chat || !user || !chat.participants.some((p) => p.id === user.id)}
+                        label={t("chat.enter_message_label")}
+                        name="message"
+                        value={formik.values.message}
+                        onChange={(e) => formik.setFieldValue("message", e.target.value)}
+                        onBlur={formik.handleBlur}
+                        inputRef={textFieldRef}
+                        onKeyDown={(event) => {
+                            if (event.key === "Enter") {
+                                formik.handleSubmit();
+                                event.preventDefault();
+                            }
                         }}
                     />
-                </Button>
-            </Box>
+
+                    <Box
+                        sx={{
+                            display: { xs: "none", md: "flex" },
+                        }}
+                    >
+                        <EmojiPicker
+                            onChange={(val) => formik.setFieldValue("message", val)}
+                            textFieldRef={textFieldRef}
+                        />
+                    </Box>
+
+                    <Button
+                        sx={{
+                            gap: "10px",
+                            height: "100%",
+                        }}
+                        variant="contained"
+                        onClick={() => formik.handleSubmit()}
+                    >
+                        {!isMobile && t("chat.send")}{" "}
+                        <SendIcon
+                            sx={{
+                                marginTop: "-3px",
+                            }}
+                        />
+                    </Button>
+                </Box>
+            )}
             <ConnectionModal status={status} />
+            {canEditChat && (
+                <CloseChatModal
+                    open={showChatCloseModal}
+                    onClose={() => setShowChatCloseModal(false)}
+                    onConfirm={() => {
+                        onCloseChat(chat);
+                        setShowChatCloseModal(false);
+                    }}
+                />
+            )}
         </Box>
     );
 };

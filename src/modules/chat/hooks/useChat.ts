@@ -1,23 +1,71 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { t } from "i18next";
 import Cookies from "js-cookie";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import useWebSocket, { Options, ReadyState } from "react-use-websocket";
 import { url } from "../../../api";
 import { useUser } from "../../auth/components/AuthProvider";
 import { UnknownUser } from "../constants";
+import { ChatDataParser } from "../helpers/ChatDataParser";
 import { chatHistoryQueryOptions } from "../queries/chatHistoryQueryOptions";
+import deleteChatMessageMutation from "../queries/deleteChatMessageMutation";
+import editChatMutation from "../queries/editChatMutation";
 import { getChatById } from "../queries/getChatById";
-import { ConnectionStatus, Message, SocketMessage } from "../types";
+import { Chat, ConnectionStatus, Message } from "../types";
 
 const useChat = (chatId: number, options?: Options) => {
     const token = Cookies.get("token");
     const [messages, setMessages] = useState<Message[]>([]);
     const [pendingMessages, setPendingMessages] = useState<Message[]>([]);
     const { data: messageHistory } = useQuery(chatHistoryQueryOptions({ chatId }));
-    const { data: selectedChat } = useQuery(getChatById({ id: chatId || -9 }));
+    const { data: selectedChat, refetch: reloadChat } = useQuery(getChatById({ id: chatId || -9 }));
+    const { mutate: deleteChatMessage } = useMutation({
+        mutationFn: deleteChatMessageMutation,
+    });
+
+    const { mutate: editChat } = useMutation({
+        mutationFn: editChatMutation,
+
+        onSuccess: () => {
+            toast.success(t("chat.edit_chat_success"));
+            reloadChat();
+        },
+    });
+
+    const parser = new ChatDataParser()
+        .onNewMessage((msg) => {
+            const sender =
+                selectedChat && selectedChat.participants.find((participant) => participant.id === msg.sender_id);
+
+            const newMessage: Message = {
+                ...msg,
+                chat_id: chatId,
+                sender: sender || UnknownUser,
+            };
+
+            setPendingMessages((prev) =>
+                prev.filter((msg) => msg.content !== newMessage.content || msg.sender.id !== newMessage.sender.id)
+            );
+
+            setMessages((prev) => [newMessage, ...prev]);
+        })
+        .onDelete(({ id }) => {
+            setMessages((prev) => prev.filter((m) => m.id !== id));
+        });
 
     const { user } = useUser();
+
+    const handleCloseChat = useCallback(
+        (chat: Chat) => {
+            editChat({
+                id: chat.id,
+                is_active: false,
+                name: chat.name,
+            });
+        },
+        [editChat, reloadChat]
+    );
 
     if (!token) {
         throw new Error("Token not found");
@@ -42,32 +90,17 @@ const useChat = (chatId: number, options?: Options) => {
             isPending: true,
         };
 
-        // Dodaj do pendingów
         setPendingMessages((prev) => [pendingMessage, ...prev]);
-
-        // Wyślij wiadomość
         sendJsonMessage({ chatId, content });
     };
 
     useEffect(() => {
         if (lastMessage !== null) {
-            const parsedMessage: SocketMessage = JSON.parse(lastMessage.data);
-
-            const sender =
-                selectedChat &&
-                selectedChat.participants.find((participant) => participant.id === parsedMessage.sender_id);
-
-            const newMessage: Message = {
-                ...parsedMessage,
-                chat_id: chatId,
-                sender: sender || UnknownUser,
-            };
-
-            setPendingMessages((prev) =>
-                prev.filter((msg) => msg.content !== newMessage.content || msg.sender.id !== newMessage.sender.id)
-            );
-
-            setMessages((prev) => [newMessage, ...prev]);
+            try {
+                parser.parse(lastMessage.data);
+            } catch (error) {
+                console.error("Failed to parse WebSocket message:", error);
+            }
         }
     }, [lastMessage]);
 
@@ -110,9 +143,21 @@ const useChat = (chatId: number, options?: Options) => {
         },
     }[readyState];
 
+    const handleDeleteMessage = useCallback((messageId: number) => {
+        deleteChatMessage({ id: messageId });
+    }, []);
+
     const allMessages = [...pendingMessages, ...messages];
 
-    return { send, messages: allMessages, connectionStatus, selectedChat };
+    return {
+        send,
+        messages: allMessages,
+        connectionStatus,
+        selectedChat,
+        handleDeleteMessage,
+        handleCloseChat,
+        reloadChat,
+    };
 };
 
 export default useChat;

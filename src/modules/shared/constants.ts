@@ -44,8 +44,10 @@ export enum Permissions {
     MANAGE_CHATS = "MANAGE_CHATS",
     READ_OWN_CHATS = "READ_OWN_CHATS",
     MANAGE_MENTEE_FORMS = "MANAGE_MENTEE_FORMS",
+    EDIT_CHAT_DATA = "EDIT_CHAT_DATA",
     MANAGE_VOLUNTEER_FORMS = "MANAGE_VOLUNTEER_FORMS",
     CAN_CONFIRM_CONTRACT = "CAN_CONFIRM_CONTRACT",
+    DELETE_OTHERS_CHAT_MESSAGES = "DELETE_OTHERS_CHAT_MESSAGES",
 }
 
 export const groupedPermissions = {
@@ -56,6 +58,7 @@ export const groupedPermissions = {
         Permissions.EDIT_ARTICLE,
         Permissions.DELETE_ARTICLE,
         Permissions.READ_OWN_CHATS,
+        Permissions.EDIT_CHAT_DATA,
         Permissions.EDIT_CHAT_NOTE,
         Permissions.CAN_CONFIRM_CONTRACT,
     ],

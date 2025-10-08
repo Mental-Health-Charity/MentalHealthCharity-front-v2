@@ -12,10 +12,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import Logo from "../../../../assets/static/logo_small.webp";
 import { useUser } from "../../../auth/components/AuthProvider";
 import ReportModal from "../../../report/components/ReportModal";
+import Info from "../../../shared/components/Info";
 import { Permissions } from "../../../shared/constants";
 import usePermissions from "../../../shared/hooks/usePermissions";
 import useChat from "../../hooks/useChat";
 import { getChatsQueryOptions } from "../../queries/getChatsQueryOptions";
+import { Chat as ChatType } from "../../types";
 import Chat from "../Chat";
 import ChatDetails from "../ChatDetails";
 import ChatSidebar from "../ChatSidebar";
@@ -43,18 +45,27 @@ const ChatWindow = ({ onChangeWallpaper }: Props) => {
     const [showSidebar, setShowSidebar] = useState(false);
     const { hasPermissions } = usePermissions();
 
-    const { messages, connectionStatus, send, selectedChat } = useChat(Number(chatId), {
-        shouldReconnect: (closeEvent) => {
-            const isParticipant = selectedChat && user && selectedChat.participants.some((p) => p.id === user.id);
+    const { messages, connectionStatus, send, selectedChat, handleDeleteMessage, handleCloseChat, reloadChat } =
+        useChat(Number(chatId), {
+            shouldReconnect: (closeEvent) => {
+                const isParticipant = selectedChat && user && selectedChat.participants.some((p) => p.id === user.id);
 
-            if (isParticipant) {
-                console.warn("Socket closed, attempting to reconnect...", closeEvent);
-                return true;
-            }
+                if (isParticipant) {
+                    console.warn("Socket closed, attempting to reconnect...", closeEvent);
+                    return true;
+                }
 
-            return false;
+                return false;
+            },
+        });
+
+    const closeChat = useCallback(
+        (chat: ChatType) => {
+            handleCloseChat(chat);
+            setShowDetails(false);
         },
-    });
+        [handleCloseChat, reloadChat]
+    );
 
     const handleChangeChat = useCallback(
         (id: string) => {
@@ -81,6 +92,9 @@ const ChatWindow = ({ onChangeWallpaper }: Props) => {
             {showNote && selectedChat && (
                 <Note key={selectedChat.id} onClose={() => setShowNote(false)} chat={selectedChat} />
             )}
+            <Box margin="0px 0 10px 0">
+                <Info id="chat-delete-info">{t("chat.auto_delete_info")}</Info>
+            </Box>
             <Box
                 sx={{
                     backgroundColor: theme.palette.colors.dark,
@@ -186,6 +200,8 @@ const ChatWindow = ({ onChangeWallpaper }: Props) => {
                     }}
                 >
                     <Chat
+                        onCloseChat={closeChat}
+                        onDeleteMessage={handleDeleteMessage}
                         status={connectionStatus}
                         messages={messages}
                         onSendMessage={send}

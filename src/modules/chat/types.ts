@@ -18,6 +18,10 @@ export interface ChatContractOptions {
     id: number | string;
 }
 
+export interface DeleteMessageOptions {
+    id: number;
+}
+
 export interface CreateChatPayload {
     name: string;
     flags: Record<string, string[]>;
@@ -81,8 +85,9 @@ export interface Chat {
     participants: User[];
     is_active: boolean;
     creation_date: string;
-    last_message?: string;
+    last_message?: Message;
     is_supervisor_chat: boolean;
+    unread_count: number;
 }
 
 export interface SearchChatQueryOptions extends DefaultPaginationOptions {
@@ -110,4 +115,14 @@ export interface EditChatPayload {
     id: number;
     name: string;
     is_active: boolean;
+}
+
+export enum SocketEventType {
+    MESSAGE = "message",
+    DELETE = "delete",
+}
+
+export interface ChatDeleteEvent {
+    id: number;
+    event: SocketEventType.DELETE;
 }
