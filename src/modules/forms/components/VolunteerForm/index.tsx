@@ -86,6 +86,12 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
         setStep((prevStep) => (prevStep > 0 ? prevStep - 1 : prevStep));
     };
 
+    const handleAgeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const text = e.target.value;
+        const formattedText = text.replace(/[^0-9]/g, ""); // ← tylko cyfry
+        formik.setFieldValue("age", formattedText);
+    };
+
     return (
         <FormWrapper
             subtitle={t(`form.volunteer.subtitle.${step}`, {
@@ -109,8 +115,13 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                             label={t("form.volunteer.age_label")}
                             name="age"
                             type="number"
+                            slotProps={{
+                                htmlInput: {
+                                    min: 0,
+                                },
+                            }}
                             value={formik.values.age}
-                            onChange={formik.handleChange}
+                            onChange={handleAgeInputChange}
                             onBlur={formik.handleBlur}
                             error={formik.touched.age && Boolean(formik.errors.age)}
                             helperText={formik.touched.age && formik.errors.age}

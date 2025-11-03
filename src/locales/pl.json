@@ -9,7 +9,7 @@
             "articles": "Artykuły",
             "chat_with_volunteer": "Otrzymaj pomoc",
             "chat": "Czat",
-            "admin": "Zarządaj stroną"
+            "admin": "Zarządzaj stroną"
         },
         "roles": {
             "admin": "Administrator",
@@ -157,7 +157,7 @@
         "connection_open": "Połączono z rozmówcą",
         "connection_uninstantiated": "Nie można połączyć z rozmówcą. Sprawdź swoje połączenie internetowe. Spróbuj odświeżyć stronę",
         "show_more_chats": "Lista czatów",
-        "auto_delete_info": "Czaty bez wiadomości są automatycznie usuwane po 3 dniach, a te z wiadomościami – po 16 dniach.",
+        "auto_delete_info": "Czaty bez aktywności są automatycznie usuwane: po 16 dniach braku aktywności lub po 3 dniach, jeśli nie wysłano żadnej wiadomości",
         "close_chat_when_title": "Zamknij czat, gdy:",
         "contract_confirmed": "Kontrakt został potwierdzony",
         "chat_closed": "Ten czat został zamknięty i zostanie wkrótce automatycznie usunięty",

@@ -126,6 +126,12 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
         setStep((prev) => (prev > 0 ? prev - 1 : prev));
     };
 
+    const handleAgeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const text = e.target.value;
+        const formattedText = text.replace(/[^0-9]/g, ""); // ← tylko cyfry
+        formik.setFieldValue("age", formattedText);
+    };
+
     return (
         <FormWrapper
             subtitle={t(user ? `form.mentee.subtitle.${step}` : `form.mentee.subtitle_new_user.${step}`, {
@@ -157,8 +163,13 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
                             label={t("form.volunteer.age_label")}
                             name="age"
                             type="number"
+                            slotProps={{
+                                htmlInput: {
+                                    min: 0,
+                                },
+                            }}
                             value={formik.values.age}
-                            onChange={formik.handleChange}
+                            onChange={handleAgeInputChange}
                             onBlur={formik.handleBlur}
                             error={formik.touched.age && Boolean(formik.errors.age)}
                             helperText={formik.touched.age && formik.errors.age}
