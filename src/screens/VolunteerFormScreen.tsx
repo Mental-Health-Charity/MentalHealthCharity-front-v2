@@ -57,7 +57,7 @@ const VolunteerFormScreen = () => {
                 width: "fit-content",
             }}
         >
-            <VolunteerForm initStep={isFormSend ? 6 : 0} onSubmit={handleSubmit} />
+            <VolunteerForm initStep={isFormSend ? 7 : 0} onSubmit={handleSubmit} />
 
             {showConfetti && <Confetti recycle={false} width={window.innerWidth} height={window.innerHeight} />}
         </Container>

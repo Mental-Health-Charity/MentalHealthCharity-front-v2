@@ -1,8 +1,13 @@
-import { Box, BoxProps, Typography } from "@mui/material";
+import { Box, BoxProps, Divider, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import useTheme from "../../../../theme";
 import formatDate from "../../../shared/helpers/formatDate";
+import { createRenderFieldValue } from "../../../shared/helpers/formRenderers/formRenderer";
+import { arrayOfIsoDatesPlugin } from "../../../shared/helpers/formRenderers/plugins/arrayOfIsoDatesPlugin";
+import { arrayOfNamedObjectsPlugin } from "../../../shared/helpers/formRenderers/plugins/arrayOfNamedObjectsPlugin";
+import { booleanPlugin } from "../../../shared/helpers/formRenderers/plugins/booleanPlugin";
+import { singleIsoDatePlugin } from "../../../shared/helpers/formRenderers/plugins/singleIsoDatePlugin";
 import UserTableItem from "../../../users/components/UserTableItem";
 import { FormResponse, MenteeForm, VolunteerForm } from "../../types";
 
@@ -16,93 +21,70 @@ const FormTableItem = ({ form, ...props }: Props) => {
     const navigate = useNavigate();
     const { t } = useTranslation();
 
-    const formFieldsRenderer = (fields: MenteeForm | VolunteerForm) => {
-        return Object.keys(fields).map((key) => {
-            const value = fields[key as keyof (MenteeForm | VolunteerForm)];
+    const renderFieldValue = createRenderFieldValue([
+        arrayOfNamedObjectsPlugin,
+        arrayOfIsoDatesPlugin,
+        singleIsoDatePlugin,
+        booleanPlugin,
+    ]);
 
-            const displayValue =
-                Array.isArray(value) && value.every((item) => typeof item === "object" && "name" in item)
-                    ? value.map((option) => option.name).join(", ")
-                    : value;
-
-            return (
-                <Box
-                    key={key}
-                    sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        color: theme.palette.text.secondary,
-                        padding: "10px",
-                        gap: "10px",
-                        border: `1px solid ${theme.palette.colors.border}`,
-                    }}
-                >
-                    <Typography
-                        sx={{
-                            fontWeight: "bold",
-                            fontSize: "20px",
-                        }}
-                    >
-                        {t(`forms_fields.${key}`)}
-                    </Typography>
-                    <Typography
-                        sx={{
-                            fontSize: "20px",
-                        }}
-                    >
-                        {(displayValue as string) || "-"}{" "}
-                    </Typography>
-                </Box>
-            );
-        });
-    };
+    const fieldsArray = Object.entries(form.fields);
 
     return (
         <Box {...props}>
-            <Box
-                sx={{
-                    backgroundColor: theme.palette.background.paper,
-                }}
-            >
+            <Box sx={{ padding: "20px" }}>
                 <UserTableItem
-                    sx={{
-                        padding: "15px",
-                    }}
                     user={form.created_by}
                     onEdit={() => navigate(`/admin/users?search=${form.created_by.email}`)}
                 />
-                <Box
-                    sx={{
-                        padding: "1px",
-                        marginTop: "10px",
-                        width: "100%",
-                        borderRadius: "8px",
-                    }}
-                >
-                    {formFieldsRenderer(form.fields)}
+
+                <Divider sx={{ marginY: 2 }} />
+
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                    {fieldsArray.map(([key, value]) => (
+                        <Box
+                            key={key}
+                            sx={{
+                                padding: "14px 18px",
+                                borderRadius: "10px",
+                                display: "flex",
+                                flexDirection: "column",
+                                backgroundColor: theme.palette.background.default,
+                                border: `1px solid ${theme.palette.colors.border}`,
+                            }}
+                        >
+                            <Typography
+                                sx={{
+                                    fontWeight: 600,
+                                    fontSize: "16px",
+                                    marginBottom: "6px",
+                                }}
+                            >
+                                {t(`forms_fields.${key}`)}
+                            </Typography>
+
+                            <Typography sx={{ fontSize: "16px" }}>{renderFieldValue(value as unknown)}</Typography>
+                        </Box>
+                    ))}
 
                     <Box
                         sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            color: theme.palette.text.secondary,
-                            padding: "10px",
+                            padding: "14px 18px",
+                            borderRadius: "10px",
+                            backgroundColor: theme.palette.background.default,
                             border: `1px solid ${theme.palette.colors.border}`,
                         }}
                     >
                         <Typography
                             sx={{
-                                fontWeight: "bold",
-                                fontSize: "20px",
+                                fontWeight: 600,
+                                fontSize: "16px",
+                                marginBottom: "6px",
                             }}
                         >
                             {t(`forms_fields.creation_date`)}
                         </Typography>
-                        <Typography
-                            sx={{
-                                fontSize: "20px",
-                            }}
-                        >
+                        <Typography sx={{ fontSize: "16px" }}>
                             {formatDate(new Date(form.creation_date), "dd/MM/yyyy")}
                         </Typography>
                     </Box>

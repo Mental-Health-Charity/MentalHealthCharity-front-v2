@@ -119,6 +119,10 @@
         },
         "message": "Wiadomość musi zawierać co najmniej 10 znaków"
     },
+    "datePicker": {
+        "slotLegend": "Dzień z zapisanymi godzinami",
+        "noHours": "Brak dostępnych godzin dla tego dnia."
+    },
     "errors": {
         "failed_to_fetch_chat_note": "Wystąpił problem podczas wczytywania notatek. Spróbuj ponownie później",
         "failed_to_create_report": "Wystąpił problem podczas tworzenia zgłoszenia.",
@@ -399,6 +403,7 @@
                 "Potrzebujemy tej informacji, aby móc dopasować odpowiednich podopiecznych do Twojego poziomu zaawansowania.",
                 "Numer telefonu jest wymagany, abyśmy mogli skontaktować się z Tobą, gdy znajdziemy odpowiedniego podopiecznego.",
                 "Pochwal się swoimi motywami! Dlaczego chcesz do nas dołączyć, jakie masz oczekiwania i co chciałbyś osiągnąć?",
+                "Wybierz jak najwięcej terminów, abyśmy mogli umówić się na krótką rozmowę kwalifikacyjną.",
                 "Skąd dowiedziałeś się o naszej fundacji? Pomóż nam rozwijać się i dotrzeć do większej liczby osób!",
                 "Daj nam znać z którymi tematami nie chcesz się mierzyć. Możesz wybrać kilka.",
                 "Twoje zgłoszenie to cegiełka do budowy lepszej dostępności pomocy psychologicznej dla każdego. Powiadomimy Cię o dalszych krokach na {{contact}}. Dziękujemy za zaufanie!"
@@ -408,6 +413,7 @@
                 "Twój poziom wykształcenia",
                 "Podaj numer telefonu",
                 "Dlaczego chcesz do nas dołączyć?",
+                "Umów się na krótką rozmowę kwalifikacyjną",
                 "Skąd się o nas dowiedziałeś?",
                 "Czy są jakieś tematy z którymi nie chcesz się mierzyć?",
                 "Dziękujemy za wypełnienie formularza!"
@@ -573,9 +579,11 @@
         "description": "Opis",
         "name": "Imię",
         "note": "Notatka",
+        "interview_meeting_dates": "Dostępne terminy rozmowy",
         "interview_description": "Opis po rozmowie rekrutacyjnej",
         "work_area": "Obszar pracy",
         "availability": "Dostępność czasowa",
+        "tos": "Akceptacja regulaminu",
         "email": "Email",
         "actions": "Akcje",
         "show_form": "Zobacz formularz",

@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import { useUser } from "../../../auth/components/AuthProvider";
+import { DateTimePicker } from "../../../shared/components/DatePicker";
 import InternalLink from "../../../shared/components/InternalLink/styles";
 import { VolunteerFormValues } from "../../types";
 import FormWrapper from "../FormWrapper";
@@ -42,6 +43,7 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
         source: "",
         themes: [],
         tos: false,
+        interview_meeting_dates: [], // ← DODANE
     };
 
     const validationSchemas = [
@@ -61,10 +63,14 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
             description: Yup.string().min(10, t("validation.description.tooShort")).required(t("validation.required")),
         }),
         Yup.object({
+            interview_meeting_dates: Yup.array().min(1, t("validation.required")),
+        }),
+        Yup.object({
             source: Yup.string().required(t("validation.required")),
             did_help: Yup.string().required(t("validation.required")),
         }),
         Yup.object({
+            themes: Yup.array(),
             tos: Yup.boolean().oneOf([true], t("validation.consent.required")),
         }),
     ];
@@ -176,22 +182,6 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                             helperText={formik.touched.phone && formik.errors.phone}
                             fullWidth
                         />
-                        {/* <FormControl>
-                            <InputLabel id="contacts">{t("form.volunteer.contact_label")}</InputLabel>
-                            <Select
-                                label={t("form.volunteer.contact_label")}
-                                name="contacts"
-                                value={formik.values.contacts}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                multiple
-                                error={formik.touched.contacts && Boolean(formik.errors.contacts)}
-                                fullWidth
-                            >
-                                <MenuItem value="email">{t("form.volunteer.contact_options.email")}</MenuItem>
-                                <MenuItem value="phone">{t("form.volunteer.contact_options.phone")}</MenuItem>
-                            </Select>
-                        </FormControl> */}
                     </Box>
                 )}
 
@@ -219,15 +209,28 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                         />
                     </Box>
                 )}
-
                 {step === 4 && (
                     <Box
                         sx={{
                             display: "flex",
                             flexDirection: "column",
                             gap: "20px",
+                            alignItems: "center",
+                            width: "100%",
                         }}
                     >
+                        <DateTimePicker
+                            values={formik.values.interview_meeting_dates}
+                            onChange={(newValue) => formik.setFieldValue("interview_meeting_dates", newValue)}
+                        />
+                        {formik.touched.interview_meeting_dates && formik.errors.interview_meeting_dates && (
+                            <span style={{ color: "red" }}>{formik.errors.interview_meeting_dates as string}</span>
+                        )}
+                    </Box>
+                )}
+
+                {step === 5 && (
+                    <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                         <TextField
                             select
                             label={t("form.referral_source_label")}
@@ -243,6 +246,7 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                             <MenuItem value="socialMedia">{t("form.referral_source_options.social_media")}</MenuItem>
                             <MenuItem value="google">{t("form.referral_source_options.google")}</MenuItem>
                         </TextField>
+
                         <TextField
                             select
                             label={t("form.volunteer.prior_experience_label")}
@@ -265,7 +269,7 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                     </Box>
                 )}
 
-                {step === 5 && (
+                {step === 6 && (
                     <Box
                         sx={{
                             display: "flex",
@@ -346,7 +350,7 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                         marginTop: "20px",
                     }}
                 >
-                    {step < 6 && (
+                    {step < 7 && (
                         <>
                             <Button onClick={handleBack} disabled={step === 0}>
                                 {t("form.back")}
@@ -356,7 +360,7 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                             </Button>
                         </>
                     )}
-                    {step === 6 && (
+                    {step === 7 && (
                         <Box width="100%" display="flex" flexDirection="column" gap="10px">
                             <Button component={Link} fullWidth type="button" to="/" variant="contained">
                                 {t("form.homepage")}

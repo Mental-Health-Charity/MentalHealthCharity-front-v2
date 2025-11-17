@@ -37,6 +37,7 @@ export interface VolunteerFormValues {
     tos: boolean;
     education: string;
     description: string;
+    interview_meeting_dates: string[];
     source: string;
     reason: string;
     contacts: string[];
