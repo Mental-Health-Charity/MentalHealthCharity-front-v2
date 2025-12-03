@@ -1,7 +1,8 @@
 import CloseIcon from "@mui/icons-material/Close";
-import { Box, Drawer, IconButton, List, TextField, useMediaQuery } from "@mui/material";
+import { Box, Drawer, IconButton, TextField, useMediaQuery } from "@mui/material";
 import { t } from "i18next";
 import { useState } from "react";
+import { AutoSizer, IndexRange, InfiniteLoader, List as RVList } from "react-virtualized";
 import useTheme from "../../../../theme";
 import { Pagination } from "../../../shared/types";
 import { Chat } from "../../types";
@@ -13,9 +14,10 @@ interface Props {
     currentChatId?: number;
     showSidebar?: boolean;
     handleDrawerToggle?: () => void;
+    loadMore?: () => Promise<void>;
 }
 
-const ChatSidebar = ({ data, onChangeChat, currentChatId, showSidebar, handleDrawerToggle }: Props) => {
+const ChatSidebar = ({ data, onChangeChat, currentChatId, showSidebar, handleDrawerToggle, loadMore }: Props) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const [readed, setReaded] = useState<{ [key: number]: boolean }>({});
@@ -56,32 +58,62 @@ const ChatSidebar = ({ data, onChangeChat, currentChatId, showSidebar, handleDra
                         </IconButton>
                     </Box>
                 </Box>
-                <List
-                    style={{
-                        maxHeight: "75vh",
-                        minHeight: "500px",
-                        overflow: "auto",
-                    }}
-                >
-                    {data &&
-                        data.items
-                            .sort((a, b) => (a.is_active === b.is_active ? 0 : a.is_active ? -1 : 1))
-                            .map((chat) => (
-                                <ChatItem
-                                    onChange={(id) => {
-                                        onChangeChat(id);
-                                        setReaded((prev) => ({ ...prev, [chat.id]: true }));
-                                        if (isMobile) {
-                                            handleDrawerToggle?.();
-                                        }
-                                    }}
-                                    selected={!!currentChatId && chat.id === currentChatId}
-                                    readed={readed[chat.id]}
-                                    chat={chat}
-                                    key={chat.id}
-                                />
-                            ))}
-                </List>
+                <Box sx={{ height: "75vh", minHeight: "500px" }}>
+                    {data ? (
+                        <InfiniteLoader
+                            isRowLoaded={({ index }) => !!data && index < data.items.length}
+                            loadMoreRows={async (range: IndexRange) => {
+                                if (!data) return Promise.resolve();
+                                // If we already have items covering requested rows, do nothing
+                                if (range.stopIndex < data.items.length) return Promise.resolve();
+                                // If there are more pages, ask parent to load next page
+                                if (data.page < data.pages) {
+                                    return loadMore ? loadMore() : Promise.resolve();
+                                }
+                                return Promise.resolve();
+                            }}
+                            rowCount={data.total}
+                        >
+                            {({ onRowsRendered, registerChild }) => (
+                                <AutoSizer>
+                                    {({ height, width }) => (
+                                        <RVList
+                                            ref={registerChild}
+                                            height={height}
+                                            width={width}
+                                            rowCount={data.total}
+                                            rowHeight={72}
+                                            rowRenderer={({ index, key, style }) => {
+                                                const chat = data.items[index];
+                                                if (!chat) {
+                                                    return <div key={key} style={style} />;
+                                                }
+
+                                                return (
+                                                    <div key={key} style={style}>
+                                                        <ChatItem
+                                                            onChange={(id) => {
+                                                                onChangeChat(id);
+                                                                setReaded((prev) => ({ ...prev, [chat.id]: true }));
+                                                                if (isMobile) {
+                                                                    handleDrawerToggle?.();
+                                                                }
+                                                            }}
+                                                            selected={!!currentChatId && chat.id === currentChatId}
+                                                            readed={readed[chat.id]}
+                                                            chat={chat}
+                                                        />
+                                                    </div>
+                                                );
+                                            }}
+                                            onRowsRendered={onRowsRendered}
+                                        />
+                                    )}
+                                </AutoSizer>
+                            )}
+                        </InfiniteLoader>
+                    ) : null}
+                </Box>
             </Box>
         </Box>
     );
