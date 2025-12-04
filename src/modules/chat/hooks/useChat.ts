@@ -12,6 +12,7 @@ import { chatHistoryQueryOptions } from "../queries/chatHistoryQueryOptions";
 import deleteChatMessageMutation from "../queries/deleteChatMessageMutation";
 import editChatMutation from "../queries/editChatMutation";
 import { getChatById } from "../queries/getChatById";
+import { markAsReadMutation } from "../queries/markAsReadMutation";
 import { Chat, ConnectionStatus, Message } from "../types";
 
 const useChat = (chatId: number, options?: Options) => {
@@ -19,6 +20,9 @@ const useChat = (chatId: number, options?: Options) => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [pendingMessages, setPendingMessages] = useState<Message[]>([]);
     const { data: messageHistory } = useQuery(chatHistoryQueryOptions({ chatId }));
+    const { mutate: markAsRead } = useMutation({
+        mutationFn: markAsReadMutation,
+    });
     const { data: selectedChat, refetch: reloadChat } = useQuery(getChatById({ id: chatId || -9 }));
     const { mutate: deleteChatMessage } = useMutation({
         mutationFn: deleteChatMessageMutation,
@@ -49,6 +53,7 @@ const useChat = (chatId: number, options?: Options) => {
             );
 
             setMessages((prev) => [newMessage, ...prev]);
+            markAsRead({ id: chatId });
         })
         .onDelete(({ id }) => {
             setMessages((prev) => prev.filter((m) => m.id !== id));

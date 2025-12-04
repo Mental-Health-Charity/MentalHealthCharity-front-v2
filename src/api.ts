@@ -15,6 +15,7 @@ import {
     DeleteMessageOptions,
     EditChatOptions,
     GetChatMessagesOptions,
+    MarkAsReadMutationOptions,
     ParticipantOptions,
     ReadChatOptions,
 } from "./modules/chat/types";
@@ -84,6 +85,9 @@ export const url = {
         },
         readChat({ id }: ReadChatOptions) {
             return `${baseUrl}/api/v1/chat/${id}`;
+        },
+        markAsRead({ id }: MarkAsReadMutationOptions) {
+            return `${baseUrl}/api/v1/chat/${id}/mark-as-read`;
         },
         readChatUsers({ id }: ReadChatOptions) {
             return `${baseUrl}/api/v1/chat/${id}/user/`;
