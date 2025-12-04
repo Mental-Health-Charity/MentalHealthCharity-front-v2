@@ -4,8 +4,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ReportIcon from "@mui/icons-material/Report";
 import TuneIcon from "@mui/icons-material/Tune";
 import { Box, IconButton, Tooltip, useTheme } from "@mui/material";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -16,7 +15,7 @@ import Info from "../../../shared/components/Info";
 import { Permissions } from "../../../shared/constants";
 import usePermissions from "../../../shared/hooks/usePermissions";
 import useChat from "../../hooks/useChat";
-import { getChatsQueryOptions } from "../../queries/getChatsQueryOptions";
+import useChatListLoader from "../../hooks/useChatListLoader";
 import { Chat as ChatType } from "../../types";
 import Chat from "../Chat";
 import ChatDetails from "../ChatDetails";
@@ -32,48 +31,8 @@ interface Props {
 const ChatWindow = ({ onChangeWallpaper }: Props) => {
     const theme = useTheme();
     const { id } = useParams<{ id: string }>();
-    const { data, isLoading } = useQuery(getChatsQueryOptions({ size: 100, page: 1 }));
-    const queryClient = useQueryClient();
-    const PAGE_SIZE = 100;
-
-    const [aggregatedData, setAggregatedData] = useState<typeof data | undefined>(undefined);
-    const loadingPagesRef = useRef<Set<number>>(new Set());
-
-    useEffect(() => {
-        if (data) {
-            setAggregatedData(data);
-        }
-    }, [data]);
-
-    const loadPage = useCallback(
-        async (pageNumber: number) => {
-            if (!aggregatedData) return;
-            if (pageNumber <= aggregatedData.page) return;
-            if (aggregatedData.pages && pageNumber > aggregatedData.pages) return;
-            if (loadingPagesRef.current.has(pageNumber)) return;
-
-            loadingPagesRef.current.add(pageNumber);
-            try {
-                const next = await queryClient.fetchQuery(getChatsQueryOptions({ size: PAGE_SIZE, page: pageNumber }));
-
-                setAggregatedData((prev) => {
-                    if (!prev) return next;
-                    // Append new items, avoid duplicates by id
-                    const existingIds = new Set(prev.items.map((i) => i.id));
-                    const newItems = next.items.filter((i) => !existingIds.has(i.id));
-                    return {
-                        items: [...prev.items, ...newItems],
-                        total: next.total,
-                        pages: next.pages,
-                        page: next.page,
-                    };
-                });
-            } finally {
-                loadingPagesRef.current.delete(pageNumber);
-            }
-        },
-        [aggregatedData, queryClient]
-    );
+    const { data, isLoading, aggregatedData, loadNextPage } = useChatListLoader(100);
+    const effectiveData = aggregatedData || data;
     const [showDetails, setShowDetails] = useState(false);
     const [showNote, setShowNote] = useState(false);
     const [showReportModal, setShowReportModal] = useState(false);
@@ -81,7 +40,7 @@ const ChatWindow = ({ onChangeWallpaper }: Props) => {
     const [showCustomizeModal, setShowCustomizeModal] = useState(false);
     const [showContractModal, setShowContractModal] = useState(false);
     const { t } = useTranslation();
-    const [chatId, setChatId] = useState(id || (data && data.items[0].id) || "");
+    const [chatId, setChatId] = useState(id || "");
     const navigate = useNavigate();
     const [showSidebar, setShowSidebar] = useState(false);
     const { hasPermissions } = usePermissions();
@@ -116,16 +75,16 @@ const ChatWindow = ({ onChangeWallpaper }: Props) => {
         [setChatId, setShowNote]
     );
 
-    if (!isLoading && (!data || data.total === 0)) {
+    if (!isLoading && (!effectiveData || effectiveData.total === 0)) {
         toast(t("chat.no_available_chats_found"));
         navigate("/");
     }
 
     useEffect(() => {
-        if (!chatId && data) {
-            setChatId(data.items[0].id);
+        if (!chatId && effectiveData) {
+            setChatId(String(effectiveData.items[0].id));
         }
-    }, [data, chatId]);
+    }, [effectiveData, chatId]);
 
     return (
         <>
@@ -231,8 +190,8 @@ const ChatWindow = ({ onChangeWallpaper }: Props) => {
                 <ChatSidebar
                     handleDrawerToggle={() => setShowSidebar((prev) => !prev)}
                     showSidebar={showSidebar}
-                    data={aggregatedData || data}
-                    loadMore={() => loadPage(((aggregatedData && aggregatedData.page) || (data && data.page) || 1) + 1)}
+                    data={effectiveData}
+                    loadMore={loadNextPage}
                     onChangeChat={handleChangeChat}
                     currentChatId={Number(chatId)}
                 />
