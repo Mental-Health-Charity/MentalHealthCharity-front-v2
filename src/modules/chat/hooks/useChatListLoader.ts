@@ -1,12 +1,20 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Pagination } from "../../shared/types";
+import { ChatSortByOptions } from "../constants";
 import { getChatsQueryOptions } from "../queries/getChatsQueryOptions";
 import { Chat } from "../types";
 
 export default function useChatListLoader(pageSize = 100) {
     const queryClient = useQueryClient();
-    const { data, isLoading } = useQuery(getChatsQueryOptions({ size: pageSize, page: 1 }));
+    const { data, isLoading } = useQuery(
+        getChatsQueryOptions({
+            size: pageSize,
+            page: 1,
+            unread_first: true,
+            sort_by: ChatSortByOptions.LATEST_MESSAGE_DATE,
+        })
+    );
 
     const [aggregatedData, setAggregatedData] = useState<Pagination<Chat> | undefined>(undefined);
     const loadingPagesRef = useRef<Set<number>>(new Set());

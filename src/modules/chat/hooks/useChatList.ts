@@ -21,7 +21,7 @@ const useChatList = (searchQuery?: string) => {
                 size: 100,
                 search: searchQuery || "",
                 unread_first: true,
-                sort_by: ChatSortByOptions.LAST_MESSAGE_DATE,
+                sort_by: ChatSortByOptions.LATEST_MESSAGE_DATE,
             },
             {
                 onSuccess: (data) => {
@@ -51,7 +51,7 @@ const useChatList = (searchQuery?: string) => {
                 size: 100,
                 search: searchQuery || "",
                 unread_first: true,
-                sort_by: ChatSortByOptions.LAST_MESSAGE_DATE,
+                sort_by: ChatSortByOptions.LATEST_MESSAGE_DATE,
             },
             {
                 onSuccess: (data) => {

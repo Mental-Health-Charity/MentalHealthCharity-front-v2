@@ -21,5 +21,5 @@ export const translatedConnectionStatus: Record<ReadyState, string> = {
 };
 
 export enum ChatSortByOptions {
-    LAST_MESSAGE_DATE = "last_message",
+    LATEST_MESSAGE_DATE = "latest_message",
 }

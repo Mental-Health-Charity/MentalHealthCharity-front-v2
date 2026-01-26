@@ -12,7 +12,7 @@ import {
     useTheme,
 } from "@mui/material";
 import { useFormik } from "formik";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ReadyState } from "react-use-websocket";
 import { AutoSizer, CellMeasurer, CellMeasurerCache, List, ListRowProps } from "react-virtualized";
@@ -77,6 +77,15 @@ const Chat = ({
     const shouldScrollToBottomRef = useRef(true);
     const prevMessagesLengthRef = useRef(0);
 
+    // Track if initial scroll to bottom has been done
+    const [initialScrollDone, setInitialScrollDone] = useState(false);
+
+    // Track scroll position for maintaining position when loading older messages
+    const scrollPositionRef = useRef<{ scrollTop: number; scrollHeight: number } | null>(null);
+
+    // Reverse messages so oldest are at index 0, newest at end (natural chat order)
+    const reversedMessages = useMemo(() => [...messages].reverse(), [messages]);
+
     // Cache for measuring dynamic row heights
     const cacheRef = useRef(
         new CellMeasurerCache({
@@ -106,27 +115,46 @@ const Chat = ({
         if (chat?.id) {
             cacheRef.current.clearAll();
             shouldScrollToBottomRef.current = true;
+            setInitialScrollDone(false);
+            prevMessagesLengthRef.current = 0;
         }
     }, [chat?.id]);
 
-    // Handle scrolling when new messages arrive
+    // Handle scrolling when new messages arrive or older messages are loaded
     useEffect(() => {
-        if (listRef.current && messages.length > 0) {
+        if (listRef.current && reversedMessages.length > 0) {
             const prevLength = prevMessagesLengthRef.current;
-            const newLength = messages.length;
+            const newLength = reversedMessages.length;
 
-            // New message added at the beginning (WebSocket or new chat)
-            if (newLength > prevLength && shouldScrollToBottomRef.current) {
-                // Clear cache for proper re-measurement
-                cacheRef.current.clearAll();
-                listRef.current.recomputeRowHeights();
-                // Scroll to bottom (index 0 in reversed list)
-                listRef.current.scrollToRow(0);
+            // Clear cache for proper re-measurement
+            cacheRef.current.clearAll();
+            listRef.current.recomputeRowHeights();
+
+            if (newLength > prevLength && prevLength > 0) {
+                const addedCount = newLength - prevLength;
+
+                // Check if this is a new message at the end (WebSocket) or older messages at the start
+                if (shouldScrollToBottomRef.current) {
+                    // New message arrived - scroll to bottom (last index)
+                    listRef.current.scrollToRow(reversedMessages.length - 1);
+                } else {
+                    // Older messages loaded - maintain scroll position
+                    // Scroll to the row that keeps the previously visible content in view
+                    listRef.current.scrollToRow(addedCount);
+                }
+            } else if (prevLength === 0 && newLength > 0) {
+                // Initial load - scroll to bottom after a brief delay to let measurements complete
+                setTimeout(() => {
+                    if (listRef.current) {
+                        listRef.current.scrollToRow(reversedMessages.length - 1);
+                        setInitialScrollDone(true);
+                    }
+                }, 50);
             }
 
             prevMessagesLengthRef.current = newLength;
         }
-    }, [messages.length]);
+    }, [reversedMessages.length]);
 
     /**
      * Handle scroll events to trigger loading more messages
@@ -142,12 +170,11 @@ const Chat = ({
             scrollHeight: number;
             clientHeight: number;
         }) => {
-            // In reversed list, "top" is actually at the bottom visually
-            // So we need to check if user is near the "end" of the list (older messages)
-            const distanceFromEnd = scrollHeight - scrollTop - clientHeight;
+            // Save scroll position for maintaining position when loading older messages
+            scrollPositionRef.current = { scrollTop, scrollHeight };
 
-            // User is near the top of visual display (looking at older messages)
-            if (distanceFromEnd < LOAD_MORE_THRESHOLD) {
+            // User is near the TOP - load older messages (natural scroll direction)
+            if (scrollTop < LOAD_MORE_THRESHOLD) {
                 if (onLoadMoreMessages && historyState && !historyState.isLoadingHistory && historyState.hasMore) {
                     onLoadMoreMessages().catch((error) => {
                         console.error("Failed to load more messages:", error);
@@ -155,9 +182,10 @@ const Chat = ({
                 }
             }
 
-            // Track if user is at the "bottom" (viewing newest messages)
-            // In reversed list, this is when scrollTop is near 0
-            shouldScrollToBottomRef.current = scrollTop < 100;
+            // Track if user is at the bottom (viewing newest messages)
+            // User is at bottom when scrollTop + clientHeight is near scrollHeight
+            const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+            shouldScrollToBottomRef.current = distanceFromBottom < 100;
         },
         [onLoadMoreMessages, historyState]
     );
@@ -167,7 +195,7 @@ const Chat = ({
      */
     const rowRenderer = useCallback(
         ({ index, key, parent, style }: ListRowProps) => {
-            const message = messages[index];
+            const message = reversedMessages[index];
 
             if (!message) {
                 return null;
@@ -192,7 +220,7 @@ const Chat = ({
                 </CellMeasurer>
             );
         },
-        [messages, onDeleteMessage]
+        [reversedMessages, onDeleteMessage]
     );
 
     /**
@@ -283,19 +311,21 @@ const Chat = ({
                 }}
             >
                 {renderLoadingIndicator()}
-                {messages && messages.length > 0 ? (
+                {reversedMessages && reversedMessages.length > 0 ? (
                     <AutoSizer>
                         {({ height, width }: { height: number; width: number }) => (
                             <List
                                 ref={listRef}
                                 height={height}
                                 width={width}
-                                rowCount={messages.length}
+                                rowCount={reversedMessages.length}
                                 rowHeight={cacheRef.current.rowHeight}
                                 rowRenderer={rowRenderer}
                                 deferredMeasurementCache={cacheRef.current}
                                 onScroll={handleScroll}
                                 overscanRowCount={5}
+                                scrollToIndex={!initialScrollDone ? reversedMessages.length - 1 : undefined}
+                                scrollToAlignment={!initialScrollDone ? "end" : undefined}
                                 style={{
                                     outline: "none",
                                     padding: isMobile ? "0" : "10px 15px 10px 0",
@@ -303,7 +333,7 @@ const Chat = ({
                             />
                         )}
                     </AutoSizer>
-                ) : messages && messages.length === 0 ? (
+                ) : reversedMessages && reversedMessages.length === 0 ? (
                     <Box
                         sx={{
                             display: "flex",
