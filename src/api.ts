@@ -81,6 +81,7 @@ export const url = {
     chat: {
         readChats(options: DefaultPaginationOptions) {
             const query = buildQuery(options);
+            console.log("query", query);
             return `${baseUrl}/api/v1/chat/?${query}`;
         },
         readChat({ id }: ReadChatOptions) {

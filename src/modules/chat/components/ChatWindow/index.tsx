@@ -45,19 +45,28 @@ const ChatWindow = ({ onChangeWallpaper }: Props) => {
     const [showSidebar, setShowSidebar] = useState(false);
     const { hasPermissions } = usePermissions();
 
-    const { messages, connectionStatus, send, selectedChat, handleDeleteMessage, handleCloseChat, reloadChat } =
-        useChat(Number(chatId), {
-            shouldReconnect: (closeEvent) => {
-                const isParticipant = selectedChat && user && selectedChat.participants.some((p) => p.id === user.id);
+    const {
+        messages,
+        connectionStatus,
+        send,
+        selectedChat,
+        handleDeleteMessage,
+        handleCloseChat,
+        reloadChat,
+        loadBackHistory,
+        historyState,
+    } = useChat(Number(chatId), {
+        shouldReconnect: (closeEvent) => {
+            const isParticipant = selectedChat && user && selectedChat.participants.some((p) => p.id === user.id);
 
-                if (isParticipant) {
-                    console.warn("Socket closed, attempting to reconnect...", closeEvent);
-                    return true;
-                }
+            if (isParticipant) {
+                console.warn("Socket closed, attempting to reconnect...", closeEvent);
+                return true;
+            }
 
-                return false;
-            },
-        });
+            return false;
+        },
+    });
 
     const closeChat = useCallback(
         (chat: ChatType) => {
@@ -208,6 +217,8 @@ const ChatWindow = ({ onChangeWallpaper }: Props) => {
                         onSendMessage={send}
                         chat={selectedChat}
                         onShowDetails={() => setShowDetails(true)}
+                        onLoadMoreMessages={loadBackHistory}
+                        historyState={historyState}
                     />
                 </Box>
                 {showDetails && selectedChat && (

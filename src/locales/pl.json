@@ -207,7 +207,11 @@
             "title": "Dostosuj czat",
             "desc": "Ta funkcja jest testowa i będzie rozszerzana w przyszłości"
         },
-        "accept_contract": "Akceptuj kontrakt"
+        "accept_contract": "Akceptuj kontrakt",
+        "no_messages": "Brak wiadomości",
+        "failed_to_load_history": "Nie udało się załadować historii czatu",
+        "archive": "Archiwum",
+        "archived_messages_notice": "Pozostałe wiadomości nie są już dostępne i zostały zarchiwizowane."
     },
     "auth": {
         "reset_token_modal": {
@@ -614,5 +618,33 @@
         "new_password": "Nowe hasło",
         "title": "Zmień hasło",
         "description": "Wypełnij poniższy formularz, aby zmienić hasło do swojego konta."
+    },
+    "mentee_form_getting_started_screen": {
+        "header": {
+            "title": "Ważna informacja",
+            "subtitle": "Zanim przejdziesz dalej, prosimy o chwilę uwagi"
+        },
+
+        "content": {
+            "p1": "Jeśli wypełniasz ten formularz, to znaczy, że coś Cię porusza. I to już wystarczy.",
+            "p2": "Nie musisz się zastanawiać, czy Twój kryzys „jest wystarczająco poważny” — każda trudność zasługuje na uwagę, bo Ty zasługujesz na wsparcie.",
+            "p3": "Jesteśmy tutaj, żeby Ci towarzyszyć — nie jednorazowo, ale regularnie, krok po kroku, w Twoim tempie.",
+
+            "chat_section": {
+                "title": "Regularny kontakt na czacie",
+                "p4": "Jeśli zapisujesz się na regularny kontakt z wolontariuszem na czacie, postaraj się być obecna / obecny w ustalonym czasie.",
+                "p5": "Każde zgłoszenie to realny czas, energia i zaangażowanie — zarówno z naszej strony, jak i ze strony wolontariuszy.",
+                "p6": "Gdy ktoś nie pojawia się na czacie, inna osoba może nie otrzymać wsparcia, a osoby gotowe pomagać mogą poczuć bezsilność."
+            },
+
+            "p7": "Rozumiemy, że rozpoczęcie rozmowy bywa trudne. Jeśli coś Cię powstrzymuje — napisz o tym. Nie oceniamy.",
+            "p8": "Prosimy tylko, by nie zostawiać nas w zawieszeniu. Ten system działa wtedy, gdy jesteśmy w nim razem.",
+            "footer": "Dziękujemy, że jesteś."
+        },
+
+        "footer": {
+            "scroll_hint": "Przewiń, aby kontynuować",
+            "cta": "Rozpocznij"
+        }
     }
 }

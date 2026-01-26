@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import handleApiError from "../../shared/helpers/handleApiError";
 import { Pagination } from "../../shared/types";
+import { ChatSortByOptions } from "../constants";
 import getChatsMutation from "../queries/getChatsMutation";
 import { Chat } from "../types";
 
@@ -11,10 +12,6 @@ const useChatList = (searchQuery?: string) => {
     });
     const [chats, setChats] = useState<Pagination<Chat> | null>(null);
 
-    useEffect(() => {
-        console.log("searchQuery changed:", searchQuery);
-    }, [searchQuery]);
-
     const handleLoadChats = useCallback(() => {
         if (isLoadingChats) return;
 
@@ -23,6 +20,8 @@ const useChatList = (searchQuery?: string) => {
                 page: chats ? chats.page + 1 : 1,
                 size: 100,
                 search: searchQuery || "",
+                unread_first: true,
+                sort_by: ChatSortByOptions.LATEST_MESSAGE_DATE,
             },
             {
                 onSuccess: (data) => {
@@ -51,6 +50,8 @@ const useChatList = (searchQuery?: string) => {
                 page: 1,
                 size: 100,
                 search: searchQuery || "",
+                unread_first: true,
+                sort_by: ChatSortByOptions.LATEST_MESSAGE_DATE,
             },
             {
                 onSuccess: (data) => {

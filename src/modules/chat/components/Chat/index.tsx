@@ -1,11 +1,22 @@
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import SendIcon from "@mui/icons-material/Send";
-import { Box, Button, IconButton, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
+import {
+    Box,
+    Button,
+    CircularProgress,
+    IconButton,
+    TextField,
+    Typography,
+    useMediaQuery,
+    useTheme,
+} from "@mui/material";
 import { useFormik } from "formik";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ReadyState } from "react-use-websocket";
+import { AutoSizer, CellMeasurer, CellMeasurerCache, List, ListRowProps } from "react-virtualized";
+import type { CellMeasurerChildProps } from "react-virtualized/dist/es/CellMeasurer";
 import * as Yup from "yup";
 import { useUser } from "../../../auth/components/AuthProvider";
 import EmojiPicker from "../../../shared/components/EmojiPicker";
@@ -14,11 +25,18 @@ import Skeleton from "../../../shared/components/Skeleton";
 import { Permissions } from "../../../shared/constants";
 import usePermissions from "../../../shared/hooks/usePermissions";
 import { translatedConnectionStatus } from "../../constants";
+import { HistoryPaginationState } from "../../hooks/useChat";
 import { Chat as ChatType, ConnectionStatus, Message } from "../../types";
 import CloseChatModal from "../CloseChatModal";
 import ConnectionModal from "../ConnectionModal";
 import ChatMessage from "../Message";
 import { StyledAlert } from "./style";
+
+/** Threshold (in pixels) from the top to trigger loading more messages */
+const LOAD_MORE_THRESHOLD = 200;
+
+/** Estimated row height for initial rendering before measurement */
+const ESTIMATED_ROW_HEIGHT = 100;
 
 interface Props {
     chat?: ChatType;
@@ -28,19 +46,62 @@ interface Props {
     status: ConnectionStatus;
     onShowDetails?: () => void;
     onCloseChat: (chat: ChatType) => void;
+    onLoadMoreMessages?: () => Promise<void>;
+    historyState?: HistoryPaginationState;
 }
 
-const Chat = ({ chat, messages, onSendMessage, onShowDetails, status, onDeleteMessage, onCloseChat }: Props) => {
+const Chat = ({
+    chat,
+    messages,
+    onSendMessage,
+    onShowDetails,
+    status,
+    onDeleteMessage,
+    onCloseChat,
+    onLoadMoreMessages,
+    historyState,
+}: Props) => {
     const theme = useTheme();
     const { t } = useTranslation();
     const { user } = useUser();
     const textFieldRef = useRef<HTMLInputElement | null>(null);
+    const listRef = useRef<List | null>(null);
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const validationSchema = Yup.object({
         message: Yup.string().max(1500).required(),
     });
     const [showChatCloseModal, setShowChatCloseModal] = useState(false);
     const { hasPermissions } = usePermissions();
+
+    // Check if user can read chat history (archive)
+    const canReadChatHistory = hasPermissions(Permissions.CAN_READ_CHAT_HISTORY);
+
+    // Track if we should scroll to bottom (for new messages)
+    const shouldScrollToBottomRef = useRef(true);
+    const prevMessagesLengthRef = useRef(0);
+
+    // Track if initial scroll to bottom has been done
+    const [initialScrollDone, setInitialScrollDone] = useState(false);
+
+    // Track if user is near the top (to show archive notice)
+    const [isNearTop, setIsNearTop] = useState(false);
+
+    // Track scroll position for maintaining position when loading older messages
+    const scrollPositionRef = useRef<{ scrollTop: number; scrollHeight: number } | null>(null);
+
+    // Reverse messages so oldest are at index 0, newest at end (natural chat order)
+    const reversedMessages = useMemo(() => [...messages].reverse(), [messages]);
+
+    // Check if there are archived messages that the user cannot see (only show when near top)
+    const hasHiddenArchive = !canReadChatHistory && historyState && historyState.hasMore && isNearTop;
+
+    // Cache for measuring dynamic row heights
+    const cacheRef = useRef(
+        new CellMeasurerCache({
+            fixedWidth: true,
+            defaultHeight: ESTIMATED_ROW_HEIGHT,
+        })
+    );
 
     const canEditChat = chat && !chat.is_supervisor_chat && user && hasPermissions(Permissions.EDIT_CHAT_DATA);
 
@@ -53,8 +114,204 @@ const Chat = ({ chat, messages, onSendMessage, onShowDetails, status, onDeleteMe
         onSubmit: (values, { resetForm }) => {
             onSendMessage(values.message);
             resetForm();
+            // Scroll to bottom when sending a message
+            shouldScrollToBottomRef.current = true;
         },
     });
+
+    // Clear cache when messages change significantly (different chat)
+    useEffect(() => {
+        if (chat?.id) {
+            cacheRef.current.clearAll();
+            shouldScrollToBottomRef.current = true;
+            setInitialScrollDone(false);
+            prevMessagesLengthRef.current = 0;
+        }
+    }, [chat?.id]);
+
+    // Handle scrolling when new messages arrive or older messages are loaded
+    useEffect(() => {
+        if (listRef.current && reversedMessages.length > 0) {
+            const prevLength = prevMessagesLengthRef.current;
+            const newLength = reversedMessages.length;
+
+            // Clear cache for proper re-measurement
+            cacheRef.current.clearAll();
+            listRef.current.recomputeRowHeights();
+
+            if (newLength > prevLength && prevLength > 0) {
+                const addedCount = newLength - prevLength;
+
+                // Check if this is a new message at the end (WebSocket) or older messages at the start
+                if (shouldScrollToBottomRef.current) {
+                    // New message arrived - scroll to bottom (last index)
+                    listRef.current.scrollToRow(reversedMessages.length - 1);
+                } else {
+                    // Older messages loaded - maintain scroll position
+                    // Scroll to the row that keeps the previously visible content in view
+                    listRef.current.scrollToRow(addedCount);
+                }
+            } else if (prevLength === 0 && newLength > 0) {
+                // Initial load - scroll to bottom after a brief delay to let measurements complete
+                setTimeout(() => {
+                    if (listRef.current) {
+                        listRef.current.scrollToRow(reversedMessages.length - 1);
+                        setInitialScrollDone(true);
+                    }
+                }, 50);
+            }
+
+            prevMessagesLengthRef.current = newLength;
+        }
+    }, [reversedMessages.length]);
+
+    /**
+     * Handle scroll events to trigger loading more messages
+     * and track scroll position for auto-scroll behavior
+     */
+    const handleScroll = useCallback(
+        ({
+            scrollTop,
+            scrollHeight,
+            clientHeight,
+        }: {
+            scrollTop: number;
+            scrollHeight: number;
+            clientHeight: number;
+        }) => {
+            // Save scroll position for maintaining position when loading older messages
+            scrollPositionRef.current = { scrollTop, scrollHeight };
+
+            // Track if user is near the top (for showing archive notice)
+            setIsNearTop(scrollTop < LOAD_MORE_THRESHOLD);
+
+            // User is near the TOP - load older messages (natural scroll direction)
+            // Only load more if user has CAN_READ_CHAT_HISTORY permission
+            if (scrollTop < LOAD_MORE_THRESHOLD && canReadChatHistory) {
+                if (onLoadMoreMessages && historyState && !historyState.isLoadingHistory && historyState.hasMore) {
+                    onLoadMoreMessages().catch((error) => {
+                        console.error("Failed to load more messages:", error);
+                    });
+                }
+            }
+
+            // Track if user is at the bottom (viewing newest messages)
+            // User is at bottom when scrollTop + clientHeight is near scrollHeight
+            const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+            shouldScrollToBottomRef.current = distanceFromBottom < 100;
+        },
+        [onLoadMoreMessages, historyState, canReadChatHistory]
+    );
+
+    /**
+     * Render a single message row with dynamic height measurement
+     */
+    const rowRenderer = useCallback(
+        ({ index, key, parent, style }: ListRowProps) => {
+            const message = reversedMessages[index];
+
+            if (!message) {
+                return null;
+            }
+
+            // Show archive chip for archived messages (loaded from history beyond initial page)
+            const showArchiveChip = message.isArchived === true;
+
+            return (
+                <CellMeasurer cache={cacheRef.current} columnIndex={0} key={key} parent={parent} rowIndex={index}>
+                    {({ registerChild, measure }: CellMeasurerChildProps) => (
+                        <div
+                            ref={(el) => {
+                                if (el) registerChild?.(el);
+                            }}
+                            style={{
+                                ...style,
+                                paddingBottom: "10px",
+                            }}
+                            onLoad={measure}
+                        >
+                            <ChatMessage
+                                onDeleteMessage={onDeleteMessage}
+                                message={message}
+                                showArchiveChip={showArchiveChip}
+                            />
+                        </div>
+                    )}
+                </CellMeasurer>
+            );
+        },
+        [reversedMessages, onDeleteMessage]
+    );
+
+    /**
+     * Render loading indicator at the top of the list
+     */
+    const renderLoadingIndicator = () => {
+        if (!historyState?.isLoadingHistory) {
+            return null;
+        }
+
+        return (
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    padding: "16px",
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    zIndex: 10,
+                    background: `linear-gradient(180deg, ${theme.palette.background.paper} 0%, transparent 100%)`,
+                }}
+            >
+                <CircularProgress size={24} />
+            </Box>
+        );
+    };
+
+    /**
+     * Render archive notice when user doesn't have permission to load more history
+     */
+    const renderArchiveNotice = () => {
+        if (!hasHiddenArchive) {
+            return null;
+        }
+
+        return (
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    padding: "12px 16px",
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    zIndex: 10,
+                    background: `linear-gradient(180deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.paper}dd 70%, transparent 100%)`,
+                }}
+            >
+                <Box
+                    sx={{
+                        backgroundColor: theme.palette.warning.light,
+                        color: theme.palette.warning.contrastText,
+                        padding: "8px 16px",
+                        borderRadius: "8px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        boxShadow: 1,
+                    }}
+                >
+                    <Typography variant="body2" fontWeight={500}>
+                        {t("chat.archived_messages_notice")}
+                    </Typography>
+                </Box>
+            </Box>
+        );
+    };
 
     return (
         <Box
@@ -112,18 +369,45 @@ const Chat = ({ chat, messages, onSendMessage, onShowDetails, status, onDeleteMe
             <Box
                 sx={{
                     width: "100%",
-                    gap: { md: "10px", xs: "5px" },
-                    display: "flex",
-                    flexDirection: "column-reverse",
                     height: "70vh",
-                    overflowY: "auto",
-                    padding: { xs: "0", md: "10px 15px 10px 0" },
+                    position: "relative",
                 }}
             >
-                {messages ? (
-                    messages.map((message) => (
-                        <ChatMessage onDeleteMessage={onDeleteMessage} message={message} key={message.id} />
-                    ))
+                {renderLoadingIndicator()}
+                {renderArchiveNotice()}
+                {reversedMessages && reversedMessages.length > 0 ? (
+                    <AutoSizer>
+                        {({ height, width }: { height: number; width: number }) => (
+                            <List
+                                ref={listRef}
+                                height={height}
+                                width={width}
+                                rowCount={reversedMessages.length}
+                                rowHeight={cacheRef.current.rowHeight}
+                                rowRenderer={rowRenderer}
+                                deferredMeasurementCache={cacheRef.current}
+                                onScroll={handleScroll}
+                                overscanRowCount={5}
+                                scrollToIndex={!initialScrollDone ? reversedMessages.length - 1 : undefined}
+                                scrollToAlignment={!initialScrollDone ? "end" : undefined}
+                                style={{
+                                    outline: "none",
+                                    padding: isMobile ? "0" : "10px 15px 10px 0",
+                                }}
+                            />
+                        )}
+                    </AutoSizer>
+                ) : reversedMessages && reversedMessages.length === 0 ? (
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            height: "100%",
+                        }}
+                    >
+                        <Typography color="text.secondary">{t("chat.no_messages")}</Typography>
+                    </Box>
                 ) : (
                     <Loader />
                 )}

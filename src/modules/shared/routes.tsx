@@ -30,6 +30,7 @@ const LoginScreen = React.lazy(() => import("../../screens/LoginScreen"));
 const ProfileScreen = React.lazy(() => import("../../screens/ProfileScreen"));
 const ReportsScreen = React.lazy(() => import("../../screens/ReportsScreen"));
 const UserEditorScreen = React.lazy(() => import("../../screens/UserEditorScreen"));
+const MenteeFormGettingStartedScreen = React.lazy(() => import("../../screens/MenteeFormGettingStartedScreen"));
 
 const routes: RouteType[] = [
     {
@@ -41,6 +42,11 @@ const routes: RouteType[] = [
         url: "/form/mentee",
         onRender: <MenteeFormScreen />,
         requiresAuth: true,
+    },
+    {
+        url: "/form/mentee-getting-started",
+        onRender: <MenteeFormGettingStartedScreen />,
+        requiresAuth: false,
     },
     {
         url: "/about-chat",

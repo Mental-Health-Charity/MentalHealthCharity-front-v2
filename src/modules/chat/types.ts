@@ -1,6 +1,7 @@
 import { ReadyState } from "react-use-websocket";
 import { User } from "../auth/types";
 import { DefaultPaginationOptions } from "../shared/types";
+import { ChatSortByOptions } from "./constants";
 
 export interface ReadChatOptions {
     id: number | string;
@@ -44,6 +45,10 @@ export interface ParticipantOptions {
 
 export interface GetChatMessagesOptions extends DefaultPaginationOptions {
     chatId: string | number;
+    page?: number;
+
+    // 1 - 100
+    size?: number;
 }
 
 export interface ConnectOptions {
@@ -62,6 +67,8 @@ export interface Message {
     creation_date: string;
     isPending?: boolean;
     chat_id: number;
+    /** Marks messages loaded from archive (beyond initial page) */
+    isArchived?: boolean;
 }
 
 export interface Note {
@@ -96,6 +103,8 @@ export interface Chat {
 
 export interface SearchChatQueryOptions extends DefaultPaginationOptions {
     search?: string;
+    unread_first?: boolean;
+    sort_by?: ChatSortByOptions;
 }
 
 export interface ConnectionStatus {

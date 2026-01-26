@@ -19,3 +19,7 @@ export const translatedConnectionStatus: Record<ReadyState, string> = {
     [ReadyState.OPEN]: i18n.t("chat.connection_open"),
     [ReadyState.UNINSTANTIATED]: i18n.t("chat.connection_uninstantiated"),
 };
+
+export enum ChatSortByOptions {
+    LATEST_MESSAGE_DATE = "latest_message",
+}
