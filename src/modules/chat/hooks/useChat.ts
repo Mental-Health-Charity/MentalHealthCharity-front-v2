@@ -41,6 +41,9 @@ const useChat = (chatId: number, options?: Options) => {
     // Track loaded pages to prevent duplicate fetches
     const loadedPagesRef = useRef<Set<number>>(new Set());
 
+    // Track message IDs from initial load (non-archived messages)
+    const initialMessageIdsRef = useRef<Set<number>>(new Set());
+
     // Mutation for fetching history pages
     const { mutateAsync: fetchHistory } = useMutation({
         mutationFn: fetchChatHistory,
@@ -147,6 +150,7 @@ const useChat = (chatId: number, options?: Options) => {
             // Reset state for new chat
             setMessages([]);
             loadedPagesRef.current.clear();
+            initialMessageIdsRef.current.clear();
             setHistoryState({
                 currentPage: 1,
                 totalPages: 1,
@@ -162,6 +166,8 @@ const useChat = (chatId: number, options?: Options) => {
                 });
 
                 loadedPagesRef.current.add(1);
+                // Store initial message IDs (non-archived)
+                response.items.forEach((m) => initialMessageIdsRef.current.add(m.id));
                 setMessages(response.items);
                 setHistoryState({
                     currentPage: 1,
@@ -219,10 +225,13 @@ const useChat = (chatId: number, options?: Options) => {
             loadedPagesRef.current.add(nextPage);
 
             // Append older messages to the end (messages are sorted newest first)
+            // Mark them as archived since they're from history pages
             setMessages((prev) => {
                 // Deduplicate by message ID to handle any edge cases
                 const existingIds = new Set(prev.map((m) => m.id));
-                const newMessages = response.items.filter((m) => !existingIds.has(m.id));
+                const newMessages = response.items
+                    .filter((m) => !existingIds.has(m.id))
+                    .map((m) => ({ ...m, isArchived: true }));
                 return [...prev, ...newMessages];
             });
 

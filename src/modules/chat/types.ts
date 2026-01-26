@@ -67,6 +67,8 @@ export interface Message {
     creation_date: string;
     isPending?: boolean;
     chat_id: number;
+    /** Marks messages loaded from archive (beyond initial page) */
+    isArchived?: boolean;
 }
 
 export interface Note {

@@ -73,6 +73,9 @@ const Chat = ({
     const [showChatCloseModal, setShowChatCloseModal] = useState(false);
     const { hasPermissions } = usePermissions();
 
+    // Check if user can read chat history (archive)
+    const canReadChatHistory = hasPermissions(Permissions.CAN_READ_CHAT_HISTORY);
+
     // Track if we should scroll to bottom (for new messages)
     const shouldScrollToBottomRef = useRef(true);
     const prevMessagesLengthRef = useRef(0);
@@ -80,11 +83,17 @@ const Chat = ({
     // Track if initial scroll to bottom has been done
     const [initialScrollDone, setInitialScrollDone] = useState(false);
 
+    // Track if user is near the top (to show archive notice)
+    const [isNearTop, setIsNearTop] = useState(false);
+
     // Track scroll position for maintaining position when loading older messages
     const scrollPositionRef = useRef<{ scrollTop: number; scrollHeight: number } | null>(null);
 
     // Reverse messages so oldest are at index 0, newest at end (natural chat order)
     const reversedMessages = useMemo(() => [...messages].reverse(), [messages]);
+
+    // Check if there are archived messages that the user cannot see (only show when near top)
+    const hasHiddenArchive = !canReadChatHistory && historyState && historyState.hasMore && isNearTop;
 
     // Cache for measuring dynamic row heights
     const cacheRef = useRef(
@@ -173,8 +182,12 @@ const Chat = ({
             // Save scroll position for maintaining position when loading older messages
             scrollPositionRef.current = { scrollTop, scrollHeight };
 
+            // Track if user is near the top (for showing archive notice)
+            setIsNearTop(scrollTop < LOAD_MORE_THRESHOLD);
+
             // User is near the TOP - load older messages (natural scroll direction)
-            if (scrollTop < LOAD_MORE_THRESHOLD) {
+            // Only load more if user has CAN_READ_CHAT_HISTORY permission
+            if (scrollTop < LOAD_MORE_THRESHOLD && canReadChatHistory) {
                 if (onLoadMoreMessages && historyState && !historyState.isLoadingHistory && historyState.hasMore) {
                     onLoadMoreMessages().catch((error) => {
                         console.error("Failed to load more messages:", error);
@@ -187,7 +200,7 @@ const Chat = ({
             const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
             shouldScrollToBottomRef.current = distanceFromBottom < 100;
         },
-        [onLoadMoreMessages, historyState]
+        [onLoadMoreMessages, historyState, canReadChatHistory]
     );
 
     /**
@@ -200,6 +213,9 @@ const Chat = ({
             if (!message) {
                 return null;
             }
+
+            // Show archive chip for archived messages (loaded from history beyond initial page)
+            const showArchiveChip = message.isArchived === true;
 
             return (
                 <CellMeasurer cache={cacheRef.current} columnIndex={0} key={key} parent={parent} rowIndex={index}>
@@ -214,7 +230,11 @@ const Chat = ({
                             }}
                             onLoad={measure}
                         >
-                            <ChatMessage onDeleteMessage={onDeleteMessage} message={message} />
+                            <ChatMessage
+                                onDeleteMessage={onDeleteMessage}
+                                message={message}
+                                showArchiveChip={showArchiveChip}
+                            />
                         </div>
                     )}
                 </CellMeasurer>
@@ -246,6 +266,49 @@ const Chat = ({
                 }}
             >
                 <CircularProgress size={24} />
+            </Box>
+        );
+    };
+
+    /**
+     * Render archive notice when user doesn't have permission to load more history
+     */
+    const renderArchiveNotice = () => {
+        if (!hasHiddenArchive) {
+            return null;
+        }
+
+        return (
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    padding: "12px 16px",
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    zIndex: 10,
+                    background: `linear-gradient(180deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.paper}dd 70%, transparent 100%)`,
+                }}
+            >
+                <Box
+                    sx={{
+                        backgroundColor: theme.palette.warning.light,
+                        color: theme.palette.warning.contrastText,
+                        padding: "8px 16px",
+                        borderRadius: "8px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        boxShadow: 1,
+                    }}
+                >
+                    <Typography variant="body2" fontWeight={500}>
+                        {t("chat.archived_messages_notice")}
+                    </Typography>
+                </Box>
             </Box>
         );
     };
@@ -311,6 +374,7 @@ const Chat = ({
                 }}
             >
                 {renderLoadingIndicator()}
+                {renderArchiveNotice()}
                 {reversedMessages && reversedMessages.length > 0 ? (
                     <AutoSizer>
                         {({ height, width }: { height: number; width: number }) => (

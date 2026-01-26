@@ -1,6 +1,7 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import { Avatar, Box, Typography, useTheme } from "@mui/material";
+import InventoryIcon from "@mui/icons-material/Inventory";
+import { Avatar, Box, Chip, Typography, useTheme } from "@mui/material";
 import { t } from "i18next";
 import { useUser } from "../../../auth/components/AuthProvider";
 import ActionMenu from "../../../shared/components/ActionMenu";
@@ -13,9 +14,10 @@ import { StyledMessageWrapper } from "./style";
 interface Props {
     message: Message;
     onDeleteMessage: (id: number) => void;
+    showArchiveChip?: boolean;
 }
 
-const ChatMessage = ({ message, onDeleteMessage }: Props) => {
+const ChatMessage = ({ message, onDeleteMessage, showArchiveChip = false }: Props) => {
     const theme = useTheme();
     const { user } = useUser();
     const senderIsCurrentUser = user && user.id === message.sender.id;
@@ -66,6 +68,23 @@ const ChatMessage = ({ message, onDeleteMessage }: Props) => {
                             gap: { xs: "5px", md: "10px" },
                         }}
                     >
+                        {showArchiveChip && (
+                            <Chip
+                                icon={<InventoryIcon sx={{ fontSize: "14px !important" }} />}
+                                label={t("chat.archive")}
+                                size="small"
+                                variant="outlined"
+                                sx={{
+                                    fontSize: "11px",
+                                    height: "22px",
+                                    borderColor: theme.palette.warning.main,
+                                    color: theme.palette.warning.main,
+                                    "& .MuiChip-icon": {
+                                        color: theme.palette.warning.main,
+                                    },
+                                }}
+                            />
+                        )}
                         <Typography
                             sx={{
                                 fontSize: { xs: "14px", md: "16px" },

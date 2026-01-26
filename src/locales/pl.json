@@ -209,7 +209,9 @@
         },
         "accept_contract": "Akceptuj kontrakt",
         "no_messages": "Brak wiadomości",
-        "failed_to_load_history": "Nie udało się załadować historii czatu"
+        "failed_to_load_history": "Nie udało się załadować historii czatu",
+        "archive": "Archiwum",
+        "archived_messages_notice": "Pozostałe wiadomości nie są już dostępne i zostały zarchiwizowane."
     },
     "auth": {
         "reset_token_modal": {
