@@ -134,7 +134,7 @@ const AboutUs = () => {
                                 <Button component={Link} variant="contained" to="/form/volunteer" fullWidth>
                                     {t("homepage.choose_volunteer_button")}
                                 </Button>
-                                <Button component={Link} to="/form/mentee" fullWidth variant="outlined">
+                                <Button component={Link} to="/form/mentee-getting-started" fullWidth variant="outlined">
                                     {t("homepage.choose_mentee_button")}
                                 </Button>
                             </Box>

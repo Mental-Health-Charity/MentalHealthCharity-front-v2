@@ -27,7 +27,7 @@ const AboutChatScreen = () => {
                     }}
                     component={Link}
                     variant="contained"
-                    to="/form/mentee"
+                    to="/form/mentee-getting-started"
                 >
                     {t("homepage.choose_mentee_button")}
                 </Button>

@@ -4,19 +4,24 @@ import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
 import { Pagination } from "../../shared/types";
 import { GetChatMessagesOptions, Message } from "../types";
 
+/**
+ * Fetch chat history - can be used directly for mutations
+ */
+export const fetchChatHistory = async (options: GetChatMessagesOptions): Promise<Pagination<Message>> => {
+    const headers = getAuthHeaders();
+    const response = await fetch(url.chat.readMessages(options), {
+        headers,
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch messages");
+    }
+
+    return response.json();
+};
+
 export const chatHistoryQueryOptions = (options: GetChatMessagesOptions) =>
     queryOptions<Pagination<Message>>({
         queryKey: ["messages", options],
-        queryFn: async () => {
-            const headers = getAuthHeaders();
-            const response = await fetch(url.chat.readMessages(options), {
-                headers,
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to fetch messages");
-            }
-
-            return response.json();
-        },
+        queryFn: () => fetchChatHistory(options),
     });

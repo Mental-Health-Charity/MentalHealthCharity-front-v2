@@ -1,11 +1,22 @@
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import SendIcon from "@mui/icons-material/Send";
-import { Box, Button, IconButton, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
+import {
+    Box,
+    Button,
+    CircularProgress,
+    IconButton,
+    TextField,
+    Typography,
+    useMediaQuery,
+    useTheme,
+} from "@mui/material";
 import { useFormik } from "formik";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ReadyState } from "react-use-websocket";
+import { AutoSizer, CellMeasurer, CellMeasurerCache, List, ListRowProps } from "react-virtualized";
+import type { CellMeasurerChildProps } from "react-virtualized/dist/es/CellMeasurer";
 import * as Yup from "yup";
 import { useUser } from "../../../auth/components/AuthProvider";
 import EmojiPicker from "../../../shared/components/EmojiPicker";
@@ -14,11 +25,18 @@ import Skeleton from "../../../shared/components/Skeleton";
 import { Permissions } from "../../../shared/constants";
 import usePermissions from "../../../shared/hooks/usePermissions";
 import { translatedConnectionStatus } from "../../constants";
+import { HistoryPaginationState } from "../../hooks/useChat";
 import { Chat as ChatType, ConnectionStatus, Message } from "../../types";
 import CloseChatModal from "../CloseChatModal";
 import ConnectionModal from "../ConnectionModal";
 import ChatMessage from "../Message";
 import { StyledAlert } from "./style";
+
+/** Threshold (in pixels) from the top to trigger loading more messages */
+const LOAD_MORE_THRESHOLD = 200;
+
+/** Estimated row height for initial rendering before measurement */
+const ESTIMATED_ROW_HEIGHT = 100;
 
 interface Props {
     chat?: ChatType;
@@ -28,19 +46,44 @@ interface Props {
     status: ConnectionStatus;
     onShowDetails?: () => void;
     onCloseChat: (chat: ChatType) => void;
+    onLoadMoreMessages?: () => Promise<void>;
+    historyState?: HistoryPaginationState;
 }
 
-const Chat = ({ chat, messages, onSendMessage, onShowDetails, status, onDeleteMessage, onCloseChat }: Props) => {
+const Chat = ({
+    chat,
+    messages,
+    onSendMessage,
+    onShowDetails,
+    status,
+    onDeleteMessage,
+    onCloseChat,
+    onLoadMoreMessages,
+    historyState,
+}: Props) => {
     const theme = useTheme();
     const { t } = useTranslation();
     const { user } = useUser();
     const textFieldRef = useRef<HTMLInputElement | null>(null);
+    const listRef = useRef<List | null>(null);
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const validationSchema = Yup.object({
         message: Yup.string().max(1500).required(),
     });
     const [showChatCloseModal, setShowChatCloseModal] = useState(false);
     const { hasPermissions } = usePermissions();
+
+    // Track if we should scroll to bottom (for new messages)
+    const shouldScrollToBottomRef = useRef(true);
+    const prevMessagesLengthRef = useRef(0);
+
+    // Cache for measuring dynamic row heights
+    const cacheRef = useRef(
+        new CellMeasurerCache({
+            fixedWidth: true,
+            defaultHeight: ESTIMATED_ROW_HEIGHT,
+        })
+    );
 
     const canEditChat = chat && !chat.is_supervisor_chat && user && hasPermissions(Permissions.EDIT_CHAT_DATA);
 
@@ -53,8 +96,131 @@ const Chat = ({ chat, messages, onSendMessage, onShowDetails, status, onDeleteMe
         onSubmit: (values, { resetForm }) => {
             onSendMessage(values.message);
             resetForm();
+            // Scroll to bottom when sending a message
+            shouldScrollToBottomRef.current = true;
         },
     });
+
+    // Clear cache when messages change significantly (different chat)
+    useEffect(() => {
+        if (chat?.id) {
+            cacheRef.current.clearAll();
+            shouldScrollToBottomRef.current = true;
+        }
+    }, [chat?.id]);
+
+    // Handle scrolling when new messages arrive
+    useEffect(() => {
+        if (listRef.current && messages.length > 0) {
+            const prevLength = prevMessagesLengthRef.current;
+            const newLength = messages.length;
+
+            // New message added at the beginning (WebSocket or new chat)
+            if (newLength > prevLength && shouldScrollToBottomRef.current) {
+                // Clear cache for proper re-measurement
+                cacheRef.current.clearAll();
+                listRef.current.recomputeRowHeights();
+                // Scroll to bottom (index 0 in reversed list)
+                listRef.current.scrollToRow(0);
+            }
+
+            prevMessagesLengthRef.current = newLength;
+        }
+    }, [messages.length]);
+
+    /**
+     * Handle scroll events to trigger loading more messages
+     * and track scroll position for auto-scroll behavior
+     */
+    const handleScroll = useCallback(
+        ({
+            scrollTop,
+            scrollHeight,
+            clientHeight,
+        }: {
+            scrollTop: number;
+            scrollHeight: number;
+            clientHeight: number;
+        }) => {
+            // In reversed list, "top" is actually at the bottom visually
+            // So we need to check if user is near the "end" of the list (older messages)
+            const distanceFromEnd = scrollHeight - scrollTop - clientHeight;
+
+            // User is near the top of visual display (looking at older messages)
+            if (distanceFromEnd < LOAD_MORE_THRESHOLD) {
+                if (onLoadMoreMessages && historyState && !historyState.isLoadingHistory && historyState.hasMore) {
+                    onLoadMoreMessages().catch((error) => {
+                        console.error("Failed to load more messages:", error);
+                    });
+                }
+            }
+
+            // Track if user is at the "bottom" (viewing newest messages)
+            // In reversed list, this is when scrollTop is near 0
+            shouldScrollToBottomRef.current = scrollTop < 100;
+        },
+        [onLoadMoreMessages, historyState]
+    );
+
+    /**
+     * Render a single message row with dynamic height measurement
+     */
+    const rowRenderer = useCallback(
+        ({ index, key, parent, style }: ListRowProps) => {
+            const message = messages[index];
+
+            if (!message) {
+                return null;
+            }
+
+            return (
+                <CellMeasurer cache={cacheRef.current} columnIndex={0} key={key} parent={parent} rowIndex={index}>
+                    {({ registerChild, measure }: CellMeasurerChildProps) => (
+                        <div
+                            ref={(el) => {
+                                if (el) registerChild?.(el);
+                            }}
+                            style={{
+                                ...style,
+                                paddingBottom: "10px",
+                            }}
+                            onLoad={measure}
+                        >
+                            <ChatMessage onDeleteMessage={onDeleteMessage} message={message} />
+                        </div>
+                    )}
+                </CellMeasurer>
+            );
+        },
+        [messages, onDeleteMessage]
+    );
+
+    /**
+     * Render loading indicator at the top of the list
+     */
+    const renderLoadingIndicator = () => {
+        if (!historyState?.isLoadingHistory) {
+            return null;
+        }
+
+        return (
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    padding: "16px",
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    zIndex: 10,
+                    background: `linear-gradient(180deg, ${theme.palette.background.paper} 0%, transparent 100%)`,
+                }}
+            >
+                <CircularProgress size={24} />
+            </Box>
+        );
+    };
 
     return (
         <Box
@@ -112,18 +278,42 @@ const Chat = ({ chat, messages, onSendMessage, onShowDetails, status, onDeleteMe
             <Box
                 sx={{
                     width: "100%",
-                    gap: { md: "10px", xs: "5px" },
-                    display: "flex",
-                    flexDirection: "column-reverse",
                     height: "70vh",
-                    overflowY: "auto",
-                    padding: { xs: "0", md: "10px 15px 10px 0" },
+                    position: "relative",
                 }}
             >
-                {messages ? (
-                    messages.map((message) => (
-                        <ChatMessage onDeleteMessage={onDeleteMessage} message={message} key={message.id} />
-                    ))
+                {renderLoadingIndicator()}
+                {messages && messages.length > 0 ? (
+                    <AutoSizer>
+                        {({ height, width }: { height: number; width: number }) => (
+                            <List
+                                ref={listRef}
+                                height={height}
+                                width={width}
+                                rowCount={messages.length}
+                                rowHeight={cacheRef.current.rowHeight}
+                                rowRenderer={rowRenderer}
+                                deferredMeasurementCache={cacheRef.current}
+                                onScroll={handleScroll}
+                                overscanRowCount={5}
+                                style={{
+                                    outline: "none",
+                                    padding: isMobile ? "0" : "10px 15px 10px 0",
+                                }}
+                            />
+                        )}
+                    </AutoSizer>
+                ) : messages && messages.length === 0 ? (
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            height: "100%",
+                        }}
+                    >
+                        <Typography color="text.secondary">{t("chat.no_messages")}</Typography>
+                    </Box>
                 ) : (
                     <Loader />
                 )}

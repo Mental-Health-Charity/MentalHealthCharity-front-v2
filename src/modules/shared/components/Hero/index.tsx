@@ -136,7 +136,7 @@ const Hero = () => {
                                             md: "auto",
                                         },
                                     }}
-                                    to="/form/mentee"
+                                    to="/form/mentee-getting-started"
                                 >
                                     <StyledPulseButton
                                         sx={{
