@@ -7,8 +7,7 @@ import banner from "../../../../assets/static/hero_image.webp";
 import waves from "../../../../assets/static/waves.svg";
 import { useUser } from "../../../auth/components/AuthProvider";
 import { getChatsQueryOptions } from "../../../chat/queries/getChatsQueryOptions";
-import Card from "../Card";
-import { HeroLogoContainer, StyledPulseButton } from "./styles";
+import { HeroLogoContainer, StyledHeroCard, StyledPulseButton } from "./styles";
 
 const Hero = () => {
     const { t } = useTranslation();
@@ -75,13 +74,7 @@ const Hero = () => {
                     position: "relative",
                 }}
             >
-                <Card
-                    variant="secondary"
-                    sx={{
-                        backgroundColor: "rgba(255, 255, 255, 0.9)",
-                        padding: { xs: "20px", md: "30px" },
-                    }}
-                >
+                <StyledHeroCard>
                     <Box
                         component="main"
                         sx={{
@@ -161,9 +154,9 @@ const Hero = () => {
                             </>
                         )}
                     </Box>
-                </Card>
+                </StyledHeroCard>
                 <HeroLogoContainer>
-                    <img loading="lazy" src={banner} width="100%" height="100%" alt="Fundacja peryskop baner" />
+                    <img loading="lazy" src={banner} width="1003px" height="565px" alt="Fundacja peryskop baner" />
                 </HeroLogoContainer>
             </Box>
         </Box>

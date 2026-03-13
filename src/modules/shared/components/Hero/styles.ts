@@ -1,8 +1,8 @@
-import { Button, styled } from "@mui/material";
+import { Button, Card, styled } from "@mui/material";
 
 export const HeroLogoContainer = styled("div")(() => ({
     width: "auto",
-    height: "565px",
+    height: "525px",
     display: "flex",
     position: "absolute",
     right: "0",
@@ -18,11 +18,8 @@ export const HeroLogoContainer = styled("div")(() => ({
         objectFit: "cover",
     },
 
-    "@media (max-width: 600px)": {
-        position: "relative",
-        width: "100%",
-        height: "200px",
-        borderRadius: "0",
+    "@media (max-width: 1200px)": {
+        display: "none",
     },
 }));
 
@@ -52,5 +49,25 @@ export const StyledPulseButton = styled(Button)(({ theme }) => ({
         "100%": {
             boxShadow: `0 0 0 0 ${theme.palette.colors.accent}00`,
         },
+    },
+}));
+
+export const StyledHeroCard = styled(Card)(({ theme }) => ({
+    padding: "30px",
+    position: "relative",
+    zIndex: 1,
+    borderRadius: "12px",
+
+    [`@media (max-width: ${theme.breakpoints.values.md}px)`]: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        margin: "0 20px",
+        // // // backgroundColor: "transparent",
+        // // // boxShadow: "none",
+        // // padding: "0",
+        // overflow: "visible",
+        // width: "100%",
     },
 }));
