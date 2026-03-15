@@ -51,20 +51,9 @@ const MenteeFormScreen = () => {
 
     return (
         <Container
-            parentProps={{
-                sx: {
-                    backgroundImage: `url(${bgImg})`,
-                    backgroundSize: { xs: "cover", md: "100% auto" },
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    alignItems: "center",
-                    backgroundAttachment: "fixed",
-                    minHeight: { xs: "100vh", md: "calc(100vh - 100px)" },
-                },
-            }}
-            sx={{
-                width: "fit-content",
-            }}
+            parentClassName="items-center bg-no-repeat bg-center bg-fixed min-h-[100vh] md:min-h-[calc(100vh-100px)] bg-cover md:bg-[length:100%_auto]"
+            parentStyle={{ backgroundImage: `url(${bgImg})` }}
+            className="w-fit"
         >
             <MenteeForm isLoading={isPending} onSubmit={handleSubmit} step={step} setStep={setStep} />
 

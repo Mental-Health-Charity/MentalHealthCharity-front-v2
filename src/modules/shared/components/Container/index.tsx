@@ -1,75 +1,38 @@
-import { Box, BoxProps, useTheme } from "@mui/material";
+import { cn } from "@/lib/utils";
 import wave_icon from "../../../../assets/static/wave.svg";
 
-interface Props extends BoxProps {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
     waves?: boolean;
-    parentProps?: BoxProps;
+    parentClassName?: string;
+    parentStyle?: React.CSSProperties;
 }
 
 const FOOTER_Y_SIZE = "200px";
 
-const Container = ({ waves, parentProps, ...props }: Props) => {
-    const theme = useTheme();
-
+const Container = ({ waves, parentClassName, parentStyle, className, children, ...props }: Props) => {
     return (
-        <Box
-            {...parentProps}
-            sx={{
-                width: "100%",
-                display: "flex",
-                paddingBottom: "60px",
-                justifyContent: "center",
-                minHeight: `calc(100vh - ${FOOTER_Y_SIZE})`,
-                position: "relative",
-                background: waves ? `${theme.palette.primary.main}1A` : "inherit",
-
-                "&:before": {
-                    display: waves ? "block" : "none",
-                    content: "''",
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    zIndex: 0,
-                    width: "100%",
-                    height: "500px",
-                    backgroundImage: `url(${wave_icon})`,
-                    rotate: "180deg",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                },
-                "&:after": {
-                    display: waves ? "block" : "none",
-                    content: "''",
-                    position: "absolute",
-                    top: 200,
-                    left: 0,
-                    zIndex: 0,
-                    width: "100%",
-                    height: "500px",
-                    opacity: 0.5,
-                    backgroundImage: `url(${wave_icon})`,
-                    rotate: "180deg",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                },
-                ...(parentProps?.sx || {}),
-            }}
+        <div
+            className={cn("relative flex w-full justify-center pb-15", waves && "bg-primary-brand/10", parentClassName)}
+            style={{ minHeight: `calc(100vh - ${FOOTER_Y_SIZE})`, ...parentStyle }}
         >
-            <Box
-                {...props}
-                sx={{
-                    display: "flex",
-                    marginTop: "100px",
-                    width: "100%",
-                    maxWidth: "1600px",
-                    zIndex: 10,
-                    flexDirection: "column",
-                    ...props.sx,
-                }}
-            >
-                {props.children}
-            </Box>
-        </Box>
+            {/* Wave decorations */}
+            {waves && (
+                <>
+                    <div
+                        className="absolute top-0 left-0 z-0 h-[500px] w-full rotate-180 bg-cover bg-center"
+                        style={{ backgroundImage: `url(${wave_icon})` }}
+                    />
+                    <div
+                        className="absolute top-[200px] left-0 z-0 h-[500px] w-full rotate-180 bg-cover bg-center opacity-50"
+                        style={{ backgroundImage: `url(${wave_icon})` }}
+                    />
+                </>
+            )}
+
+            <div className={cn("z-10 mt-25 flex w-full max-w-[1600px] flex-col", className)} {...props}>
+                {children}
+            </div>
+        </div>
     );
 };
 

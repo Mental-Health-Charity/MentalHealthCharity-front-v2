@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Button } from "@/components/ui/button";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { t } from "i18next";
 import { useEffect, useLayoutEffect, useState } from "react";
@@ -12,6 +12,7 @@ import usePermissions from "../../../shared/hooks/usePermissions";
 import { confirmContractForChatMutation } from "../../queries/confirmContractForChat";
 import { editContractForChatMutation } from "../../queries/editContractForChat";
 import { getContractForChat } from "../../queries/getContractForChat";
+
 interface Props {
     onClose: () => void;
     isOpen: boolean;
@@ -44,7 +45,6 @@ const ContractModal = ({ isOpen, onClose, chatId }: Props) => {
         mutationFn: editContractForChatMutation,
         onSuccess: () => {
             toast.success(t("common.saved"));
-
             refetch();
         },
     });
@@ -71,30 +71,23 @@ const ContractModal = ({ isOpen, onClose, chatId }: Props) => {
     }
 
     return (
-        <Modal title="Kontrakt" onClose={onClose} open={isOpen}>
-            <Box sx={{ width: "800px" }}>
+        <Modal title="Kontrakt" onClose={onClose} open={isOpen} className="sm:max-w-4xl">
+            <div className="w-full max-w-[800px]">
                 <Markdown
                     onChange={handleModalContentChange}
                     content={modalContent}
                     className="markdown-editor"
                     readOnly={data.is_confirmed}
                 />
-                <Box
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "20px",
-                        justifyContent: "space-between",
-                    }}
-                >
+                <div className="flex items-center justify-between gap-5">
                     {hasPermissions(Permissions.CAN_CONFIRM_CONTRACT) && (
-                        <Button variant="contained" onClick={handleConfirmContract} disabled={data.is_confirmed}>
+                        <Button onClick={handleConfirmContract} disabled={data.is_confirmed}>
                             {t("chat.accept_contract")}
                         </Button>
                     )}
-                    {data.is_confirmed && <Typography color="success">{t("chat.contract_confirmed_desc")}</Typography>}
-                </Box>
-            </Box>
+                    {data.is_confirmed && <p className="text-success-brand">{t("chat.contract_confirmed_desc")}</p>}
+                </div>
+            </div>
         </Modal>
     );
 };

@@ -1,4 +1,5 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
 import { ChangeEvent, useState } from "react";
 import toast from "react-hot-toast";
@@ -66,28 +67,23 @@ const ManageChatsScreen = () => {
             <SimpleCard
                 title={t("admin_screen.chat_list_title")}
                 subtitle={t("admin_screen.chat_list_subtitle")}
-                sx={{
-                    height: "100%",
-                }}
+                className="h-full"
             >
-                <Box display="flex" flexWrap={{ xs: "wrap", md: "nowrap" }} gap={2} alignItems="center" marginTop={2}>
-                    <TextField value={searchQuery} onChange={handleSearch} fullWidth label={t("chat.search_label")} />
-                    <Button
-                        sx={{
-                            textWrap: "nowrap",
-                            padding: "10px 30px",
-                        }}
-                        variant="contained"
-                        onClick={() => setShowCreateChatModal(true)}
-                    >
+                <div className="mt-4 flex flex-wrap items-center gap-4 md:flex-nowrap">
+                    <Input
+                        value={searchQuery}
+                        onChange={handleSearch}
+                        className="w-full"
+                        placeholder={t("chat.search_label")}
+                    />
+                    <Button className="px-8 py-2.5 whitespace-nowrap" onClick={() => setShowCreateChatModal(true)}>
                         {t("chat.create_new_chat")}
                     </Button>
-                </Box>
+                </div>
             </SimpleCard>
 
             <div>
                 {!chats && <Loader />}
-                {/* to force rerender */}
                 {chats && (
                     <ChatManager
                         onLoadMore={handleLoadChats}

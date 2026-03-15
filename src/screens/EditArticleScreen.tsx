@@ -11,13 +11,11 @@ import Container from "../modules/shared/components/Container";
 import Loader from "../modules/shared/components/Loader";
 import SimpleCard from "../modules/shared/components/SimpleCard";
 import fileToBase64 from "../modules/shared/helpers/fileToBase64";
-import useTheme from "../theme";
 import NotFoundScreen from "./NotFoundScreen";
 
 const EditArticleScreen = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const theme = useTheme();
     const { id } = useParams();
 
     const { mutate: editArticle, isPending: isArticleEditPending } = useMutation({
@@ -90,22 +88,9 @@ const EditArticleScreen = () => {
     }
 
     return (
-        <Container
-            parentProps={{
-                sx: {
-                    backgroundColor: theme.palette.colors.border,
-                    boxShadow: `0px 0px 10px ${theme.palette.shadows.box}`,
-                    zIndex: 0,
-                },
-            }}
-        >
+        <Container parentClassName="z-0 bg-border-brand shadow-md">
             {isArticleEditPending && <Loader variant="fullscreen" />}
-            <SimpleCard
-                sx={{
-                    marginBottom: "20px",
-                    padding: "20px",
-                }}
-            >
+            <SimpleCard className="mb-5 p-5">
                 {data && (
                     <ArticleEditor
                         initialValues={initialValues}

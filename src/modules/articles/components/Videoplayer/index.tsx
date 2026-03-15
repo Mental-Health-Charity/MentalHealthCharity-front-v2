@@ -1,25 +1,16 @@
-import { Box, BoxProps } from "@mui/material";
+import { cn } from "@/lib/utils";
 
-interface Props extends BoxProps {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
     src: string;
 }
 
-const Videoplayer = ({ src, ...props }: Props) => {
+const Videoplayer = ({ src, className, ...props }: Props) => {
     if (src.includes("youtube.com")) {
         const videoId = new URL(src).searchParams.get("v");
         const embedUrl = `https://www.youtube.com/embed/${videoId}`;
 
         return (
-            <Box
-                {...props}
-                sx={{
-                    borderRadius: "20px",
-                    overflow: "hidden",
-                    padding: "0",
-
-                    ...props.sx,
-                }}
-            >
+            <div className={cn("overflow-hidden rounded-[20px] p-0", className)} {...props}>
                 <iframe
                     width="100%"
                     height="100%"
@@ -29,15 +20,15 @@ const Videoplayer = ({ src, ...props }: Props) => {
                     referrerPolicy="strict-origin-when-cross-origin"
                     allowFullScreen
                 />
-            </Box>
+            </div>
         );
     }
     return (
-        <Box {...props}>
+        <div className={className} {...props}>
             <video>
                 <source src={src} type="video" />
             </video>
-        </Box>
+        </div>
     );
 };
 

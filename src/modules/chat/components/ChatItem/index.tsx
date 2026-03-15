@@ -1,6 +1,4 @@
-import { Avatar, Box, ListItemButton, Typography, useTheme } from "@mui/material";
 import { Chat } from "../../types";
-import { UnreadIndicator } from "./style";
 
 interface Props {
     chat: Chat;
@@ -10,68 +8,49 @@ interface Props {
 }
 
 const ChatItem = ({ chat, onChange, selected, readed }: Props) => {
-    const theme = useTheme();
     const showUnreadIndicator = chat.unread_count > 0 && !readed;
     const { is_active } = chat;
 
     return (
-        <ListItemButton
+        <a
             href={`/chat/${chat.id}`}
-            sx={{
-                display: "flex",
-                opacity: is_active ? 1 : 0.8,
-                alignItems: "center",
-                justifyContent: "flex-start",
-                backgroundColor: selected ? theme.palette.action.selected : "transparent",
-                gap: "15px",
-                padding: "10px 5px",
+            onClick={(e) => {
+                e.preventDefault();
+                onChange(String(chat.id));
             }}
-            onClick={() => onChange(String(chat.id))}
+            className={`flex items-center justify-start gap-4 px-1.5 py-2.5 no-underline transition-colors ${
+                is_active ? "opacity-100" : "opacity-80"
+            } ${selected ? "bg-muted" : "hover:bg-muted/50"}`}
         >
-            <Avatar
-                variant="rounded"
-                sx={{
-                    bgcolor: is_active ? theme.palette.colors.accent : theme.palette.colors.border,
-                }}
+            <div
+                className={`flex size-10 shrink-0 items-center justify-center rounded-md ${
+                    is_active ? "bg-accent-brand" : "bg-border-brand"
+                }`}
             />
-            <Box
-                sx={{
-                    minHeight: "40px",
-                }}
-            >
-                <Typography
-                    sx={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "5px",
-                        color: is_active ? theme.palette.text.secondary : theme.palette.text.disabled,
-                        fontSize: "16px",
-                        fontWeight: "bold",
-                        maxWidth: "200px",
-                        textOverflow: "ellipsis",
-                        overflow: "hidden",
-                        textWrap: "nowrap",
-                        lineHeight: "1.2",
-                    }}
+            <div className="min-h-[40px]">
+                <p
+                    className={`inline-flex max-w-[200px] items-center gap-1.5 truncate text-base leading-tight font-bold ${
+                        is_active ? "text-text-body" : "text-muted-foreground"
+                    }`}
                 >
-                    {chat.name} {showUnreadIndicator && <UnreadIndicator>{chat.unread_count}</UnreadIndicator>}
-                </Typography>
+                    {chat.name}{" "}
+                    {showUnreadIndicator && (
+                        <span className="bg-primary rounded-full px-1.5 py-0.5 text-xs text-white">
+                            {chat.unread_count}
+                        </span>
+                    )}
+                </p>
                 {chat.last_message && (
-                    <Typography
-                        sx={{
-                            opacity: 0.7,
-                            maxWidth: "200px",
-                            textOverflow: "ellipsis",
-                            overflow: "hidden",
-                            textWrap: "nowrap",
-                            color: is_active ? theme.palette.text.secondary : theme.palette.text.disabled,
-                        }}
+                    <p
+                        className={`max-w-[200px] truncate ${
+                            is_active ? "text-text-body/70" : "text-muted-foreground/70"
+                        }`}
                     >
                         {chat.last_message.sender.full_name}: {chat.last_message.content}
-                    </Typography>
+                    </p>
                 )}
-            </Box>
-        </ListItemButton>
+            </div>
+        </a>
     );
 };
 

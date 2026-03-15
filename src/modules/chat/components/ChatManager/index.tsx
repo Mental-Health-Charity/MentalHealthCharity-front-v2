@@ -1,15 +1,10 @@
-import AddIcon from "@mui/icons-material/Add";
-import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
-import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import PauseIcon from "@mui/icons-material/Pause";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import { Box, Button, Chip, Typography, useMediaQuery } from "@mui/material";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ArrowRightCircle, MessageSquare, Pause, Pencil, Play, Plus, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { CellMeasurer, Index } from "react-virtualized";
-import useTheme from "../../../../theme";
+import { useIsCompact } from "../../../../hooks/useBreakpoint";
 import { User } from "../../../auth/types";
 import ActionMenu from "../../../shared/components/ActionMenu";
 import WindowListInfiniteLoader from "../../../shared/components/WindowListInfiniteLoader";
@@ -39,8 +34,7 @@ const ChatManager = ({
     onLoadMore,
 }: Props) => {
     const { t } = useTranslation();
-    const theme = useTheme();
-    const isMobile = useMediaQuery("(max-width: 600px)");
+    const isMobile = useIsCompact();
 
     const navigate = useNavigate();
     const userHeight = isMobile ? 110 : 70;
@@ -64,58 +58,30 @@ const ChatManager = ({
                         padding: "10px 0",
                     }}
                 >
-                    <Box
-                        sx={{
-                            padding: "15px 15px",
-                            backgroundColor: theme.palette.background.paper,
-                            border: `2px solid ${theme.palette.colors.border}`,
-                            borderRadius: "8px",
-                            display: "flex",
-                            alignItems: "start",
-                            flexDirection: "column",
-                            color: theme.palette.text.secondary,
-                            maxHeight: getRowHeight({ index }) - 10,
-                        }}
+                    <div
+                        className="border-border-brand bg-paper text-text-body flex flex-col items-start rounded-lg border-2 p-4"
+                        style={{ maxHeight: getRowHeight({ index }) - 10 }}
                     >
-                        <Box
-                            width="100%"
-                            flexWrap="wrap"
-                            sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                            }}
-                        >
-                            <Box display="flex" alignItems="center" gap={2}>
-                                <Box display="flex" gap={2} alignItems="center">
-                                    <Box
-                                        display="flex"
-                                        alignItems="center"
-                                        justifyContent="center"
-                                        sx={{
-                                            backgroundColor: theme.palette.colors.border,
-                                            borderRadius: "4px",
-                                            padding: "14px",
-                                        }}
-                                    >
-                                        <ChatBubbleIcon
-                                            sx={{
-                                                color: theme.palette.text.primary,
-                                            }}
-                                        />
-                                    </Box>
-
-                                    <Typography variant="h5">{chat.name}</Typography>
-                                </Box>
-                            </Box>
-                            <Box display="flex" alignItems="center" gap={2}>
-                                <Chip color="info" label={formatDate(chat.creation_date)} />
-                                {chat.is_supervisor_chat && <Chip color="error" label={t("chat.admin_chat")} />}
-
-                                <Chip
-                                    color={chat.is_active ? "success" : "error"}
-                                    label={chat.is_active ? t("common.active") : t("common.inactive")}
-                                />
+                        <div className="flex w-full flex-wrap items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-4">
+                                    <div className="bg-border-brand flex items-center justify-center rounded p-3.5">
+                                        <MessageSquare className="text-bg-brand size-5" />
+                                    </div>
+                                    <h3 className="text-xl font-semibold">{chat.name}</h3>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Badge variant="secondary" className="bg-info-brand/20 text-text-body">
+                                    {formatDate(chat.creation_date)}
+                                </Badge>
+                                {chat.is_supervisor_chat && <Badge variant="destructive">{t("chat.admin_chat")}</Badge>}
+                                <Badge
+                                    variant={chat.is_active ? "default" : "destructive"}
+                                    className={chat.is_active ? "bg-success-brand/20 text-text-body" : ""}
+                                >
+                                    {chat.is_active ? t("common.active") : t("common.inactive")}
+                                </Badge>
 
                                 <ActionMenu
                                     actions={[
@@ -123,33 +89,23 @@ const ChatManager = ({
                                             id: "edit",
                                             label: t("common.edit"),
                                             onClick: () => onEditChat(chat),
-                                            icon: <EditIcon />,
+                                            icon: <Pencil className="size-4" />,
                                         },
-
                                         {
                                             id: "go_to_chat",
                                             label: t("chat.go_to_chat"),
                                             href: `/chat/${chat.id}`,
-                                            icon: <ArrowCircleRightIcon />,
+                                            icon: <ArrowRightCircle className="size-4" />,
                                         },
-
                                         {
                                             id: "disable",
                                             variant: "divider",
                                             label: chat.is_active ? t("common.disable") : t("common.enable"),
                                             onClick: () => onToggleChat(chat),
                                             icon: chat.is_active ? (
-                                                <PauseIcon
-                                                    sx={{
-                                                        color: theme.palette.warning.main,
-                                                    }}
-                                                />
+                                                <Pause className="text-warning-brand size-4" />
                                             ) : (
-                                                <PlayArrowIcon
-                                                    sx={{
-                                                        color: theme.palette.success.main,
-                                                    }}
-                                                />
+                                                <Play className="text-success-brand size-4" />
                                             ),
                                         },
                                         {
@@ -157,89 +113,43 @@ const ChatManager = ({
                                             variant: "divider",
                                             label: t("common.remove"),
                                             onClick: () => onRemoveChat(chat),
-                                            icon: (
-                                                <DeleteIcon
-                                                    sx={{
-                                                        color: theme.palette.error.main,
-                                                    }}
-                                                />
-                                            ),
+                                            icon: <Trash2 className="text-destructive size-4" />,
                                         },
                                     ]}
                                 />
-                            </Box>
-                        </Box>
-                        <Box
-                            sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "start",
-                                width: "100%",
-                                gap: 2,
-                                marginTop: "20px",
-                                position: "relative",
-
-                                "&::before": {
-                                    content: "''",
-                                    display: "block",
-                                    position: "absolute",
-                                    width: "5px",
-                                    minHeight: "calc(100% - 81px)",
-                                    backgroundColor: theme.palette.colors.border,
-                                    marginBottom: "20px",
-                                    left: "0px",
-                                },
-                            }}
-                        >
+                            </div>
+                        </div>
+                        <div className="before:bg-border-brand relative mt-5 flex w-full flex-col items-start gap-4 before:absolute before:left-0 before:block before:min-h-[calc(100%-81px)] before:w-[5px]">
                             {chat.participants.length > 0 &&
                                 chat.participants.map((participant) => (
                                     <UserTableItem
+                                        key={participant.id}
                                         additionalActions={[
                                             {
                                                 id: "remove",
                                                 label: t("chat.remove_from_chat"),
                                                 variant: "divider",
                                                 onClick: () => onRemoveParticipant(chat, participant),
-                                                icon: (
-                                                    <DeleteIcon
-                                                        sx={{
-                                                            color: theme.palette.error.main,
-                                                        }}
-                                                    />
-                                                ),
+                                                icon: <Trash2 className="text-destructive size-4" />,
                                             },
                                         ]}
                                         user={participant}
-                                        sx={{
-                                            padding: "0 0 0 35px",
-                                            border: "none",
-                                            width: "100%",
-
-                                            "&::after": {
-                                                content: "''",
-                                                display: "block",
-                                                position: "absolute",
-                                                width: "25px",
-                                                height: "4px",
-                                                backgroundColor: theme.palette.colors.border,
-                                                left: "00px",
-                                            },
-                                        }}
+                                        className="after:bg-border-brand relative w-full border-none pl-9 after:absolute after:left-0 after:block after:h-1 after:w-[25px]"
                                         onEdit={() => navigate(`/admin/users?search=${participant.email}`)}
                                     />
                                 ))}
-                            <Button onClick={() => onAddParticipant(chat)} variant="text">
-                                <AddIcon /> {t("chat.add_participant")}
+                            <Button variant="ghost" onClick={() => onAddParticipant(chat)}>
+                                <Plus className="mr-1 size-4" /> {t("chat.add_participant")}
                             </Button>
-                        </Box>
-                    </Box>
+                        </div>
+                    </div>
                 </div>
             </CellMeasurer>
         );
     };
 
     return (
-        <div style={{ minHeight: "100vh" }}>
+        <div className="min-h-screen">
             <WindowListInfiniteLoader data={data} onLoadMore={onLoadMore} onRender={onRender} />
         </div>
     );

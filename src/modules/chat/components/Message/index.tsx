@@ -1,15 +1,13 @@
-import DeleteIcon from "@mui/icons-material/Delete";
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import InventoryIcon from "@mui/icons-material/Inventory";
-import { Avatar, Box, Chip, Typography, useTheme } from "@mui/material";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { t } from "i18next";
+import { Archive, Circle, Trash2, User as UserIcon } from "lucide-react";
 import { useUser } from "../../../auth/components/AuthProvider";
 import ActionMenu from "../../../shared/components/ActionMenu";
 import { Permissions } from "../../../shared/constants";
 import formatDate from "../../../shared/helpers/formatDate";
 import usePermissions from "../../../shared/hooks/usePermissions";
 import { Message } from "../../types";
-import { StyledMessageWrapper } from "./style";
 
 interface Props {
     message: Message;
@@ -18,126 +16,58 @@ interface Props {
 }
 
 const ChatMessage = ({ message, onDeleteMessage, showArchiveChip = false }: Props) => {
-    const theme = useTheme();
     const { user } = useUser();
     const senderIsCurrentUser = user && user.id === message.sender.id;
     const { hasPermissions } = usePermissions();
     const canDeleteMessage = senderIsCurrentUser || hasPermissions(Permissions.DELETE_OTHERS_CHAT_MESSAGES);
 
     return (
-        <StyledMessageWrapper senderIsUser={senderIsCurrentUser || false}>
+        <div
+            className={`group flex w-full items-center gap-2.5 ${senderIsCurrentUser ? "flex-row-reverse" : "flex-row"}`}
+        >
             {!senderIsCurrentUser && (
-                <Avatar
-                    variant="rounded"
-                    src={message.sender.full_name}
-                    alt={message.sender.full_name}
-                    sx={{
-                        fontSize: "24px",
-                        marginTop: "auto",
-                        width: { xs: "30px", md: "50px" },
-                        height: { xs: "30px", md: "50px" },
-                    }}
-                />
+                <Avatar className="mt-auto size-[30px] rounded-md md:size-[50px]">
+                    <AvatarImage src={message.sender.full_name} alt={message.sender.full_name} />
+                    <AvatarFallback className="rounded-md text-2xl">
+                        <UserIcon className="size-4" />
+                    </AvatarFallback>
+                </Avatar>
             )}
-            <Box
-                sx={{
-                    backgroundColor: senderIsCurrentUser
-                        ? `${theme.palette.secondary.main}9A`
-                        : `${theme.palette.colors.border}66`,
-                    padding: { xs: "10px", md: "15px 30px" },
-                    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.05)",
-                    borderRadius: "10px",
-                    width: { xs: "100%", md: "auto" },
-                    maxWidth: { xs: "100%", md: "70%" },
-                    opacity: message.isPending ? 0.5 : 1,
-                    color: senderIsCurrentUser ? theme.palette.text.primary : theme.palette.text.secondary,
-                    textAlign: senderIsCurrentUser ? "right" : "left",
-                }}
+            <div
+                className={`w-full rounded-[10px] px-2.5 py-2.5 shadow-[0_0_10px_rgba(0,0,0,0.05)] md:w-auto md:max-w-[70%] md:px-[30px] md:py-4 ${
+                    senderIsCurrentUser ? "bg-secondary/60 text-text-body" : "bg-border-brand/40 text-text-body"
+                } ${message.isPending ? "opacity-50" : ""} ${senderIsCurrentUser ? "text-right" : "text-left"}`}
             >
-                <Box
-                    sx={{
-                        color: senderIsCurrentUser ? theme.palette.primary.dark : theme.palette.colors.accent,
-                    }}
-                >
-                    <Box
-                        sx={{
-                            display: "flex",
-                            justifyContent: { xs: "space-between", md: "flex-end" },
-                            alignItems: "center",
-                            flexDirection: senderIsCurrentUser ? "row" : "row-reverse",
-                            gap: { xs: "5px", md: "10px" },
-                        }}
+                <div className={senderIsCurrentUser ? "text-primary-brand-dark" : "text-accent-brand"}>
+                    <div
+                        className={`flex items-center gap-1.5 md:gap-2.5 ${
+                            senderIsCurrentUser
+                                ? "justify-between md:justify-end"
+                                : "justify-between md:flex-row-reverse md:justify-end"
+                        }`}
                     >
                         {showArchiveChip && (
-                            <Chip
-                                icon={<InventoryIcon sx={{ fontSize: "14px !important" }} />}
-                                label={t("chat.archive")}
-                                size="small"
-                                variant="outlined"
-                                sx={{
-                                    fontSize: "11px",
-                                    height: "22px",
-                                    borderColor: theme.palette.warning.main,
-                                    color: theme.palette.warning.main,
-                                    "& .MuiChip-icon": {
-                                        color: theme.palette.warning.main,
-                                    },
-                                }}
-                            />
+                            <Badge
+                                variant="outline"
+                                className="border-warning-brand text-warning-brand h-[22px] gap-1 text-[11px]"
+                            >
+                                <Archive className="size-3" />
+                                {t("chat.archive")}
+                            </Badge>
                         )}
-                        <Typography
-                            sx={{
-                                fontSize: { xs: "14px", md: "16px" },
-                                width: { xs: "100%", md: "auto" },
-                            }}
-                        >
+                        <span className="w-full text-sm md:w-auto md:text-base">
                             {formatDate(message.creation_date, "dd/MM/yyyy HH:mm")}
-                        </Typography>
-                        <FiberManualRecordIcon
-                            sx={{
-                                fontSize: "10px",
-                                marginBottom: "2px",
-                                display: { xs: "none", md: "block" },
-                            }}
-                        />
-                        <Typography
-                            sx={{
-                                fontSize: { xs: "14px", md: "18px" },
-                                fontWeight: 600,
+                        </span>
+                        <Circle className="mb-0.5 hidden size-2.5 fill-current md:block" />
+                        <span className="-mt-0.5 text-sm font-semibold md:text-lg">{message.sender.full_name}</span>
+                    </div>
+                </div>
 
-                                marginTop: "-3px",
-                            }}
-                        >
-                            {message.sender.full_name}
-                        </Typography>
-                    </Box>
-                </Box>
-
-                <Typography
-                    sx={{
-                        wordBreak: "break-word",
-                    }}
-                    fontSize="18px"
-                    textAlign="start"
-                >
-                    {message.content}
-                </Typography>
-                {message.isPending && (
-                    <Box>
-                        <Typography
-                            sx={{
-                                fontSize: "14px",
-                                textAlign: "start",
-                            }}
-                            color="info"
-                        >
-                            Wysyłanie...
-                        </Typography>
-                    </Box>
-                )}
-            </Box>
+                <p className="text-start text-lg break-words">{message.content}</p>
+                {message.isPending && <p className="text-info-brand text-start text-sm">Wysyłanie...</p>}
+            </div>
             {canDeleteMessage && (
-                <div className="message-actions">
+                <div className="invisible group-hover:visible">
                     <ActionMenu
                         actions={[
                             {
@@ -146,13 +76,13 @@ const ChatMessage = ({ message, onDeleteMessage, showArchiveChip = false }: Prop
                                 disabled: !canDeleteMessage,
                                 variant: "default",
                                 onClick: () => onDeleteMessage(message.id),
-                                icon: <DeleteIcon />,
+                                icon: <Trash2 className="size-4" />,
                             },
                         ]}
                     />
                 </div>
             )}
-        </StyledMessageWrapper>
+        </div>
     );
 };
 

@@ -1,21 +1,10 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { format, isSameDay, isValid as isValidDate, parseISO, setHours, setMinutes } from "date-fns";
 import { pl } from "date-fns/locale";
 import React, { useCallback, useMemo, useState } from "react";
+import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
-
-import {
-    EmptyState,
-    FooterActions,
-    HeaderRow,
-    Legend,
-    LegendDot,
-    PaperView,
-    StyledDayPicker,
-    TimeButton,
-    TimeGrid,
-} from "./style";
-
 import { useTranslation } from "react-i18next";
 
 interface DateTimePickerProps {
@@ -87,24 +76,22 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
     }, [selectedDay, workingHours, timeStep]);
 
     return (
-        <Box>
+        <div>
             {!selectedDay ? (
-                <StyledDayPicker
+                <DayPicker
                     locale={pl}
                     mode="single"
                     disabled={{ before: new Date() }}
                     selected={selectedDay ?? undefined}
                     onSelect={(day) => {
                         if (day) {
-                            const alreadySelected = values
-                                .filter((v) => {
-                                    try {
-                                        return isSameDay(parseISO(v), day);
-                                    } catch {
-                                        return false;
-                                    }
-                                })
-                                .map((v) => v);
+                            const alreadySelected = values.filter((v) => {
+                                try {
+                                    return isSameDay(parseISO(v), day);
+                                } catch {
+                                    return false;
+                                }
+                            });
 
                             setTempHours(alreadySelected);
                             setSelectedDay(day);
@@ -118,50 +105,56 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
                     }}
                     captionLayout="dropdown"
                     showOutsideDays
+                    className="animate-in fade-in bg-paper max-w-fit rounded-xl p-3.5 shadow-[0_6px_18px_rgba(2,6,23,0.12)]"
                 />
             ) : (
-                <PaperView elevation={3}>
-                    <HeaderRow>
-                        <Typography color="#153243" variant="h6">
+                <div className="animate-in fade-in bg-paper w-full rounded-xl p-5 text-center shadow-[0_6px_18px_rgba(2,6,23,0.12)]">
+                    {/* Header */}
+                    <div className="mb-3 flex items-center justify-between gap-7">
+                        <h3 className="text-foreground text-lg font-semibold">
                             {format(selectedDay, "EEEE, d MMMM yyyy", { locale: pl })}
-                        </Typography>
+                        </h3>
+                        <div className="flex items-center gap-2">
+                            <div className="bg-primary-brand h-2.5 w-2.5 rounded-full shadow-[0_4px_10px_rgba(11,118,255,0.12)]" />
+                            <span className="text-primary-brand text-xs">{t("datePicker.slotLegend")}</span>
+                        </div>
+                    </div>
 
-                        <Legend>
-                            <LegendDot />
-                            <Typography color="primary.main" variant="caption">
-                                {t("datePicker.slotLegend")}
-                            </Typography>
-                        </Legend>
-                    </HeaderRow>
-
+                    {/* Time grid */}
                     {hours.length === 0 ? (
-                        <EmptyState>
-                            <Typography>{t("datePicker.noHours")}</Typography>
-                        </EmptyState>
+                        <div className="text-muted-foreground mt-1.5 rounded-lg bg-[#fbfdff] px-2 py-6">
+                            <p>{t("datePicker.noHours")}</p>
+                        </div>
                     ) : (
-                        <TimeGrid style={{ gridTemplateColumns: `repeat(${maxColumns}, 1fr)` }}>
+                        <div className="mt-2 grid gap-2" style={{ gridTemplateColumns: `repeat(${maxColumns}, 1fr)` }}>
                             {hours.map((hour) => {
                                 const iso = hour.toISOString();
                                 const isSelected = tempHours.includes(iso);
                                 return (
-                                    <TimeButton
+                                    <button
                                         key={iso}
-                                        variant={isSelected ? "contained" : "outlined"}
+                                        type="button"
                                         aria-pressed={isSelected}
                                         onClick={() => toggleTempHour(iso)}
-                                        $selected={isSelected}
+                                        className={cn(
+                                            "flex h-10 min-w-16 items-center justify-center rounded-[10px] border text-sm transition-all hover:-translate-y-0.5",
+                                            isSelected
+                                                ? "border-primary-brand bg-primary-brand text-white shadow-[0_6px_18px_rgba(11,118,255,0.16)]"
+                                                : "text-foreground border-[rgba(15,23,36,0.06)] bg-[#fbfdff] hover:bg-[#f6f9ff]"
+                                        )}
                                     >
                                         {format(hour, "HH:mm")}
-                                    </TimeButton>
+                                    </button>
                                 );
                             })}
-                        </TimeGrid>
+                        </div>
                     )}
 
-                    <FooterActions>
+                    {/* Footer actions */}
+                    <div className="mt-5 flex flex-nowrap items-center justify-center gap-2">
                         <Button
-                            variant="outlined"
-                            color="secondary"
+                            variant="outline"
+                            className="w-full text-base"
                             onClick={() => {
                                 setSelectedDay(null);
                                 setTempHours([]);
@@ -169,13 +162,12 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
                         >
                             {t("common.cancel")}
                         </Button>
-
-                        <Button variant="contained" size="small" onClick={saveDaySelection}>
+                        <Button className="w-full text-base" onClick={saveDaySelection}>
                             {t("common.save")}
                         </Button>
-                    </FooterActions>
-                </PaperView>
+                    </div>
+                </div>
             )}
-        </Box>
+        </div>
     );
 };

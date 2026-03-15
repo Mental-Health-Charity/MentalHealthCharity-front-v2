@@ -1,6 +1,3 @@
-import { Box, LinearProgress, Typography } from "@mui/material";
-import useTheme from "../../../../theme";
-
 interface Props {
     progress: number;
     title: string;
@@ -9,66 +6,23 @@ interface Props {
 }
 
 const FormWrapper = ({ progress, subtitle, title, children }: Props) => {
-    const theme = useTheme();
     return (
-        <Box
-            sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "fit-content",
-                maxWidth: "800px",
-                overflow: "hidden",
-                padding: "0",
-                borderRadius: "4px",
-                backgroundColor: `${theme.palette.background.default}BD`,
-                boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.2)",
-                backdropFilter: "blur(15px)",
-            }}
-        >
-            <LinearProgress
-                sx={{
-                    width: "100%",
-                    borderRadius: "0",
-                    marginBottom: "20px",
-                    padding: "5px",
-                }}
-                color="primary"
-                variant="determinate"
-                value={progress}
-            />
-            <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    padding: {
-                        xs: "20px",
-                        md: "20px 30px 0 30px",
-                    },
-                    gap: "10px",
-                }}
-            >
-                <Typography color="textSecondary" fontWeight="bold" component="h1" fontSize={24} variant="h3">
-                    {title}
-                </Typography>
-                <Typography color="textSecondary" component="h1" fontSize={20} variant="h3">
-                    {subtitle}
-                </Typography>
-            </Box>
+        <div className="bg-bg-brand/75 flex w-fit max-w-[800px] flex-col items-center justify-center overflow-hidden rounded-[4px] p-0 shadow-md backdrop-blur-[15px]">
+            <div className="mb-5 w-full p-[5px]">
+                <div className="bg-muted h-2.5 w-full overflow-hidden rounded-full">
+                    <div
+                        className="bg-primary h-full transition-[width] duration-300"
+                        style={{ width: `${progress}%` }}
+                    />
+                </div>
+            </div>
+            <div className="flex flex-col gap-2.5 px-5 md:px-[30px] md:pt-5">
+                <h1 className="text-dark text-2xl font-bold">{title}</h1>
+                <p className="text-dark text-xl">{subtitle}</p>
+            </div>
 
-            <Box
-                sx={{
-                    width: "100%",
-                    padding: {
-                        xs: "5px 20px 15px 20px",
-                        md: "30px",
-                    },
-                }}
-            >
-                {children}
-            </Box>
-        </Box>
+            <div className="w-full px-5 pt-[5px] pb-[15px] md:p-[30px]">{children}</div>
+        </div>
     );
 };
 

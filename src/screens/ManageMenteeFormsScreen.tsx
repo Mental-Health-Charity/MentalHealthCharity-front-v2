@@ -1,6 +1,6 @@
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import { Box, Button, MenuItem, Select, Typography } from "@mui/material";
+import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
+import { Filter } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import FormsTable from "../modules/forms/components/FormsTable";
@@ -29,41 +29,33 @@ const ManageMenteeFormsScreen = () => {
     return (
         <AdminLayout>
             <SimpleCard title={t("manage_mentee_forms.title")} subtitle={t("manage_mentee_forms.subtitle")} />
-            <Box width="100%" display="flex" gap={2} mb={2}>
+            <div className="mb-4 flex w-full gap-4">
                 {Object.keys(formStatus).map((option) => (
                     <Button
                         key={option}
-                        sx={{
-                            backgroundColor: "primary.main",
-                            color: "white",
-                            opacity: option === status ? 1 : 0.5,
-                        }}
+                        className="text-white"
+                        style={{ opacity: option === status ? 1 : 0.5 }}
                         onClick={() => setStatus(option as formStatus)}
                     >
-                        <FilterAltIcon />
+                        <Filter className="size-4" />
                         {translatedFormStatus[option as formStatus]}
                     </Button>
                 ))}
 
-                <Select value={sort}>
+                <select
+                    value={sort}
+                    onChange={(e) => setSort(e.target.value as formSorting)}
+                    className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-8 rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3"
+                >
                     {Object.values(formSorting).map((option) => (
-                        <MenuItem key={option} value={option} onClick={() => setSort(option)}>
+                        <option key={option} value={option}>
                             {translateFormSorting[option]}
-                        </MenuItem>
+                        </option>
                     ))}
-                </Select>
-            </Box>
+                </select>
+            </div>
             {isLoading && <Loader />}
-            <Box
-                sx={{
-                    width: "100%",
-                    maxWidth: {
-                        xs: "100%",
-                        md: "calc(100vw - 240px)",
-                    },
-                    overflowX: "auto",
-                }}
-            >
+            <div className="w-full overflow-x-auto md:max-w-[calc(100vw-240px)]">
                 {data && (
                     <FormsTable
                         formNoteKeys={[formNoteFields.NOTE]}
@@ -72,8 +64,8 @@ const ManageMenteeFormsScreen = () => {
                         renderStepAddnotation={(id) => t(`manage_volunteer_mentee.steps.${id - 1}`)}
                     />
                 )}
-            </Box>
-            {isError && <Typography color="error">{t("common.no_data")}</Typography>}
+            </div>
+            {isError && <p className="text-destructive">{t("common.no_data")}</p>}
         </AdminLayout>
     );
 };

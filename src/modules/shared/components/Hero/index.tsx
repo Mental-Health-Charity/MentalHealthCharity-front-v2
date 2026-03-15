@@ -1,13 +1,13 @@
-import { Box, Button, Link, Typography } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { Link as ReactRouterLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import dots from "../../../../assets/static/card_dots.svg";
 import banner from "../../../../assets/static/hero_image.webp";
 import waves from "../../../../assets/static/waves.svg";
 import { useUser } from "../../../auth/components/AuthProvider";
 import { getChatsQueryOptions } from "../../../chat/queries/getChatsQueryOptions";
-import { HeroLogoContainer, StyledHeroCard, StyledPulseButton } from "./styles";
 
 const Hero = () => {
     const { t } = useTranslation();
@@ -23,143 +23,71 @@ const Hero = () => {
     );
 
     return (
-        <Box
-            sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                minHeight: "800px",
-                position: "relative",
-                width: "100%",
-                paddingTop: { xs: "0px", md: "40px" },
-
-                "&:before": {
-                    content: "''",
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    backgroundImage: `url(${waves})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "top",
-                    backgroundRepeat: "no-repeat",
-                },
-
-                "&:after": {
-                    content: "''",
-                    position: "absolute",
-                    bottom: 0,
-                    left: 10,
-                    width: "80px",
-                    zIndex: 99,
-                    height: "80px",
+        <div
+            className="relative flex min-h-[800px] w-full items-center justify-center pt-0 md:pt-10"
+            style={{
+                backgroundImage: `url(${waves})`,
+                backgroundSize: "cover",
+                backgroundPosition: "top",
+                backgroundRepeat: "no-repeat",
+            }}
+        >
+            {/* Dots decoration (mobile only) */}
+            <div
+                className="pointer-events-none absolute bottom-0 left-2.5 z-[99] hidden size-20 max-md:block"
+                style={{
                     backgroundImage: `url(${dots})`,
                     backgroundSize: "cover",
                     backgroundPosition: "top",
                     backgroundRepeat: "no-repeat",
-                    display: { xs: "block", md: "none" },
-                },
-            }}
-        >
-            <Box
-                width="100%"
-                sx={{
-                    display: "flex",
-                    maxWidth: "1600px",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    gap: "20px",
-                    position: "relative",
                 }}
-            >
-                <StyledHeroCard>
-                    <Box
-                        component="main"
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "10px",
-                            maxWidth: "520px",
-                        }}
-                    >
-                        <Typography
-                            sx={{
-                                color: "text.secondary",
-                                fontSize: { xs: "28px", md: "32px" },
-                            }}
-                            variant="h1"
-                            fontWeight={550}
-                        >
-                            {t("homepage.title")}
-                        </Typography>
-                        <Typography
-                            component="h2"
-                            sx={{
-                                color: "text.secondary",
-                                fontSize: "24px",
-                                width: "100%",
-                            }}
-                        >
-                            {t("homepage.desc")}
-                        </Typography>
-                    </Box>
+            />
 
-                    <Box
-                        sx={{
-                            marginTop: "25px",
-                            display: "flex",
-                            gap: "15px",
-                            flexWrap: { xs: "wrap", md: "nowrap" },
-                        }}
-                    >
+            <div className="relative flex w-full max-w-[1600px] flex-wrap items-center justify-between gap-5">
+                {/* Hero Card */}
+                <div className="bg-card relative z-[1] rounded-xl p-[30px] shadow-sm max-md:mx-5 max-md:flex max-md:flex-col max-md:items-center max-md:justify-center">
+                    <main className="flex max-w-[520px] flex-col gap-2.5">
+                        <h1 className="text-muted-foreground text-[28px] font-[550] md:text-[32px]">
+                            {t("homepage.title")}
+                        </h1>
+                        <h2 className="text-muted-foreground w-full text-2xl font-normal">{t("homepage.desc")}</h2>
+                    </main>
+
+                    <div className="mt-6 flex flex-wrap gap-4 md:flex-nowrap">
                         {chats && chats.total > 0 ? (
-                            <Button component={ReactRouterLink} to="/chat/" variant="contained" fullWidth>
-                                {t("homepage.chat_now")}
-                            </Button>
+                            <Link to="/chat/" className="w-full">
+                                <Button className="w-full">{t("homepage.chat_now")}</Button>
+                            </Link>
                         ) : (
                             <>
-                                {/* todo fix */}
-                                <Link
-                                    component={ReactRouterLink}
-                                    sx={{
-                                        width: {
-                                            xs: "100%",
-                                            md: "auto",
-                                        },
-                                    }}
-                                    to="/form/mentee-getting-started"
-                                >
-                                    <StyledPulseButton
-                                        sx={{
-                                            width: { xs: "100%", md: "auto" },
-                                        }}
-                                        variant="contained"
-                                    >
+                                <Link to="/form/mentee-getting-started" className={cn("w-full md:w-auto")}>
+                                    <Button className="w-full animate-[pulse-glow_2s_infinite] md:w-auto">
                                         {t("homepage.choose_mentee_button")}
-                                    </StyledPulseButton>
+                                    </Button>
                                 </Link>
-                                <Button
-                                    sx={{
-                                        width: { xs: "100%", md: "auto" },
-                                    }}
-                                    fullWidth
-                                    component={ReactRouterLink}
-                                    variant="outlined"
-                                    to="/form/volunteer"
-                                >
-                                    {t("homepage.choose_volunteer_button")}
-                                </Button>
+                                <Link to="/form/volunteer" className="w-full md:w-auto">
+                                    <Button variant="outline" className="w-full md:w-auto">
+                                        {t("homepage.choose_volunteer_button")}
+                                    </Button>
+                                </Link>
                             </>
                         )}
-                    </Box>
-                </StyledHeroCard>
-                <HeroLogoContainer>
-                    <img loading="lazy" src={banner} width="1003px" height="565px" alt="Fundacja peryskop baner" />
-                </HeroLogoContainer>
-            </Box>
-        </Box>
+                    </div>
+                </div>
+
+                {/* Hero Image */}
+                <div className="absolute right-0 hidden h-[525px] w-auto items-center justify-center overflow-hidden rounded-xl shadow-[0_4px_4px_rgba(0,0,0,0.25)] lg:flex">
+                    <img
+                        loading="lazy"
+                        src={banner}
+                        width="1003"
+                        height="565"
+                        alt="Fundacja peryskop baner"
+                        className="size-full object-cover"
+                    />
+                </div>
+            </div>
+        </div>
     );
 };
 

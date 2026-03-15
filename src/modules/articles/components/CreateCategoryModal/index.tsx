@@ -1,7 +1,10 @@
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { Box, Button, Divider, TextField, Typography } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useFormik } from "formik";
+import { PlusCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 import Loader from "../../../shared/components/Loader";
@@ -61,82 +64,41 @@ const CreateArticleCategoryModal = ({ onSuccess, ...props }: Props) => {
     });
 
     return (
-        <Modal
-            modalContentProps={{
-                width: "100%",
-                maxWidth: "800px",
-            }}
-            {...props}
-            title={t("articles.create_new_category.title")}
-        >
-            <Box width="100%">
-                <Box
-                    sx={{
-                        width: "100%",
-                        display: "flex",
-                        gap: "20px",
-                        alignItems: "center",
-                    }}
-                    component="form"
-                    onSubmit={formik.handleSubmit}
-                >
+        <Modal className="sm:max-w-[800px]" {...props} title={t("articles.create_new_category.title")}>
+            <div className="w-full">
+                <form className="flex w-full items-center gap-5" onSubmit={formik.handleSubmit}>
                     {isPending ? (
                         <Loader />
                     ) : (
-                        <TextField
-                            fullWidth
-                            label={t("articles.create_new_category.name_label")}
-                            name="name"
-                            disabled={isPending}
-                            value={formik.values.name}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.name && Boolean(formik.errors.name)}
-                            helperText={formik.touched.name && formik.errors.name}
-                            margin="normal"
-                        />
+                        <div className="w-full space-y-1.5">
+                            <Label htmlFor="name">{t("articles.create_new_category.name_label")}</Label>
+                            <Input
+                                id="name"
+                                name="name"
+                                disabled={isPending}
+                                value={formik.values.name}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            />
+                            {formik.touched.name && formik.errors.name && (
+                                <p className="text-destructive text-sm">{formik.errors.name}</p>
+                            )}
+                        </div>
                     )}
-                    <Box marginTop={1} display="flex" justifyContent="flex-end" gap="10px">
-                        <Button
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            type="submit"
-                            sx={{
-                                gap: "10px",
-                            }}
-                        >
-                            <AddCircleIcon />
+                    <div className="mt-1 flex justify-end gap-2.5">
+                        <Button type="submit" className="gap-2.5">
+                            <PlusCircle className="size-5" />
                             {t("common.create")}
                         </Button>
-                    </Box>
-                </Box>
-                <Box
-                    sx={{
-                        margin: "30px 0 20px 0",
-                    }}
-                >
-                    <Typography
-                        color="textSecondary"
-                        sx={{
-                            fontWeight: "bold",
-                            marginBottom: "10px",
-                        }}
-                    >
+                    </div>
+                </form>
+                <div className="my-5 mb-5">
+                    <p className="text-dark mb-2.5 font-bold">
                         {t("articles.create_new_category.category_list_title")}
-                    </Typography>
-                    <Divider />
-                </Box>
-                <Box
-                    sx={{
-                        maxHeight: "450px",
-                        overflowY: "auto",
-
-                        gap: "10px",
-                        display: "flex",
-                        flexDirection: "column",
-                    }}
-                >
+                    </p>
+                    <Separator />
+                </div>
+                <div className="flex max-h-[450px] flex-col gap-2.5 overflow-y-auto">
                     {data &&
                         data.items.map((category) => (
                             <CategoryItem
@@ -152,8 +114,8 @@ const CreateArticleCategoryModal = ({ onSuccess, ...props }: Props) => {
                                 onToggleActive={(id) => toggleCategory({ id })}
                             />
                         ))}
-                </Box>
-            </Box>
+                </div>
+            </div>
         </Modal>
     );
 };

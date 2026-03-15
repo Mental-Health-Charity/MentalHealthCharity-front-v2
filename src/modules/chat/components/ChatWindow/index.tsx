@@ -1,9 +1,5 @@
-import EventNoteIcon from "@mui/icons-material/EventNote";
-import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
-import MenuIcon from "@mui/icons-material/Menu";
-import ReportIcon from "@mui/icons-material/Report";
-import TuneIcon from "@mui/icons-material/Tune";
-import { Box, IconButton, Tooltip, useTheme } from "@mui/material";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { BookOpen, CalendarDays, Flag, Menu, SlidersHorizontal } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -29,7 +25,6 @@ interface Props {
 }
 
 const ChatWindow = ({ onChangeWallpaper }: Props) => {
-    const theme = useTheme();
     const { id } = useParams<{ id: string }>();
     const { data, isLoading, aggregatedData, loadNextPage } = useChatListLoader(100);
     const effectiveData = aggregatedData || data;
@@ -96,106 +91,91 @@ const ChatWindow = ({ onChangeWallpaper }: Props) => {
     }, [effectiveData, chatId]);
 
     return (
-        <>
-            {" "}
+        <TooltipProvider>
             {showNote && selectedChat && (
                 <Note key={selectedChat.id} onClose={() => setShowNote(false)} chat={selectedChat} />
             )}
-            <Box margin="0px 0 10px 0">
+            <div className="mb-2.5">
                 <Info id="chat-delete-info">{t("chat.auto_delete_info")}</Info>
-            </Box>
-            <Box
-                sx={{
-                    backgroundColor: theme.palette.colors.dark,
-                    display: "flex",
-                    gap: { xs: "4px", md: "15px" },
-                    padding: { xs: "4px", md: "15px" },
-                    borderRadius: "10px",
-                    flexDirection: { xs: "column", md: "row" },
-                }}
-            >
+            </div>
+            <div className="bg-dark flex flex-col gap-1 rounded-[10px] p-1 md:flex-row md:gap-4 md:p-4">
                 {/* sidebar dark */}
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexDirection: { xs: "row", md: "column" },
-                        gap: "15px",
-                    }}
-                >
-                    <Box
-                        sx={{
-                            backgroundColor: theme.palette.background.default,
-                            borderRadius: "8px",
-                            boxShadow: `0 0 10px 5px ${theme.palette.shadows.box}`,
-                            width: "55px",
-                            height: "55px",
-                            display: { xs: "none", md: "flex" },
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }}
-                    >
+                <div className="flex flex-row gap-4 md:flex-col">
+                    <div className="bg-background shadow-box hidden size-[55px] items-center justify-center rounded-lg md:flex">
                         <img src={Logo} alt="logo" width={45} height={41} />
-                    </Box>
+                    </div>
 
-                    <Tooltip title={t("chat.show_more_chats")}>
-                        <IconButton
-                            onClick={() => setShowSidebar((prev) => !prev)}
-                            sx={{
-                                display: { xs: "flex", md: "none" },
-                                color: theme.palette.text.primary,
-                            }}
-                        >
-                            <MenuIcon fontSize="large" />
-                        </IconButton>
+                    <Tooltip>
+                        <TooltipTrigger
+                            render={
+                                <button
+                                    onClick={() => setShowSidebar((prev) => !prev)}
+                                    className="text-bg-brand flex md:hidden"
+                                >
+                                    <Menu className="size-7" />
+                                </button>
+                            }
+                        />
+                        <TooltipContent>{t("chat.show_more_chats")}</TooltipContent>
                     </Tooltip>
 
                     {hasPermissions(Permissions.EDIT_CHAT_NOTE) && (
-                        <Tooltip title={t("chat.notes")}>
-                            <IconButton
-                                onClick={() => setShowNote(!showNote)}
-                                sx={{
-                                    color: theme.palette.text.primary,
-                                    display: { xs: "none", md: "flex" },
-                                }}
-                            >
-                                <EventNoteIcon fontSize="large" />
-                            </IconButton>
+                        <Tooltip>
+                            <TooltipTrigger
+                                render={
+                                    <button
+                                        onClick={() => setShowNote(!showNote)}
+                                        className="text-bg-brand hidden md:flex"
+                                    >
+                                        <CalendarDays className="size-7" />
+                                    </button>
+                                }
+                            />
+                            <TooltipContent>{t("chat.notes")}</TooltipContent>
                         </Tooltip>
                     )}
 
-                    <Tooltip title={t("chat.report")}>
-                        <IconButton
-                            sx={{
-                                color: theme.palette.text.primary,
-                            }}
-                            onClick={() => setShowReportModal(!showReportModal)}
-                        >
-                            <ReportIcon fontSize="large" />
-                        </IconButton>
+                    <Tooltip>
+                        <TooltipTrigger
+                            render={
+                                <button onClick={() => setShowReportModal(!showReportModal)} className="text-bg-brand">
+                                    <Flag className="size-7" />
+                                </button>
+                            }
+                        />
+                        <TooltipContent>{t("chat.report")}</TooltipContent>
                     </Tooltip>
+
                     {onChangeWallpaper && (
-                        <Tooltip title={t("chat.customize")}>
-                            <IconButton
-                                sx={{
-                                    color: theme.palette.text.primary,
-                                }}
-                                onClick={() => setShowCustomizeModal(!showCustomizeModal)}
-                            >
-                                <TuneIcon fontSize="large" />
-                            </IconButton>
+                        <Tooltip>
+                            <TooltipTrigger
+                                render={
+                                    <button
+                                        onClick={() => setShowCustomizeModal(!showCustomizeModal)}
+                                        className="text-bg-brand"
+                                    >
+                                        <SlidersHorizontal className="size-7" />
+                                    </button>
+                                }
+                            />
+                            <TooltipContent>{t("chat.customize")}</TooltipContent>
                         </Tooltip>
                     )}
-                    <Tooltip title={t("chat.contract")}>
-                        <IconButton
-                            sx={{
-                                color: theme.palette.text.primary,
-                            }}
-                            onClick={() => setShowContractModal(!showContractModal)}
-                        >
-                            <HistoryEduIcon fontSize="large" />
-                        </IconButton>
+
+                    <Tooltip>
+                        <TooltipTrigger
+                            render={
+                                <button
+                                    onClick={() => setShowContractModal(!showContractModal)}
+                                    className="text-bg-brand"
+                                >
+                                    <BookOpen className="size-7" />
+                                </button>
+                            }
+                        />
+                        <TooltipContent>{t("chat.contract")}</TooltipContent>
                     </Tooltip>
-                </Box>
+                </div>
                 <ChatSidebar
                     handleDrawerToggle={() => setShowSidebar((prev) => !prev)}
                     showSidebar={showSidebar}
@@ -204,11 +184,7 @@ const ChatWindow = ({ onChangeWallpaper }: Props) => {
                     onChangeChat={handleChangeChat}
                     currentChatId={Number(chatId)}
                 />
-                <Box
-                    sx={{
-                        width: "100%",
-                    }}
-                >
+                <div className="w-full">
                     <Chat
                         onCloseChat={closeChat}
                         onDeleteMessage={handleDeleteMessage}
@@ -220,7 +196,7 @@ const ChatWindow = ({ onChangeWallpaper }: Props) => {
                         onLoadMoreMessages={loadBackHistory}
                         historyState={historyState}
                     />
-                </Box>
+                </div>
                 {showDetails && selectedChat && (
                     <ChatDetails onClose={() => setShowDetails(false)} chat={selectedChat} />
                 )}
@@ -239,8 +215,8 @@ const ChatWindow = ({ onChangeWallpaper }: Props) => {
                         onClose={() => setShowContractModal(false)}
                     />
                 )}
-            </Box>
-        </>
+            </div>
+        </TooltipProvider>
     );
 };
 

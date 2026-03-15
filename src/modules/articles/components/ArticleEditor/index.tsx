@@ -1,12 +1,13 @@
-import SettingsIcon from "@mui/icons-material/Settings";
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useFormik } from "formik";
+import { Settings } from "lucide-react";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
-import useTheme from "../../../../theme";
 import { useUser } from "../../../auth/components/AuthProvider";
 import ChangeImageInput from "../../../shared/components/ChangeImageInput";
 import Loader from "../../../shared/components/Loader";
@@ -33,7 +34,6 @@ interface Props {
 }
 
 const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft, articleId }: Props) => {
-    const theme = useTheme();
     const { t } = useTranslation();
     const { user, isLoading } = useUser();
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -125,30 +125,12 @@ const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft, articleId }: Prop
     );
 
     return (
-        <Box component="form" onSubmit={formik.handleSubmit}>
-            <Box
-                sx={{
-                    backgroundImage: banner,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    width: "100%",
-                    height: "500px",
-                    borderRadius: "10px",
-                    display: "flex",
-                    alignItems: "flex-end",
-                    justifyContent: "space-between",
-                    padding: "20px",
-                    border: `2px solid ${theme.palette.colors.border}`,
-                    backgroundColor: theme.palette.background.paper,
-                    flexWrap: "wrap",
-                }}
+        <form onSubmit={formik.handleSubmit}>
+            <div
+                className="border-border-brand bg-paper flex h-[500px] w-full flex-wrap items-end justify-between rounded-[10px] border-2 bg-cover bg-center p-5"
+                style={{ backgroundImage: banner }}
             >
-                <Box
-                    sx={{
-                        display: "flex",
-                        gap: "20px",
-                    }}
-                >
+                <div className="flex gap-5">
                     <ChangeImageInput
                         value={typeof formik.values.banner_url === "string" ? undefined : formik.values.banner_url}
                         isLoading={isArticleBannerUpdatePending}
@@ -160,75 +142,74 @@ const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft, articleId }: Prop
                             }
                         }}
                     />
-                </Box>
-            </Box>
-            <Box flexWrap={{ md: "nowrap", xs: "wrap" }} sx={{ margin: "20px 0", display: "flex", gap: "20px" }}>
-                <TextField
-                    fullWidth
-                    label={t("articles.form.title")}
-                    name="title"
-                    value={formik.values.title}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.title && Boolean(formik.errors.title)}
-                    helperText={formik.touched.title && (formik.errors.title as string)}
-                />
-                <Box flexWrap={{ md: "nowrap", xs: "wrap" }} width="100%" display="flex" gap={2}>
-                    <FormControl fullWidth>
-                        <InputLabel id="category-label">{t("articles.form.article_category_id")}</InputLabel>
-                        <Select
-                            disabled={isCategoriesLoading}
-                            labelId="category-label"
+                </div>
+            </div>
+            <div className="my-5 flex flex-wrap gap-5 md:flex-nowrap">
+                <div className="w-full space-y-1.5">
+                    <Label htmlFor="title">{t("articles.form.title")}</Label>
+                    <Input
+                        id="title"
+                        name="title"
+                        value={formik.values.title}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                    />
+                    {formik.touched.title && formik.errors.title && (
+                        <p className="text-destructive text-sm">{formik.errors.title as string}</p>
+                    )}
+                </div>
+                <div className="flex w-full flex-wrap gap-4 md:flex-nowrap">
+                    <div className="w-full space-y-1.5">
+                        <Label htmlFor="article_category_id">{t("articles.form.article_category_id")}</Label>
+                        <select
+                            id="article_category_id"
                             name="article_category_id"
+                            disabled={isCategoriesLoading}
                             onChange={(e) => formik.setFieldValue("article_category_id", e.target.value)}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.article_category_id && Boolean(formik.errors.article_category_id)}
+                            className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-8 w-full rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3"
                         >
+                            <option value="">---</option>
                             {categories?.items.map((category) => (
-                                <MenuItem key={category.id} value={category.id}>
+                                <option key={category.id} value={category.id}>
                                     {category.name}
-                                </MenuItem>
+                                </option>
                             ))}
-                        </Select>
+                        </select>
+                        {formik.touched.article_category_id && formik.errors.article_category_id && (
+                            <p className="text-destructive text-sm">{formik.errors.article_category_id}</p>
+                        )}
                         {isCategoriesLoading && <Loader />}
-                    </FormControl>
-                    <Button
-                        type="button"
-                        style={{
-                            gap: "10px",
-                        }}
-                        fullWidth
-                        variant="contained"
-                        onClick={() => setIsModalOpen(true)}
-                    >
-                        <SettingsIcon />
+                    </div>
+                    <Button type="button" className="w-full gap-2.5" onClick={() => setIsModalOpen(true)}>
+                        <Settings className="size-5" />
                         {t("articles.manage_categories")}
                     </Button>
-                </Box>
-            </Box>
+                </div>
+            </div>
             {formik.values.video_url && !formik.errors.video_url && (
-                <Videoplayer sx={{ height: "600px", margin: "20px 0" }} src={formik.values.video_url} />
+                <Videoplayer className="my-5 h-[600px]" src={formik.values.video_url} />
             )}
-            <TextField
-                fullWidth
-                label={t("articles.form.video_url")}
-                name="video_url"
-                value={formik.values.video_url}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.video_url && Boolean(formik.errors.video_url)}
-                helperText={formik.touched.video_url && (formik.errors.video_url as string)}
-                sx={{ marginBottom: "20px" }}
-            />
-            <Box
-                sx={{
-                    minHeight: "500px",
-
+            <div className="mb-5 w-full space-y-1.5">
+                <Label htmlFor="video_url">{t("articles.form.video_url")}</Label>
+                <Input
+                    id="video_url"
+                    name="video_url"
+                    value={formik.values.video_url}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                />
+                {formik.touched.video_url && formik.errors.video_url && (
+                    <p className="text-destructive text-sm">{formik.errors.video_url as string}</p>
+                )}
+            </div>
+            <div
+                className="mb-2.5 min-h-[500px]"
+                style={{
                     outline:
                         formik.touched.content && formik.errors.content
-                            ? `2px solid ${theme.palette.colors.danger}`
+                            ? "2px solid var(--color-danger-brand)"
                             : "none",
-                    marginBottom: "10px",
                 }}
             >
                 <Markdown
@@ -238,20 +219,11 @@ const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft, articleId }: Prop
                     placeholder={t("articles.form.content")}
                     content={formik.values.content}
                 />
-            </Box>
+            </div>
 
-            <Box
-                display="flex"
-                gap={2}
-                alignItems="center"
-                width="100%"
-                flexWrap={{ xs: "wrap", md: "nowrap" }}
-                justifyContent="space-between"
-            >
-                <Box flexWrap={{ xs: "wrap", md: "nowrap" }} marginTop={2} display="flex" gap={{ xs: 2, md: 5 }}>
-                    <Button variant="contained" color="primary" type="submit">
-                        {t("articles.send")}
-                    </Button>
+            <div className="flex w-full flex-wrap items-center justify-between gap-4 md:flex-nowrap">
+                <div className="mt-4 flex flex-wrap gap-4 md:flex-nowrap md:gap-10">
+                    <Button type="submit">{t("articles.send")}</Button>
                     <Button
                         onClick={() => {
                             if (!formik.values.article_category_id) {
@@ -261,63 +233,56 @@ const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft, articleId }: Prop
 
                             onSaveDraft(formik.values);
                         }}
-                        variant="outlined"
-                        color="primary"
+                        variant="outline"
                         type="button"
                     >
                         {t("articles.save_draft")}
                     </Button>
-                </Box>
+                </div>
 
-                <Box flexWrap={{ xs: "wrap", md: "nowrap" }} gap={2} display="flex">
-                    <FormControl>
-                        <InputLabel id="required_role">{t("articles.form.required_role")}</InputLabel>
-                        <Select
-                            sx={{
-                                width: "200px",
-                            }}
-                            disabled={isCategoriesLoading}
-                            labelId="required_role"
+                <div className="flex flex-wrap gap-4 md:flex-nowrap">
+                    <div className="space-y-1.5">
+                        <Label htmlFor="required_role">{t("articles.form.required_role")}</Label>
+                        <select
+                            id="required_role"
                             name="required_role"
+                            disabled={isCategoriesLoading}
                             value={formik.values.required_role}
                             onChange={(e) => formik.setFieldValue("required_role", e.target.value)}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.required_role && Boolean(formik.errors.required_role)}
+                            className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-8 w-[200px] rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3"
                         >
                             {Object.values(ArticleRequiredRoles).map((role) => (
-                                <MenuItem key={role} value={role}>
+                                <option key={role} value={role}>
                                     {translatedArticleRequiredRoles[role]}
-                                </MenuItem>
+                                </option>
                             ))}
-                        </Select>
-                    </FormControl>
-                    <FormControl>
-                        <InputLabel id="status">{t("articles.form.status")}</InputLabel>
-                        <Select
-                            sx={{
-                                width: "200px",
-                            }}
-                            disabled={isCategoriesLoading}
-                            labelId="status"
+                        </select>
+                    </div>
+                    <div className="space-y-1.5">
+                        <Label htmlFor="status">{t("articles.form.status")}</Label>
+                        <select
+                            id="status"
                             name="status"
+                            disabled={isCategoriesLoading}
                             value={formik.values.status}
                             onChange={(e) => formik.setFieldValue("status", e.target.value)}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.status && Boolean(formik.errors.status)}
+                            className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-8 w-[200px] rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3"
                         >
                             {allowedStatuses
                                 .filter(({ role }) => role.includes(user.user_role))
                                 .map(({ value }) => (
-                                    <MenuItem key={value} value={value}>
+                                    <option key={value} value={value}>
                                         {translatedArticleStatus[value]}
-                                    </MenuItem>
+                                    </option>
                                 ))}
-                        </Select>
-                    </FormControl>
-                </Box>
-            </Box>
+                        </select>
+                    </div>
+                </div>
+            </div>
             <CreateArticleCategoryModal open={isModalOpen} onClose={() => setIsModalOpen(false)} onSuccess={refetch} />
-        </Box>
+        </form>
     );
 };
 

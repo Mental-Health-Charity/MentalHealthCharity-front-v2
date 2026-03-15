@@ -1,23 +1,14 @@
-import {
-    Box,
-    Button,
-    Checkbox,
-    FormControl,
-    FormControlLabel,
-    InputLabel,
-    MenuItem,
-    Select,
-    TextField,
-    Typography,
-} from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useFormik } from "formik";
 import { Dispatch, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
-import useTheme from "../../../../theme";
 import { useUser } from "../../../auth/components/AuthProvider";
-import InternalLink from "../../../shared/components/InternalLink/styles";
+import InternalLink from "../../../shared/components/InternalLink";
 import Loader from "../../../shared/components/Loader";
 import { validation } from "../../../shared/constants";
 import handleApiError from "../../../shared/helpers/handleApiError";
@@ -31,10 +22,27 @@ interface Props {
     isLoading?: boolean;
 }
 
+const THEME_OPTIONS = [
+    { value: "no", key: "no" },
+    { value: "depression", key: "depression" },
+    { value: "alcoholism", key: "alcoholism" },
+    { value: "drug_addiction", key: "drug_addiction" },
+    { value: "self_harm", key: "self_harm" },
+    { value: "suicidal_thoughts", key: "suicidal_thoughts" },
+    { value: "eating_disorders", key: "eating_disorders" },
+    { value: "domestic_violence", key: "domestic_violence" },
+    { value: "homelessness", key: "homelessness" },
+    { value: "sexual_assault", key: "sexual_assault" },
+    { value: "grief_loss", key: "grief_loss" },
+    { value: "trauma", key: "trauma" },
+    { value: "anxiety", key: "anxiety" },
+    { value: "burnout", key: "burnout" },
+    { value: "loneliness", key: "loneliness" },
+];
+
 const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
     const { t } = useTranslation();
     const { user, register, isFetchingUser: isLoadingUserSession } = useUser();
-    const theme = useTheme();
     const isFormDataLoading = (isLoadingUserSession && !user) || isLoading;
 
     const initialValues: MenteeFormValues = {
@@ -128,7 +136,7 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
 
     const handleAgeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const text = e.target.value;
-        const formattedText = text.replace(/[^0-9]/g, ""); // ← tylko cyfry
+        const formattedText = text.replace(/[^0-9]/g, "");
         formik.setFieldValue("age", formattedText);
     };
 
@@ -142,277 +150,220 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
         >
             <form onSubmit={formik.handleSubmit}>
                 {step === 0 && (
-                    <Box
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "20px",
-                        }}
-                    >
-                        <TextField
-                            label={t("form.mentee.name_label")}
-                            name="name"
-                            value={formik.values.name}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.name && Boolean(formik.errors.name)}
-                            helperText={formik.touched.name && formik.errors.name}
-                            fullWidth
-                        />
-                        <TextField
-                            label={t("form.volunteer.age_label")}
-                            name="age"
-                            type="number"
-                            slotProps={{
-                                htmlInput: {
-                                    min: 0,
-                                },
-                            }}
-                            value={formik.values.age}
-                            onChange={handleAgeInputChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.age && Boolean(formik.errors.age)}
-                            helperText={formik.touched.age && formik.errors.age}
-                            fullWidth
-                        />
-                    </Box>
+                    <div className="flex flex-col gap-5">
+                        <div className="space-y-1.5">
+                            <Label htmlFor="name">{t("form.mentee.name_label")}</Label>
+                            <Input
+                                id="name"
+                                name="name"
+                                value={formik.values.name}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            />
+                            {formik.touched.name && formik.errors.name && (
+                                <p className="text-destructive text-sm">{formik.errors.name}</p>
+                            )}
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label htmlFor="age">{t("form.volunteer.age_label")}</Label>
+                            <Input
+                                id="age"
+                                name="age"
+                                type="number"
+                                min={0}
+                                value={formik.values.age}
+                                onChange={handleAgeInputChange}
+                                onBlur={formik.handleBlur}
+                            />
+                            {formik.touched.age && formik.errors.age && (
+                                <p className="text-destructive text-sm">{formik.errors.age}</p>
+                            )}
+                        </div>
+                    </div>
                 )}
 
                 {step === 1 && (
-                    <Box
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "20px",
-                        }}
-                    >
-                        {/* <FormControl>
-                            <InputLabel id="contacts">{t("form.volunteer.contact_label")}</InputLabel>
-                            <Select
-                                label={t("form.volunteer.contact_label")}
-                                name="contacts"
-                                value={formik.values.contacts}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                multiple
-                                error={formik.touched.contacts && Boolean(formik.errors.contacts)}
-                                fullWidth
-                            >
-                                <MenuItem value="email">{t("form.volunteer.contact_options.email")}</MenuItem>
-                                <MenuItem value="phone">{t("form.volunteer.contact_options.phone")}</MenuItem>
-                            </Select>
-                        </FormControl> */}
+                    <div className="flex flex-col gap-5">
                         {formik.values.contacts.includes("phone") && (
-                            <TextField
-                                label={t("form.mentee.contact_detail.phone")}
-                                name="phone"
-                                value={formik.values.phone}
+                            <div className="space-y-1.5">
+                                <Label htmlFor="phone">{t("form.mentee.contact_detail.phone")}</Label>
+                                <Input
+                                    id="phone"
+                                    name="phone"
+                                    value={formik.values.phone}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                />
+                                {formik.touched.phone && formik.errors.phone && (
+                                    <p className="text-destructive text-sm">{formik.errors.phone}</p>
+                                )}
+                            </div>
+                        )}
+                        <div className="space-y-1.5">
+                            <Label htmlFor="email">{t("form.mentee.contact_detail.email")}</Label>
+                            <Input
+                                id="email"
+                                name="email"
+                                value={formik.values.email}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                error={formik.touched.phone && Boolean(formik.errors.phone)}
-                                helperText={formik.touched.phone && formik.errors.phone}
-                                fullWidth
                             />
-                        )}
-                        <TextField
-                            label={t("form.mentee.contact_detail.email")}
-                            name="email"
-                            value={formik.values.email}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.email && Boolean(formik.errors.email)}
-                            helperText={formik.touched.email && formik.errors.email}
-                            fullWidth
-                        />
-                    </Box>
+                            {formik.touched.email && formik.errors.email && (
+                                <p className="text-destructive text-sm">{formik.errors.email}</p>
+                            )}
+                        </div>
+                    </div>
                 )}
 
                 {step === 2 && (
-                    <Box
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "20px",
-                        }}
-                    >
-                        <FormControl sx={{ maxWidth: "85vw" }}>
-                            <InputLabel id="themes">{t("form.mentee.issue_type_label")}</InputLabel>
-                            <Select
-                                label={t("form.mentee.issue_type_label")}
+                    <div className="flex flex-col gap-5">
+                        <div className="max-w-[85vw] space-y-1.5">
+                            <Label htmlFor="themes">{t("form.mentee.issue_type_label")}</Label>
+                            <select
+                                id="themes"
                                 name="themes"
+                                multiple
                                 value={formik.values.themes}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                multiple
-                                error={formik.touched.themes && Boolean(formik.errors.themes)}
-                                fullWidth
+                                className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-auto min-h-[200px] w-full rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3"
                             >
-                                <MenuItem value="no">{t("form.volunteer.issues_to_avoid.no")}</MenuItem>
-                                <MenuItem value="depression">{t("form.volunteer.issues_to_avoid.depression")}</MenuItem>
-                                <MenuItem value="alcoholism">{t("form.volunteer.issues_to_avoid.alcoholism")}</MenuItem>
-                                <MenuItem value="drug_addiction">
-                                    {t("form.volunteer.issues_to_avoid.drug_addiction")}
-                                </MenuItem>
-                                <MenuItem value="self_harm">{t("form.volunteer.issues_to_avoid.self_harm")}</MenuItem>
-                                <MenuItem value="suicidal_thoughts">
-                                    {t("form.volunteer.issues_to_avoid.suicidal_thoughts")}
-                                </MenuItem>
-                                <MenuItem value="eating_disorders">
-                                    {t("form.volunteer.issues_to_avoid.eating_disorders")}
-                                </MenuItem>
-                                <MenuItem value="domestic_violence">
-                                    {t("form.volunteer.issues_to_avoid.domestic_violence")}
-                                </MenuItem>
-                                <MenuItem value="homelessness">
-                                    {t("form.volunteer.issues_to_avoid.homelessness")}
-                                </MenuItem>
-                                <MenuItem value="sexual_assault">
-                                    {t("form.volunteer.issues_to_avoid.sexual_assault")}
-                                </MenuItem>
-                                <MenuItem value="grief_loss">{t("form.volunteer.issues_to_avoid.grief_loss")}</MenuItem>
-                                <MenuItem value="trauma">{t("form.volunteer.issues_to_avoid.trauma")}</MenuItem>
-                                <MenuItem value="anxiety">{t("form.volunteer.issues_to_avoid.anxiety")}</MenuItem>
-                                <MenuItem value="burnout">{t("form.volunteer.issues_to_avoid.burnout")}</MenuItem>
-                                <MenuItem value="loneliness">{t("form.volunteer.issues_to_avoid.loneliness")}</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Box>
+                                {THEME_OPTIONS.map((opt) => (
+                                    <option key={opt.value} value={opt.value}>
+                                        {t(`form.volunteer.issues_to_avoid.${opt.key}`)}
+                                    </option>
+                                ))}
+                            </select>
+                            {formik.touched.themes && formik.errors.themes && (
+                                <p className="text-destructive text-sm">{formik.errors.themes as string}</p>
+                            )}
+                        </div>
+                    </div>
                 )}
 
                 {step === 3 && (
-                    <Box
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "20px",
-                        }}
-                    >
-                        <TextField
-                            label={t("form.mentee.issue_description_label")}
-                            name="description"
-                            value={formik.values.description}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.description && Boolean(formik.errors.description)}
-                            helperText={formik.touched.description && formik.errors.description}
-                            fullWidth
-                            multiline
-                            rows={4}
-                        />
-                    </Box>
+                    <div className="flex flex-col gap-5">
+                        <div className="space-y-1.5">
+                            <Label htmlFor="description">{t("form.mentee.issue_description_label")}</Label>
+                            <textarea
+                                id="description"
+                                name="description"
+                                value={formik.values.description}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                rows={4}
+                                className="border-input focus-visible:border-ring focus-visible:ring-ring/50 w-full rounded-lg border bg-transparent px-3 py-2 text-sm outline-none focus-visible:ring-3"
+                            />
+                            {formik.touched.description && formik.errors.description && (
+                                <p className="text-destructive text-sm">{formik.errors.description}</p>
+                            )}
+                        </div>
+                    </div>
                 )}
 
                 {step === 4 && (
-                    <Box
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "20px",
-                        }}
-                    >
+                    <div className="flex flex-col gap-5">
                         {!user && (
                             <>
-                                <TextField
-                                    label={t("common.password")}
-                                    name="password"
-                                    type="password"
-                                    value={formik.values.password}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.password && Boolean(formik.errors.password)}
-                                    helperText={formik.touched.password && formik.errors.password}
-                                    fullWidth
-                                />
-                                <TextField
-                                    label={t("common.password_confirmation")}
-                                    name="confirmPassword"
-                                    type="password"
-                                    value={formik.values.confirmPassword}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
-                                    helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
-                                    fullWidth
-                                />
+                                <div className="space-y-1.5">
+                                    <Label htmlFor="password">{t("common.password")}</Label>
+                                    <Input
+                                        id="password"
+                                        name="password"
+                                        type="password"
+                                        value={formik.values.password}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    />
+                                    {formik.touched.password && formik.errors.password && (
+                                        <p className="text-destructive text-sm">{formik.errors.password}</p>
+                                    )}
+                                </div>
+                                <div className="space-y-1.5">
+                                    <Label htmlFor="confirmPassword">{t("common.password_confirmation")}</Label>
+                                    <Input
+                                        id="confirmPassword"
+                                        name="confirmPassword"
+                                        type="password"
+                                        value={formik.values.confirmPassword}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    />
+                                    {formik.touched.confirmPassword && formik.errors.confirmPassword && (
+                                        <p className="text-destructive text-sm">{formik.errors.confirmPassword}</p>
+                                    )}
+                                </div>
                             </>
                         )}
-                        <TextField
-                            select
-                            label={t("form.referral_source_label")}
-                            name="source"
-                            value={formik.values.source}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.source && Boolean(formik.errors.source)}
-                            helperText={formik.touched.source && formik.errors.source}
-                            fullWidth
-                        >
-                            <MenuItem value="friend">{t("form.referral_source_options.friend")}</MenuItem>
-                            <MenuItem value="socialMedia">{t("form.referral_source_options.social_media")}</MenuItem>
-                            <MenuItem value="google">{t("form.referral_source_options.google")}</MenuItem>
-                        </TextField>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    name="tos"
-                                    checked={formik.values.tos}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    color="primary"
-                                />
-                            }
-                            label={
-                                <Typography>
-                                    Wyrażam zgodę na{" "}
-                                    <InternalLink target="_blank" to="/tos">
-                                        warunki użytkowania i politykę prywatności
-                                    </InternalLink>
-                                </Typography>
-                            }
-                        />
+                        <div className="space-y-1.5">
+                            <Label htmlFor="source">{t("form.referral_source_label")}</Label>
+                            <select
+                                id="source"
+                                name="source"
+                                value={formik.values.source}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-8 w-full rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3"
+                            >
+                                <option value="">---</option>
+                                <option value="friend">{t("form.referral_source_options.friend")}</option>
+                                <option value="socialMedia">{t("form.referral_source_options.social_media")}</option>
+                                <option value="google">{t("form.referral_source_options.google")}</option>
+                            </select>
+                            {formik.touched.source && formik.errors.source && (
+                                <p className="text-destructive text-sm">{formik.errors.source}</p>
+                            )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Checkbox
+                                id="tos"
+                                checked={formik.values.tos}
+                                onCheckedChange={(checked) => formik.setFieldValue("tos", checked)}
+                            />
+                            <Label htmlFor="tos" className="font-normal">
+                                Wyrażam zgodę na{" "}
+                                <InternalLink target="_blank" to="/tos">
+                                    warunki użytkowania i politykę prywatności
+                                </InternalLink>
+                            </Label>
+                        </div>
                         {formik.touched.tos && formik.errors.tos && (
-                            <span style={{ color: theme.palette.colors.danger }}>{formik.errors.tos}</span>
+                            <span className="text-danger-brand text-sm">{formik.errors.tos}</span>
                         )}
-                    </Box>
+                    </div>
                 )}
 
-                <Box
-                    sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        marginTop: "20px",
-                    }}
-                >
+                <div className="mt-5 flex justify-between">
                     {step <= LAST_STEP && (
                         <>
-                            <Button onClick={handleBack} disabled={step === 0}>
+                            <Button variant="ghost" type="button" onClick={handleBack} disabled={step === 0}>
                                 {t("form.back")}
                             </Button>
-                            <Button sx={{ gap: "5px" }} disabled={isFormDataLoading} type="submit" variant="contained">
+                            <Button className="gap-[5px]" disabled={isFormDataLoading} type="submit">
                                 {step === LAST_STEP ? t("form.submit") : t("form.next")}
                                 {isFormDataLoading && <Loader variant="small" size={30} />}
                             </Button>
                         </>
                     )}
                     {step > LAST_STEP && (
-                        <Box width="100%" display="flex" flexDirection="column" gap="10px">
-                            <Button fullWidth type="button" component={Link} to="/" variant="contained">
+                        <div className="flex w-full flex-col gap-2.5">
+                            <Button className="w-full" render={<Link to="/" />}>
                                 {t("form.homepage")}
                             </Button>
                             <Button
-                                fullWidth
+                                className="w-full"
+                                variant="ghost"
                                 type="button"
                                 onClick={() => {
                                     setStep(0);
                                     formik.resetForm();
                                 }}
-                                variant="text"
                             >
                                 {t("form.retry")}
                             </Button>
-                        </Box>
+                        </div>
                     )}
-                </Box>
+                </div>
             </form>
         </FormWrapper>
     );

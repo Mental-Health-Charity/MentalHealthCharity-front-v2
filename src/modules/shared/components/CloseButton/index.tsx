@@ -1,22 +1,22 @@
-import CloseIcon from "@mui/icons-material/Close";
-import { IconButton, IconButtonProps, useTheme } from "@mui/material";
+import { cn } from "@/lib/utils";
+import { X } from "lucide-react";
 
-const CloseButton = (props: IconButtonProps) => {
-    const theme = useTheme();
+interface CloseButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    size?: number;
+}
+
+const CloseButton = ({ className, size = 20, ...props }: CloseButtonProps) => {
     return (
-        <IconButton>
-            <IconButton
-                {...props}
-                sx={{
-                    backgroundColor: theme.palette.colors.danger,
-                    color: theme.palette.text.primary,
-                    padding: "2px",
-                }}
-            >
-                {props.children}
-                <CloseIcon />
-            </IconButton>
-        </IconButton>
+        <button
+            type="button"
+            className={cn(
+                "bg-danger-brand inline-flex items-center justify-center rounded-sm p-0.5 text-white transition-opacity hover:opacity-80",
+                className
+            )}
+            {...props}
+        >
+            <X size={size} />
+        </button>
     );
 };
 

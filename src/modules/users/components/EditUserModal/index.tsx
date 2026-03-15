@@ -1,10 +1,11 @@
-import WarningIcon from "@mui/icons-material/Warning";
-import { Box, Button, MenuItem, TextField, Typography } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Form, Formik } from "formik";
+import { AlertTriangle } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
-import useTheme from "../../../../theme";
 import { User } from "../../../auth/types";
 import DataComparison from "../../../shared/components/CompareChanges";
 import Modal from "../../../shared/components/Modal";
@@ -20,7 +21,6 @@ interface Props {
 
 const EditUserModal = ({ onClose, open, user, onSubmit }: Props) => {
     const { t } = useTranslation();
-    const theme = useTheme();
     const [step, setStep] = useState(0);
 
     const validationSchema = Yup.object({
@@ -49,99 +49,67 @@ const EditUserModal = ({ onClose, open, user, onSubmit }: Props) => {
             onClose={onClose}
             open={open}
             title={step === 0 ? t("users.edit_modal_title") : t("common.compare_changes.title")}
-            modalContentProps={{
-                width: 500,
-            }}
+            className="sm:max-w-[500px]"
         >
             <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
                 {({ values, errors, touched, handleChange, handleBlur, dirty }) => (
-                    <Form>
-                        <Box display="flex" flexDirection="column" gap={2}>
-                            {step === 0 && (
-                                <>
-                                    <TextField
-                                        id="id"
-                                        name="id"
-                                        label={t("users.id")}
-                                        fullWidth
-                                        disabled
-                                        value={user.id}
-                                    />
-                                    <TextField
+                    <Form className="flex flex-col gap-4">
+                        {step === 0 && (
+                            <>
+                                <div className="space-y-1.5">
+                                    <Label>{t("users.id")}</Label>
+                                    <Input disabled value={user.id} />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <Label htmlFor="full_name">{t("users.full_name")}</Label>
+                                    <Input
                                         id="full_name"
                                         name="full_name"
-                                        label={t("users.full_name")}
-                                        fullWidth
                                         value={values.full_name}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
-                                        error={touched.full_name && Boolean(errors.full_name)}
-                                        helperText={touched.full_name && errors.full_name}
                                     />
-                                    {values.full_name === "" && (
-                                        <Box
-                                            sx={{
-                                                backgroundColor: theme.palette.colors.warning,
-                                                display: "flex",
-                                                alignItems: "center",
-                                                padding: theme.spacing(2),
-                                                borderRadius: "8px",
-                                                gap: theme.spacing(2),
-                                            }}
-                                        >
-                                            <WarningIcon
-                                                sx={{
-                                                    color: theme.palette.text.secondary,
-                                                }}
-                                            />
-                                            <Typography color="text.secondary">
-                                                {t("users.empty_full_name_warning")}
-                                            </Typography>
-                                        </Box>
+                                    {touched.full_name && errors.full_name && (
+                                        <p className="text-destructive text-sm">{errors.full_name}</p>
                                     )}
-                                    <TextField
+                                </div>
+                                {values.full_name === "" && (
+                                    <div className="bg-warning-brand/20 flex items-center gap-4 rounded-lg p-4">
+                                        <AlertTriangle className="text-muted-foreground size-5" />
+                                        <p className="text-muted-foreground">{t("users.empty_full_name_warning")}</p>
+                                    </div>
+                                )}
+                                <div className="space-y-1.5">
+                                    <Label htmlFor="user_role">{t("users.role")}</Label>
+                                    <select
                                         id="user_role"
                                         name="user_role"
-                                        label={t("users.role")}
-                                        select
-                                        fullWidth
                                         value={values.user_role}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
-                                        error={touched.user_role && Boolean(errors.user_role)}
-                                        helperText={touched.user_role && errors.user_role}
+                                        className="border-input bg-background focus:ring-ring w-full rounded-md border px-3 py-2 text-sm outline-none focus:ring-2"
                                     >
                                         {Object.values(Roles).map((role) => (
-                                            <MenuItem key={role} value={role}>
+                                            <option key={role} value={role}>
                                                 {translatedRoles[role]}
-                                            </MenuItem>
+                                            </option>
                                         ))}
-                                    </TextField>
-                                    <TextField
-                                        id="email"
-                                        name="email"
-                                        label={t("users.email")}
-                                        fullWidth
-                                        disabled
-                                        value={user.email}
-                                    />
-                                </>
-                            )}
-                            {step === 1 && <DataComparison dataA={initialValues} dataB={values} />}
+                                    </select>
+                                    {touched.user_role && errors.user_role && (
+                                        <p className="text-destructive text-sm">{errors.user_role}</p>
+                                    )}
+                                </div>
+                                <div className="space-y-1.5">
+                                    <Label>{t("users.email")}</Label>
+                                    <Input disabled value={user.email} />
+                                </div>
+                            </>
+                        )}
+                        {step === 1 && <DataComparison dataA={initialValues} dataB={values} />}
 
-                            <Box display="flex" justifyContent="space-between">
-                                <Button
-                                    size="small"
-                                    type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary"
-                                    disabled={!dirty}
-                                >
-                                    {step === 0 ? t("common.next") : t("common.save")}
-                                </Button>
-                            </Box>
-                        </Box>
+                        <Button type="submit" className="w-full" size="sm" disabled={!dirty}>
+                            {step === 0 ? t("common.next") : t("common.save")}
+                        </Button>
                     </Form>
                 )}
             </Formik>

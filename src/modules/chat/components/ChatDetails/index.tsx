@@ -1,5 +1,5 @@
-import CloseIcon from "@mui/icons-material/Close";
-import { Avatar, Box, IconButton, List, ListItemButton, Typography, useTheme } from "@mui/material";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { User as UserIcon, X } from "lucide-react";
 import formatDate from "../../../shared/helpers/formatDate";
 import { translatedRoles } from "../../../users/constants";
 import { Chat } from "../../types";
@@ -10,98 +10,38 @@ interface Props {
 }
 
 const ChatDetails = ({ chat, onClose }: Props) => {
-    const theme = useTheme();
     return (
-        <Box
-            sx={{
-                backgroundColor: theme.palette.background.default,
-                borderRadius: "8px",
-                boxShadow: `0 0 10px 5px ${theme.palette.shadows.box}`,
-                height: "fit-content",
-                display: "flex",
-                justifyContent: "center",
-                padding: "15px",
-                flexDirection: "column",
-                minWidth: "300px",
-            }}
-        >
-            <Box
-                sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    width: "100%",
-                    alignItems: "center",
-                    gap: "15px",
-                }}
-            >
-                <Typography
-                    sx={{
-                        textAlign: "start",
-                        backgroundColor: theme.palette.colors.dark,
-                        padding: "3px 15px",
-                        borderRadius: "8px",
-                        width: "fit-content",
-                        color: theme.palette.text.primary,
-                        fontSize: "20px",
-                        fontWeight: 600,
-                        minWidth: "130px",
-                    }}
-                >
+        <div className="bg-background shadow-box flex h-fit min-w-[300px] flex-col justify-center rounded-lg p-4">
+            <div className="flex w-full items-center justify-between gap-4">
+                <h3 className="bg-dark text-bg-brand w-fit min-w-[130px] rounded-lg px-4 py-1 text-xl font-semibold">
                     {chat.name}
-                </Typography>
-                <IconButton
-                    onClick={onClose}
-                    sx={{
-                        backgroundColor: theme.palette.colors.danger,
-                        color: theme.palette.text.primary,
-                        padding: "2px",
-                    }}
-                >
-                    <CloseIcon />
-                </IconButton>
-            </Box>
-            <Typography
-                sx={{
-                    width: "100%",
-                    textAlign: "start",
-                    fontSize: "20px",
-                    fontWeight: 600,
-                }}
-                color="text.secondary"
-            >
+                </h3>
+                <button onClick={onClose} className="bg-danger-brand text-bg-brand rounded-sm p-0.5">
+                    <X className="size-5" />
+                </button>
+            </div>
+            <h4 className="text-text-body w-full text-start text-xl font-semibold">
                 Uczestnicy ({chat.participants.length})
-            </Typography>
-            <List>
+            </h4>
+            <ul className="mt-2 flex flex-col gap-1">
                 {chat.participants.map((participant) => (
-                    <ListItemButton
-                        sx={{
-                            display: "flex",
-                            gap: "15px",
-                            padding: "5px",
-                        }}
-                        key={participant.id}
-                    >
-                        <Avatar src={participant.chat_avatar_url} alt={participant.full_name} variant="rounded" />
-                        <Box>
-                            <Typography>{participant.full_name}</Typography>
-                            <Typography>{translatedRoles[participant.user_role]}</Typography>
-                        </Box>
-                    </ListItemButton>
+                    <li key={participant.id} className="hover:bg-muted flex items-center gap-4 rounded-md px-1.5 py-1">
+                        <Avatar className="rounded-md">
+                            <AvatarImage src={participant.chat_avatar_url} alt={participant.full_name} />
+                            <AvatarFallback className="rounded-md">
+                                <UserIcon className="size-4" />
+                            </AvatarFallback>
+                        </Avatar>
+                        <div>
+                            <p className="text-text-body">{participant.full_name}</p>
+                            <p className="text-text-body">{translatedRoles[participant.user_role]}</p>
+                        </div>
+                    </li>
                 ))}
-            </List>
-            <Typography
-                sx={{
-                    width: "100%",
-                    textAlign: "start",
-                    fontSize: "20px",
-                    fontWeight: 600,
-                }}
-                color="text.secondary"
-            >
-                Utworzony w dniu
-            </Typography>
-            <Typography>{formatDate(chat.creation_date)}</Typography>
-        </Box>
+            </ul>
+            <h4 className="text-text-body mt-4 w-full text-start text-xl font-semibold">Utworzony w dniu</h4>
+            <p className="text-text-body">{formatDate(chat.creation_date)}</p>
+        </div>
     );
 };
 

@@ -1,4 +1,3 @@
-import { Box, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -22,32 +21,10 @@ const ConfirmEmailCompleteScreen = () => {
 
     if (isError) {
         return (
-            <Box
-                maxWidth={600}
-                sx={{
-                    minHeight: "100vh",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: "100%",
-                }}
-                gap={2}
-                display="flex"
-                flexDirection="column"
-            >
-                <Typography textAlign="center" component="h1" variant="h4">
-                    {t("confirm_email_complete.error_title")}
-                </Typography>
-                <Typography
-                    sx={{
-                        opacity: 0.75,
-                    }}
-                    textAlign="center"
-                    component="h2"
-                    variant="body1"
-                >
-                    {t("confirm_email_complete.error_description")}
-                </Typography>
-            </Box>
+            <div className="flex min-h-screen w-full max-w-[600px] flex-col items-center justify-center gap-4">
+                <h1 className="text-center text-3xl">{t("confirm_email_complete.error_title")}</h1>
+                <p className="text-center opacity-75">{t("confirm_email_complete.error_description")}</p>
+            </div>
         );
     }
 

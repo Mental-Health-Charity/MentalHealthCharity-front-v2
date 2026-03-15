@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -97,39 +96,11 @@ const ProfileScreen = () => {
     const avatar = data && data.avatar_url;
 
     return (
-        <Box
-            sx={{
-                width: "100%",
-            }}
-        >
-            <Box
-                sx={{
-                    width: "100%",
-                    maxHeight: "280px",
-                    overflow: "hidden",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "flex-start",
-
-                    "& img": {
-                        opacity: "0.8",
-                    },
-                }}
-            >
+        <div className="w-full">
+            <div className="flex max-h-[280px] w-full items-start justify-center overflow-hidden [&_img]:opacity-80">
                 <img width="100%" src={wave_bg} alt="" height="600px" aria-disabled />
-            </Box>
-            <Container
-                parentProps={{
-                    sx: {
-                        marginTop: "-185px",
-                    },
-                }}
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "20px",
-                }}
-            >
+            </div>
+            <Container parentClassName="-mt-[185px]" className="flex flex-col gap-5">
                 {username && role && (
                     <UserProfileHeading
                         onSubmit={({ avatar }) =>
@@ -160,7 +131,7 @@ const ProfileScreen = () => {
                 )}
                 {articles && <UserProfileArticles articles={articles.items} />}
             </Container>
-        </Box>
+        </div>
     );
 };
 

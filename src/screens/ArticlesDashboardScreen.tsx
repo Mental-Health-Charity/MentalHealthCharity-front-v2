@@ -1,6 +1,6 @@
-import AddIcon from "@mui/icons-material/Add";
-import { Box, Button, Typography } from "@mui/material";
+import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
+import { Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import ArticleCard from "../modules/articles/components/ArticleCard";
@@ -55,21 +55,10 @@ const ArticleDashboardScreen = () => {
 
     return (
         <Container>
-            <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 2,
-                }}
-            >
+            <div className="flex flex-col gap-4">
                 <SimpleCard title={t("articles.dashboard.title")} subtitle={t("articles.dashboard.subtitle")}>
-                    <Button
-                        component={Link}
-                        to="/articles/create"
-                        variant="contained"
-                        sx={{ marginTop: "20px", gap: "10px" }}
-                    >
-                        <AddIcon fontSize="large" /> {t("articles.add_article")}
+                    <Button className="mt-5 gap-2.5" render={<Link to="/articles/create" />}>
+                        <Plus className="size-6" /> {t("articles.add_article")}
                     </Button>
                 </SimpleCard>
 
@@ -80,37 +69,21 @@ const ArticleDashboardScreen = () => {
                         <SimpleCard subtitle={subtitle} key={key} title={title}>
                             {isLoading && <Loader />}
                             {data && data.total > 0 ? (
-                                <Box
-                                    gap={2}
-                                    sx={{
-                                        display: "grid",
-                                        gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-                                        gap: 2,
-                                        marginTop: "20px",
-                                    }}
-                                >
+                                <div className="mt-5 grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-4">
                                     {data.items.map((article) => (
-                                        <Box
-                                            sx={{
-                                                width: "100%",
-                                            }}
-                                        >
-                                            <ArticleCard
-                                                draft={key === ArticleStatus.DRAFT}
-                                                article={article}
-                                                key={article.id}
-                                            />
-                                            {article.reject_message !== "" && <Box>{article.reject_message}</Box>}
-                                        </Box>
+                                        <div key={article.id} className="w-full">
+                                            <ArticleCard draft={key === ArticleStatus.DRAFT} article={article} />
+                                            {article.reject_message !== "" && <div>{article.reject_message}</div>}
+                                        </div>
                                     ))}
-                                </Box>
+                                </div>
                             ) : (
-                                <Typography sx={{ marginTop: "10px" }}>{t("articles.dashboard.not_found")}</Typography>
+                                <p className="mt-2.5">{t("articles.dashboard.not_found")}</p>
                             )}
                         </SimpleCard>
                     );
                 })}
-            </Box>
+            </div>
         </Container>
     );
 };

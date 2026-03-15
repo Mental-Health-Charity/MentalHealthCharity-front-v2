@@ -1,19 +1,16 @@
-import FacebookIcon from "@mui/icons-material/Facebook";
-import { Box, Button, IconButton } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { Facebook } from "lucide-react";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import CardImage01 from "../../../../assets/static/head_1.svg";
 import CardImage02 from "../../../../assets/static/head_2.svg";
 import CardImage03 from "../../../../assets/static/head_3.svg";
-import useTheme from "../../../../theme";
 import Card from "../Card";
 import SimpleCard from "../SimpleCard";
-import { ImageWrapperControl, StyledImageWrapper } from "./style";
 
 const AboutUs = () => {
     const { t } = useTranslation();
-    const theme = useTheme();
 
     const cards = useMemo(
         () => [
@@ -58,107 +55,57 @@ const AboutUs = () => {
     );
 
     return (
-        <Box
-            width="100%"
-            maxWidth={1600}
+        <div
             id="about-us"
-            sx={{
-                margin: "0 auto",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: "20px",
-                flexDirection: "column",
-                position: "relative",
-            }}
+            className="relative mx-auto flex w-full max-w-[1600px] flex-col items-center justify-center gap-5"
         >
-            <Box
-                sx={{
-                    width: "100%",
-                    gap: { xs: "30px", md: "60px" },
-                    display: "flex",
-                    justifyContent: "center",
-                    flexDirection: "column",
-                    margin: "50px 0",
-                    padding: { xs: "10px", md: 0 },
-                }}
-            >
+            <div className="my-12 flex w-full flex-col justify-center gap-[30px] px-2.5 md:gap-[60px] md:px-0">
                 {smallCards.map(({ id, text, title, img }) => (
-                    <Box key={id} display="flex" gap={10} flexDirection={id % 2 === 0 ? "row" : "row-reverse"}>
-                        <Card textAlign="justify" sx={{ width: "100%" }} title={title} subtitle={text}></Card>
-                        <ImageWrapperControl>
-                            <StyledImageWrapper>
+                    <div key={id} className={`flex gap-10 ${id % 2 === 0 ? "flex-row" : "flex-row-reverse"}`}>
+                        <Card textAlign="justify" className="w-full" title={title} subtitle={text} />
+                        <div className="flex items-center justify-center max-[600px]:hidden">
+                            <div className="bg-secondary flex w-60 items-center justify-center rounded-lg p-5 shadow-[0_4px_13px_rgba(0,0,0,0.25)] max-[980px]:hidden">
                                 <img width={180} loading="lazy" height={200} alt="People icon" src={img} />
-                            </StyledImageWrapper>
-                        </ImageWrapperControl>
-                    </Box>
+                            </div>
+                        </div>
+                    </div>
                 ))}
-            </Box>
-            <Box zIndex={1} display="flex" gap={8} flexDirection="column" sx={{ padding: { xs: "10px", md: 0 } }}>
+            </div>
+
+            <div className="z-[1] flex flex-col gap-16 px-2.5 md:px-0">
                 {cards.map(({ id, text, title, subtitle }) => (
                     <SimpleCard
-                        titleProps={{
-                            sx: {
-                                textAlign: "start",
-                            },
-                        }}
+                        titleClassName="text-start"
                         textAlign="justify"
                         key={id}
                         subtitle={subtitle}
                         title={title}
                         text={text}
                     >
-                        <Box
-                            sx={{
-                                marginTop: "20px",
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                flexWrap: { xs: "wrap", md: "nowrap" },
-                                gap: "20px",
-                            }}
-                        >
-                            <Box
-                                sx={{
-                                    flexWrap: {
-                                        xs: "wrap",
-                                        md: "nowrap",
-                                        width: "100%",
-                                        maxWidth: "700px",
-                                        marginTop: "10px",
-                                    },
-                                }}
-                                display="flex"
-                                gap={2}
-                            >
-                                <Button component={Link} variant="contained" to="/form/volunteer" fullWidth>
-                                    {t("homepage.choose_volunteer_button")}
-                                </Button>
-                                <Button component={Link} to="/form/mentee-getting-started" fullWidth variant="outlined">
-                                    {t("homepage.choose_mentee_button")}
-                                </Button>
-                            </Box>
-                            <IconButton
-                                component="a"
+                        <div className="mt-5 flex flex-wrap items-center justify-between gap-5 md:flex-nowrap">
+                            <div className="mt-2.5 flex w-full max-w-[700px] flex-wrap gap-4 md:flex-nowrap">
+                                <Link to="/form/volunteer" className="w-full">
+                                    <Button className="w-full">{t("homepage.choose_volunteer_button")}</Button>
+                                </Link>
+                                <Link to="/form/mentee-getting-started" className="w-full">
+                                    <Button variant="outline" className="w-full">
+                                        {t("homepage.choose_mentee_button")}
+                                    </Button>
+                                </Link>
+                            </div>
+                            <a
                                 href="https://www.facebook.com/groups/1340769720143310"
                                 target="_blank"
                                 rel="noreferrer"
-                                sx={{
-                                    color: theme.palette.text.primary,
-                                    padding: "10px",
-                                    width: "50px",
-                                    height: "50px",
-                                    backgroundColor: theme.palette.colors.accent,
-                                    borderRadius: "50%",
-                                }}
+                                className="bg-accent-brand text-foreground hover:bg-accent-brand/80 flex size-[50px] items-center justify-center rounded-full transition-colors"
                             >
-                                <FacebookIcon fontSize="large" />
-                            </IconButton>
-                        </Box>
+                                <Facebook className="size-6" />
+                            </a>
+                        </div>
                     </SimpleCard>
                 ))}
-            </Box>
-        </Box>
+            </div>
+        </div>
     );
 };
 

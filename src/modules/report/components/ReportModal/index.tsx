@@ -1,9 +1,11 @@
-import { Box, Button, MenuItem, Select, TextField } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useMutation } from "@tanstack/react-query";
-import { Field, Form, Formik } from "formik";
+import { Form, Formik } from "formik";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import * as Yup from "yup"; // Można dodać walidację
+import * as Yup from "yup";
 import Modal from "../../../shared/components/Modal";
 import readError from "../../../shared/helpers/readError";
 import { ReportTranslationKeys } from "../../constants";
@@ -36,11 +38,7 @@ const ReportModal = ({ open, onClose }: Props) => {
 
     return (
         <Modal title={t("report.modal_title")} onClose={onClose} open={open}>
-            <Box
-                sx={{
-                    width: 500,
-                }}
-            >
+            <div className="w-[500px]">
                 <Formik
                     initialValues={{
                         report_type: "",
@@ -56,75 +54,69 @@ const ReportModal = ({ open, onClose }: Props) => {
                 >
                     {({ values, handleChange, handleBlur, handleSubmit, touched, errors }) => (
                         <Form onSubmit={handleSubmit}>
-                            <Box mb={2}>
-                                <Field
-                                    as={Select}
+                            <div className="mb-4 space-y-1.5">
+                                <Label htmlFor="report_type">{t("report.select_report_type")}</Label>
+                                <select
+                                    id="report_type"
                                     name="report_type"
                                     value={values.report_type}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    fullWidth
-                                    displayEmpty
-                                    error={touched.report_type && Boolean(errors.report_type)}
-                                    helperText={touched.report_type && errors.report_type}
+                                    className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-8 w-full rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3"
                                 >
-                                    <MenuItem value="" disabled>
+                                    <option value="" disabled>
                                         {t("report.select_report_type")}
-                                    </MenuItem>
+                                    </option>
                                     {Object.values(ReportType).map((type) => (
-                                        <MenuItem key={type} value={type}>
+                                        <option key={type} value={type}>
                                             {t(ReportTranslationKeys[type])}
-                                        </MenuItem>
+                                        </option>
                                     ))}
-                                </Field>
-                            </Box>
+                                </select>
+                                {touched.report_type && errors.report_type && (
+                                    <p className="text-destructive text-sm">{errors.report_type}</p>
+                                )}
+                            </div>
 
-                            <Box mb={2}>
-                                <Field
-                                    as={TextField}
+                            <div className="mb-4 space-y-1.5">
+                                <Label htmlFor="subject">{t("report.subject")}</Label>
+                                <Input
+                                    id="subject"
                                     name="subject"
-                                    label={t("report.subject")}
                                     value={values.subject}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    fullWidth
-                                    error={touched.subject && Boolean(errors.subject)}
-                                    helperText={touched.subject && errors.subject}
                                 />
-                            </Box>
+                                {touched.subject && errors.subject && (
+                                    <p className="text-destructive text-sm">{errors.subject}</p>
+                                )}
+                            </div>
 
-                            <Box mb={2}>
-                                <Field
-                                    as={TextField}
+                            <div className="mb-4 space-y-1.5">
+                                <Label htmlFor="description">{t("report.description")}</Label>
+                                <textarea
+                                    id="description"
                                     name="description"
-                                    label={t("report.description")}
                                     value={values.description}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    fullWidth
-                                    multiline
                                     rows={4}
-                                    error={touched.description && Boolean(errors.description)}
-                                    helperText={touched.description && errors.description}
+                                    className="border-input focus-visible:border-ring focus-visible:ring-ring/50 w-full rounded-lg border bg-transparent px-3 py-2 text-sm outline-none focus-visible:ring-3"
                                 />
-                            </Box>
+                                {touched.description && errors.description && (
+                                    <p className="text-destructive text-sm">{errors.description}</p>
+                                )}
+                            </div>
 
-                            <Box textAlign="right">
-                                <Button
-                                    type="submit"
-                                    sx={{
-                                        padding: "6px 20px",
-                                    }}
-                                    variant="contained"
-                                    color="primary"
-                                >
+                            <div className="text-right">
+                                <Button type="submit" className="px-5 py-1.5">
                                     {t("common.submit")}
                                 </Button>
-                            </Box>
+                            </div>
                         </Form>
                     )}
                 </Formik>
-            </Box>
+            </div>
         </Modal>
     );
 };

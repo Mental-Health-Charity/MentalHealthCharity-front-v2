@@ -1,4 +1,4 @@
-import { Button, useTheme } from "@mui/material";
+import { cn } from "@/lib/utils";
 import { useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -6,50 +6,32 @@ interface Props {
     name: string;
     to: string;
     fullWidth?: boolean;
+    className?: string;
 }
 
 const reloadDocumentRoutes = ["/admin/"];
 
-const NavLink = ({ name, to, fullWidth }: Props) => {
+const NavLink = ({ name, to, fullWidth, className }: Props) => {
     const location = useLocation();
     const isCurrentRoute = location.pathname === to;
-    const theme = useTheme();
 
     const reloadDocument = useMemo(() => reloadDocumentRoutes.includes(to), [to]);
 
     return (
-        <Button
-            href={to}
+        <Link
             to={to}
-            component={Link}
             reloadDocument={reloadDocument}
-            fullWidth={fullWidth}
-            sx={{
-                color: "text.secondary",
-                display: "block",
-                textWrap: "nowrap",
-                fontSize: "20px",
-                fontWeight: 600,
-                opacity: isCurrentRoute ? 1 : 0.9,
-                position: "relative",
-
-                "&::after": {
-                    position: "absolute",
-                    content: "''",
-                    display: "block",
-                    minHeight: "5px",
-                    borderRadius: "5px",
-                    left: 0,
-                    bottom: fullWidth ? 2 : 15,
-                    zIndex: -1,
-                    width: isCurrentRoute ? "100%" : 0,
-                    background: isCurrentRoute ? theme.palette.colors.accent : "transparent",
-                    transition: "width 0.3s",
-                },
-            }}
+            className={cn(
+                "text-foreground relative block px-3 py-2 text-xl font-semibold whitespace-nowrap no-underline transition-opacity",
+                isCurrentRoute ? "opacity-100" : "opacity-90 hover:opacity-100",
+                fullWidth && "w-full",
+                "after:absolute after:bottom-0 after:left-0 after:block after:h-[5px] after:rounded-[5px] after:transition-all after:duration-300",
+                isCurrentRoute ? "after:bg-accent-brand after:w-full" : "after:w-0 after:bg-transparent",
+                className
+            )}
         >
             {name}
-        </Button>
+        </Link>
     );
 };
 

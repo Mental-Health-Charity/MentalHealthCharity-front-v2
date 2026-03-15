@@ -1,5 +1,5 @@
-import GavelIcon from "@mui/icons-material/Gavel";
-import { Box, Button } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { Gavel } from "lucide-react";
 import { useState } from "react";
 import { Article, UpdateStatusFormValues } from "../../types";
 import ArticleCard from "../ArticleCard";
@@ -14,33 +14,20 @@ const ArticlesManager = ({ articles, onChangeStatus }: Props) => {
     const [articleToManage, setArticleToManage] = useState<Article | null>(null);
 
     return (
-        <Box
-            sx={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(400px, 1fr))",
-                gap: "20px",
-            }}
-        >
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(400px,1fr))] gap-5">
             {articles.map((article) => (
-                <Box width="100%">
-                    <Box width="100%" sx={{ zIndex: 1, position: "relative" }}>
-                        <ArticleCard key={article.id} article={article} />
-                    </Box>
+                <div key={article.id} className="w-full">
+                    <div className="relative z-[1] w-full">
+                        <ArticleCard article={article} />
+                    </div>
                     <Button
                         onClick={() => setArticleToManage(article)}
-                        fullWidth
-                        sx={{
-                            marginTop: "-6px",
-                            padding: "14px 10px 10px 10px",
-                            zIndex: 0,
-                            gap: "10px",
-                        }}
-                        variant="contained"
+                        className="z-0 -mt-1.5 w-full gap-2.5 px-2.5 pt-3.5 pb-2.5"
                     >
-                        <GavelIcon />
+                        <Gavel className="size-5" />
                         Rozstrzygnij
                     </Button>
-                </Box>
+                </div>
             ))}
             {articleToManage && (
                 <ManageArticleModal
@@ -52,7 +39,7 @@ const ArticlesManager = ({ articles, onChangeStatus }: Props) => {
                     open={!!articleToManage}
                 />
             )}
-        </Box>
+        </div>
     );
 };
 

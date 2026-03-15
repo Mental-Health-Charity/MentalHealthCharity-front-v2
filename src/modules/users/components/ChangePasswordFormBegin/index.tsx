@@ -1,4 +1,6 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
@@ -14,39 +16,31 @@ const ChangePasswordBeginFormBegin = ({ onSubmit, isLoading }: Props) => {
     const { t } = useTranslation();
 
     const formik = useFormik<ChangePasswordBeginPayload>({
-        initialValues: {
-            email: "",
-        },
-        validationSchema: Yup.object({
-            email: validation.email,
-        }),
+        initialValues: { email: "" },
+        validationSchema: Yup.object({ email: validation.email }),
         onSubmit,
     });
 
     return (
-        <Box
-            component="form"
-            onSubmit={formik.handleSubmit}
-            noValidate
-            sx={{ display: "flex", flexDirection: "column", gap: 2, width: "100%" }}
-        >
-            <TextField
-                id="email"
-                name="email"
-                type="email"
-                label={t("form.email")}
-                value={formik.values.email}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.email && Boolean(formik.errors.email)}
-                helperText={formik.touched.email && formik.errors.email}
-                fullWidth
-            />
-
-            <Button type="submit" variant="contained" color="primary" disabled={isLoading}>
+        <form onSubmit={formik.handleSubmit} noValidate className="flex w-full flex-col gap-4">
+            <div className="space-y-1.5">
+                <Label htmlFor="email">{t("form.email")}</Label>
+                <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                />
+                {formik.touched.email && formik.errors.email && (
+                    <p className="text-destructive text-sm">{formik.errors.email}</p>
+                )}
+            </div>
+            <Button type="submit" disabled={isLoading}>
                 {t("form.submit")}
             </Button>
-        </Box>
+        </form>
     );
 };
 

@@ -1,4 +1,3 @@
-import { MenuItemProps } from "@mui/material";
 import React from "react";
 import { Permissions } from "./constants";
 
@@ -22,14 +21,6 @@ export interface RouteType {
     permission?: Permissions;
 }
 
-export interface Pagination<T> {
-    page: number;
-    size: number;
-    total: number;
-    pages: number;
-    items: T[];
-}
-
 export class ApiError extends Error {
     status: number;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -43,12 +34,14 @@ export class ApiError extends Error {
     }
 }
 
-export interface ComponentAction extends MenuItemProps {
+export interface ComponentAction {
     id: string;
     label: React.ReactNode;
     icon?: React.ReactNode;
     variant?: "default" | "divider";
     href?: string;
+    onClick?: (e: React.MouseEvent) => void;
+    disabled?: boolean;
 }
 
 export enum ErrorMessage {

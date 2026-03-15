@@ -1,7 +1,5 @@
-import { Box } from "@mui/material";
 import { useState } from "react";
 import BgImage from "../../../../assets/static/admin_panel_bg.svg";
-import useTheme from "../../../../theme";
 import { AdminSidebar } from "../AdminSidebar";
 
 interface Props {
@@ -10,36 +8,17 @@ interface Props {
 
 const AdminLayout = ({ children }: Props) => {
     const [isSidebarOpen, setSidebarOpen] = useState(true);
-    const theme = useTheme();
+
     return (
-        <Box
-            sx={{
-                width: "100%",
+        <div
+            className="bg-background flex min-h-full w-full items-start justify-center p-2.5 pt-10"
+            style={{
                 backgroundImage: `url(${BgImage})`,
-                minHeight: "100%",
-                backgroundColor: theme.palette.background.default,
-                display: "flex",
-                padding: "40px 10px",
-                alignItems: "start",
-                justifyContent: "center",
             }}
         >
             <AdminSidebar open={isSidebarOpen} handleToggle={() => setSidebarOpen(!isSidebarOpen)} />
-            <Box
-                sx={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                    marginTop: "20px",
-                    maxWidth: "1650px",
-
-                    gap: "20px",
-                    flexDirection: "column",
-                }}
-            >
-                {children}
-            </Box>
-        </Box>
+            <div className="mt-5 flex w-full max-w-[1650px] flex-col items-center justify-center gap-5">{children}</div>
+        </div>
     );
 };
 

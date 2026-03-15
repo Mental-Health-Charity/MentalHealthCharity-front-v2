@@ -1,8 +1,11 @@
-import { Box, Button, Checkbox, FormControlLabel, TextField } from "@mui/material";
-import { Field, Form, Formik } from "formik";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Form, Formik } from "formik";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import * as Yup from "yup";
-import { StyledLink } from "../../../shared/components/StyledLink/styles";
 import { LoginFormValues } from "../../types";
 
 interface Props {
@@ -27,40 +30,52 @@ const LoginForm = ({ onSubmit, initial, disabled }: Props) => {
 
     return (
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-            {({ errors, touched }) => (
-                <Form>
-                    <Box mb={2}>
-                        <Field
-                            as={TextField}
+            {({ errors, touched, handleChange, handleBlur, values }) => (
+                <Form className="flex flex-col gap-4">
+                    <div className="space-y-1.5">
+                        <Label htmlFor="email">Email</Label>
+                        <Input
+                            id="email"
                             name="email"
                             type="email"
-                            label="Email"
-                            fullWidth
-                            variant="outlined"
-                            error={touched.email && Boolean(errors.email)}
-                            helperText={touched.email && errors.email}
+                            value={values.email}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
                         />
-                    </Box>
+                        {touched.email && errors.email && <p className="text-destructive text-sm">{errors.email}</p>}
+                    </div>
 
-                    <Box mb={1}>
-                        <Field
-                            as={TextField}
+                    <div className="space-y-1.5">
+                        <Label htmlFor="password">Hasło</Label>
+                        <Input
+                            id="password"
                             name="password"
                             type="password"
-                            label="Hasło"
-                            fullWidth
-                            variant="outlined"
-                            error={touched.password && Boolean(errors.password)}
-                            helperText={touched.password && errors.password}
+                            value={values.password}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
                         />
-                    </Box>
+                        {touched.password && errors.password && (
+                            <p className="text-destructive text-sm">{errors.password}</p>
+                        )}
+                    </div>
 
-                    <Box mb={1} display="flex" justifyContent="space-between" alignItems="center">
-                        <FormControlLabel control={<Checkbox defaultChecked />} label="Zapamiętaj mnie" />
-                        <StyledLink to="/auth/forget-password">Przypomnij hasło</StyledLink>
-                    </Box>
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <Checkbox id="remember" defaultChecked />
+                            <Label htmlFor="remember" className="cursor-pointer text-sm">
+                                Zapamiętaj mnie
+                            </Label>
+                        </div>
+                        <Link
+                            to="/auth/forget-password"
+                            className="text-primary-brand text-sm font-medium no-underline hover:underline"
+                        >
+                            Przypomnij hasło
+                        </Link>
+                    </div>
 
-                    <Button type="submit" variant="contained" color="primary" fullWidth disabled={disabled}>
+                    <Button type="submit" className="w-full" disabled={disabled}>
                         Zaloguj
                     </Button>
                 </Form>

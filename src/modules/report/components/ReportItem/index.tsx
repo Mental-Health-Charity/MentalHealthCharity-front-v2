@@ -1,7 +1,7 @@
-import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
-import ErrorIcon from "@mui/icons-material/Error";
-import { Box, Button, Card, CardContent, Chip, Typography, useTheme } from "@mui/material";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { AlertCircle, ArrowRightCircle } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -17,7 +17,6 @@ interface Props {
 }
 
 const ReportCard = ({ report }: Props) => {
-    const theme = useTheme();
     const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -45,135 +44,45 @@ const ReportCard = ({ report }: Props) => {
 
     return (
         <>
-            <Card
-                sx={{
-                    backgroundColor: theme.palette.background.paper,
-                    borderRadius: "10px",
-                    padding: "0px 20px 20px 20px",
-                    boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
-                    border: "2px solid rgba(0, 0, 0, 0.1)",
-                }}
-            >
-                <CardContent
-                    sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        gap: "20px",
-                        flexWrap: "wrap",
-                    }}
-                >
-                    <Box sx={{ flexGrow: 1, maxWidth: "800px" }}>
-                        <Typography color="textSecondary" variant="h6" sx={{ fontWeight: "bold" }}>
-                            {report.subject}
-                        </Typography>
+            <div className="bg-paper rounded-[10px] border-2 border-black/10 px-5 pb-5 shadow-md">
+                <div className="flex flex-wrap items-center justify-between gap-5 py-4">
+                    <div className="max-w-[800px] flex-grow">
+                        <h6 className="text-dark font-bold">{report.subject}</h6>
+                        <p className="text-dark text-sm break-words">{report.description}</p>
+                    </div>
 
-                        <Typography
-                            sx={{
-                                wordBreak: "break-word",
-                            }}
-                            variant="body2"
-                            color="textSecondary"
-                        >
-                            {report.description}
-                        </Typography>
-                    </Box>
-
-                    <Box minWidth={200} sx={{ display: "flex", flexDirection: "column" }}>
-                        <Typography variant="body2" color="textSecondary">
-                            {formatDate(report.creation_date)}
-                        </Typography>
-
-                        <Typography variant="caption" color="textSecondary">
-                            Autor: {report.created_by.full_name}
-                        </Typography>
-                        <Typography variant="caption" color="textSecondary">
-                            Email: {report.created_by.email}
-                        </Typography>
-                    </Box>
-                </CardContent>
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        gap: "10px",
-                        flexWrap: "wrap",
-                    }}
-                >
-                    <Box
-                        sx={{
-                            display: "flex",
-                            gap: "10px",
-                            marginLeft: { xs: 0, md: "15px" },
-                            width: { xs: "100%", md: "auto" },
-                        }}
-                    >
+                    <div className="flex min-w-[200px] flex-col">
+                        <p className="text-dark text-sm">{formatDate(report.creation_date)}</p>
+                        <p className="text-dark text-xs">Autor: {report.created_by.full_name}</p>
+                        <p className="text-dark text-xs">Email: {report.created_by.email}</p>
+                    </div>
+                </div>
+                <div className="flex flex-wrap items-center justify-between gap-2.5">
+                    <div className="flex gap-2.5 max-md:w-full md:ml-[15px]">
                         <Button
-                            variant="contained"
-                            fullWidth
-                            sx={{
-                                padding: "5px 20px",
-                                fontSize: "16px",
-                                gap: "10px",
-                            }}
+                            className="w-full gap-2.5 px-5 py-[5px] text-base"
                             onClick={() => setShowConfirmationModal(true)}
                         >
                             Rozstrzygnij
-                            <ArrowCircleRightIcon />
+                            <ArrowRightCircle className="size-5" />
                         </Button>
-                    </Box>
-                    <Chip
-                        label={
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    gap: "10px",
-                                    width: "190px",
-                                }}
-                            >
-                                <ErrorIcon />
-                                <Typography>{t(ReportTranslationKeys[report.report_type])}</Typography>
-                            </Box>
-                        }
-                        color="error"
-                    />
-                </Box>
-            </Card>
+                    </div>
+                    <Badge variant="destructive" className="gap-2.5 px-3 py-1">
+                        <AlertCircle className="size-4" />
+                        {t(ReportTranslationKeys[report.report_type])}
+                    </Badge>
+                </div>
+            </div>
             <Modal
                 title={t("report.confirmation_modal_title")}
                 open={showConfirmationModal}
                 onClose={() => setShowConfirmationModal(false)}
             >
-                <Box
-                    sx={{
-                        display: "flex",
-                        gap: "20px",
-                        flexDirection: "column",
-                    }}
-                >
-                    <Typography
-                        sx={{
-                            maxWidth: "700px",
-                        }}
-                    >
-                        {t("report.confirmation_modal_text")}
-                    </Typography>
-                    {loading && (
-                        <Box>
-                            <Typography>{t("common.loading")}</Typography>
-                        </Box>
-                    )}
-                    <Box
-                        sx={{
-                            display: "flex",
-                            gap: "20px",
-                        }}
-                    >
+                <div className="flex flex-col gap-5">
+                    <p className="max-w-[700px]">{t("report.confirmation_modal_text")}</p>
+                    {loading && <p>{t("common.loading")}</p>}
+                    <div className="flex gap-5">
                         <Button
-                            variant="contained"
                             onClick={() =>
                                 mutate({
                                     user_report_id: report.id,
@@ -182,9 +91,9 @@ const ReportCard = ({ report }: Props) => {
                         >
                             {t("common.confirm")}
                         </Button>
-                        <Button variant="outlined">{t("common.cancel")}</Button>
-                    </Box>
-                </Box>
+                        <Button variant="outline">{t("common.cancel")}</Button>
+                    </div>
+                </div>
             </Modal>
         </>
     );

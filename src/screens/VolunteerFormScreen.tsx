@@ -42,20 +42,9 @@ const VolunteerFormScreen = () => {
 
     return (
         <Container
-            parentProps={{
-                sx: {
-                    backgroundImage: `url(${bgImg})`,
-                    backgroundSize: { xs: "cover", md: "100% auto" },
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    alignItems: "center",
-                    minHeight: { xs: "100vh", md: "calc(100vh - 100px)" },
-                    backgroundAttachment: "fixed",
-                },
-            }}
-            sx={{
-                width: "fit-content",
-            }}
+            parentClassName="items-center bg-no-repeat bg-center bg-fixed min-h-[100vh] md:min-h-[calc(100vh-100px)] bg-cover md:bg-[length:100%_auto]"
+            parentStyle={{ backgroundImage: `url(${bgImg})` }}
+            className="w-fit"
         >
             <VolunteerForm initStep={isFormSend ? 7 : 0} onSubmit={handleSubmit} />
 

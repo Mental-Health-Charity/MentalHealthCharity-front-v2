@@ -1,37 +1,15 @@
-import { Box, Grid, Stack, Typography, useTheme } from "@mui/material";
 import { t } from "i18next";
 import Container from "../Container";
-import InternalLink, { ExternalLink } from "../InternalLink/styles";
+import InternalLink, { ExternalLink } from "../InternalLink";
 
 const Footer = () => {
-    const theme = useTheme();
-
     return (
-        <Box component="footer" sx={{ bgcolor: theme.palette.colors.dark, color: "white", py: 4 }}>
-            <Container
-                parentProps={{
-                    sx: {
-                        minHeight: "fit-content",
-                        padding: "0px",
-                    },
-                }}
-                sx={{
-                    marginTop: 2,
-                }}
-            >
-                <Grid
-                    sx={{
-                        textAlign: { xs: "center", sm: "left" },
-                    }}
-                    container
-                    spacing={4}
-                    justifyContent="space-between"
-                >
-                    <Grid item xs={12} sm={4}>
-                        <Typography variant="h6" sx={{ mb: 2 }}>
-                            Fundacja Peryskop
-                        </Typography>
-                        <Stack spacing={1}>
+        <footer className="bg-dark py-8 text-white">
+            <Container parentClassName="min-h-fit p-0" className="mt-4">
+                <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-3 sm:text-left">
+                    <div>
+                        <h3 className="mb-4 text-lg font-semibold">Fundacja Peryskop</h3>
+                        <div className="flex flex-col gap-2">
                             <InternalLink color="secondary" to="/#about-us">
                                 {t("footer.about_us")}
                             </InternalLink>
@@ -41,14 +19,12 @@ const Footer = () => {
                             <InternalLink color="secondary" to="/tos">
                                 {t("footer.terms_of_service")}
                             </InternalLink>
-                        </Stack>
-                    </Grid>
+                        </div>
+                    </div>
 
-                    <Grid item xs={12} sm={4}>
-                        <Typography variant="h6" sx={{ mb: 2 }}>
-                            {t("footer.social")}
-                        </Typography>
-                        <Stack spacing={1}>
+                    <div>
+                        <h3 className="mb-4 text-lg font-semibold">{t("footer.social")}</h3>
+                        <div className="flex flex-col gap-2">
                             <ExternalLink
                                 href="https://www.facebook.com/groups/1340769720143310"
                                 target="_blank"
@@ -73,29 +49,27 @@ const Footer = () => {
                             >
                                 LinkedIn
                             </ExternalLink>
-                        </Stack>
-                    </Grid>
+                        </div>
+                    </div>
 
-                    <Grid item xs={12} sm={4}>
-                        <Typography variant="h6" sx={{ mb: 2 }}>
-                            {t("footer.contact")}
-                        </Typography>
-                        <Typography variant="body2">
+                    <div>
+                        <h3 className="mb-4 text-lg font-semibold">{t("footer.contact")}</h3>
+                        <p className="text-sm">
                             Email:{" "}
                             <ExternalLink color="secondary" href="mailto:kontakt@fundacjaperyskop.org">
                                 kontakt@fundacjaperyskop.org
                             </ExternalLink>
-                        </Typography>
-                    </Grid>
-                </Grid>
+                        </p>
+                    </div>
+                </div>
 
-                <Box sx={{ textAlign: "center", mt: 4 }}>
-                    <Typography variant="body2">
+                <div className="mt-8 text-center">
+                    <p className="text-sm">
                         &copy; {new Date().getFullYear()} {t("footer.rights_reserved")}
-                    </Typography>
-                </Box>
+                    </p>
+                </div>
             </Container>
-        </Box>
+        </footer>
     );
 };
 

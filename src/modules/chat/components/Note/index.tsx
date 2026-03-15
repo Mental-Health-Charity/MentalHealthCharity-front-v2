@@ -1,5 +1,4 @@
 import { MDXEditorMethods } from "@mdxeditor/editor";
-import { Box, Card, Typography, useTheme } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import Draggable from "react-draggable";
@@ -23,7 +22,6 @@ const Note = ({ chat, onClose }: Props) => {
     const { data, isError, error, isLoading } = useQuery(getChatNoteQueryOptions({ id: chat.id }));
     const ref = useRef<MDXEditorMethods>(null);
     const { t } = useTranslation();
-    const theme = useTheme();
     const [content, setContent] = useState<string>(data ? data.content : "");
 
     const {
@@ -62,74 +60,21 @@ const Note = ({ chat, onClose }: Props) => {
 
     return (
         <Draggable defaultClassName="draggable">
-            <Card
-                sx={{
-                    padding: 0,
-                }}
-            >
-                <Box
-                    sx={{
-                        color: theme.palette.text.secondary,
-                        height: "400px",
-                        width: "500px",
-                        display: "flex",
-                        flexDirection: "column",
-                    }}
-                >
-                    <Box
-                        sx={{
-                            backgroundColor: theme.palette.colors.dark,
-                            padding: "10px 15px",
-                            borderRadius: "4px",
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                color: theme.palette.text.primary,
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "10px",
-                            }}
-                        >
-                            <Typography
-                                sx={{
-                                    fontSize: "20px",
-                                }}
-                            >
-                                {t("chat.note_title")}
-                            </Typography>
-
-                            {isPending && (
-                                <Loader
-                                    sx={{
-                                        width: "20px",
-                                    }}
-                                />
-                            )}
+            <div className="bg-paper rounded-lg p-0 shadow-md">
+                <div className="text-text-body flex h-[400px] w-[500px] flex-col">
+                    <div className="bg-dark flex items-center justify-between rounded px-4 py-2.5">
+                        <div className="text-bg-brand flex items-center gap-2.5">
+                            <h3 className="text-xl">{t("chat.note_title")}</h3>
+                            {isPending && <Loader className="w-5" />}
                             {saveNoteError && (
-                                <Typography
-                                    sx={{
-                                        color: theme.palette.error.main,
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    {readError(saveNoteError)}
-                                </Typography>
+                                <p className="text-destructive text-center">{readError(saveNoteError)}</p>
                             )}
-                        </Box>
+                        </div>
                         <CloseButton onClick={onClose} />
-                    </Box>
-                    <Box
+                    </div>
+                    <div
                         onClick={() => ref.current && ref.current.focus()}
-                        sx={{
-                            flexGrow: 1,
-                            display: "flex",
-                            flexDirection: "column",
-                            overflow: "auto",
-                        }}
+                        className="flex grow flex-col overflow-auto"
                     >
                         {!isLoading && (typeof content === "string" || content === null) && (
                             <Markdown
@@ -144,20 +89,10 @@ const Note = ({ chat, onClose }: Props) => {
                             />
                         )}
 
-                        {isError && (
-                            <Typography
-                                sx={{
-                                    color: theme.palette.error.main,
-                                    textAlign: "center",
-                                    marginTop: "10px",
-                                }}
-                            >
-                                {readError(error)}
-                            </Typography>
-                        )}
-                    </Box>
-                </Box>
-            </Card>
+                        {isError && <p className="text-destructive mt-2.5 text-center">{readError(error)}</p>}
+                    </div>
+                </div>
+            </div>
         </Draggable>
     );
 };

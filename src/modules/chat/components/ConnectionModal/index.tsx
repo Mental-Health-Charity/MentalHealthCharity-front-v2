@@ -1,4 +1,4 @@
-import { Box, Button, Typography, useTheme } from "@mui/material";
+import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { ReadyState } from "react-use-websocket";
 import { Permissions } from "../../../shared/constants";
@@ -10,7 +10,6 @@ interface Props {
 }
 
 const ConnectionModal = ({ status }: Props) => {
-    const theme = useTheme();
     const { t } = useTranslation();
     const { hasPermissions } = usePermissions();
 
@@ -23,47 +22,12 @@ const ConnectionModal = ({ status }: Props) => {
     }
 
     return (
-        <Box
-            sx={{
-                position: "absolute",
-                height: "100%",
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "rgba(0, 0, 0, 0.2)",
-                left: 0,
-                top: 0,
-                backdropFilter: "blur(2px)",
-            }}
-        >
-            <Box
-                sx={{
-                    position: "absolute",
-                    backgroundColor: theme.palette.background.paper,
-                    padding: "15px",
-                    borderRadius: "10px",
-                }}
-            >
-                <Typography
-                    sx={{
-                        fontSize: "20px",
-                        marginBottom: "20px",
-                    }}
-                >
-                    {status.text}
-                </Typography>
-                <Button
-                    onClick={() => window.location.reload()}
-                    sx={{
-                        padding: "5px 20px",
-                    }}
-                    variant="contained"
-                >
-                    {t("common.try_again")}
-                </Button>
-            </Box>
-        </Box>
+        <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+            <div className="bg-paper absolute rounded-[10px] p-4">
+                <p className="text-text-body mb-5 text-xl">{status.text}</p>
+                <Button onClick={() => window.location.reload()}>{t("common.try_again")}</Button>
+            </div>
+        </div>
     );
 };
 

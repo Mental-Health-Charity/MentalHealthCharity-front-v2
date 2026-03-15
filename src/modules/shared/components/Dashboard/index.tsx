@@ -1,6 +1,6 @@
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { Box, Button } from "@mui/material";
+import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
+import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { useUser } from "../../../auth/components/AuthProvider";
 import { User } from "../../../auth/types";
@@ -21,49 +21,31 @@ const Dashboard = () => {
     const [quickSearchUser, setQuickSearchUser] = useState<User>();
 
     return (
-        <Box
-            sx={{
-                width: "100%",
-                maxWidth: "1400px",
-                display: "flex",
-                flexDirection: "column",
-                gap: "20px",
-            }}
-        >
+        <div className="flex w-full max-w-[1400px] flex-col gap-5">
             <SimpleCard
                 subtitle={`Witaj ponownie ${user?.full_name}`}
                 title="Panel administracyjny Fundacja Peryskop"
                 text="Status serwera jest aktywny"
             />
             <SimpleCard subtitle="Wyszukiwarka" title="Szybkie wyszukiwanie użytkowników">
-                <Box width="100%" marginTop="20px" display="flex" flexDirection="column" gap="10px">
+                <div className="mt-5 flex w-full flex-col gap-2.5">
                     <SearchUser value={quickSearchUser} onChange={(user) => setQuickSearchUser(user)} />
                     {quickSearchUser && <p>{quickSearchUser.full_name}</p>}
-                </Box>
+                </div>
             </SimpleCard>
             <SimpleCard subtitle={`Aktywnych zgłoszeń ${data?.total}`} title="Zgłoszenia">
-                <Box width="100%" marginTop="20px" display="flex" flexDirection="column" gap="10px">
+                <div className="mt-5 flex w-full flex-col gap-2.5">
                     {data && data.items.slice(0, 3).map((report) => <ReportItem report={report} key={report.id} />)}
-                </Box>
-                <Box
-                    sx={{
-                        marginTop: "20px",
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "flex-end",
-                    }}
-                >
-                    <Button
-                        href="/admin/reports"
-                        sx={{
-                            gap: "10px",
-                        }}
-                    >
-                        Sprawdź więcej <ArrowForwardIcon />
-                    </Button>
-                </Box>
+                </div>
+                <div className="mt-5 flex w-full justify-end">
+                    <a href="/admin/reports" className="no-underline">
+                        <Button variant="ghost" className="gap-2.5">
+                            Sprawdź więcej <ArrowRight className="size-5" />
+                        </Button>
+                    </a>
+                </div>
             </SimpleCard>
-        </Box>
+        </div>
     );
 };
 

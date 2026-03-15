@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Button } from "@/components/ui/button";
 import {
     CellChange,
     CellLocation,
@@ -171,9 +171,12 @@ const FormsTable = ({ data, renderStepAddnotation, onRefetch, formNoteKeys }: Pr
                     nonEditable: true,
                     renderer: (props) =>
                         form.current_step === 1 ? (
-                            <Button onClick={() => setShowForm(form)} sx={{ padding: 0 }}>
+                            <button
+                                className="text-primary-brand p-0 hover:underline"
+                                onClick={() => setShowForm(form)}
+                            >
                                 {props}
-                            </Button>
+                            </button>
                         ) : (
                             props
                         ),
@@ -194,12 +197,8 @@ const FormsTable = ({ data, renderStepAddnotation, onRefetch, formNoteKeys }: Pr
                     nonEditable: true,
                     renderer: () => (
                         <Button
-                            style={{
-                                fontSize: "16px",
-                                color: "white",
-                            }}
-                            variant="contained"
-                            color="secondary"
+                            variant="secondary"
+                            className="text-base text-white"
                             onClick={() => setShowManageModal(form)}
                         >
                             {t("forms_fields.manage")}
@@ -219,7 +218,7 @@ const FormsTable = ({ data, renderStepAddnotation, onRefetch, formNoteKeys }: Pr
     };
 
     return (
-        <div style={{ width: "100%" }}>
+        <div className="w-full">
             <ReactGrid
                 onContextMenu={simpleHandleContextMenu}
                 rows={rows}
@@ -228,17 +227,9 @@ const FormsTable = ({ data, renderStepAddnotation, onRefetch, formNoteKeys }: Pr
                 onCellsChanged={handleCellsChanged}
             />
             <Modal title={t("common.preview")} open={!!showForm} onClose={() => setShowForm(null)}>
-                <Box
-                    sx={{
-                        maxWidth: "900px",
-                        display: "flex",
-                        justifyContent: "center",
-                        maxHeight: "80vh",
-                        overflowY: "auto",
-                    }}
-                >
+                <div className="flex max-h-[80vh] max-w-[900px] justify-center overflow-y-auto">
                     <FormTableItem form={showForm!} />
-                </Box>
+                </div>
             </Modal>
             {showManageModal && (
                 <Modal
@@ -246,34 +237,24 @@ const FormsTable = ({ data, renderStepAddnotation, onRefetch, formNoteKeys }: Pr
                     open={!!showManageModal}
                     onClose={() => setShowManageModal(null)}
                 >
-                    <Box
-                        sx={{
-                            maxWidth: "900px",
-                            display: "flex",
-
-                            justifyContent: "center",
-                            flexDirection: "column",
-                        }}
-                    >
-                        <Typography fontSize={20}>
+                    <div className="flex max-w-[900px] flex-col justify-center">
+                        <p className="text-xl">
                             {t("form.manage_forms_subtitle", {
                                 step: renderStepAddnotation(showManageModal.current_step + 1),
                             })}
-                        </Typography>
-                        <Box marginTop={2} gap={1} display="flex" flexDirection="column">
-                            <Box display="flex" gap={2}>
-                                <Button onClick={() => acceptForm(showManageModal)} variant="contained">
-                                    {t("form.next_step")}
-                                </Button>
-                                <Button onClick={() => rejectForm(showManageModal)} variant="outlined" color="primary">
+                        </p>
+                        <div className="mt-4 flex flex-col gap-2">
+                            <div className="flex gap-4">
+                                <Button onClick={() => acceptForm(showManageModal)}>{t("form.next_step")}</Button>
+                                <Button onClick={() => rejectForm(showManageModal)} variant="outline">
                                     {t("form.reject")}
                                 </Button>
-                            </Box>
-                            <Button variant="text" onClick={() => setShowForm(showManageModal)}>
+                            </div>
+                            <Button variant="ghost" onClick={() => setShowForm(showManageModal)}>
                                 {t("forms_fields.show_form")}
                             </Button>
-                        </Box>
-                    </Box>
+                        </div>
+                    </div>
                 </Modal>
             )}
         </div>

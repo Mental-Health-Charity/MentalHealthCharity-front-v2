@@ -1,4 +1,3 @@
-import { Box, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import debounce from "lodash.debounce";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -36,36 +35,14 @@ const ArticlesScreen = () => {
     }, [data]);
 
     return (
-        <Container
-            sx={{
-                maxWidth: "1600px",
-            }}
-            waves
-        >
+        <Container className="max-w-[1600px]" waves>
             <ArticlesHeading onSearch={setQuery} search={query} />
-            <Box
-                gap={2}
-                sx={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(380px, 1fr))",
-                    gap: 2,
-                    minHeight: "600px",
-                }}
-            >
+            <div className="grid min-h-[600px] grid-cols-[repeat(auto-fit,minmax(380px,1fr))] gap-4">
                 {!isLoading && (!published || published.length === 0) && (
-                    <Typography
-                        sx={{
-                            textAlign: "center",
-                            marginTop: "50px",
-                        }}
-                        variant="h6"
-                        component="p"
-                    >
-                        {t("common.not_found")}
-                    </Typography>
+                    <p className="mt-[50px] text-center text-lg">{t("common.not_found")}</p>
                 )}
                 {published && published.map((article) => <ArticleCard article={article} key={article.id} />)}
-            </Box>
+            </div>
         </Container>
     );
 };

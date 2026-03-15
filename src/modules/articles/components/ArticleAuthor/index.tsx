@@ -1,4 +1,5 @@
-import { Avatar, Box, Button, Typography, useTheme } from "@mui/material";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { User as UserIcon } from "lucide-react";
 import { User } from "../../../auth/types";
 import { translatedRoles } from "../../../users/constants";
 
@@ -7,38 +8,22 @@ interface Props {
 }
 
 const ArticleAuthor = ({ user }: Props) => {
-    const theme = useTheme();
     return (
-        <Button
-            sx={{
-                backgroundColor: theme.palette.background.paper,
-                borderRadius: "8px",
-                padding: "8px",
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                textAlign: "left",
-            }}
+        <a
             href={`/profile/${user.id}`}
+            className="bg-paper flex items-center gap-2.5 rounded-lg p-2 text-left no-underline transition-opacity hover:opacity-80"
         >
-            <Avatar
-                variant="rounded"
-                src={user.chat_avatar_url}
-                alt={user.full_name}
-                sx={{
-                    boxShadow: `0 0 5px 2px rgba(0,0,0,0.1)`,
-                    width: "55px",
-                    height: "55px",
-                    borderRadius: "10px",
-                }}
-            />
-            <Box>
-                <Typography color="text.secondary" fontSize={20} fontWeight={600} minWidth={200}>
-                    {user.full_name}
-                </Typography>
-                <Typography fontWeight={600}>{translatedRoles[user.user_role]}</Typography>
-            </Box>
-        </Button>
+            <Avatar className="size-[55px] rounded-[10px] shadow-md">
+                <AvatarImage src={user.chat_avatar_url} alt={user.full_name} />
+                <AvatarFallback className="rounded-[10px]">
+                    <UserIcon className="size-5" />
+                </AvatarFallback>
+            </Avatar>
+            <div>
+                <p className="text-dark min-w-[200px] text-xl font-semibold">{user.full_name}</p>
+                <p className="font-semibold">{translatedRoles[user.user_role]}</p>
+            </div>
+        </a>
     );
 };
 

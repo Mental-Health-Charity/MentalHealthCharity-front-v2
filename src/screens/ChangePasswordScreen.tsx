@@ -1,19 +1,17 @@
-import LockIcon from "@mui/icons-material/Lock";
-import { Box, Button, Typography } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import IconWrapper from "@/modules/shared/components/IconWrapper";
 import { useMutation } from "@tanstack/react-query";
+import { Lock } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import EmailIcon from "../assets/static/email_icon.svg";
-import IconWrapper from "../modules/shared/components/IconWrapper/style";
 import handleApiError from "../modules/shared/helpers/handleApiError";
 import ChangePasswordBeginFormBegin from "../modules/users/components/ChangePasswordFormBegin";
 import { changePasswordBegin } from "../modules/users/queries/changePasswordBeginMutation";
-import useTheme from "../theme";
 
 const ChangePasswordScreen = () => {
     const [isCodeSent, setIsCodeSent] = useState(false);
     const { t } = useTranslation();
-    const theme = useTheme();
 
     const { mutate: beginMutation, isPending } = useMutation({
         mutationFn: changePasswordBegin,
@@ -26,77 +24,45 @@ const ChangePasswordScreen = () => {
     });
 
     return (
-        <Box
-            display="flex"
-            minHeight="90vh"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-            gap={5}
-            padding="80px 20px"
-        >
-            <Box maxWidth={800} width="100%">
+        <div className="flex min-h-[90vh] flex-col items-center justify-center gap-10 px-5 py-20">
+            <div className="w-full max-w-[800px]">
                 {!isCodeSent && (
                     <>
-                        <Box sx={{ display: "flex", gap: 3, flexDirection: "column", mb: 3 }}>
-                            <IconWrapper size={50} color={theme.palette.primary.main}>
-                                <LockIcon />
+                        <div className="mb-6 flex flex-col gap-6">
+                            <IconWrapper size={50} color="#00D8BD">
+                                <Lock />
                             </IconWrapper>
-                            <Box>
-                                <Typography component="h1" sx={{ lineHeight: "45px" }} variant="h4">
-                                    {t("change_password_screen.title")}
-                                </Typography>
-                                <Typography component="h2" sx={{ lineHeight: "35px", opacity: 0.75 }} variant="h6">
+                            <div>
+                                <h1 className="text-3xl leading-[45px]">{t("change_password_screen.title")}</h1>
+                                <h2 className="text-lg leading-[35px] opacity-75">
                                     {t("change_password_screen.description")}
-                                </Typography>
-                            </Box>
-                        </Box>
+                                </h2>
+                            </div>
+                        </div>
                         <ChangePasswordBeginFormBegin isLoading={isPending} onSubmit={beginMutation} />
                     </>
                 )}
                 {isCodeSent && (
-                    <Box
-                        display="flex"
-                        minHeight="90vh"
-                        flexDirection="column"
-                        alignItems="center"
-                        justifyContent="center"
-                        gap={5}
-                        padding="80px 20px"
-                    >
+                    <div className="flex min-h-[90vh] flex-col items-center justify-center gap-10 px-5 py-20">
                         <img src={EmailIcon} alt="Email Icon" width={200} height={200} />
-
-                        <Box maxWidth={600} gap={2} display="flex" flexDirection="column">
-                            <Typography textAlign="center" component="h1" variant="h4">
-                                {t("change_password_screen.email_sent_title")}
-                            </Typography>
-                            <Typography
-                                sx={{
-                                    opacity: 0.75,
-                                }}
-                                textAlign="center"
-                                component="h2"
-                                variant="body1"
-                            >
+                        <div className="flex max-w-[600px] flex-col gap-4">
+                            <h1 className="text-center text-3xl">{t("change_password_screen.email_sent_title")}</h1>
+                            <p className="text-center opacity-75">
                                 {t("change_password_screen.email_sent_description")}
-                            </Typography>
-                        </Box>
-                        <Box
-                            sx={{ opacity: 0.75 }}
-                            padding="40px 0 0 0"
-                            borderTop={`1px solid ${theme.palette.divider}`}
-                        >
-                            <Typography>
+                            </p>
+                        </div>
+                        <div className="border-border border-t pt-10 opacity-75">
+                            <p>
                                 {t("change_password_screen.footer")}{" "}
-                                <Button onClick={() => setIsCodeSent(false)} variant="text">
+                                <Button variant="link" onClick={() => setIsCodeSent(false)}>
                                     {t("common.try_again")}
                                 </Button>
-                            </Typography>
-                        </Box>
-                    </Box>
+                            </p>
+                        </div>
+                    </div>
                 )}
-            </Box>
-        </Box>
+            </div>
+        </div>
     );
 };
 

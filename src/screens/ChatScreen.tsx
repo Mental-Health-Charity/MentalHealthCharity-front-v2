@@ -12,16 +12,7 @@ const ChatScreen = () => {
     };
 
     return (
-        <Container
-            parentProps={{
-                sx: {
-                    backgroundImage: `url(${bg})`,
-                    backgroundPosition: "center",
-                    backgroundRepeat: "no-repeat",
-                    backgroundSize: "cover",
-                },
-            }}
-        >
+        <Container parentClassName="bg-cover bg-center bg-no-repeat" parentStyle={{ backgroundImage: `url(${bg})` }}>
             <ChatWindow onChangeWallpaper={handleChangeBackground} />
         </Container>
     );

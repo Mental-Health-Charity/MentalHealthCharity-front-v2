@@ -1,6 +1,8 @@
-import { Button, TextField, Typography } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useMutation } from "@tanstack/react-query";
-import { Field, Form, Formik } from "formik";
+import { Form, Formik } from "formik";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -36,71 +38,64 @@ const ForgetPasswordScreen = () => {
 
     return (
         <Container
-            sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
+            className="flex items-center justify-center"
+            style={{
                 backgroundImage: `url(${BgImage})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
             }}
         >
             <Card>
-                <Typography variant="h5" gutterBottom>
-                    {t("auth.reset_password.title")}
-                </Typography>
-                <Typography variant="body1" gutterBottom>
-                    {t("auth.reset_password.subtitle")}
-                </Typography>
+                <h2 className="mb-2 text-xl font-semibold">{t("auth.reset_password.title")}</h2>
+                <p className="mb-4">{t("auth.reset_password.subtitle")}</p>
                 <Formik<ResetPasswordPayload>
-                    initialValues={{
-                        email: "",
-                        token: "",
-                        new_password: "",
-                    }}
+                    initialValues={{ email: "", token: "", new_password: "" }}
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
                 >
                     {({ values, errors, touched, handleChange, handleBlur }) => (
-                        <Form>
-                            <Field
-                                name="email"
-                                as={TextField}
-                                label="Adres e-mail"
-                                fullWidth
-                                margin="normal"
-                                value={values.email}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                error={touched.email && Boolean(errors.email)}
-                                helperText={touched.email && errors.email}
-                            />
-                            <Field
-                                name="token"
-                                as={TextField}
-                                label="Kod odzyskiwania"
-                                fullWidth
-                                margin="normal"
-                                value={values.token}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                error={touched.token && Boolean(errors.token)}
-                                helperText={touched.token && errors.token}
-                            />
-                            <Field
-                                name="new_password"
-                                as={TextField}
-                                label="Nowe hasło"
-                                type="password"
-                                fullWidth
-                                margin="normal"
-                                value={values.new_password}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                error={touched.new_password && Boolean(errors.new_password)}
-                                helperText={touched.new_password && errors.new_password}
-                            />
-                            <Button type="submit" fullWidth variant="contained" color="primary" sx={{ marginTop: 2 }}>
+                        <Form className="flex flex-col gap-4">
+                            <div className="space-y-1.5">
+                                <Label htmlFor="email">Adres e-mail</Label>
+                                <Input
+                                    id="email"
+                                    name="email"
+                                    value={values.email}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                />
+                                {touched.email && errors.email && (
+                                    <p className="text-destructive text-sm">{errors.email}</p>
+                                )}
+                            </div>
+                            <div className="space-y-1.5">
+                                <Label htmlFor="token">Kod odzyskiwania</Label>
+                                <Input
+                                    id="token"
+                                    name="token"
+                                    value={values.token}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                />
+                                {touched.token && errors.token && (
+                                    <p className="text-destructive text-sm">{errors.token}</p>
+                                )}
+                            </div>
+                            <div className="space-y-1.5">
+                                <Label htmlFor="new_password">Nowe hasło</Label>
+                                <Input
+                                    id="new_password"
+                                    name="new_password"
+                                    type="password"
+                                    value={values.new_password}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                />
+                                {touched.new_password && errors.new_password && (
+                                    <p className="text-destructive text-sm">{errors.new_password}</p>
+                                )}
+                            </div>
+                            <Button type="submit" className="mt-2 w-full">
                                 Zresetuj hasło
                             </Button>
                         </Form>

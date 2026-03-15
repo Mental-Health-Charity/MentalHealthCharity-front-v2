@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import ArticleCard from "../../../articles/components/ArticleCard";
 import { Article } from "../../../articles/types";
@@ -11,25 +10,12 @@ interface Props {
 const UserProfileArticles = ({ articles }: Props) => {
     const { t } = useTranslation();
     return (
-        <SimpleCard
-            subtitleProps={{
-                fontSize: "20px",
-            }}
-            subtitle={t("profile.articles_subtitle")}
-        >
-            <Box
-                sx={{
-                    display: "flex",
-                    gap: "10px",
-                    flexWrap: "wrap",
-                    justifyContent: "space-between",
-                    marginTop: "10px",
-                }}
-            >
+        <SimpleCard subtitle={t("profile.articles_subtitle")}>
+            <div className="mt-2.5 flex flex-wrap justify-between gap-2.5">
                 {articles.map((article) => (
                     <ArticleCard key={article.id} article={article} />
                 ))}
-            </Box>
+            </div>
         </SimpleCard>
     );
 };

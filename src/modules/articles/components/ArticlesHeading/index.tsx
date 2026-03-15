@@ -1,5 +1,7 @@
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { Box, Button, Card, TextField } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { PlusCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Permissions } from "../../../shared/constants";
@@ -16,34 +18,16 @@ const ArticlesHeading = ({ onSearch, search }: Props) => {
 
     return (
         <>
-            <Card
-                style={{
-                    width: "100%",
-                    margin: "0 auto 20px auto",
-                    padding: "15px",
-                }}
-            >
-                <Box sx={{ display: "flex", gap: "20px", flexWrap: { xs: "wrap", md: "nowrap" } }}>
-                    <TextField
-                        label={t("common.search")}
-                        fullWidth
-                        variant="filled"
-                        value={search}
-                        onChange={(e) => onSearch(e.target.value)}
-                    />
+            <Card className="mx-auto mb-5 w-full p-[15px]">
+                <div className="flex flex-wrap gap-5 md:flex-nowrap">
+                    <Input placeholder={t("common.search")} value={search} onChange={(e) => onSearch(e.target.value)} />
                     {hasPermissions(Permissions.CREATE_ARTICLE) && (
-                        <Button
-                            fullWidth
-                            component={Link}
-                            to="/articles/dashboard"
-                            variant="contained"
-                            sx={{ gap: "5px", width: "300px" }}
-                        >
-                            <AddCircleIcon fontSize="large" />
+                        <Button className="w-[300px] gap-[5px]" render={<Link to="/articles/dashboard" />}>
+                            <PlusCircle className="size-6" />
                             {t("articles.add_article")}
                         </Button>
                     )}
-                </Box>
+                </div>
             </Card>
         </>
     );

@@ -1,4 +1,6 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
@@ -44,56 +46,57 @@ const ChangePasswordFormComplete = ({ onSubmit, isLoading }: Props) => {
     });
 
     return (
-        <Box
-            component="form"
-            onSubmit={formik.handleSubmit}
-            noValidate
-            sx={{ display: "flex", flexDirection: "column", gap: 2, width: "100%" }}
-        >
+        <form onSubmit={formik.handleSubmit} noValidate className="flex w-full flex-col gap-4">
             {!token && (
-                <TextField
-                    id="token"
-                    name="token"
-                    label={t("form.token")}
-                    value={formik.values.token}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.token && Boolean(formik.errors.token)}
-                    helperText={formik.touched.token && formik.errors.token}
-                    fullWidth
-                />
+                <div className="space-y-1.5">
+                    <Label htmlFor="token">{t("form.token")}</Label>
+                    <Input
+                        id="token"
+                        name="token"
+                        value={formik.values.token}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                    />
+                    {formik.touched.token && formik.errors.token && (
+                        <p className="text-destructive text-sm">{formik.errors.token}</p>
+                    )}
+                </div>
             )}
 
-            <TextField
-                id="password"
-                name="password"
-                type="password"
-                label={t("change_password_form_complete.new_password")}
-                value={formik.values.password}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.password && Boolean(formik.errors.password)}
-                helperText={formik.touched.password && formik.errors.password}
-                fullWidth
-            />
+            <div className="space-y-1.5">
+                <Label htmlFor="password">{t("change_password_form_complete.new_password")}</Label>
+                <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                />
+                {formik.touched.password && formik.errors.password && (
+                    <p className="text-destructive text-sm">{formik.errors.password}</p>
+                )}
+            </div>
 
-            <TextField
-                id="confirm_password"
-                name="confirm_password"
-                type="password"
-                label={t("common.password_confirmation")}
-                value={formik.values.confirm_password}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.confirm_password && Boolean(formik.errors.confirm_password)}
-                helperText={formik.touched.confirm_password && formik.errors.confirm_password}
-                fullWidth
-            />
+            <div className="space-y-1.5">
+                <Label htmlFor="confirm_password">{t("common.password_confirmation")}</Label>
+                <Input
+                    id="confirm_password"
+                    name="confirm_password"
+                    type="password"
+                    value={formik.values.confirm_password}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                />
+                {formik.touched.confirm_password && formik.errors.confirm_password && (
+                    <p className="text-destructive text-sm">{formik.errors.confirm_password}</p>
+                )}
+            </div>
 
-            <Button type="submit" variant="contained" color="primary" disabled={isLoading}>
+            <Button type="submit" disabled={isLoading}>
                 {t("form.submit")}
             </Button>
-        </Box>
+        </form>
     );
 };
 
