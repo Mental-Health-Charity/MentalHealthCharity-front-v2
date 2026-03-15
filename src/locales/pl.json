@@ -8,6 +8,7 @@
             "logout": "Wyloguj",
             "articles": "Artykuły",
             "chat_with_volunteer": "Otrzymaj pomoc",
+            "donations": "Dotacje",
             "chat": "Czat",
             "admin": "Zarządzaj stroną"
         },
@@ -203,6 +204,12 @@
         "note_title": "Notatki",
         "customize": "Dostosuj",
         "no_available_chats_found": "Nie znaleziono dostępnych czatów. Skontakuj się z administratorem",
+        "connection_lost": "Połączenie zostało utracone",
+        "reconnecting_automatically": "Trwa automatyczne ponowne łączenie...",
+        "send_failed_not_connected": "Nie można wysłać wiadomości — brak połączenia",
+        "send_failed": "Nie udało się wysłać",
+        "retry": "Ponów",
+        "disconnected_placeholder": "Ponowne łączenie...",
         "customize_chat": {
             "title": "Dostosuj czat",
             "desc": "Ta funkcja jest testowa i będzie rozszerzana w przyszłości"
@@ -214,6 +221,18 @@
         "archived_messages_notice": "Pozostałe wiadomości nie są już dostępne i zostały zarchiwizowane."
     },
     "auth": {
+        "login": {
+            "title": "Witaj ponownie!",
+            "subtitle": "Zaloguj się korzystając z poniższego formularza, cieszymy się, że wróciłeś!",
+            "no_account": "Nie masz konta?",
+            "register_link": "Zarejestruj się"
+        },
+        "register": {
+            "title": "Utwórz nowe konto!",
+            "subtitle": "Zarejestruj się korzystając z poniższego formularza, cieszymy się, że do nas dołączasz!",
+            "has_account": "Masz już konto?",
+            "login_link": "Zaloguj się"
+        },
         "reset_token_modal": {
             "title": "Pomyślnie zarejestrowano!",
             "subtitle": "To jedyna okazja, aby pobrać lub skopiować jednorazowy kod odzyskania konta. Jeśli zapomnisz hasła, to jedyna deska ratunku. Nigdy nie podawaj tego kodu nikomu.",
@@ -357,8 +376,61 @@
         "choose_volunteer_button": "Zostań wolontariuszem",
         "title": "Darmowe i anonimowe wsparcie psychologiczne w formie czatu",
         "chat_now": "Rozmawiaj teraz",
-
         "desc": "Uzyskaj pomoc, lub zostań wolontariuszem już teraz",
+        "trust_free": "Darmowe",
+        "trust_anonymous": "Anonimowe",
+        "trust_safe": "Bezpieczne",
+        "how_it_works": {
+            "title": "Jak to działa?",
+            "step1_title": "Wypełnij formularz",
+            "step1_desc": "Odpowiedz na kilka pytań, abyśmy mogli poznać Twoje potrzeby i dopasować odpowiednią osobę.",
+            "step2_title": "Dopasujemy wolontariusza",
+            "step2_desc": "Nasz zespół dobierze dla Ciebie odpowiedniego wolontariusza na podstawie Twoich odpowiedzi.",
+            "step3_title": "Rozmawiaj na czacie",
+            "step3_desc": "Rozpocznij regularne rozmowy z wolontariuszem w wygodnej formie czatu online."
+        },
+        "chat_mockup": {
+            "title": "Bezpieczna przestrzeń do rozmowy",
+            "feature1": "Anonimowe rozmowy jeden na jeden",
+            "feature2": "Regularne wsparcie w Twoim tempie",
+            "feature3": "Przeszkoleni wolontariusze pod opieką superwizorów",
+            "mock_name": "Wolontariusz Anna",
+            "mock_msg1": "Cześć! Jak się dziś czujesz?",
+            "mock_msg2": "Ostatnio miałem ciężki tydzień...",
+            "mock_msg3": "Rozumiem. Chcesz mi o tym opowiedzieć? Jestem tu dla Ciebie.",
+            "mock_msg4": "Tak, chciałbym porozmawiać.",
+            "conv2_name": "Wolontariusz Michał",
+            "conv2_msg1": "Witaj! To bezpieczna przestrzeń — możesz podzielić się czym chcesz.",
+            "conv2_msg2": "Nie wiem tak naprawdę od czego zacząć…",
+            "conv2_msg3": "To zupełnie normalne. Nie ma pośpiechu. Możemy iść krok po kroku.",
+            "conv2_msg4": "Dziękuję, to pomaga.",
+            "conv3_name": "Wolontariusz Kasia",
+            "conv3_msg1": "Cześć! Cieszę się, że się odezwałeś/aś.",
+            "conv3_msg2": "Ostatnio czuję się przytłoczony/a wszystkim.",
+            "conv3_msg3": "To brzmi naprawdę trudno. Nie jesteś w tym sam/a — porozmawiajmy o tym razem.",
+            "conv3_msg4": "Bardzo bym to docenił/a."
+        },
+        "articles_preview": {
+            "title": "Artykuły i materiały",
+            "subtitle": "Rozwijaj wiedzę o zdrowiu psychicznym",
+            "view_all": "Zobacz wszystkie"
+        },
+        "trust_mission": {
+            "title": "Nasza misja",
+            "description": "Tworzymy bezpieczną przestrzeń, w której każdy może uzyskać anonimowe wsparcie psychologiczne. Łączymy osoby potrzebujące pomocy z przeszkolonymi wolontariuszami, którzy są gotowi towarzyszyć im w trudnych chwilach.",
+            "stat1_value": "100+",
+            "stat1_label": "wolontariuszy",
+            "stat2_value": "500+",
+            "stat2_label": "osób otrzymało pomoc",
+            "stat3_value": "24/7",
+            "stat3_label": "dostępność platformy"
+        },
+        "final_cta": {
+            "title": "Nie musisz radzić sobie sam/a",
+            "subtitle": "Zrób pierwszy krok — wypełnij formularz i otrzymaj darmowe wsparcie od przeszkolonych wolontariuszy.",
+            "cta_mentee": "Potrzebuję wsparcia",
+            "cta_volunteer": "Chcę pomagać"
+        },
         "about_us": {
             "learn_more_button": "Dowiedz się więcej",
             "small_cards": [
@@ -390,6 +462,27 @@
         }
     },
     "admin": {
+        "sidebar": {
+            "title": "Fundacja Peryskop",
+            "dashboard": "Dashboard",
+            "users": "Użytkownicy",
+            "articles": "Artykuły",
+            "mentee_forms": "Formularze podopiecznych",
+            "volunteer_forms": "Formularze wolontariuszy",
+            "reports": "Zgłoszenia",
+            "chats": "Czaty",
+            "back": "Powrót"
+        },
+        "dashboard": {
+            "welcome": "Witaj ponownie, {{name}}",
+            "title": "Panel administracyjny Fundacja Peryskop",
+            "server_status": "Status serwera jest aktywny",
+            "search_subtitle": "Wyszukiwarka",
+            "search_title": "Szybkie wyszukiwanie użytkowników",
+            "reports_subtitle": "Aktywnych zgłoszeń: {{count}}",
+            "reports_title": "Zgłoszenia",
+            "check_more": "Sprawdź więcej"
+        },
         "reports": {
             "subtitle": "Zgłoszenia",
             "title": "Zarządzaj zgłoszeniami",
@@ -646,5 +739,66 @@
             "scroll_hint": "Przewiń, aby kontynuować",
             "cta": "Rozpocznij"
         }
+    },
+    "donations": {
+        "nav": "Dotacje",
+        "hero_title": "Wesprzyj Fundację Peryskop",
+        "hero_subtitle": "Razem możemy sprawić, by wsparcie psychiczne było dostępne dla każdego.",
+        "what_is": {
+            "title": "Czym jest Fundacja Peryskop?",
+            "p1": "Pomysł na powstanie projektu narodził się w wyniku kryzysu osobistego i potrzeby wsparcia w trudnym czasie. Z doświadczenia wiemy, jak ogromną rolę odgrywają w takiej sytuacji towarzyszące nam osoby.",
+            "p2": "Jesteśmy także świadomi potencjału kryjącego się w trudnych momentach życia, który, choć na początku niedostrzegalny, może stanowić przełom ku zmianie na lepsze.",
+            "p3": "Fundację Peryskop współtworzymy z myślą o wszystkich, którzy pomimo dynamicznego rozwoju mediów społecznościowych i rosnącego zainteresowania psychologią w przestrzeni publicznej, w kryzysie psychicznym wciąż czują się pozostawieni sami sobie.",
+            "p4": "Chcemy przestrzeni bez tabu, w której spotykamy się na najgłębszym poziomie.",
+            "p5": "Wiemy, że posiadamy idealne warunki, by zadbać o dobrostan psychiczny osób takich jak my, bo tak naprawdę wszystkich nas łączą podobne troski i wyzwania, świadczące o naszym człowieczeństwie.",
+            "p6": "Z psychologią jesteśmy za pan brat.",
+            "p7": "Dołącz do nas, jeśli potrzebujesz pomocy lub chcesz pomagać. Rola, w którą się u nas wcielisz, nie musi pozostać na zawsze taka sama. Każdy z nas, bez wyjątku, podlega procesowi ciągłych zmian, a kryzys często okazuje się stanem przejściowym.",
+            "p8": "Możemy tworzyć wspólnie unikalne miejsce, w którym osoby doświadczające trudnych emocji będą zaopiekowane przez naszych wolontariuszy, pozostających pod stałą opieką superwizyjną.",
+            "p9": "Razem widzimy więcej, możemy więcej i jesteśmy lepiej przygotowani do stawiania czoła nieustannej podróży, jaką jest życie."
+        },
+        "goals": {
+            "title": "Nasze cele",
+            "goal1_title": "Dostępne wsparcie",
+            "goal1_desc": "Zapewnienie darmowego, anonimowego wsparcia psychologicznego każdemu, kto tego potrzebuje — niezależnie od miejsca zamieszkania czy sytuacji finansowej.",
+            "goal2_title": "Przeszkoleni wolontariusze",
+            "goal2_desc": "Budowanie społeczności dobrze przeszkolonych wolontariuszy, którzy oferują empatyczne wsparcie pod superwizją w rozmowach jeden na jeden.",
+            "goal3_title": "Przełamywanie tabu",
+            "goal3_desc": "Tworzenie przestrzeni bez tabu, gdzie wyzwania związane ze zdrowiem psychicznym spotykają się ze zrozumieniem, a nie oceną.",
+            "goal4_title": "Technologia dla dobra",
+            "goal4_desc": "Wykorzystanie nowoczesnych technologii, by wsparcie psychologiczne online było skuteczne, bezpieczne i zawsze dostępne."
+        },
+        "how_we_work": {
+            "title": "Jak działamy",
+            "p1": "Zalążek naszego projektu powstał przez Internet i także tu, w sieci, chcemy tworzyć naszą społeczność.",
+            "p2": "Choć mieszkamy w różnych rejonach Polski, pracujemy razem nad wspólnym celem i wiemy, że skutecznie pomagać można także online. Dla niektórych właśnie taka forma może okazać się jedyną dostępną.",
+            "p3": "Stworzyliśmy bezpieczną platformę w formie czatu przeznaczoną do kontaktu pomiędzy osobami będącymi w kryzysie a wolontariuszami niosącymi wsparcie.",
+            "p4": "Istota takiej pomocy sprowadza się do rozmów jeden na jeden w regularnych odstępach czasu.",
+            "p5": "Jeśli, podobnie jak my, uważasz, że nowe technologie mogą mieć także dobroczynny wpływ na zdrowie psychiczne, to witaj na pokładzie!"
+        },
+        "donate": {
+            "title": "Darowizny",
+            "subtitle": "Nasze usługi są całkowicie bezpłatne, ale bez pomocy darczyńców nie możemy realizować naszej misji.",
+            "supporters": "{{count}}+ osób już wsparło ten projekt",
+            "cta": "Wesprzyj teraz",
+            "bank_title": "Przelew bankowy",
+            "bank_number": "62 1870 1045 2083 1080 5210 0001",
+            "copy_account": "Skopiuj numer konta",
+            "or": "lub wesprzyj poprzez"
+        },
+        "homepage_preview": {
+            "title": "Wesprzyj naszą misję",
+            "desc": "Nasze usługi są całkowicie bezpłatne. Pomóż nam kontynuować dostarczanie anonimowego wsparcia psychologicznego tym, którzy go najbardziej potrzebują.",
+            "read_more": "Dowiedz się więcej"
+        }
+    },
+    "crisis": {
+        "banner_text": "W kryzysie? Zadzwoń — pomoc jest bezpłatna i anonimowa, 24/7.",
+        "emergency": "pogotowie",
+        "helpline": "telefon zaufania",
+        "quick_exit": "Szybkie wyjście",
+        "youth_helpline": "Telefon Zaufania dla Młodzieży",
+        "content_warning": "Poniższa lista zawiera tematy, które mogą być trudne. Zaznacz te, z którymi chcesz uzyskać wsparcie.",
+        "under_18_title": "Masz poniżej 18 lat?",
+        "under_18_text": "Jeśli masz mniej niż 18 lat, dostępna jest specjalna pomoc dla Ciebie. Zadzwoń na bezpłatny Telefon Zaufania dla Młodzieży: 116 111."
     }
 }

@@ -1,6 +1,8 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
+import { MessageSquare, Plus, Search } from "lucide-react";
 import { ChangeEvent, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -15,8 +17,6 @@ import editChatMutation from "../modules/chat/queries/editChatMutation";
 import removeParticipantMutation from "../modules/chat/queries/removeParticipantMutation";
 import { Chat } from "../modules/chat/types";
 import AdminLayout from "../modules/shared/components/AdminLayout";
-import Loader from "../modules/shared/components/Loader";
-import SimpleCard from "../modules/shared/components/SimpleCard";
 import useDebounce from "../modules/shared/hooks/useDebounce";
 
 const ManageChatsScreen = () => {
@@ -39,7 +39,6 @@ const ManageChatsScreen = () => {
 
     const { mutate: editChat } = useMutation({
         mutationFn: editChatMutation,
-
         onSuccess: () => {
             toast.success(t("chat.edit_chat_success"));
             handleRefetch();
@@ -57,56 +56,71 @@ const ManageChatsScreen = () => {
 
     const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
         const query = e.target.value;
-
         setParams({ search: query });
         setSearchQuery(query);
     };
 
     return (
         <AdminLayout>
-            <SimpleCard
-                title={t("admin_screen.chat_list_title")}
-                subtitle={t("admin_screen.chat_list_subtitle")}
-                className="h-full"
-            >
-                <div className="mt-4 flex flex-wrap items-center gap-4 md:flex-nowrap">
-                    <Input
-                        value={searchQuery}
-                        onChange={handleSearch}
-                        className="w-full"
-                        placeholder={t("chat.search_label")}
-                    />
-                    <Button className="px-8 py-2.5 whitespace-nowrap" onClick={() => setShowCreateChatModal(true)}>
+            {/* Header card */}
+            <div className="bg-card border-border/50 rounded-xl border p-6 shadow-sm">
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-primary-brand/10 flex size-11 items-center justify-center rounded-lg">
+                            <MessageSquare className="text-primary-brand size-5" />
+                        </div>
+                        <div>
+                            <h1 className="text-foreground text-xl font-bold">{t("admin_screen.chat_list_title")}</h1>
+                            <p className="text-muted-foreground text-sm">
+                                {t("admin_screen.chat_list_subtitle")}
+                                {chats && (
+                                    <Badge variant="outline" className="ml-2 align-middle text-xs">
+                                        {chats.total}
+                                    </Badge>
+                                )}
+                            </p>
+                        </div>
+                    </div>
+                    <Button onClick={() => setShowCreateChatModal(true)} className="shrink-0">
+                        <Plus className="mr-1.5 size-4" />
                         {t("chat.create_new_chat")}
                     </Button>
                 </div>
-            </SimpleCard>
 
-            <div>
-                {!chats && <Loader />}
-                {chats && (
-                    <ChatManager
-                        onLoadMore={handleLoadChats}
-                        onAddParticipant={(chat) => setSelectedChatToAddParticipant(chat)}
-                        onRemoveParticipant={(chat, participant) =>
-                            removeParticipant({
-                                chat_id: chat.id,
-                                participant_id: participant.id,
-                            })
-                        }
-                        data={chats}
-                        onToggleChat={(chat) =>
-                            editChat({
-                                id: chat.id,
-                                is_active: !chat.is_active,
-                                name: chat.name,
-                            })
-                        }
-                        onRemoveChat={({ id }) => deleteChat(id)}
-                        onEditChat={(chat) => setSelectedChatToEdit(chat)}
+                {/* Search bar */}
+                <div className="relative mt-5">
+                    <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+                    <Input
+                        value={searchQuery}
+                        onChange={handleSearch}
+                        className="pl-9"
+                        placeholder={t("chat.search_label")}
                     />
-                )}
+                </div>
             </div>
+
+            {/* Chat list */}
+            <ChatManager
+                onLoadMore={handleLoadChats}
+                onAddParticipant={(chat) => setSelectedChatToAddParticipant(chat)}
+                onRemoveParticipant={(chat, participant) =>
+                    removeParticipant({
+                        chat_id: chat.id,
+                        participant_id: participant.id,
+                    })
+                }
+                data={chats ?? undefined}
+                onToggleChat={(chat) =>
+                    editChat({
+                        id: chat.id,
+                        is_active: !chat.is_active,
+                        name: chat.name,
+                    })
+                }
+                onRemoveChat={({ id }) => deleteChat(id)}
+                onEditChat={(chat) => setSelectedChatToEdit(chat)}
+            />
+
             <CreateChatModal
                 onClose={() => setShowCreateChatModal(false)}
                 open={showCreateChatModal}

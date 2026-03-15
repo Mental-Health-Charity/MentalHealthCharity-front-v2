@@ -55,24 +55,26 @@ const AboutUs = () => {
     );
 
     return (
-        <div
-            id="about-us"
-            className="relative mx-auto flex w-full max-w-[1600px] flex-col items-center justify-center gap-5"
-        >
-            <div className="my-12 flex w-full flex-col justify-center gap-[30px] px-2.5 md:gap-[60px] md:px-0">
+        <section id="about-us" className="mx-auto max-w-[1200px] px-5 py-16 md:py-24">
+            {/* Feature cards with illustrations */}
+            <div className="flex flex-col gap-10 md:gap-16">
                 {smallCards.map(({ id, text, title, img }) => (
-                    <div key={id} className={`flex gap-10 ${id % 2 === 0 ? "flex-row" : "flex-row-reverse"}`}>
-                        <Card textAlign="justify" className="w-full" title={title} subtitle={text} />
-                        <div className="flex items-center justify-center max-[600px]:hidden">
-                            <div className="bg-secondary flex w-60 items-center justify-center rounded-lg p-5 shadow-[0_4px_13px_rgba(0,0,0,0.25)] max-[980px]:hidden">
-                                <img width={180} loading="lazy" height={200} alt="People icon" src={img} />
+                    <div
+                        key={id}
+                        className={`flex items-center gap-8 md:gap-12 ${id % 2 === 0 ? "flex-row" : "flex-row-reverse"}`}
+                    >
+                        <Card textAlign="justify" className="w-full flex-1" title={title} subtitle={text} />
+                        <div className="hidden shrink-0 items-center justify-center min-[650px]:flex">
+                            <div className="bg-primary-brand-50 flex w-48 items-center justify-center rounded-xl p-5">
+                                <img width={140} loading="lazy" height={160} alt="People icon" src={img} />
                             </div>
                         </div>
                     </div>
                 ))}
             </div>
 
-            <div className="z-[1] flex flex-col gap-16 px-2.5 md:px-0">
+            {/* CTA cards */}
+            <div className="mt-16 flex flex-col gap-10 md:mt-24">
                 {cards.map(({ id, text, title, subtitle }) => (
                     <SimpleCard
                         titleClassName="text-start"
@@ -82,8 +84,8 @@ const AboutUs = () => {
                         title={title}
                         text={text}
                     >
-                        <div className="mt-5 flex flex-wrap items-center justify-between gap-5 md:flex-nowrap">
-                            <div className="mt-2.5 flex w-full max-w-[700px] flex-wrap gap-4 md:flex-nowrap">
+                        <div className="mt-6 flex flex-wrap items-center justify-between gap-4 md:flex-nowrap">
+                            <div className="flex w-full max-w-[700px] flex-wrap gap-3 md:flex-nowrap">
                                 <Link to="/form/volunteer" className="w-full">
                                     <Button className="w-full">{t("homepage.choose_volunteer_button")}</Button>
                                 </Link>
@@ -97,15 +99,16 @@ const AboutUs = () => {
                                 href="https://www.facebook.com/groups/1340769720143310"
                                 target="_blank"
                                 rel="noreferrer"
-                                className="bg-accent-brand text-foreground hover:bg-accent-brand/80 flex size-[50px] items-center justify-center rounded-full transition-colors"
+                                aria-label="Facebook"
+                                className="bg-accent-brand text-foreground hover:bg-accent-brand/80 flex size-11 items-center justify-center rounded-full transition-colors"
                             >
-                                <Facebook className="size-6" />
+                                <Facebook className="size-5" />
                             </a>
                         </div>
                     </SimpleCard>
                 ))}
             </div>
-        </div>
+        </section>
     );
 };
 

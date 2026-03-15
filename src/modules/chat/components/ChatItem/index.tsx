@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Chat } from "../../types";
 
 interface Props {
@@ -18,38 +19,44 @@ const ChatItem = ({ chat, onChange, selected, readed }: Props) => {
                 e.preventDefault();
                 onChange(String(chat.id));
             }}
-            className={`flex items-center justify-start gap-4 px-1.5 py-2.5 no-underline transition-colors ${
-                is_active ? "opacity-100" : "opacity-80"
-            } ${selected ? "bg-muted" : "hover:bg-muted/50"}`}
+            aria-current={selected ? "true" : undefined}
+            className={cn(
+                "flex items-center gap-3 px-3 py-3 no-underline transition-colors",
+                is_active ? "opacity-100" : "opacity-60",
+                selected
+                    ? "bg-primary-brand/8 border-primary-brand border-l-2"
+                    : "hover:bg-muted/50 border-l-2 border-transparent"
+            )}
         >
             <div
-                className={`flex size-10 shrink-0 items-center justify-center rounded-md ${
-                    is_active ? "bg-accent-brand" : "bg-border-brand"
-                }`}
-            />
-            <div className="min-h-[40px]">
+                className={cn(
+                    "flex size-10 shrink-0 items-center justify-center rounded-full",
+                    is_active ? "bg-primary-brand/15 text-primary-brand" : "bg-muted text-muted-foreground"
+                )}
+            >
+                <span className="text-sm font-bold">{chat.name.charAt(0).toUpperCase()}</span>
+            </div>
+            <div className="min-w-0 flex-1">
                 <p
-                    className={`inline-flex max-w-[200px] items-center gap-1.5 truncate text-base leading-tight font-bold ${
-                        is_active ? "text-text-body" : "text-muted-foreground"
-                    }`}
-                >
-                    {chat.name}{" "}
-                    {showUnreadIndicator && (
-                        <span className="bg-primary rounded-full px-1.5 py-0.5 text-xs text-white">
-                            {chat.unread_count}
-                        </span>
+                    className={cn(
+                        "inline-flex max-w-full items-center gap-1.5 truncate text-sm leading-tight",
+                        showUnreadIndicator ? "text-foreground font-bold" : "text-foreground font-semibold",
+                        !is_active && "text-muted-foreground"
                     )}
+                >
+                    {chat.name}
                 </p>
                 {chat.last_message && (
-                    <p
-                        className={`max-w-[200px] truncate ${
-                            is_active ? "text-text-body/70" : "text-muted-foreground/70"
-                        }`}
-                    >
+                    <p className="text-muted-foreground max-w-full truncate text-xs">
                         {chat.last_message.sender.full_name}: {chat.last_message.content}
                     </p>
                 )}
             </div>
+            {showUnreadIndicator && (
+                <span className="bg-primary-brand flex size-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white">
+                    {chat.unread_count}
+                </span>
+            )}
         </a>
     );
 };

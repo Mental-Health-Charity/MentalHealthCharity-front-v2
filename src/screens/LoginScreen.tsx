@@ -1,6 +1,7 @@
+import { Heart } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import login_background from "../assets/static/login_bg.svg";
 import { useUser } from "../modules/auth/components/AuthProvider";
 import LoginForm from "../modules/auth/components/LoginForm";
 import { LoginFormValues } from "../modules/auth/types";
@@ -10,6 +11,7 @@ const LoginScreen = () => {
     const { login } = useUser();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const { t } = useTranslation();
 
     const handleSubmit = (values: LoginFormValues) => {
         setLoading(true);
@@ -25,30 +27,39 @@ const LoginScreen = () => {
     };
 
     return (
-        <div className="flex">
-            <div className="hidden max-w-[50%] overflow-hidden shadow-[3px_4px_4px_rgba(0,0,0,0.25)] md:block">
-                <img className="h-screen" src={login_background} alt="Logo" />
+        <div className="flex min-h-screen">
+            {/* Left branded panel */}
+            <div className="bg-primary-brand relative hidden w-1/2 flex-col items-center justify-center px-12 md:flex">
+                <div className="relative z-10 max-w-[400px] text-center">
+                    <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm">
+                        <Heart className="size-8 text-white" />
+                    </div>
+                    <h2 className="text-3xl font-bold text-white">Peryskop</h2>
+                    <p className="mt-3 text-lg text-white/80">{t("homepage.title")}</p>
+                    <div className="mx-auto mt-8 max-w-[320px] rounded-xl bg-white/10 p-5 backdrop-blur-sm">
+                        <p className="text-sm leading-relaxed text-white/90 italic">
+                            &quot;{t("homepage.trust_mission.description")}&quot;
+                        </p>
+                    </div>
+                </div>
             </div>
 
-            <div className="bg-background flex min-h-screen w-full flex-col items-center justify-center px-5 pt-[90px] pb-5">
-                <div className="max-w-[500px]">
-                    <div className="mb-6 w-full text-center">
-                        <h1 className="text-foreground mb-2 text-3xl font-bold">Witaj ponownie!</h1>
-                        <p className="text-muted-foreground font-medium">
-                            Zaloguj się korzystając z poniższego formularza, cieszymy się, że wróciłeś!
-                        </p>
+            {/* Right form panel */}
+            <main className="bg-background flex w-full flex-col items-center justify-center px-5 py-12 md:w-1/2">
+                <div className="bg-card w-full max-w-[440px] rounded-2xl border p-8 shadow-lg">
+                    <div className="mb-6 text-center">
+                        <h1 className="text-foreground text-2xl font-bold">{t("auth.login.title")}</h1>
+                        <p className="text-muted-foreground mt-1 text-sm">{t("auth.login.subtitle")}</p>
                     </div>
                     <LoginForm disabled={loading} onSubmit={handleSubmit} />
                 </div>
-                <div className="mt-12 flex w-full items-center justify-center">
-                    <p>
-                        Nie masz konta?{" "}
-                        <InternalLink className="font-bold" to="/auth/register">
-                            Zarejestruj się
-                        </InternalLink>
-                    </p>
-                </div>
-            </div>
+                <p className="text-muted-foreground mt-6 text-sm">
+                    {t("auth.login.no_account")}{" "}
+                    <InternalLink className="text-primary-brand font-semibold" to="/auth/register">
+                        {t("auth.login.register_link")}
+                    </InternalLink>
+                </p>
+            </main>
         </div>
     );
 };

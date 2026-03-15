@@ -25,7 +25,7 @@ const UserTableItem = ({ onEdit, user, additionalActions, className, ...props }:
     return (
         <div
             className={cn(
-                "border-border-brand bg-paper flex flex-wrap items-center justify-between rounded-lg border-2 p-4",
+                "border-border-brand bg-card flex flex-wrap items-center justify-between rounded-lg border-2 p-4",
                 className
             )}
             {...props}

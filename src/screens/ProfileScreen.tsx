@@ -2,11 +2,9 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import wave_bg from "../assets/static/wave_bg.webp";
 import { ArticleStatus } from "../modules/articles/constants";
 import { articlesByUserQueryOptions } from "../modules/articles/queries/articlesByUserQueryOptions";
 import { useUser } from "../modules/auth/components/AuthProvider";
-import Container from "../modules/shared/components/Container";
 import Loader from "../modules/shared/components/Loader";
 import UserProfileHeading from "../modules/users/components/Profile";
 import UserProfileArticles from "../modules/users/components/UserProfileArticles";
@@ -97,10 +95,11 @@ const ProfileScreen = () => {
 
     return (
         <div className="w-full">
-            <div className="flex max-h-[280px] w-full items-start justify-center overflow-hidden [&_img]:opacity-80">
-                <img width="100%" src={wave_bg} alt="" height="600px" aria-disabled />
-            </div>
-            <Container parentClassName="-mt-[185px]" className="flex flex-col gap-5">
+            {/* Taller gradient banner */}
+            <div className="from-primary-brand-50 to-background h-[280px] w-full bg-gradient-to-b" />
+
+            {/* Profile content pulled up */}
+            <div className="mx-auto -mt-[140px] flex max-w-[800px] flex-col gap-5 px-5 pb-12">
                 {username && role && (
                     <UserProfileHeading
                         onSubmit={({ avatar }) =>
@@ -130,7 +129,7 @@ const ProfileScreen = () => {
                     />
                 )}
                 {articles && <UserProfileArticles articles={articles.items} />}
-            </Container>
+            </div>
         </div>
     );
 };

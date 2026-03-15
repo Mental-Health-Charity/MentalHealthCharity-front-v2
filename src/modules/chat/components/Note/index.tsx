@@ -1,17 +1,14 @@
 import { MDXEditorMethods } from "@mdxeditor/editor";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { Loader2, StickyNote, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import Draggable from "react-draggable";
 import { useTranslation } from "react-i18next";
-import CloseButton from "../../../shared/components/CloseButton";
-import Loader from "../../../shared/components/Loader";
 import Markdown from "../../../shared/components/Markdown";
 import readError from "../../../shared/helpers/readError";
 import useDebounce from "../../../shared/hooks/useDebounce";
 import editNoteMutation from "../../queries/editNoteMutation";
 import { getChatNoteQueryOptions } from "../../queries/getChatNoteQueryOptions";
 import { Chat } from "../../types";
-import "./styles.css";
 
 interface Props {
     chat: Chat;
@@ -59,41 +56,52 @@ const Note = ({ chat, onClose }: Props) => {
     }, [debounceValue, chat.id, mutate]);
 
     return (
-        <Draggable defaultClassName="draggable">
-            <div className="bg-paper rounded-lg p-0 shadow-md">
-                <div className="text-text-body flex h-[400px] w-[500px] flex-col">
-                    <div className="bg-dark flex items-center justify-between rounded px-4 py-2.5">
-                        <div className="text-bg-brand flex items-center gap-2.5">
-                            <h3 className="text-xl">{t("chat.note_title")}</h3>
-                            {isPending && <Loader className="w-5" />}
-                            {saveNoteError && (
-                                <p className="text-destructive text-center">{readError(saveNoteError)}</p>
-                            )}
-                        </div>
-                        <CloseButton onClick={onClose} />
-                    </div>
-                    <div
-                        onClick={() => ref.current && ref.current.focus()}
-                        className="flex grow flex-col overflow-auto"
-                    >
-                        {!isLoading && (typeof content === "string" || content === null) && (
-                            <Markdown
-                                onChange={(value) => {
-                                    setContent(value);
-                                    setEdited(true);
-                                }}
-                                ref={ref}
-                                autoFocus
-                                content={content || ""}
-                                readonly={false}
-                            />
-                        )}
-
-                        {isError && <p className="text-destructive mt-2.5 text-center">{readError(error)}</p>}
-                    </div>
+        <div className="border-border/50 bg-card flex h-full w-[320px] shrink-0 flex-col border-l">
+            {/* Header */}
+            <div className="border-border/50 flex h-16 items-center justify-between border-b px-4">
+                <div className="flex items-center gap-2.5">
+                    <StickyNote className="text-primary-brand size-5" />
+                    <h3 className="text-foreground text-sm font-semibold">{t("chat.note_title")}</h3>
+                    {isPending && <Loader2 className="text-muted-foreground size-4 animate-spin" />}
                 </div>
+                <button
+                    onClick={onClose}
+                    className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-1.5 transition-colors"
+                    aria-label={t("common.close", { defaultValue: "Close" })}
+                >
+                    <X className="size-4" />
+                </button>
             </div>
-        </Draggable>
+
+            {/* Error banner */}
+            {saveNoteError && (
+                <div className="bg-destructive/10 border-destructive/20 border-b px-4 py-2">
+                    <p className="text-destructive text-xs">{readError(saveNoteError)}</p>
+                </div>
+            )}
+
+            {/* Editor */}
+            <div onClick={() => ref.current && ref.current.focus()} className="min-h-0 flex-1 overflow-auto">
+                {isLoading ? (
+                    <div className="flex items-center justify-center py-8">
+                        <Loader2 className="text-muted-foreground size-6 animate-spin" />
+                    </div>
+                ) : typeof content === "string" || content === null ? (
+                    <Markdown
+                        onChange={(value) => {
+                            setContent(value);
+                            setEdited(true);
+                        }}
+                        ref={ref}
+                        autoFocus
+                        content={content || ""}
+                        readonly={false}
+                    />
+                ) : null}
+
+                {isError && <p className="text-destructive mt-2.5 px-4 text-center text-sm">{readError(error)}</p>}
+            </div>
+        </div>
     );
 };
 

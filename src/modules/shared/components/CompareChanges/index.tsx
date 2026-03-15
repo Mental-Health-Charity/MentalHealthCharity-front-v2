@@ -31,7 +31,7 @@ const DataComparison = ({ dataA, dataB }: Props) => {
     }
 
     return (
-        <div className="bg-paper rounded-lg border">
+        <div className="bg-card rounded-lg border">
             <Table>
                 <TableHeader>
                     <TableRow>

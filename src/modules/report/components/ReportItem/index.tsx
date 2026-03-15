@@ -44,17 +44,17 @@ const ReportCard = ({ report }: Props) => {
 
     return (
         <>
-            <div className="bg-paper rounded-[10px] border-2 border-black/10 px-5 pb-5 shadow-md">
+            <div className="bg-card rounded-[10px] border-2 border-black/10 px-5 pb-5 shadow-md">
                 <div className="flex flex-wrap items-center justify-between gap-5 py-4">
                     <div className="max-w-[800px] flex-grow">
-                        <h6 className="text-dark font-bold">{report.subject}</h6>
-                        <p className="text-dark text-sm break-words">{report.description}</p>
+                        <h6 className="text-foreground font-bold">{report.subject}</h6>
+                        <p className="text-foreground text-sm break-words">{report.description}</p>
                     </div>
 
                     <div className="flex min-w-[200px] flex-col">
-                        <p className="text-dark text-sm">{formatDate(report.creation_date)}</p>
-                        <p className="text-dark text-xs">Autor: {report.created_by.full_name}</p>
-                        <p className="text-dark text-xs">Email: {report.created_by.email}</p>
+                        <p className="text-foreground text-sm">{formatDate(report.creation_date)}</p>
+                        <p className="text-foreground text-xs">Autor: {report.created_by.full_name}</p>
+                        <p className="text-foreground text-xs">Email: {report.created_by.email}</p>
                     </div>
                 </div>
                 <div className="flex flex-wrap items-center justify-between gap-2.5">

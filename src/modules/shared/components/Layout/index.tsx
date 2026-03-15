@@ -1,7 +1,8 @@
 import React from "react";
 import { Toaster } from "react-hot-toast";
-import Announcement from "../Announcement";
+import { useLocation } from "react-router-dom";
 import CookiesBar from "../CookiesBar";
+import CrisisBar from "../CrisisBar";
 import Footer from "../Footer";
 
 interface Props {
@@ -9,10 +10,21 @@ interface Props {
 }
 
 const Layout = ({ children }: Props) => {
-    const isAdminScreen = window.location.pathname.includes("/admin");
+    const { pathname } = useLocation();
+    const isAdminScreen = pathname.includes("/admin");
+    const isChatScreen = pathname.startsWith("/chat");
 
     return (
-        <div className="bg-background font-ubuntu min-h-screen">
+        <div
+            className={`bg-background font-ubuntu ${isChatScreen ? "flex h-[100dvh] flex-col overflow-hidden" : "min-h-screen"}`}
+        >
+            <a
+                href="#main-content"
+                className="bg-primary text-primary-foreground sr-only rounded-md px-4 py-2 font-medium focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200]"
+            >
+                Skip to main content
+            </a>
+            {!isAdminScreen && !isChatScreen && <CrisisBar />}
             <Toaster
                 toastOptions={{
                     style: {
@@ -23,10 +35,11 @@ const Layout = ({ children }: Props) => {
                 position="top-center"
                 reverseOrder={false}
             />
-            {children}
-            {!isAdminScreen && <Footer />}
+            <main id="main-content" className={isChatScreen ? "flex min-h-0 flex-1 flex-col" : ""}>
+                {children}
+            </main>
+            {!isAdminScreen && !isChatScreen && <Footer />}
             <CookiesBar />
-            <Announcement />
         </div>
     );
 };

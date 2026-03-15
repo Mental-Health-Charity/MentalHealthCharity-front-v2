@@ -33,6 +33,7 @@ const FormInput = ({
 }: FormInputProps) => {
     const [field, meta] = useField(name);
     const hasError = meta.touched && Boolean(meta.error);
+    const errorId = `${name}-error`;
 
     return (
         <div className={cn("space-y-2", fullWidth && "w-full", className)}>
@@ -49,8 +50,9 @@ const FormInput = ({
                     disabled={disabled}
                     maxLength={maxLength}
                     autoFocus={autoFocus}
+                    aria-describedby={hasError ? errorId : undefined}
                     className={cn(
-                        "bg-paper text-foreground",
+                        "bg-card text-foreground",
                         hasError && "border-danger-brand focus-visible:ring-danger-brand"
                     )}
                     {...field}
@@ -63,14 +65,19 @@ const FormInput = ({
                     disabled={disabled}
                     maxLength={maxLength}
                     autoFocus={autoFocus}
+                    aria-describedby={hasError ? errorId : undefined}
                     className={cn(
-                        "bg-paper text-foreground",
+                        "bg-card text-foreground",
                         hasError && "border-danger-brand focus-visible:ring-danger-brand"
                     )}
                     {...field}
                 />
             )}
-            {hasError && <p className="text-danger-brand text-sm">{meta.error}</p>}
+            {hasError && (
+                <p id={errorId} role="alert" className="text-danger-brand text-sm">
+                    {meta.error}
+                </p>
+            )}
         </div>
     );
 };

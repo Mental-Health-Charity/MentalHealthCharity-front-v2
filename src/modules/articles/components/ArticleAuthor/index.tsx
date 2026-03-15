@@ -11,7 +11,7 @@ const ArticleAuthor = ({ user }: Props) => {
     return (
         <a
             href={`/profile/${user.id}`}
-            className="bg-paper flex items-center gap-2.5 rounded-lg p-2 text-left no-underline transition-opacity hover:opacity-80"
+            className="bg-card flex items-center gap-2.5 rounded-lg p-2 text-left no-underline transition-opacity hover:opacity-80"
         >
             <Avatar className="size-[55px] rounded-[10px] shadow-md">
                 <AvatarImage src={user.chat_avatar_url} alt={user.full_name} />
@@ -20,7 +20,7 @@ const ArticleAuthor = ({ user }: Props) => {
                 </AvatarFallback>
             </Avatar>
             <div>
-                <p className="text-dark min-w-[200px] text-xl font-semibold">{user.full_name}</p>
+                <p className="text-foreground min-w-[200px] text-xl font-semibold">{user.full_name}</p>
                 <p className="font-semibold">{translatedRoles[user.user_role]}</p>
             </div>
         </a>

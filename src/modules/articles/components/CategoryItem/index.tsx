@@ -37,7 +37,7 @@ const CategoryItem = ({ category, onDelete, onEdit, onToggleActive }: Props) => 
                     className="border-border-brand focus:border-primary-brand rounded border bg-transparent px-2 py-1 text-sm outline-none"
                 />
             ) : (
-                <span className="text-text-body">{category.name}</span>
+                <span className="text-foreground">{category.name}</span>
             )}
             <div className="flex items-center gap-1">
                 <button className="hidden" onClick={toggleEditMode}>

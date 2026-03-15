@@ -2,7 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 import { useFormik } from "formik";
+import { Phone } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -27,18 +29,20 @@ const THEME_OPTIONS = [
     { value: "depression", key: "depression" },
     { value: "alcoholism", key: "alcoholism" },
     { value: "drug_addiction", key: "drug_addiction" },
-    { value: "self_harm", key: "self_harm" },
-    { value: "suicidal_thoughts", key: "suicidal_thoughts" },
-    { value: "eating_disorders", key: "eating_disorders" },
-    { value: "domestic_violence", key: "domestic_violence" },
-    { value: "homelessness", key: "homelessness" },
-    { value: "sexual_assault", key: "sexual_assault" },
-    { value: "grief_loss", key: "grief_loss" },
-    { value: "trauma", key: "trauma" },
     { value: "anxiety", key: "anxiety" },
+    { value: "eating_disorders", key: "eating_disorders" },
     { value: "burnout", key: "burnout" },
     { value: "loneliness", key: "loneliness" },
+    { value: "grief_loss", key: "grief_loss" },
+    { value: "homelessness", key: "homelessness" },
+    { value: "trauma", key: "trauma" },
+    { value: "self_harm", key: "self_harm", sensitive: true },
+    { value: "suicidal_thoughts", key: "suicidal_thoughts", sensitive: true },
+    { value: "domestic_violence", key: "domestic_violence", sensitive: true },
+    { value: "sexual_assault", key: "sexual_assault", sensitive: true },
 ];
+
+const SENSITIVE_THEMES = new Set(["self_harm", "suicidal_thoughts", "domestic_violence", "sexual_assault"]);
 
 const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
     const { t } = useTranslation();
@@ -62,7 +66,7 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
     const validationSchemas = [
         Yup.object({
             name: Yup.string().min(2, t("validation.name.tooShort")).required(t("validation.required")),
-            age: Yup.number().min(18, t("validation.age.min")).required(t("validation.required")),
+            age: Yup.number().min(1, t("validation.required")).required(t("validation.required")),
         }),
         Yup.object({
             contacts: Yup.array().min(1, t("validation.contacts.min")),
@@ -140,6 +144,15 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
         formik.setFieldValue("age", formattedText);
     };
 
+    const handleThemeToggle = (value: string) => {
+        const current = formik.values.themes;
+        const next = current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
+        formik.setFieldValue("themes", next);
+    };
+
+    const ageNum = Number(formik.values.age);
+    const isUnder18 = formik.values.age !== "" && ageNum > 0 && ageNum < 18;
+
     return (
         <FormWrapper
             subtitle={t(user ? `form.mentee.subtitle.${step}` : `form.mentee.subtitle_new_user.${step}`, {
@@ -147,6 +160,7 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
             })}
             title={t(user ? `form.mentee.title.${step}` : `form.mentee.title_new_user.${step}`)}
             progress={(step / validationSchemas.length) * 100}
+            stepIndicator={step <= LAST_STEP ? `${step + 1} / ${validationSchemas.length}` : undefined}
         >
             <form onSubmit={formik.handleSubmit}>
                 {step === 0 && (
@@ -156,12 +170,15 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
                             <Input
                                 id="name"
                                 name="name"
+                                aria-describedby={formik.touched.name && formik.errors.name ? "name-error" : undefined}
                                 value={formik.values.name}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
                             {formik.touched.name && formik.errors.name && (
-                                <p className="text-destructive text-sm">{formik.errors.name}</p>
+                                <p id="name-error" role="alert" className="text-destructive text-sm">
+                                    {formik.errors.name}
+                                </p>
                             )}
                         </div>
                         <div className="space-y-1.5">
@@ -171,12 +188,37 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
                                 name="age"
                                 type="number"
                                 min={0}
+                                aria-describedby={
+                                    formik.touched.age && formik.errors.age
+                                        ? "age-error"
+                                        : isUnder18
+                                          ? "age-info"
+                                          : undefined
+                                }
                                 value={formik.values.age}
                                 onChange={handleAgeInputChange}
                                 onBlur={formik.handleBlur}
                             />
                             {formik.touched.age && formik.errors.age && (
-                                <p className="text-destructive text-sm">{formik.errors.age}</p>
+                                <p id="age-error" role="alert" className="text-destructive text-sm">
+                                    {formik.errors.age}
+                                </p>
+                            )}
+                            {isUnder18 && (
+                                <div
+                                    id="age-info"
+                                    className="bg-info-brand/10 border-info-brand/20 mt-2 rounded-lg border p-3"
+                                >
+                                    <p className="text-foreground text-sm font-medium">{t("crisis.under_18_title")}</p>
+                                    <p className="text-muted-foreground mt-1 text-sm">{t("crisis.under_18_text")}</p>
+                                    <a
+                                        href="tel:116111"
+                                        className="text-info-brand mt-2 inline-flex items-center gap-1.5 text-sm font-semibold hover:underline"
+                                    >
+                                        <Phone className="size-3.5" />
+                                        116 111 — {t("crisis.youth_helpline")}
+                                    </a>
+                                </div>
                             )}
                         </div>
                     </div>
@@ -190,12 +232,17 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
                                 <Input
                                     id="phone"
                                     name="phone"
+                                    aria-describedby={
+                                        formik.touched.phone && formik.errors.phone ? "phone-error" : undefined
+                                    }
                                     value={formik.values.phone}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                 />
                                 {formik.touched.phone && formik.errors.phone && (
-                                    <p className="text-destructive text-sm">{formik.errors.phone}</p>
+                                    <p id="phone-error" role="alert" className="text-destructive text-sm">
+                                        {formik.errors.phone}
+                                    </p>
                                 )}
                             </div>
                         )}
@@ -204,12 +251,17 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
                             <Input
                                 id="email"
                                 name="email"
+                                aria-describedby={
+                                    formik.touched.email && formik.errors.email ? "email-error" : undefined
+                                }
                                 value={formik.values.email}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
                             {formik.touched.email && formik.errors.email && (
-                                <p className="text-destructive text-sm">{formik.errors.email}</p>
+                                <p id="email-error" role="alert" className="text-destructive text-sm">
+                                    {formik.errors.email}
+                                </p>
                             )}
                         </div>
                     </div>
@@ -217,25 +269,60 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
 
                 {step === 2 && (
                     <div className="flex flex-col gap-5">
-                        <div className="max-w-[85vw] space-y-1.5">
-                            <Label htmlFor="themes">{t("form.mentee.issue_type_label")}</Label>
-                            <select
-                                id="themes"
-                                name="themes"
-                                multiple
-                                value={formik.values.themes}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-auto min-h-[200px] w-full rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3"
-                            >
-                                {THEME_OPTIONS.map((opt) => (
-                                    <option key={opt.value} value={opt.value}>
-                                        {t(`form.volunteer.issues_to_avoid.${opt.key}`)}
-                                    </option>
+                        <div className="space-y-3">
+                            <Label>{t("form.mentee.issue_type_label")}</Label>
+
+                            {/* Content warning */}
+                            <p className="text-muted-foreground text-sm">{t("crisis.content_warning")}</p>
+
+                            {/* Checkbox grid */}
+                            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                                {THEME_OPTIONS.filter((opt) => !SENSITIVE_THEMES.has(opt.value)).map((opt) => (
+                                    <label
+                                        key={opt.value}
+                                        className={cn(
+                                            "border-border hover:bg-muted/50 flex cursor-pointer items-center gap-2.5 rounded-lg border px-3 py-2.5 transition-colors",
+                                            formik.values.themes.includes(opt.value) &&
+                                                "border-primary-brand bg-primary-brand/5"
+                                        )}
+                                    >
+                                        <Checkbox
+                                            checked={formik.values.themes.includes(opt.value)}
+                                            onCheckedChange={() => handleThemeToggle(opt.value)}
+                                        />
+                                        <span className="text-sm">
+                                            {t(`form.volunteer.issues_to_avoid.${opt.key}`)}
+                                        </span>
+                                    </label>
                                 ))}
-                            </select>
+                            </div>
+
+                            {/* Sensitive themes group */}
+                            <div className="border-border mt-2 space-y-2 border-l-2 pl-3">
+                                {THEME_OPTIONS.filter((opt) => SENSITIVE_THEMES.has(opt.value)).map((opt) => (
+                                    <label
+                                        key={opt.value}
+                                        className={cn(
+                                            "border-border hover:bg-muted/50 flex cursor-pointer items-center gap-2.5 rounded-lg border px-3 py-2.5 transition-colors",
+                                            formik.values.themes.includes(opt.value) &&
+                                                "border-primary-brand bg-primary-brand/5"
+                                        )}
+                                    >
+                                        <Checkbox
+                                            checked={formik.values.themes.includes(opt.value)}
+                                            onCheckedChange={() => handleThemeToggle(opt.value)}
+                                        />
+                                        <span className="text-sm">
+                                            {t(`form.volunteer.issues_to_avoid.${opt.key}`)}
+                                        </span>
+                                    </label>
+                                ))}
+                            </div>
+
                             {formik.touched.themes && formik.errors.themes && (
-                                <p className="text-destructive text-sm">{formik.errors.themes as string}</p>
+                                <p role="alert" className="text-destructive text-sm">
+                                    {formik.errors.themes as string}
+                                </p>
                             )}
                         </div>
                     </div>
@@ -248,14 +335,21 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
                             <textarea
                                 id="description"
                                 name="description"
+                                aria-describedby={
+                                    formik.touched.description && formik.errors.description
+                                        ? "description-error"
+                                        : undefined
+                                }
                                 value={formik.values.description}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 rows={4}
-                                className="border-input focus-visible:border-ring focus-visible:ring-ring/50 w-full rounded-lg border bg-transparent px-3 py-2 text-sm outline-none focus-visible:ring-3"
+                                className="border-input focus-visible:border-ring focus-visible:ring-ring/30 w-full rounded-lg border bg-transparent px-3 py-2 text-sm outline-none focus-visible:ring-2"
                             />
                             {formik.touched.description && formik.errors.description && (
-                                <p className="text-destructive text-sm">{formik.errors.description}</p>
+                                <p id="description-error" role="alert" className="text-destructive text-sm">
+                                    {formik.errors.description}
+                                </p>
                             )}
                         </div>
                     </div>
@@ -271,12 +365,19 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
                                         id="password"
                                         name="password"
                                         type="password"
+                                        aria-describedby={
+                                            formik.touched.password && formik.errors.password
+                                                ? "password-error"
+                                                : undefined
+                                        }
                                         value={formik.values.password}
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                     />
                                     {formik.touched.password && formik.errors.password && (
-                                        <p className="text-destructive text-sm">{formik.errors.password}</p>
+                                        <p id="password-error" role="alert" className="text-destructive text-sm">
+                                            {formik.errors.password}
+                                        </p>
                                     )}
                                 </div>
                                 <div className="space-y-1.5">
@@ -285,12 +386,19 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
                                         id="confirmPassword"
                                         name="confirmPassword"
                                         type="password"
+                                        aria-describedby={
+                                            formik.touched.confirmPassword && formik.errors.confirmPassword
+                                                ? "confirmPassword-error"
+                                                : undefined
+                                        }
                                         value={formik.values.confirmPassword}
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                     />
                                     {formik.touched.confirmPassword && formik.errors.confirmPassword && (
-                                        <p className="text-destructive text-sm">{formik.errors.confirmPassword}</p>
+                                        <p id="confirmPassword-error" role="alert" className="text-destructive text-sm">
+                                            {formik.errors.confirmPassword}
+                                        </p>
                                     )}
                                 </div>
                             </>
@@ -300,10 +408,13 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
                             <select
                                 id="source"
                                 name="source"
+                                aria-describedby={
+                                    formik.touched.source && formik.errors.source ? "source-error" : undefined
+                                }
                                 value={formik.values.source}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-8 w-full rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3"
+                                className="border-input focus-visible:border-ring focus-visible:ring-ring/30 h-10 w-full rounded-lg border bg-transparent px-3 py-1 text-sm outline-none focus-visible:ring-2"
                             >
                                 <option value="">---</option>
                                 <option value="friend">{t("form.referral_source_options.friend")}</option>
@@ -311,7 +422,9 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
                                 <option value="google">{t("form.referral_source_options.google")}</option>
                             </select>
                             {formik.touched.source && formik.errors.source && (
-                                <p className="text-destructive text-sm">{formik.errors.source}</p>
+                                <p id="source-error" role="alert" className="text-destructive text-sm">
+                                    {formik.errors.source}
+                                </p>
                             )}
                         </div>
                         <div className="flex items-center gap-2">
@@ -321,14 +434,18 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
                                 onCheckedChange={(checked) => formik.setFieldValue("tos", checked)}
                             />
                             <Label htmlFor="tos" className="font-normal">
-                                Wyrażam zgodę na{" "}
+                                {t("crisis.tos_label", { defaultValue: "Wyrażam zgodę na" })}{" "}
                                 <InternalLink target="_blank" to="/tos">
-                                    warunki użytkowania i politykę prywatności
+                                    {t("crisis.tos_link", {
+                                        defaultValue: "warunki użytkowania i politykę prywatności",
+                                    })}
                                 </InternalLink>
                             </Label>
                         </div>
                         {formik.touched.tos && formik.errors.tos && (
-                            <span className="text-danger-brand text-sm">{formik.errors.tos}</span>
+                            <span role="alert" className="text-danger-brand text-sm">
+                                {formik.errors.tos}
+                            </span>
                         )}
                     </div>
                 )}

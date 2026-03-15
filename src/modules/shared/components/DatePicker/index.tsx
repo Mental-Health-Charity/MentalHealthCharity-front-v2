@@ -105,10 +105,10 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
                     }}
                     captionLayout="dropdown"
                     showOutsideDays
-                    className="animate-in fade-in bg-paper max-w-fit rounded-xl p-3.5 shadow-[0_6px_18px_rgba(2,6,23,0.12)]"
+                    className="animate-in fade-in bg-card max-w-fit rounded-xl p-3.5 shadow-[0_6px_18px_rgba(2,6,23,0.12)]"
                 />
             ) : (
-                <div className="animate-in fade-in bg-paper w-full rounded-xl p-5 text-center shadow-[0_6px_18px_rgba(2,6,23,0.12)]">
+                <div className="animate-in fade-in bg-card w-full rounded-xl p-5 text-center shadow-[0_6px_18px_rgba(2,6,23,0.12)]">
                     {/* Header */}
                     <div className="mb-3 flex items-center justify-between gap-7">
                         <h3 className="text-foreground text-lg font-semibold">

@@ -1,10 +1,10 @@
-import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { t } from "i18next";
-import { X } from "lucide-react";
+import { Loader2, Search, X } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AutoSizer, IndexRange, InfiniteLoader, List as RVList } from "react-virtualized";
-import { useIsSmallMobile } from "../../../../hooks/useBreakpoint";
+import { useIsMobile } from "../../../../hooks/useBreakpoint";
 import { Pagination } from "../../../shared/types";
 import { Chat } from "../../types";
 import ChatItem from "../ChatItem";
@@ -16,78 +16,131 @@ interface Props {
     showSidebar?: boolean;
     handleDrawerToggle?: () => void;
     loadMore?: () => Promise<void>;
+    searchQuery: string;
+    onSearchChange: (value: string) => void;
+    isSearching?: boolean;
 }
 
-const ChatSidebar = ({ data, onChangeChat, currentChatId, showSidebar, handleDrawerToggle, loadMore }: Props) => {
-    const isMobile = useIsSmallMobile();
+const ChatSidebar = ({
+    data,
+    onChangeChat,
+    currentChatId,
+    showSidebar,
+    handleDrawerToggle,
+    loadMore,
+    searchQuery,
+    onSearchChange,
+    isSearching,
+}: Props) => {
+    const isMobile = useIsMobile();
+    const { t } = useTranslation();
     const [readed, setReaded] = useState<{ [key: number]: boolean }>({});
 
     const sidebarContent = (
-        <div className="bg-background flex h-full w-full rounded-lg p-2.5 sm:rounded-lg">
-            <div className="w-full">
-                <div className="flex items-center gap-4 pb-4">
-                    <Input placeholder={t("common.search")} className="w-full" />
-                    <div className="sm:hidden">
-                        <button onClick={handleDrawerToggle} className="text-danger-brand">
-                            <X className="size-5" />
-                        </button>
-                    </div>
-                </div>
-                <div className="h-[75vh] min-h-[500px]">
-                    {data ? (
-                        <InfiniteLoader
-                            isRowLoaded={({ index }) => !!data && index < data.items.length}
-                            loadMoreRows={async (range: IndexRange) => {
-                                if (!data) return Promise.resolve();
-                                if (range.stopIndex < data.items.length) return Promise.resolve();
-                                if (data.page < data.pages) {
-                                    return loadMore ? loadMore() : Promise.resolve();
-                                }
-                                return Promise.resolve();
-                            }}
-                            rowCount={data.total}
+        <div className="bg-card flex h-full w-full flex-col">
+            {/* Search */}
+            <div className="border-border/50 flex items-center gap-2 border-b px-3 py-3">
+                <div className="bg-muted/50 flex flex-1 items-center gap-2 rounded-full px-3 py-2">
+                    {isSearching ? (
+                        <Loader2 className="text-muted-foreground size-4 shrink-0 animate-spin" />
+                    ) : (
+                        <Search className="text-muted-foreground size-4 shrink-0" />
+                    )}
+                    <input
+                        value={searchQuery}
+                        onChange={(e) => onSearchChange(e.target.value)}
+                        placeholder={t("chat.search_label")}
+                        className="text-foreground placeholder:text-muted-foreground min-w-0 flex-1 bg-transparent text-sm outline-none"
+                        aria-label={t("common.search")}
+                    />
+                    {searchQuery && (
+                        <button
+                            onClick={() => onSearchChange("")}
+                            className="text-muted-foreground hover:text-foreground transition-colors"
+                            aria-label={t("common.clear", { defaultValue: "Clear" })}
                         >
-                            {({ onRowsRendered, registerChild }) => (
-                                <AutoSizer>
-                                    {({ height, width }) => (
-                                        <RVList
-                                            ref={registerChild}
-                                            height={height}
-                                            width={width}
-                                            rowCount={data.total}
-                                            rowHeight={72}
-                                            rowRenderer={({ index, key, style }) => {
-                                                const chat = data.items[index];
-                                                if (!chat) {
-                                                    return <div key={key} style={style} />;
-                                                }
-
-                                                return (
-                                                    <div key={key} style={style}>
-                                                        <ChatItem
-                                                            onChange={(id) => {
-                                                                onChangeChat(id);
-                                                                setReaded((prev) => ({ ...prev, [chat.id]: true }));
-                                                                if (isMobile) {
-                                                                    handleDrawerToggle?.();
-                                                                }
-                                                            }}
-                                                            selected={!!currentChatId && chat.id === currentChatId}
-                                                            readed={readed[chat.id]}
-                                                            chat={chat}
-                                                        />
-                                                    </div>
-                                                );
-                                            }}
-                                            onRowsRendered={onRowsRendered}
-                                        />
-                                    )}
-                                </AutoSizer>
-                            )}
-                        </InfiniteLoader>
-                    ) : null}
+                            <X className="size-3.5" />
+                        </button>
+                    )}
                 </div>
+                {isMobile && (
+                    <button
+                        onClick={handleDrawerToggle}
+                        className="text-muted-foreground hover:text-foreground transition-colors"
+                        aria-label={t("common.close", { defaultValue: "Close" })}
+                    >
+                        <X className="size-5" />
+                    </button>
+                )}
             </div>
+
+            {/* Chat list */}
+            <nav className="min-h-0 flex-1" aria-label={t("chat.chat_list", { defaultValue: "Chat list" })}>
+                {data ? (
+                    <InfiniteLoader
+                        isRowLoaded={({ index }) => !!data && index < data.items.length}
+                        loadMoreRows={async (range: IndexRange) => {
+                            if (!data) return Promise.resolve();
+                            if (range.stopIndex < data.items.length) return Promise.resolve();
+                            if (data.page < data.pages) {
+                                return loadMore ? loadMore() : Promise.resolve();
+                            }
+                            return Promise.resolve();
+                        }}
+                        rowCount={data.total}
+                    >
+                        {({ onRowsRendered, registerChild }) => (
+                            <AutoSizer>
+                                {({ height, width }) => (
+                                    <RVList
+                                        ref={registerChild}
+                                        height={height}
+                                        width={width}
+                                        rowCount={data.total}
+                                        rowHeight={72}
+                                        rowRenderer={({ index, key, style }) => {
+                                            const chat = data.items[index];
+                                            if (!chat) {
+                                                return <div key={key} style={style} />;
+                                            }
+
+                                            return (
+                                                <div key={key} style={style}>
+                                                    <ChatItem
+                                                        onChange={(id) => {
+                                                            onChangeChat(id);
+                                                            setReaded((prev) => ({ ...prev, [chat.id]: true }));
+                                                            if (isMobile) {
+                                                                handleDrawerToggle?.();
+                                                            }
+                                                        }}
+                                                        selected={!!currentChatId && chat.id === currentChatId}
+                                                        readed={readed[chat.id]}
+                                                        chat={chat}
+                                                    />
+                                                </div>
+                                            );
+                                        }}
+                                        onRowsRendered={onRowsRendered}
+                                    />
+                                )}
+                            </AutoSizer>
+                        )}
+                    </InfiniteLoader>
+                ) : (
+                    <div className="flex flex-col gap-1 p-2" role="status" aria-label="Loading chats">
+                        {Array.from({ length: 8 }, (_, i) => (
+                            <div key={i} className="flex items-center gap-3 px-3 py-3">
+                                <Skeleton className="size-10 shrink-0 rounded-full" />
+                                <div className="flex min-w-0 flex-1 flex-col gap-2">
+                                    <Skeleton className="h-4 w-3/4" />
+                                    <Skeleton className="h-3 w-1/2" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </nav>
         </div>
     );
 
@@ -100,7 +153,9 @@ const ChatSidebar = ({ data, onChangeChat, currentChatId, showSidebar, handleDra
                     </SheetContent>
                 </Sheet>
             ) : (
-                <div className="h-full w-[350px]">{sidebarContent}</div>
+                <div className="border-border/50 hidden h-full w-[320px] shrink-0 border-r md:flex">
+                    {sidebarContent}
+                </div>
             )}
         </>
     );

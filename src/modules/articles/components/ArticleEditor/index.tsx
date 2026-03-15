@@ -127,7 +127,7 @@ const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft, articleId }: Prop
     return (
         <form onSubmit={formik.handleSubmit}>
             <div
-                className="border-border-brand bg-paper flex h-[500px] w-full flex-wrap items-end justify-between rounded-[10px] border-2 bg-cover bg-center p-5"
+                className="border-border-brand bg-card flex h-[500px] w-full flex-wrap items-end justify-between rounded-[10px] border-2 bg-cover bg-center p-5"
                 style={{ backgroundImage: banner }}
             >
                 <div className="flex gap-5">

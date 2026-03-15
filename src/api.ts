@@ -18,10 +18,10 @@ import {
     MarkAsReadMutationOptions,
     ParticipantOptions,
     ReadChatOptions,
+    SearchChatQueryOptions,
 } from "./modules/chat/types";
 import { FormOptions, ReadAllFormOptions } from "./modules/forms/types";
 import { ChangeReportStatusPayload } from "./modules/report/types";
-import { DefaultPaginationOptions } from "./modules/shared/types";
 import {
     PublicProfileOptions,
     ReadSearchUsersOptions,
@@ -79,9 +79,8 @@ export const url = {
         resetPassword: `${baseUrl}/api/v1/users/reset-password`,
     },
     chat: {
-        readChats(options: DefaultPaginationOptions) {
+        readChats(options: SearchChatQueryOptions) {
             const query = buildQuery(options);
-            console.log("query", query);
             return `${baseUrl}/api/v1/chat/?${query}`;
         },
         readChat({ id }: ReadChatOptions) {

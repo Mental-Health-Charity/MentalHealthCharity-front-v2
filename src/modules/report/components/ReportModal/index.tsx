@@ -37,8 +37,8 @@ const ReportModal = ({ open, onClose }: Props) => {
     });
 
     return (
-        <Modal title={t("report.modal_title")} onClose={onClose} open={open}>
-            <div className="w-[500px]">
+        <Modal title={t("report.modal_title")} onClose={onClose} open={open} className="sm:max-w-lg">
+            <div>
                 <Formik
                     initialValues={{
                         report_type: "",

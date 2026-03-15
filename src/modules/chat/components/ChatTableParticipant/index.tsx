@@ -21,8 +21,8 @@ const ChatTableParticipant = ({ participant }: Props) => {
                     </AvatarFallback>
                 </Avatar>
                 <div>
-                    <p className="text-text-body">{participant.full_name}</p>
-                    <p className="text-text-body">{participant.email}</p>
+                    <p className="text-foreground">{participant.full_name}</p>
+                    <p className="text-foreground">{participant.email}</p>
                 </div>
             </div>
             <ActionMenu

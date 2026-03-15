@@ -45,7 +45,7 @@ const FormSelect = ({
                 <SelectTrigger
                     id={name}
                     className={cn(
-                        "bg-paper text-foreground",
+                        "bg-card text-foreground",
                         fullWidth && "w-full",
                         hasError && "border-danger-brand focus:ring-danger-brand"
                     )}

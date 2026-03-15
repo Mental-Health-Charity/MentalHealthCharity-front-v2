@@ -2,11 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import debounce from "lodash.debounce";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import AnimatedSection from "../modules/shared/components/AnimatedSection";
 import ArticleCard from "../modules/articles/components/ArticleCard";
 import ArticlesHeading from "../modules/articles/components/ArticlesHeading";
 import { ArticleStatus } from "../modules/articles/constants";
 import { articlesQueryOptions } from "../modules/articles/queries/articlesQueryOptions";
-import Container from "../modules/shared/components/Container";
 
 const ArticlesScreen = () => {
     const [query, setQuery] = useState("");
@@ -35,15 +35,37 @@ const ArticlesScreen = () => {
     }, [data]);
 
     return (
-        <Container className="max-w-[1600px]" waves>
-            <ArticlesHeading onSearch={setQuery} search={query} />
-            <div className="grid min-h-[600px] grid-cols-[repeat(auto-fit,minmax(380px,1fr))] gap-4">
-                {!isLoading && (!published || published.length === 0) && (
-                    <p className="mt-[50px] text-center text-lg">{t("common.not_found")}</p>
-                )}
-                {published && published.map((article) => <ArticleCard article={article} key={article.id} />)}
+        <div>
+            {/* Gradient header */}
+            <div className="from-primary-brand-50 to-background bg-gradient-to-b px-5 pt-12 pb-8 md:pt-20 md:pb-12">
+                <div className="mx-auto max-w-[1200px]">
+                    <h1 className="text-foreground text-3xl font-bold md:text-4xl">{t("articles.title")}</h1>
+                    <p className="text-muted-foreground mt-2 max-w-[600px] text-base md:text-lg">
+                        {t("articles.subtitle")}
+                    </p>
+                    <div className="mt-6">
+                        <ArticlesHeading onSearch={setQuery} search={query} />
+                    </div>
+                </div>
             </div>
-        </Container>
+
+            {/* Articles grid */}
+            <div className="mx-auto max-w-[1200px] px-5 py-10">
+                <div className="grid min-h-[400px] grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                    {!isLoading && (!published || published.length === 0) && (
+                        <p className="text-muted-foreground col-span-full mt-12 text-center text-lg">
+                            {t("common.not_found")}
+                        </p>
+                    )}
+                    {published &&
+                        published.map((article, i) => (
+                            <AnimatedSection as="div" key={article.id} delay={i * 100}>
+                                <ArticleCard article={article} />
+                            </AnimatedSection>
+                        ))}
+                </div>
+            </div>
+        </div>
     );
 };
 

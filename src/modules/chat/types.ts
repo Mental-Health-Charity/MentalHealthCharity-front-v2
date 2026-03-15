@@ -66,6 +66,8 @@ export interface Message {
     sender: User;
     creation_date: string;
     isPending?: boolean;
+    /** Marks a message that failed to send (timed out or connection lost) */
+    isFailed?: boolean;
     chat_id: number;
     /** Marks messages loaded from archive (beyond initial page) */
     isArchived?: boolean;

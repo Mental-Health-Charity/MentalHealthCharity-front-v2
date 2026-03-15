@@ -21,12 +21,15 @@ const NavLink = ({ name, to, fullWidth, className }: Props) => {
         <Link
             to={to}
             reloadDocument={reloadDocument}
+            aria-current={isCurrentRoute ? "page" : undefined}
             className={cn(
-                "text-foreground relative block px-3 py-2 text-xl font-semibold whitespace-nowrap no-underline transition-opacity",
-                isCurrentRoute ? "opacity-100" : "opacity-90 hover:opacity-100",
+                "text-foreground relative block px-3 py-2 text-xl font-semibold whitespace-nowrap no-underline transition-colors duration-200",
+                isCurrentRoute ? "text-primary-brand" : "hover:text-primary-brand opacity-90 hover:opacity-100",
                 fullWidth && "w-full",
-                "after:absolute after:bottom-0 after:left-0 after:block after:h-[5px] after:rounded-[5px] after:transition-all after:duration-300",
-                isCurrentRoute ? "after:bg-accent-brand after:w-full" : "after:w-0 after:bg-transparent",
+                "after:absolute after:bottom-0 after:left-0 after:block after:h-[2px] after:rounded-full after:transition-all after:duration-300",
+                isCurrentRoute
+                    ? "after:bg-primary-brand after:w-full"
+                    : "hover:after:bg-primary-brand/50 after:w-0 after:bg-transparent hover:after:w-full",
                 className
             )}
         >

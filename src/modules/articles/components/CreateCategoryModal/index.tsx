@@ -93,7 +93,7 @@ const CreateArticleCategoryModal = ({ onSuccess, ...props }: Props) => {
                     </div>
                 </form>
                 <div className="my-5 mb-5">
-                    <p className="text-dark mb-2.5 font-bold">
+                    <p className="text-foreground mb-2.5 font-bold">
                         {t("articles.create_new_category.category_list_title")}
                     </p>
                     <Separator />

@@ -1,8 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { useMutation } from "@tanstack/react-query";
-import { ExternalLink, Pencil, Trash2, User as UserIcon } from "lucide-react";
+import { Pencil, Trash2, User as UserIcon } from "lucide-react";
 import { useCallback } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -10,7 +9,6 @@ import { baseUrl } from "../../../../api";
 import { useUser } from "../../../auth/components/AuthProvider";
 import ActionMenu from "../../../shared/components/ActionMenu";
 import InternalLink from "../../../shared/components/InternalLink";
-import Markdown from "../../../shared/components/Markdown";
 import { Permissions } from "../../../shared/constants";
 import formatDate from "../../../shared/helpers/formatDate";
 import usePermissions from "../../../shared/hooks/usePermissions";
@@ -23,6 +21,13 @@ interface Props {
     onRefetch?: () => void;
     draft?: boolean;
 }
+
+const stripMarkdown = (text: string) => {
+    return text
+        .replace(/[#*_~`>[\]()!|-]/g, "")
+        .replace(/\n+/g, " ")
+        .trim();
+};
 
 const ArticleCard = ({ article, onRefetch, draft }: Props) => {
     const { user } = useUser();
@@ -50,80 +55,75 @@ const ArticleCard = ({ article, onRefetch, draft }: Props) => {
     }, [mutate, article]);
 
     const canManageArticle = hasPermissions(Permissions.MANAGE_ARTICLES) || user?.id === article.created_by.id;
+    const plainPreview = stripMarkdown(article.content).substring(0, 120);
 
     return (
         <InternalLink
             to={draft ? `/articles/edit/${article.id}/` : `/article/${article.id}`}
             reloadDocument
-            className="w-full no-underline hover:no-underline"
+            className="group w-full no-underline hover:no-underline"
         >
-            <article className="bg-card ring-foreground/10 w-full overflow-hidden rounded-xl ring-1">
-                <div className="relative">
+            <article className="bg-card flex h-full w-full flex-col overflow-hidden rounded-xl border shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                {/* Image */}
+                <div className="relative overflow-hidden">
                     <img
-                        className="h-[350px] w-full rounded-[10px] object-cover"
+                        className="h-48 w-full object-cover transition-transform duration-500 group-hover:scale-105"
                         src={baseUrl + article.banner_url}
                         alt={article.title}
                         onError={(e) => {
                             e.currentTarget.src = "https://placehold.co/600x400";
                         }}
                     />
-                    <Badge className="absolute bottom-2.5 left-2.5 min-w-[100px] rounded-[10px] px-3 py-2 text-base font-bold uppercase shadow-sm">
+                    <Badge className="text-foreground dark:bg-card/80 absolute bottom-3 left-3 rounded-md bg-white/80 px-2.5 py-1 text-xs font-semibold uppercase shadow-sm backdrop-blur-sm">
                         {article.article_category.name}
                     </Badge>
                 </div>
-                <div className="p-5 pb-0">
-                    <p className="text-dark mb-1 text-2xl font-semibold">{article.title}</p>
 
-                    <Markdown
-                        readOnly
-                        content={
-                            article.content.length > 100 ? `${article.content.substring(0, 103)}...` : article.content
-                        }
-                    />
-                    <Separator className="my-2.5" />
-                    <div className="py-[5px] pb-[15px]">
-                        <div className="flex flex-nowrap items-center justify-between">
-                            <div className="flex items-center">
-                                <Avatar className="mr-2 size-[50px] rounded-md">
-                                    <AvatarImage
-                                        src={article.created_by.chat_avatar_url}
-                                        alt={article.created_by.full_name}
-                                    />
-                                    <AvatarFallback className="rounded-md">
-                                        <UserIcon className="size-5" />
-                                    </AvatarFallback>
-                                </Avatar>
-                                <div>
-                                    <p className="text-dark text-xl font-[550]">{article.created_by.full_name}</p>
-                                    <p className="text-dark text-xl">{formatDate(article.creation_date)}</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center">
-                                {canManageArticle && (
-                                    <ActionMenu
-                                        actions={[
-                                            {
-                                                id: "edit",
-                                                label: "Edytuj",
-                                                icon: <Pencil className="size-4" />,
-                                                href: `/articles/edit/${article.id}/`,
-                                            },
-                                            {
-                                                id: "delete",
-                                                variant: "divider",
-                                                label: "Usuń",
-                                                icon: <Trash2 className="size-4" />,
-                                                onClick: handleDeleteArticle,
-                                            },
-                                        ]}
-                                    />
-                                )}
+                {/* Content */}
+                <div className="flex flex-1 flex-col p-5">
+                    <h3 className="text-foreground group-hover:text-primary-brand line-clamp-2 text-lg font-semibold transition-colors">
+                        {article.title}
+                    </h3>
+                    <p className="text-muted-foreground mt-2 line-clamp-2 text-sm">{plainPreview}...</p>
 
-                                <button className="text-muted-foreground hover:bg-muted inline-flex size-10 items-center justify-center rounded-md">
-                                    <ExternalLink className="size-5" />
-                                </button>
+                    {/* Author row */}
+                    <div className="mt-auto flex items-center justify-between pt-4">
+                        <div className="flex items-center gap-2.5">
+                            <Avatar className="size-8 rounded-full">
+                                <AvatarImage
+                                    src={article.created_by.chat_avatar_url}
+                                    alt={article.created_by.full_name}
+                                />
+                                <AvatarFallback className="rounded-full text-xs">
+                                    <UserIcon className="size-3.5" />
+                                </AvatarFallback>
+                            </Avatar>
+                            <div>
+                                <p className="text-foreground text-xs font-medium">{article.created_by.full_name}</p>
+                                <p className="text-muted-foreground text-[11px]">{formatDate(article.creation_date)}</p>
                             </div>
                         </div>
+                        {canManageArticle && (
+                            <div onClick={(e) => e.preventDefault()}>
+                                <ActionMenu
+                                    actions={[
+                                        {
+                                            id: "edit",
+                                            label: t("common.edit"),
+                                            icon: <Pencil className="size-4" />,
+                                            href: `/articles/edit/${article.id}/`,
+                                        },
+                                        {
+                                            id: "delete",
+                                            variant: "divider",
+                                            label: t("common.remove"),
+                                            icon: <Trash2 className="size-4" />,
+                                            onClick: handleDeleteArticle,
+                                        },
+                                    ]}
+                                />
+                            </div>
+                        )}
                     </div>
                 </div>
             </article>

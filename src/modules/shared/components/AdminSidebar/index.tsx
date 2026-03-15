@@ -1,7 +1,18 @@
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/useBreakpoint";
 import { cn } from "@/lib/utils";
-import { ArrowLeft, Home, LayoutDashboard, Menu, Settings } from "lucide-react";
+import {
+    ArrowLeft,
+    ClipboardCheck,
+    ClipboardList,
+    FileText,
+    Flag,
+    LayoutDashboard,
+    Menu,
+    MessageCircle,
+    Users,
+} from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Permissions } from "../../constants";
 import usePermissions from "../../hooks/usePermissions";
@@ -16,49 +27,50 @@ interface Props {
 export const AdminSidebar = ({ handleToggle, open }: Props) => {
     const isMobile = useIsMobile();
     const { hasPermissions } = usePermissions();
+    const { t } = useTranslation();
 
     const currentPath = window.location.pathname;
 
     const menuItems = [
         {
-            text: "Dashboard",
+            text: t("admin.sidebar.dashboard"),
             icon: <LayoutDashboard className="size-5" />,
             to: "/admin/",
             permissions: Permissions.ADMIN_DASHBOARD,
         },
         {
-            text: "Użytkownicy",
-            icon: <Home className="size-5" />,
+            text: t("admin.sidebar.users"),
+            icon: <Users className="size-5" />,
             to: "/admin/users/",
             permissions: Permissions.MANAGE_USERS,
         },
         {
-            text: "Artykuły",
-            icon: <Settings className="size-5" />,
+            text: t("admin.sidebar.articles"),
+            icon: <FileText className="size-5" />,
             to: "/admin/articles/",
             permissions: Permissions.MANAGE_ARTICLES,
         },
         {
-            text: "Formularze podopiecznych",
-            icon: <Settings className="size-5" />,
+            text: t("admin.sidebar.mentee_forms"),
+            icon: <ClipboardList className="size-5" />,
             to: "/admin/forms/mentee",
             permissions: Permissions.MANAGE_MENTEE_FORMS,
         },
         {
-            text: "Formularze wolontariuszy",
-            icon: <Settings className="size-5" />,
+            text: t("admin.sidebar.volunteer_forms"),
+            icon: <ClipboardCheck className="size-5" />,
             to: "/admin/forms/volunteer",
             permissions: Permissions.MANAGE_VOLUNTEER_FORMS,
         },
         {
-            text: "Zgłoszenia",
-            icon: <Settings className="size-5" />,
+            text: t("admin.sidebar.reports"),
+            icon: <Flag className="size-5" />,
             to: "/admin/reports/",
             permissions: Permissions.MANAGE_REPORTS,
         },
         {
-            text: "Czaty",
-            icon: <Settings className="size-5" />,
+            text: t("admin.sidebar.chats"),
+            icon: <MessageCircle className="size-5" />,
             to: "/admin/chats/",
             permissions: Permissions.MANAGE_CHATS,
         },
@@ -66,30 +78,38 @@ export const AdminSidebar = ({ handleToggle, open }: Props) => {
 
     const sidebarContent = (
         <div>
-            <h2 className="text-sidebar-foreground my-4 text-center text-lg font-semibold">Fundacja Peryskop</h2>
+            <h2 className="text-sidebar-foreground my-4 text-center text-lg font-semibold">
+                {t("admin.sidebar.title")}
+            </h2>
             <hr className="border-sidebar-border" />
-            <nav className="mt-2 flex flex-col">
+            <nav aria-label="Admin navigation" className="mt-2 flex flex-col">
                 {menuItems
                     .filter((item) => hasPermissions(item.permissions))
-                    .map((item) => (
-                        <Link
-                            key={item.text}
-                            to={item.to}
-                            className={cn(
-                                "text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-3 rounded-md px-4 py-2.5 text-sm no-underline transition-colors",
-                                currentPath === item.to && "pointer-events-none opacity-50"
-                            )}
-                        >
-                            <span className="text-white">{item.icon}</span>
-                            <span>{item.text}</span>
-                        </Link>
-                    ))}
+                    .map((item) => {
+                        const isActive = currentPath === item.to;
+                        return (
+                            <Link
+                                key={item.to}
+                                to={item.to}
+                                aria-current={isActive ? "page" : undefined}
+                                className={cn(
+                                    "text-sidebar-foreground flex items-center gap-3 border-l-3 border-transparent px-4 py-2.5 text-sm no-underline transition-colors",
+                                    isActive
+                                        ? "bg-sidebar-accent border-l-sidebar-primary font-medium"
+                                        : "hover:bg-sidebar-accent"
+                                )}
+                            >
+                                <span className="text-sidebar-foreground/70">{item.icon}</span>
+                                <span>{item.text}</span>
+                            </Link>
+                        );
+                    })}
                 <a
                     href="/"
-                    className="text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-3 rounded-md px-4 py-2.5 text-sm no-underline transition-colors"
+                    className="text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-3 border-l-3 border-transparent px-4 py-2.5 text-sm no-underline transition-colors"
                 >
-                    <ArrowLeft className="size-5 text-white" />
-                    <span>Powrót</span>
+                    <ArrowLeft className="text-sidebar-foreground/70 size-5" />
+                    <span>{t("admin.sidebar.back")}</span>
                 </a>
             </nav>
         </div>
@@ -102,10 +122,12 @@ export const AdminSidebar = ({ handleToggle, open }: Props) => {
                     <button
                         className="text-foreground hover:bg-muted rounded-md p-2 transition-colors"
                         onClick={handleToggle}
+                        aria-label="Toggle admin sidebar"
+                        aria-expanded={open}
                     >
                         <Menu className="size-6" />
                     </button>
-                    <h2 className="text-lg font-semibold">Fundacja Peryskop</h2>
+                    <h2 className="text-lg font-semibold">{t("admin.sidebar.title")}</h2>
                 </div>
             )}
 
@@ -114,7 +136,7 @@ export const AdminSidebar = ({ handleToggle, open }: Props) => {
                     <SheetContent
                         side="left"
                         showCloseButton={false}
-                        className="bg-dark p-0"
+                        className="bg-sidebar p-0"
                         style={{ width: drawerWidth }}
                     >
                         {sidebarContent}
@@ -122,7 +144,8 @@ export const AdminSidebar = ({ handleToggle, open }: Props) => {
                 </Sheet>
             ) : (
                 <aside
-                    className="bg-dark text-sidebar-foreground shrink-0 overflow-y-auto"
+                    aria-label="Admin navigation"
+                    className="bg-sidebar text-sidebar-foreground shrink-0 overflow-y-auto"
                     style={{ width: drawerWidth }}
                 >
                     {sidebarContent}

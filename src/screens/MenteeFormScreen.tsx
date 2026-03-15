@@ -1,8 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import Confetti from "react-confetti";
-import bgImg from "../assets/static/admin_panel_bg.svg";
-import { useUser } from "../modules/auth/components/AuthProvider";
 import MenteeForm from "../modules/forms/components/MenteeForm";
 import sendFormMutation from "../modules/forms/queries/sendFormMutation";
 import { formTypes, MenteeForm as MenteeFormType, MenteeFormValues } from "../modules/forms/types";
@@ -13,7 +11,6 @@ const MenteeFormScreen = () => {
     const [showConfetti, setShowConfetti] = useState(false);
     const isFormSend = localStorage.getItem(SessionStorage.SEND_FORM);
     const [step, setStep] = useState(isFormSend ? 5 : 0);
-    const { user } = useUser();
 
     const { mutate, isPending } = useMutation({
         mutationFn: sendFormMutation,
@@ -47,14 +44,8 @@ const MenteeFormScreen = () => {
         });
     };
 
-    console.log("user", user);
-
     return (
-        <Container
-            parentClassName="items-center bg-no-repeat bg-center bg-fixed min-h-[100vh] md:min-h-[calc(100vh-100px)] bg-cover md:bg-[length:100%_auto]"
-            parentStyle={{ backgroundImage: `url(${bgImg})` }}
-            className="w-fit"
-        >
+        <Container parentClassName="items-center min-h-[100vh] md:min-h-[calc(100vh-100px)]" className="w-fit">
             <MenteeForm isLoading={isPending} onSubmit={handleSubmit} step={step} setStep={setStep} />
 
             {showConfetti && <Confetti recycle={false} width={window.innerWidth} height={window.innerHeight} />}

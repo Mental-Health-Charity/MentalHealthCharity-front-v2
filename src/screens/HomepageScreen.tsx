@@ -1,18 +1,21 @@
-import background from "../assets/static/lines.svg";
-import AboutUs from "../modules/shared/components/AboutUs";
+import ArticlesPreview from "../modules/shared/components/ArticlesPreview";
+import ChatMockup from "../modules/shared/components/ChatMockup";
+import DonationsPreview from "../modules/shared/components/DonationsPreview";
+import FinalCTA from "../modules/shared/components/FinalCTA";
 import Hero from "../modules/shared/components/Hero";
+import HowItWorks from "../modules/shared/components/HowItWorks";
+import TrustMission from "../modules/shared/components/TrustMission";
 
 const HomepageScreen = () => {
     return (
-        <div
-            className="mb-[60px] bg-no-repeat"
-            style={{
-                backgroundImage: `url(${background})`,
-                backgroundPosition: "21vw 570px",
-            }}
-        >
+        <div>
             <Hero />
-            <AboutUs />
+            <HowItWorks />
+            <ChatMockup />
+            <ArticlesPreview />
+            <TrustMission />
+            <DonationsPreview />
+            <FinalCTA />
         </div>
     );
 };

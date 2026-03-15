@@ -71,15 +71,23 @@ const ContractModal = ({ isOpen, onClose, chatId }: Props) => {
     }
 
     return (
-        <Modal title="Kontrakt" onClose={onClose} open={isOpen} className="sm:max-w-4xl">
-            <div className="w-full max-w-[800px]">
-                <Markdown
-                    onChange={handleModalContentChange}
-                    content={modalContent}
-                    className="markdown-editor"
-                    readOnly={data.is_confirmed}
-                />
-                <div className="flex items-center justify-between gap-5">
+        <Modal
+            title="Kontrakt"
+            onClose={onClose}
+            open={isOpen}
+            className="sm:max-w-4xl"
+            contentClassName="flex flex-col min-h-0"
+        >
+            <div className="flex min-h-0 w-full flex-col">
+                <div className="max-h-[60vh] min-h-[200px] overflow-y-auto">
+                    <Markdown
+                        onChange={handleModalContentChange}
+                        content={modalContent}
+                        className="markdown-editor"
+                        readOnly={data.is_confirmed}
+                    />
+                </div>
+                <div className="mt-4 flex items-center justify-between gap-5">
                     {hasPermissions(Permissions.CAN_CONFIRM_CONTRACT) && (
                         <Button onClick={handleConfirmContract} disabled={data.is_confirmed}>
                             {t("chat.accept_contract")}
