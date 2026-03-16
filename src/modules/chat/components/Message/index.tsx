@@ -15,9 +15,10 @@ interface Props {
     onDeleteMessage: (id: number) => void;
     onRetryMessage?: (id: number) => void;
     showArchiveChip?: boolean;
+    isNew?: boolean;
 }
 
-const ChatMessage = ({ message, onDeleteMessage, onRetryMessage, showArchiveChip = false }: Props) => {
+const ChatMessage = ({ message, onDeleteMessage, onRetryMessage, showArchiveChip = false, isNew = false }: Props) => {
     const { user } = useUser();
     const senderIsCurrentUser = user && user.id === message.sender.id;
     const { hasPermissions } = usePermissions();
@@ -25,7 +26,11 @@ const ChatMessage = ({ message, onDeleteMessage, onRetryMessage, showArchiveChip
 
     return (
         <div
-            className={cn("group flex w-full items-end gap-2.5", senderIsCurrentUser ? "flex-row-reverse" : "flex-row")}
+            className={cn(
+                "group flex w-full items-end gap-2.5",
+                senderIsCurrentUser ? "flex-row-reverse" : "flex-row",
+                isNew && (senderIsCurrentUser ? "animate-msg-in-right" : "animate-msg-in-left")
+            )}
         >
             {!senderIsCurrentUser && (
                 <Avatar className="ring-background size-8 shrink-0 rounded-full ring-2 md:size-10">

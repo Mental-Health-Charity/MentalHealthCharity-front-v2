@@ -51,7 +51,7 @@ const AddParticipantModal = ({ chat, onSuccess, ...props }: Props) => {
 
     return (
         <Modal {...props} title={t("chat.add_participant")}>
-            <form onSubmit={formik.handleSubmit} noValidate className="flex w-[400px] flex-col gap-4">
+            <form onSubmit={formik.handleSubmit} noValidate className="flex min-h-[200px] flex-col gap-4">
                 <SearchUser
                     onChange={(user) => {
                         formik.setFieldValue("participant", user);

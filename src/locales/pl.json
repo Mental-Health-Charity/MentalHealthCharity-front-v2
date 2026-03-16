@@ -159,6 +159,8 @@
         "conntecting": "Łączenie z rozmówcą...",
         "open": "Połaczono",
         "admin_chat": "Czat koordynacyjny",
+        "participants": "Uczestnicy",
+        "details": "Szczegóły",
         "connection_closed": "Przerwano połączenie z rozmówcą. Sprawdź swoje połączenie internetowe. Spróbuj odświeżyć stronę",
         "connection_closing": "Połączenie z rozmówcą zostało przerwane. Sprawdź swoje połączenie internetowe. Aby naprawić problem odśwież stronę",
         "connection_connecting": "Łączenie z rozmówcą... Jeśli trwa to za długo - sprawdź swoje połączenie z internetem lub spróbuj odświeżyć stronę",

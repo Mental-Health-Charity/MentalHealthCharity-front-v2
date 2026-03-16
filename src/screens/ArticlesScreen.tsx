@@ -2,11 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import debounce from "lodash.debounce";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import AnimatedSection from "../modules/shared/components/AnimatedSection";
 import ArticleCard from "../modules/articles/components/ArticleCard";
 import ArticlesHeading from "../modules/articles/components/ArticlesHeading";
 import { ArticleStatus } from "../modules/articles/constants";
 import { articlesQueryOptions } from "../modules/articles/queries/articlesQueryOptions";
+import AnimatedSection from "../modules/shared/components/AnimatedSection";
 
 const ArticlesScreen = () => {
     const [query, setQuery] = useState("");
@@ -50,7 +50,7 @@ const ArticlesScreen = () => {
             </div>
 
             {/* Articles grid */}
-            <div className="mx-auto max-w-[1200px] px-5 py-10">
+            <div className="mx-auto max-w-[1200px] py-10">
                 <div className="grid min-h-[400px] grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {!isLoading && (!published || published.length === 0) && (
                         <p className="text-muted-foreground col-span-full mt-12 text-center text-lg">

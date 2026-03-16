@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
+import { useIsMobile } from "../../../../hooks/useBreakpoint";
 import { useUser } from "../../../auth/components/AuthProvider";
 import ReportModal from "../../../report/components/ReportModal";
 import { Permissions } from "../../../shared/constants";
@@ -15,16 +16,17 @@ import { Chat as ChatType } from "../../types";
 import Chat from "../Chat";
 import ChatDetails from "../ChatDetails";
 import ChatSidebar from "../ChatSidebar";
-import ContractModal from "../ContractModal/ContractModal";
+import ContractSidebar from "../ContractModal/ContractModal";
 import CustomizeChatModal from "../CustomizeChatModal";
 import Note from "../Note";
 
 const ChatWindow = () => {
     const { id } = useParams<{ id: string }>();
-    const { data, isLoading, aggregatedData, loadNextPage, searchQuery, setSearchQuery, isSearching } =
+    const { data, aggregatedData, baseData, isBaseLoading, loadNextPage, searchQuery, setSearchQuery, isSearching } =
         useChatListLoader(100);
     const effectiveData = aggregatedData || data;
-    const [showDetails, setShowDetails] = useState(false);
+    const isMobile = useIsMobile();
+    const [showDetails, setShowDetails] = useState(!isMobile);
     const [showNote, setShowNote] = useState(false);
     const [showReportModal, setShowReportModal] = useState(false);
     const { user } = useUser();
@@ -80,14 +82,14 @@ const ChatWindow = () => {
         [setChatId, setShowNote]
     );
 
-    // Redirect to home if user has no chats (run only once)
+    // Redirect to home if user has no chats (uses base data, unaffected by search)
     useEffect(() => {
-        if (!isLoading && !hasRedirectedRef.current && (!effectiveData || effectiveData.total === 0)) {
+        if (!isBaseLoading && !hasRedirectedRef.current && (!baseData || baseData.total === 0)) {
             hasRedirectedRef.current = true;
             toast(t("chat.no_available_chats_found"));
             navigate("/");
         }
-    }, [isLoading, effectiveData, t, navigate]);
+    }, [isBaseLoading, baseData, t, navigate]);
 
     useEffect(() => {
         if (!chatId && effectiveData) {
@@ -242,6 +244,15 @@ const ChatWindow = () => {
                     <Note key={selectedChat.id} onClose={() => setShowNote(false)} chat={selectedChat} />
                 )}
 
+                {/* Right: contract sidebar */}
+                {showContractModal && selectedChat && (
+                    <ContractSidebar
+                        key={`contract-${selectedChat.id}`}
+                        chatId={selectedChat.id.toString()}
+                        onClose={() => setShowContractModal(false)}
+                    />
+                )}
+
                 {/* Right: details panel */}
                 {showDetails && selectedChat && (
                     <ChatDetails onClose={() => setShowDetails(false)} chat={selectedChat} />
@@ -251,13 +262,6 @@ const ChatWindow = () => {
             {showReportModal && <ReportModal open={showReportModal} onClose={() => setShowReportModal(false)} />}
             {showCustomizeModal && (
                 <CustomizeChatModal open={showCustomizeModal} onClose={() => setShowCustomizeModal(false)} />
-            )}
-            {showContractModal && (
-                <ContractModal
-                    chatId={chatId.toString()}
-                    isOpen={showContractModal}
-                    onClose={() => setShowContractModal(false)}
-                />
             )}
         </TooltipProvider>
     );

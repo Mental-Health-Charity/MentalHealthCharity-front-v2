@@ -147,7 +147,7 @@ const SearchUser = ({ onChange, value, onChangeSearchQuery, disabled }: Props) =
                     disabled={disabled}
                     value={role || ""}
                     onChange={(e) => setRole(e.target.value === "" ? undefined : (e.target.value as Roles))}
-                    className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-8 w-full rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3 disabled:opacity-50"
+                    className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-10 w-full rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3 disabled:opacity-50"
                 >
                     <option value="">{t("search_user.any_role", "Każda rola")}</option>
                     {Object.values(Roles).map((r) => (

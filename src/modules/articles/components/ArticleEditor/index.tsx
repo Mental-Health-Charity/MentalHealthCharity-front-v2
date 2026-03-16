@@ -158,8 +158,8 @@ const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft, articleId }: Prop
                         <p className="text-destructive text-sm">{formik.errors.title as string}</p>
                     )}
                 </div>
-                <div className="flex w-full flex-wrap gap-4 md:flex-nowrap">
-                    <div className="w-full space-y-1.5">
+                <div className="flex w-full flex-col gap-3 md:flex-row md:items-end">
+                    <div className="w-full min-w-0 flex-1 space-y-1.5">
                         <Label htmlFor="article_category_id">{t("articles.form.article_category_id")}</Label>
                         <select
                             id="article_category_id"
@@ -167,7 +167,7 @@ const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft, articleId }: Prop
                             disabled={isCategoriesLoading}
                             onChange={(e) => formik.setFieldValue("article_category_id", e.target.value)}
                             onBlur={formik.handleBlur}
-                            className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-8 w-full rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3"
+                            className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-10 w-full rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3"
                         >
                             <option value="">---</option>
                             {categories?.items.map((category) => (
@@ -181,7 +181,11 @@ const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft, articleId }: Prop
                         )}
                         {isCategoriesLoading && <Loader />}
                     </div>
-                    <Button type="button" className="w-full gap-2.5" onClick={() => setIsModalOpen(true)}>
+                    <Button
+                        type="button"
+                        className="h-10 w-full shrink-0 gap-2.5 px-4 md:w-auto"
+                        onClick={() => setIsModalOpen(true)}
+                    >
                         <Settings className="size-5" />
                         {t("articles.manage_categories")}
                     </Button>

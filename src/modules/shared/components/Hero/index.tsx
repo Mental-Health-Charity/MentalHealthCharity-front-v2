@@ -157,7 +157,7 @@ const Hero = () => {
                 </div>
 
                 {/* Chat Carousel */}
-                <div className="w-full max-w-[420px] flex-1">
+                <div className="mt-[80px] w-full max-w-[420px] flex-1 md:mt-0">
                     <div ref={emblaRef} className="overflow-hidden rounded-2xl shadow-xl">
                         <div className="flex">
                             {conversations.map((conv, convIdx) => (
@@ -175,7 +175,7 @@ const Hero = () => {
                                         </div>
 
                                         {/* Messages */}
-                                        <div className="space-y-3 px-4 py-5">
+                                        <div className="h-[300px] space-y-3 overflow-hidden px-4 py-5">
                                             {conv.messages.map(({ own, text }, msgIdx) => (
                                                 <div
                                                     key={msgIdx}

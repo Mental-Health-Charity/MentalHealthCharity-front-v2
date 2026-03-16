@@ -73,9 +73,33 @@ const Chat = ({
     const [initialScrollDone, setInitialScrollDone] = useState(false);
     const [isNearTop, setIsNearTop] = useState(false);
 
+    const knownMessageIdsRef = useRef<Set<number>>(new Set());
+    const initialLoadDoneRef = useRef(false);
+
     const scrollPositionRef = useRef<{ scrollTop: number; scrollHeight: number } | null>(null);
 
     const reversedMessages = useMemo(() => [...messages].reverse(), [messages]);
+
+    const newMessageIds = useMemo(() => {
+        const ids = new Set<number>();
+        if (!initialLoadDoneRef.current) {
+            // First load — mark all as known, none as new
+            for (const m of messages) {
+                knownMessageIdsRef.current.add(m.id);
+            }
+            if (messages.length > 0) {
+                initialLoadDoneRef.current = true;
+            }
+        } else {
+            for (const m of messages) {
+                if (!knownMessageIdsRef.current.has(m.id) && !m.isArchived) {
+                    ids.add(m.id);
+                }
+                knownMessageIdsRef.current.add(m.id);
+            }
+        }
+        return ids;
+    }, [messages]);
 
     const hasHiddenArchive = !canReadChatHistory && historyState && historyState.hasMore && isNearTop;
 
@@ -110,6 +134,8 @@ const Chat = ({
             shouldScrollToBottomRef.current = true;
             setInitialScrollDone(false);
             prevMessagesLengthRef.current = 0;
+            knownMessageIdsRef.current = new Set();
+            initialLoadDoneRef.current = false;
         }
     }, [chat?.id]);
 
@@ -197,13 +223,14 @@ const Chat = ({
                                 onRetryMessage={onRetryMessage}
                                 message={message}
                                 showArchiveChip={showArchiveChip}
+                                isNew={newMessageIds.has(message.id) || !!message.isPending}
                             />
                         </div>
                     )}
                 </CellMeasurer>
             );
         },
-        [reversedMessages, onDeleteMessage, onRetryMessage]
+        [reversedMessages, onDeleteMessage, onRetryMessage, newMessageIds]
     );
 
     const renderLoadingIndicator = () => {
@@ -335,11 +362,11 @@ const Chat = ({
                     </div>
                 </div>
             ) : (
-                <div className="border-border/50 flex items-center gap-2 border-t px-3 py-3 md:px-4">
-                    <div className="bg-muted/50 flex min-h-[48px] flex-1 items-center gap-2 rounded-full px-4">
+                <div className="border-border/50 bg-card flex items-center gap-2.5 border-t px-3 py-3 md:px-5 md:py-4">
+                    <div className="border-border bg-background flex min-h-[52px] flex-1 items-center gap-2 rounded-2xl border px-4 shadow-sm md:min-h-[56px]">
                         <input
                             maxLength={1500}
-                            className="text-foreground placeholder:text-muted-foreground min-w-0 flex-1 bg-transparent text-sm outline-none disabled:opacity-50"
+                            className="text-foreground placeholder:text-muted-foreground min-w-0 flex-1 bg-transparent text-[15px] outline-none disabled:opacity-50"
                             disabled={!canSendMessage}
                             placeholder={
                                 isConnected
@@ -368,7 +395,7 @@ const Chat = ({
                     </div>
 
                     <Button
-                        className="bg-primary-brand hover:bg-primary-brand-dark size-12 shrink-0 rounded-full p-0 text-white disabled:opacity-50"
+                        className="bg-primary-brand hover:bg-primary-brand-dark size-12 shrink-0 rounded-full p-0 text-white shadow-sm disabled:opacity-50 md:size-14"
                         onClick={() => formik.handleSubmit()}
                         disabled={!canSendMessage}
                         aria-label={t("chat.send")}

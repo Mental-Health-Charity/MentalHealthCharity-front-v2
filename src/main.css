@@ -119,7 +119,7 @@
     --color-primary-brand: #12c4ba;
     --color-primary-brand-dark: #0fa098;
     --color-primary-brand-light: #0f2e2c;
-    --color-primary-brand-50: #0e2523;
+    --color-primary-brand-50: #0e2933;
     --color-accent-brand: #ffc15c;
     --color-accent-brand-dark: #e5a94d;
     --color-accent-brand-light: #2a2010;
@@ -228,6 +228,11 @@ html,
 .markdown {
     color: var(--foreground) !important;
     height: 100%;
+    overflow: hidden;
+
+    & .mdxeditor-toolbar {
+        flex-wrap: wrap;
+    }
 
     & .mdxeditor-diff-source-wrapper {
         height: 100%;
@@ -391,12 +396,48 @@ html,
         animation: shimmer 1.5s ease-in-out infinite;
     }
 
-    .stagger-1 { animation-delay: 0.1s; }
-    .stagger-2 { animation-delay: 0.2s; }
-    .stagger-3 { animation-delay: 0.3s; }
-    .stagger-4 { animation-delay: 0.4s; }
-    .stagger-5 { animation-delay: 0.5s; }
-    .stagger-6 { animation-delay: 0.6s; }
+    .stagger-1 {
+        animation-delay: 0.1s;
+    }
+    .stagger-2 {
+        animation-delay: 0.2s;
+    }
+    .stagger-3 {
+        animation-delay: 0.3s;
+    }
+    .stagger-4 {
+        animation-delay: 0.4s;
+    }
+    .stagger-5 {
+        animation-delay: 0.5s;
+    }
+    .stagger-6 {
+        animation-delay: 0.6s;
+    }
+
+    @keyframes wave-drift {
+        0% {
+            transform: translateX(0);
+        }
+        50% {
+            transform: translateX(-25px);
+        }
+        100% {
+            transform: translateX(0);
+        }
+    }
+
+    .animate-wave-slow {
+        animation: wave-drift 8s ease-in-out infinite;
+    }
+    .animate-wave-mid {
+        animation: wave-drift 6s ease-in-out infinite;
+        animation-delay: -2s;
+    }
+    .animate-wave-fast {
+        animation: wave-drift 4s ease-in-out infinite;
+        animation-delay: -1s;
+    }
 }
 
 /* ---- Article body typography ---- */

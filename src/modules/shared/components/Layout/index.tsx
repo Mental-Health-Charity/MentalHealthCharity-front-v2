@@ -16,7 +16,7 @@ const Layout = ({ children }: Props) => {
 
     return (
         <div
-            className={`bg-background font-ubuntu ${isChatScreen ? "flex h-[100dvh] flex-col overflow-hidden" : "min-h-screen"}`}
+            className={`bg-background font-ubuntu flex min-h-screen flex-col ${isChatScreen ? "h-[100dvh] overflow-hidden" : ""}`}
         >
             <a
                 href="#main-content"
@@ -35,7 +35,7 @@ const Layout = ({ children }: Props) => {
                 position="top-center"
                 reverseOrder={false}
             />
-            <main id="main-content" className={isChatScreen ? "flex min-h-0 flex-1 flex-col" : ""}>
+            <main id="main-content" className={`flex-1 ${isChatScreen ? "flex min-h-0 flex-col" : ""}`}>
                 {children}
             </main>
             {!isAdminScreen && !isChatScreen && <Footer />}
