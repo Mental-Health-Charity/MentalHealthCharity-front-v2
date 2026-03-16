@@ -172,13 +172,15 @@
         "contract_confirmed": "Kontrakt został potwierdzony",
         "chat_closed": "Ten czat został zamknięty i zostanie wkrótce automatycznie usunięty",
         "close_chat": "Zamknij czat",
+        "close_chat_button_wait": "Poczekaj...",
+        "close_chat_button_confirm": "Zamknij czat na zawsze",
         "close_chat_confirmation": "Potwierdź zamknięcie czatu",
         "close_reasons": {
-            "close_chat_reason_1": "Rozmowa została zakończona pomyślnie.",
+            "close_chat_reason_1": "Rozmowa została zakończona pomyślnie i podopieczny nie potrzebuje dalszego wsparcia z Twojej strony.",
             "close_chat_reason_2": "Użytkownik nie odpowiada od dłuższego czasu.",
             "close_chat_reason_3": "Zakończenie rozmowy jest wymagane przez procedurę."
         },
-        "close_chat_confirmation_text_1": "Czat zostanie zamknięty i nie będzie można go ponownie otworzyć. Czy na pewno chcesz zamknąć czat? Administracja wciąż będzie miała do niego dostęp.",
+        "close_chat_confirmation_text_1": "Czat zostanie zamknięty i nie będzie można nigdy więcej na nim kontynuować rozmowy. Czy na pewno chcesz zamknąć czat? Administracja wciąż będzie miała do niego dostęp.",
         "contract_confirmed_desc": "Kontrakt został potwierdzony. Nie można go już edytować.",
         "remove_participant_success": "Uczestnik został usunięty",
         "connection": {
@@ -223,7 +225,16 @@
         "no_messages": "Brak wiadomości",
         "failed_to_load_history": "Nie udało się załadować historii czatu",
         "archive": "Archiwum",
-        "archived_messages_notice": "Pozostałe wiadomości nie są już dostępne i zostały zarchiwizowane."
+        "archived_messages_notice": "Pozostałe wiadomości nie są już dostępne i zostały zarchiwizowane.",
+        "info_modal": {
+            "title": "Informacje o czatach",
+            "intro": "Nieaktywne czaty są automatycznie usuwane przez system. Poniżej znajdziesz szczegóły.",
+            "with_messages_title": "Czat z wysłanymi wiadomościami",
+            "with_messages_body": "Czaty, w których wysłano przynajmniej jedną wiadomość, są automatycznie usuwane po 16 dniach braku aktywności.",
+            "no_messages_title": "Czat bez żadnych wiadomości",
+            "no_messages_body": "Czaty, w których nie wysłano żadnej wiadomości, są usuwane po 3 dniach braku aktywności.",
+            "dismiss": "Rozumiem"
+        }
     },
     "auth": {
         "login": {

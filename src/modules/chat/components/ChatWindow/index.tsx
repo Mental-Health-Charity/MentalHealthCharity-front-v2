@@ -1,10 +1,9 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { BookOpen, Flag, Menu, SlidersHorizontal, StickyNote, Users } from "lucide-react";
+import { BookOpen, Flag, LockKeyhole, Menu, StickyNote, Users } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useIsMobile } from "../../../../hooks/useBreakpoint";
 import { useUser } from "../../../auth/components/AuthProvider";
 import ReportModal from "../../../report/components/ReportModal";
@@ -13,17 +12,19 @@ import usePermissions from "../../../shared/hooks/usePermissions";
 import useChat from "../../hooks/useChat";
 import useChatListLoader from "../../hooks/useChatListLoader";
 import { Chat as ChatType } from "../../types";
+import AddParticipantModal from "../AddParticipantModal";
 import Chat from "../Chat";
 import ChatDetails from "../ChatDetails";
 import ChatSidebar from "../ChatSidebar";
+import CloseChatModal from "../CloseChatModal";
 import ContractSidebar from "../ContractModal/ContractModal";
 import CustomizeChatModal from "../CustomizeChatModal";
+import NewChatModal from "../NewChatModal";
 import Note from "../Note";
 
 const ChatWindow = () => {
     const { id } = useParams<{ id: string }>();
-    const { data, aggregatedData, baseData, isBaseLoading, loadNextPage, searchQuery, setSearchQuery, isSearching } =
-        useChatListLoader(100);
+    const { data, aggregatedData, loadNextPage, searchQuery, setSearchQuery, isSearching } = useChatListLoader(100);
     const effectiveData = aggregatedData || data;
     const isMobile = useIsMobile();
     const [showDetails, setShowDetails] = useState(!isMobile);
@@ -32,12 +33,13 @@ const ChatWindow = () => {
     const { user } = useUser();
     const [showCustomizeModal, setShowCustomizeModal] = useState(false);
     const [showContractModal, setShowContractModal] = useState(false);
+    const [showNewChatModal, setShowNewChatModal] = useState(false);
+    const [showAddParticipant, setShowAddParticipant] = useState(false);
+    const [showCloseChatModal, setShowCloseChatModal] = useState(false);
     const { t } = useTranslation();
-    const [chatId, setChatId] = useState(id || "");
-    const navigate = useNavigate();
+    const [chatId, setChatId] = useState(id);
     const [showSidebar, setShowSidebar] = useState(false);
     const { hasPermissions } = usePermissions();
-    const hasRedirectedRef = useRef(false);
 
     // Use a ref-based shouldReconnect to avoid stale closure over selectedChat
     const selectedChatRef = useRef<ChatType | undefined>(undefined);
@@ -48,16 +50,25 @@ const ChatWindow = () => {
         send,
         retrySend,
         selectedChat,
+        isSelectedChatLoading,
         handleDeleteMessage,
         handleCloseChat,
         reloadChat,
         loadBackHistory,
         historyState,
-    } = useChat(Number(chatId), {
+    } = useChat(chatId ? Number(chatId) : undefined, {
         shouldReconnect: () => {
+            if (!chatId || !user) {
+                return false;
+            }
+
             const chat = selectedChatRef.current;
-            const isParticipant = chat && user && chat.participants.some((p) => p.id === user.id);
-            return !!isParticipant;
+            if (!chat) {
+                // Keep reconnecting while chat metadata is still loading.
+                return true;
+            }
+
+            return chat.participants.some((p) => p.id === user.id);
         },
         reconnectAttempts: Infinity,
         reconnectInterval: (attemptNumber) => Math.min(1000 * 2 ** attemptNumber, 30000),
@@ -74,6 +85,12 @@ const ChatWindow = () => {
         [handleCloseChat, reloadChat]
     );
 
+    const canCloseChat =
+        selectedChat &&
+        !selectedChat.is_supervisor_chat &&
+        selectedChat.is_active &&
+        (hasPermissions(Permissions.EDIT_CHAT_DATA) || hasPermissions(Permissions.MANAGE_CHATS));
+
     const handleChangeChat = useCallback(
         (id: string) => {
             setShowNote(false);
@@ -81,15 +98,6 @@ const ChatWindow = () => {
         },
         [setChatId, setShowNote]
     );
-
-    // Redirect to home if user has no chats (uses base data, unaffected by search)
-    useEffect(() => {
-        if (!isBaseLoading && !hasRedirectedRef.current && (!baseData || baseData.total === 0)) {
-            hasRedirectedRef.current = true;
-            toast(t("chat.no_available_chats_found"));
-            navigate("/");
-        }
-    }, [isBaseLoading, baseData, t, navigate]);
 
     useEffect(() => {
         if (!chatId && effectiveData) {
@@ -135,21 +143,6 @@ const ChatWindow = () => {
                 <TooltipTrigger
                     render={
                         <button
-                            onClick={() => setShowCustomizeModal(!showCustomizeModal)}
-                            className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-2 transition-colors"
-                            aria-label={t("chat.customize")}
-                        >
-                            <SlidersHorizontal className="size-5" />
-                        </button>
-                    }
-                />
-                <TooltipContent>{t("chat.customize")}</TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-                <TooltipTrigger
-                    render={
-                        <button
                             onClick={() => setShowContractModal(!showContractModal)}
                             className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-2 transition-colors"
                             aria-label={t("chat.contract")}
@@ -175,6 +168,26 @@ const ChatWindow = () => {
                 />
                 <TooltipContent>{t("chat.show_details", { defaultValue: "Details" })}</TooltipContent>
             </Tooltip>
+
+            {canCloseChat && (
+                <>
+                    <div className="bg-border/60 mx-1 h-5 w-px" />
+                    <Tooltip>
+                        <TooltipTrigger
+                            render={
+                                <button
+                                    onClick={() => setShowCloseChatModal(true)}
+                                    className="text-destructive hover:bg-destructive/10 rounded-lg p-2 transition-colors"
+                                    aria-label={t("chat.close_chat")}
+                                >
+                                    <LockKeyhole className="size-5" />
+                                </button>
+                            }
+                        />
+                        <TooltipContent>{t("chat.close_chat")}</TooltipContent>
+                    </Tooltip>
+                </>
+            )}
         </div>
     );
 
@@ -192,6 +205,7 @@ const ChatWindow = () => {
                     searchQuery={searchQuery}
                     onSearchChange={setSearchQuery}
                     isSearching={isSearching}
+                    onNewChat={hasPermissions(Permissions.MANAGE_CHATS) ? () => setShowNewChatModal(true) : undefined}
                 />
 
                 {/* Center: header + messages + input */}
@@ -226,14 +240,15 @@ const ChatWindow = () => {
                     </div>
 
                     {/* Chat area */}
+
                     <Chat
-                        onCloseChat={closeChat}
                         onDeleteMessage={handleDeleteMessage}
                         onRetryMessage={retrySend}
                         status={connectionStatus}
                         messages={messages}
                         onSendMessage={send}
                         chat={selectedChat}
+                        isChatInitializing={isSelectedChatLoading}
                         onLoadMoreMessages={loadBackHistory}
                         historyState={historyState}
                     />
@@ -255,13 +270,47 @@ const ChatWindow = () => {
 
                 {/* Right: details panel */}
                 {showDetails && selectedChat && (
-                    <ChatDetails onClose={() => setShowDetails(false)} chat={selectedChat} />
+                    <ChatDetails
+                        onClose={() => setShowDetails(false)}
+                        chat={selectedChat}
+                        onAddParticipant={
+                            hasPermissions(Permissions.MANAGE_CHATS) ? () => setShowAddParticipant(true) : undefined
+                        }
+                        canManageParticipants={hasPermissions(Permissions.MANAGE_CHATS)}
+                        onParticipantRemoved={reloadChat}
+                        onCloseChat={canCloseChat ? () => setShowCloseChatModal(true) : undefined}
+                    />
                 )}
             </div>
 
             {showReportModal && <ReportModal open={showReportModal} onClose={() => setShowReportModal(false)} />}
             {showCustomizeModal && (
                 <CustomizeChatModal open={showCustomizeModal} onClose={() => setShowCustomizeModal(false)} />
+            )}
+            {showNewChatModal && (
+                <NewChatModal
+                    open={showNewChatModal}
+                    onClose={() => setShowNewChatModal(false)}
+                    onSuccess={reloadChat}
+                />
+            )}
+            {showAddParticipant && selectedChat && (
+                <AddParticipantModal
+                    open={showAddParticipant}
+                    onClose={() => setShowAddParticipant(false)}
+                    chat={selectedChat}
+                    onSuccess={reloadChat}
+                />
+            )}
+            {selectedChat && (
+                <CloseChatModal
+                    open={showCloseChatModal}
+                    onClose={() => setShowCloseChatModal(false)}
+                    onConfirm={() => {
+                        closeChat(selectedChat);
+                        setShowCloseChatModal(false);
+                    }}
+                />
             )}
         </TooltipProvider>
     );

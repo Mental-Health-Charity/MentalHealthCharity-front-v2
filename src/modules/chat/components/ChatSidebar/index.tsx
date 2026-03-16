@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { Loader2, Search, X } from "lucide-react";
+import { Loader2, Plus, Search, X } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AutoSizer, IndexRange, InfiniteLoader, List as RVList } from "react-virtualized";
@@ -19,6 +19,7 @@ interface Props {
     searchQuery: string;
     onSearchChange: (value: string) => void;
     isSearching?: boolean;
+    onNewChat?: () => void;
 }
 
 const ChatSidebar = ({
@@ -31,6 +32,7 @@ const ChatSidebar = ({
     searchQuery,
     onSearchChange,
     isSearching,
+    onNewChat,
 }: Props) => {
     const isMobile = useIsMobile();
     const { t } = useTranslation();
@@ -73,6 +75,19 @@ const ChatSidebar = ({
                     </button>
                 )}
             </div>
+
+            {/* New Chat button */}
+            {onNewChat && (
+                <div className="border-border/50 border-b px-3 py-2">
+                    <button
+                        onClick={onNewChat}
+                        className="bg-primary-brand/10 text-primary-brand hover:bg-primary-brand/20 flex w-full items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium transition-colors"
+                    >
+                        <Plus className="size-4" />
+                        {t("chat.create_new_chat")}
+                    </button>
+                </div>
+            )}
 
             {/* Chat list */}
             <nav className="min-h-0 flex-1" aria-label={t("chat.chat_list", { defaultValue: "Chat list" })}>

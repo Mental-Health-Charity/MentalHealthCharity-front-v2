@@ -28,10 +28,11 @@ export interface HistoryPaginationState {
     isLoadingHistory: boolean;
 }
 
-const useChat = (chatId: number, options?: Options) => {
+const useChat = (chatId?: number, options?: Options) => {
     const token = Cookies.get("token");
     const [messages, setMessages] = useState<Message[]>([]);
     const [pendingMessages, setPendingMessages] = useState<Message[]>([]);
+    const pendingTimeoutsRef = useRef<Set<number>>(new Set());
 
     // Pagination state for backwards history loading
     const [historyState, setHistoryState] = useState<HistoryPaginationState>({
@@ -62,7 +63,11 @@ const useChat = (chatId: number, options?: Options) => {
     const { mutate: markAsRead } = useMutation({
         mutationFn: markAsReadMutation,
     });
-    const { data: selectedChat, refetch: reloadChat } = useQuery(getChatById({ id: chatId || -9 }));
+    const {
+        data: selectedChat,
+        refetch: reloadChat,
+        isPending: isSelectedChatLoading,
+    } = useQuery(getChatById({ id: chatId ?? 0 }));
     const { mutate: deleteChatMessage } = useMutation({
         mutationFn: deleteChatMessageMutation,
     });
@@ -93,7 +98,7 @@ const useChat = (chatId: number, options?: Options) => {
 
             const newMessage: Message = {
                 ...msg,
-                chat_id: chatId,
+                chat_id: chatId ?? 0,
                 sender: sender || UnknownUser,
             };
 
@@ -107,7 +112,9 @@ const useChat = (chatId: number, options?: Options) => {
             });
 
             setMessages((prev) => [newMessage, ...prev]);
-            markAsRead({ id: chatId });
+            if (chatId) {
+                markAsRead({ id: chatId });
+            }
         })
         .onDelete(({ id }) => {
             knownMessageIdsRef.current.delete(id);
@@ -131,13 +138,15 @@ const useChat = (chatId: number, options?: Options) => {
         throw new Error("Token not found");
     }
 
-    const { readyState, lastMessage, sendJsonMessage } = useWebSocket(
-        url.chat.connect({
-            token,
-            chat_id: String(chatId),
-        }),
-        options
-    );
+    const wsUrl =
+        typeof chatId === "number" && chatId > 0
+            ? url.chat.connect({
+                  token,
+                  chat_id: String(chatId),
+              })
+            : null;
+
+    const { readyState, lastMessage, sendJsonMessage } = useWebSocket(wsUrl, options);
 
     // Expose readyState via ref so send() always has the latest value
     const readyStateRef = useRef(readyState);
@@ -156,7 +165,7 @@ const useChat = (chatId: number, options?: Options) => {
                 id: tempId,
                 content,
                 sender: user || UnknownUser,
-                chat_id: chatId,
+                chat_id: chatId ?? 0,
                 creation_date: new Date().toISOString(),
                 isPending: true,
             };
@@ -165,13 +174,16 @@ const useChat = (chatId: number, options?: Options) => {
             sendJsonMessage({ chatId, content });
 
             // Timeout: mark pending message as failed if not confirmed
-            setTimeout(() => {
+            const timeoutId = window.setTimeout(() => {
                 setPendingMessages((prev) => {
                     const msg = prev.find((m) => m.id === tempId);
                     if (!msg) return prev; // Already confirmed, no change needed
                     return prev.map((m) => (m.id === tempId ? { ...m, isFailed: true, isPending: false } : m));
                 });
+                pendingTimeoutsRef.current.delete(timeoutId);
             }, PENDING_MESSAGE_TIMEOUT);
+
+            pendingTimeoutsRef.current.add(timeoutId);
         },
         [chatId, user, sendJsonMessage]
     );
@@ -200,6 +212,15 @@ const useChat = (chatId: number, options?: Options) => {
             }
         }
     }, [lastMessage]);
+
+    useEffect(() => {
+        return () => {
+            pendingTimeoutsRef.current.forEach((timeoutId) => {
+                clearTimeout(timeoutId);
+            });
+            pendingTimeoutsRef.current.clear();
+        };
+    }, [chatId]);
 
     // Load initial page when chatId changes
     useEffect(() => {
@@ -259,6 +280,10 @@ const useChat = (chatId: number, options?: Options) => {
      * @returns Promise that resolves when loading is complete
      */
     const loadBackHistory = useCallback(async (): Promise<void> => {
+        if (!chatId || chatId <= 0) {
+            return;
+        }
+
         // Guard: Don't load if already loading or no more pages
         if (historyState.isLoadingHistory || !historyState.hasMore) {
             return;
@@ -361,6 +386,7 @@ const useChat = (chatId: number, options?: Options) => {
         messages: allMessages,
         connectionStatus,
         selectedChat,
+        isSelectedChatLoading,
         handleDeleteMessage,
         handleCloseChat,
         reloadChat,

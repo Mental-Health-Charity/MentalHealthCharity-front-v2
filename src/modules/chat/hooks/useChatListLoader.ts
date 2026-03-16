@@ -11,18 +11,7 @@ export default function useChatListLoader(pageSize = 100) {
     const [searchQuery, setSearchQuery] = useState("");
     const debouncedSearch = useDebounce(searchQuery, 400);
 
-    // Base query — always runs without search, used for existence checks
-    const { data: baseData, isLoading: isBaseLoading } = useQuery(
-        getChatsQueryOptions({
-            size: pageSize,
-            page: 1,
-            unread_first: true,
-            sort_by: ChatSortByOptions.LATEST_MESSAGE_DATE,
-        })
-    );
-
-    // Search-aware query
-    const { data, isLoading } = useQuery(
+    const { data, isLoading, isFetching } = useQuery(
         getChatsQueryOptions({
             size: pageSize,
             page: 1,
@@ -86,12 +75,11 @@ export default function useChatListLoader(pageSize = 100) {
         data,
         isLoading,
         aggregatedData,
-        baseData,
-        isBaseLoading,
         loadPage,
         loadNextPage,
         searchQuery,
         setSearchQuery,
         isSearching: searchQuery !== debouncedSearch,
+        isFetching,
     } as const;
 }

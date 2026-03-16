@@ -16,7 +16,6 @@ import usePermissions from "../../../shared/hooks/usePermissions";
 import { translatedConnectionStatus } from "../../constants";
 import { HistoryPaginationState } from "../../hooks/useChat";
 import { Chat as ChatType, ConnectionStatus, Message } from "../../types";
-import CloseChatModal from "../CloseChatModal";
 import ConnectionModal from "../ConnectionModal";
 import ChatMessage from "../Message";
 
@@ -33,24 +32,24 @@ const alertVariantClasses: Record<AlertVariant, string> = {
 
 interface Props {
     chat?: ChatType;
+    isChatInitializing?: boolean;
     onSendMessage: (message: string) => void;
     onDeleteMessage: (id: number) => void;
     onRetryMessage?: (id: number) => void;
     messages: Message[];
     status: ConnectionStatus;
-    onCloseChat: (chat: ChatType) => void;
     onLoadMoreMessages?: () => Promise<void>;
     historyState?: HistoryPaginationState;
 }
 
 const Chat = ({
     chat,
+    isChatInitializing = false,
     messages,
     onSendMessage,
     status,
     onDeleteMessage,
     onRetryMessage,
-    onCloseChat,
     onLoadMoreMessages,
     historyState,
 }: Props) => {
@@ -62,7 +61,6 @@ const Chat = ({
     const validationSchema = Yup.object({
         message: Yup.string().max(1500).required(),
     });
-    const [showChatCloseModal, setShowChatCloseModal] = useState(false);
     const { hasPermissions } = usePermissions();
 
     const canReadChatHistory = hasPermissions(Permissions.CAN_READ_CHAT_HISTORY);
@@ -110,11 +108,10 @@ const Chat = ({
         })
     );
 
-    const canEditChat = chat && !chat.is_supervisor_chat && user && hasPermissions(Permissions.EDIT_CHAT_DATA);
-
     const isConnected = status.state === ReadyState.OPEN;
     const isParticipant = chat && user && chat.participants.some((p) => p.id === user.id);
     const canSendMessage = isConnected && !!chat && !!user && !!isParticipant;
+    const showConnectionBanner = !isChatInitializing && !!chat && status.state !== ReadyState.OPEN;
 
     const formik = useFormik({
         initialValues: {
@@ -262,7 +259,7 @@ const Chat = ({
     return (
         <div className="bg-background/50 relative flex min-h-0 flex-1 flex-col">
             {/* Connection status banner */}
-            {status.state !== ReadyState.OPEN && (
+            {showConnectionBanner && (
                 <div
                     className={`flex items-center gap-2.5 border-b px-4 py-2.5 text-sm font-medium ${alertVariantClasses[status.state === ReadyState.CONNECTING ? "info" : "danger"]}`}
                     role="status"
@@ -280,7 +277,26 @@ const Chat = ({
             >
                 {renderLoadingIndicator()}
                 {renderArchiveNotice()}
-                {reversedMessages && reversedMessages.length > 0 ? (
+                {isChatInitializing ? (
+                    <div className="flex h-full flex-col justify-end gap-4 p-5" role="status" aria-live="polite">
+                        <div className="mx-auto w-40">
+                            <Skeleton className="h-4 w-full" />
+                        </div>
+                        <div className="flex items-end gap-2.5">
+                            <Skeleton className="size-8 shrink-0 rounded-full" />
+                            <div className="flex flex-col gap-1.5">
+                                <Skeleton className="h-3 w-20" />
+                                <Skeleton className="h-16 w-52 rounded-2xl rounded-bl-md" />
+                            </div>
+                        </div>
+                        <div className="flex items-end justify-end gap-2.5">
+                            <div className="flex flex-col items-end gap-1.5">
+                                <Skeleton className="h-3 w-16" />
+                                <Skeleton className="h-12 w-44 rounded-2xl rounded-br-md" />
+                            </div>
+                        </div>
+                    </div>
+                ) : reversedMessages && reversedMessages.length > 0 ? (
                     <AutoSizer>
                         {({ height, width }: { height: number; width: number }) => (
                             <List
@@ -355,7 +371,15 @@ const Chat = ({
             </div>
 
             {/* Input bar */}
-            {!chat?.is_active ? (
+            {isChatInitializing ? (
+                <div className="border-border/50 border-t px-4 py-3">
+                    <div className="bg-muted/60 rounded-lg p-3">
+                        <div className="mx-auto h-4 w-48">
+                            <Skeleton className="h-4 w-full" />
+                        </div>
+                    </div>
+                </div>
+            ) : chat && !chat.is_active ? (
                 <div className="border-border/50 border-t px-4 py-3">
                     <div className="border-destructive bg-destructive/10 rounded-lg border p-3 text-center">
                         <p className="text-destructive text-sm font-bold">{t("chat.chat_closed")}</p>
@@ -404,17 +428,7 @@ const Chat = ({
                     </Button>
                 </div>
             )}
-            <ConnectionModal status={status} />
-            {canEditChat && (
-                <CloseChatModal
-                    open={showChatCloseModal}
-                    onClose={() => setShowChatCloseModal(false)}
-                    onConfirm={() => {
-                        onCloseChat(chat);
-                        setShowChatCloseModal(false);
-                    }}
-                />
-            )}
+            <ConnectionModal status={status} disabled={isChatInitializing || !chat} />
         </div>
     );
 };

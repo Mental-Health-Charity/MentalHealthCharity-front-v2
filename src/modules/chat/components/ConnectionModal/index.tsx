@@ -8,11 +8,16 @@ import { ConnectionStatus } from "../../types";
 
 interface Props {
     status: ConnectionStatus;
+    disabled?: boolean;
 }
 
-const ConnectionModal = ({ status }: Props) => {
+const ConnectionModal = ({ status, disabled = false }: Props) => {
     const { t } = useTranslation();
     const { hasPermissions } = usePermissions();
+
+    if (disabled) {
+        return null;
+    }
 
     if (hasPermissions(Permissions.MANAGE_CHATS)) {
         return null;

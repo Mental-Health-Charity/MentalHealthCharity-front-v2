@@ -65,9 +65,7 @@ const CloseChatModal = ({ onConfirm, open, onClose }: Props) => {
                         onClick={onConfirm}
                         style={{ opacity: canConfirm ? 1 : 0.6 }}
                     >
-                        {canConfirm
-                            ? t("chat.close_chat_button_confirm", "Zamknij czat")
-                            : t("chat.close_chat_button_wait", "Poczekaj...")}
+                        {canConfirm ? t("chat.close_chat_button_confirm") : t("chat.close_chat_button_wait")}
                     </Button>
                 </div>
             </div>
