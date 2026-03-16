@@ -1,7 +1,7 @@
-import { Box, BoxProps, Divider, Typography } from "@mui/material";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import useTheme from "../../../../theme";
 import formatDate from "../../../shared/helpers/formatDate";
 import { createRenderFieldValue } from "../../../shared/helpers/formRenderers/formRenderer";
 import { arrayOfIsoDatesPlugin } from "../../../shared/helpers/formRenderers/plugins/arrayOfIsoDatesPlugin";
@@ -11,13 +11,12 @@ import { singleIsoDatePlugin } from "../../../shared/helpers/formRenderers/plugi
 import UserTableItem from "../../../users/components/UserTableItem";
 import { FormResponse, MenteeForm, VolunteerForm } from "../../types";
 
-interface Props extends BoxProps {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
     form: FormResponse<MenteeForm | VolunteerForm>;
     refetch?: () => void;
 }
 
-const FormTableItem = ({ form, ...props }: Props) => {
-    const theme = useTheme();
+const FormTableItem = ({ form, className, ...props }: Props) => {
     const navigate = useNavigate();
     const { t } = useTranslation();
 
@@ -31,66 +30,33 @@ const FormTableItem = ({ form, ...props }: Props) => {
     const fieldsArray = Object.entries(form.fields);
 
     return (
-        <Box {...props}>
-            <Box sx={{ padding: "20px" }}>
+        <div className={cn(className)} {...props}>
+            <div className="p-5">
                 <UserTableItem
                     user={form.created_by}
                     onEdit={() => navigate(`/admin/users?search=${form.created_by.email}`)}
                 />
 
-                <Divider sx={{ marginY: 2 }} />
+                <Separator className="my-4" />
 
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                <div className="flex flex-col gap-4">
                     {fieldsArray.map(([key, value]) => (
-                        <Box
+                        <div
                             key={key}
-                            sx={{
-                                padding: "14px 18px",
-                                borderRadius: "10px",
-                                display: "flex",
-                                flexDirection: "column",
-                                backgroundColor: theme.palette.background.default,
-                                border: `1px solid ${theme.palette.colors.border}`,
-                            }}
+                            className="border-border-brand bg-bg-brand flex flex-col rounded-[10px] border px-[18px] py-[14px]"
                         >
-                            <Typography
-                                sx={{
-                                    fontWeight: 600,
-                                    fontSize: "16px",
-                                    marginBottom: "6px",
-                                }}
-                            >
-                                {t(`forms_fields.${key}`)}
-                            </Typography>
-
-                            <Typography sx={{ fontSize: "16px" }}>{renderFieldValue(value as unknown)}</Typography>
-                        </Box>
+                            <p className="mb-1.5 text-base font-semibold">{t(`forms_fields.${key}`)}</p>
+                            <p className="text-base">{renderFieldValue(value as unknown)}</p>
+                        </div>
                     ))}
 
-                    <Box
-                        sx={{
-                            padding: "14px 18px",
-                            borderRadius: "10px",
-                            backgroundColor: theme.palette.background.default,
-                            border: `1px solid ${theme.palette.colors.border}`,
-                        }}
-                    >
-                        <Typography
-                            sx={{
-                                fontWeight: 600,
-                                fontSize: "16px",
-                                marginBottom: "6px",
-                            }}
-                        >
-                            {t(`forms_fields.creation_date`)}
-                        </Typography>
-                        <Typography sx={{ fontSize: "16px" }}>
-                            {formatDate(new Date(form.creation_date), "dd/MM/yyyy")}
-                        </Typography>
-                    </Box>
-                </Box>
-            </Box>
-        </Box>
+                    <div className="border-border-brand bg-bg-brand rounded-[10px] border px-[18px] py-[14px]">
+                        <p className="mb-1.5 text-base font-semibold">{t(`forms_fields.creation_date`)}</p>
+                        <p className="text-base">{formatDate(new Date(form.creation_date), "dd/MM/yyyy")}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 };
 

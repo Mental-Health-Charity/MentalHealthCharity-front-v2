@@ -1,4 +1,5 @@
-import { Box, Button, MenuItem, TextField } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { Form, Formik } from "formik";
 import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
@@ -31,62 +32,60 @@ const ManageArticleModal = ({ onClose, open, onSubmit }: Props) => {
     };
 
     return (
-        <Modal
-            modalContentProps={{
-                sx: {
-                    width: "100%",
-                    maxWidth: "500px",
-                },
-            }}
-            title={t("manage_articles.modal_title")}
-            open={open}
-            onClose={onClose}
-        >
-            <Box>
+        <Modal className="sm:max-w-[500px]" title={t("manage_articles.modal_title")} open={open} onClose={onClose}>
+            <div>
                 <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
                     {({ values, errors, touched, handleChange, handleBlur }) => (
                         <Form>
-                            <Box display="flex" flexDirection="column" gap={2}>
-                                <TextField
-                                    select
-                                    label={t("manage_articles.fields.status")}
-                                    name="status"
-                                    value={values.status}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    error={touched.status && Boolean(errors.status)}
-                                    helperText={touched.status && errors.status}
-                                >
-                                    <MenuItem value={ArticleStatus.PUBLISHED}>
-                                        {t("manage_articles.status.published")}
-                                    </MenuItem>
-                                    <MenuItem value={ArticleStatus.REJECTED}>
-                                        {t("manage_articles.status.rejected")}
-                                    </MenuItem>
-                                </TextField>
-
-                                {values.status === ArticleStatus.REJECTED && (
-                                    <TextField
-                                        label={t("manage_articles.fields.reject_message")}
-                                        name="reject_message"
-                                        value={values.reject_message}
+                            <div className="flex flex-col gap-4">
+                                <div className="space-y-1.5">
+                                    <Label htmlFor="status">{t("manage_articles.fields.status")}</Label>
+                                    <select
+                                        id="status"
+                                        name="status"
+                                        value={values.status}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
-                                        multiline
-                                        rows={4}
-                                        error={touched.reject_message && Boolean(errors.reject_message)}
-                                        helperText={touched.reject_message && errors.reject_message}
-                                    />
+                                        className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-8 w-full rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3"
+                                    >
+                                        <option value={ArticleStatus.PUBLISHED}>
+                                            {t("manage_articles.status.published")}
+                                        </option>
+                                        <option value={ArticleStatus.REJECTED}>
+                                            {t("manage_articles.status.rejected")}
+                                        </option>
+                                    </select>
+                                    {touched.status && errors.status && (
+                                        <p className="text-destructive text-sm">{errors.status}</p>
+                                    )}
+                                </div>
+
+                                {values.status === ArticleStatus.REJECTED && (
+                                    <div className="space-y-1.5">
+                                        <Label htmlFor="reject_message">
+                                            {t("manage_articles.fields.reject_message")}
+                                        </Label>
+                                        <textarea
+                                            id="reject_message"
+                                            name="reject_message"
+                                            value={values.reject_message}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            rows={4}
+                                            className="border-input focus-visible:border-ring focus-visible:ring-ring/50 w-full rounded-lg border bg-transparent px-3 py-2 text-sm outline-none focus-visible:ring-3"
+                                        />
+                                        {touched.reject_message && errors.reject_message && (
+                                            <p className="text-destructive text-sm">{errors.reject_message}</p>
+                                        )}
+                                    </div>
                                 )}
 
-                                <Button type="submit" variant="contained">
-                                    {t("common.submit")}
-                                </Button>
-                            </Box>
+                                <Button type="submit">{t("common.submit")}</Button>
+                            </div>
                         </Form>
                     )}
                 </Formik>
-            </Box>
+            </div>
         </Modal>
     );
 };

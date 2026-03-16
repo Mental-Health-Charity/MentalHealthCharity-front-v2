@@ -1,5 +1,4 @@
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { Box } from "@mui/material";
+import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const SCROLL_TOLERANCE_PX = 4;
@@ -27,24 +26,9 @@ const ScrollIndicator = () => {
     if (!visible) return null;
 
     return (
-        <Box
-            sx={{
-                position: "absolute",
-                bottom: 24,
-                left: "50%",
-                transform: "translateX(-50%)",
-                color: "white",
-                opacity: 0.85,
-                animation: "scrollHint 1.6s ease-in-out infinite",
-                "@keyframes scrollHint": {
-                    "0%": { transform: "translate(-50%, 0)" },
-                    "50%": { transform: "translate(-50%, 8px)" },
-                    "100%": { transform: "translate(-50%, 0)" },
-                },
-            }}
-        >
-            <KeyboardArrowDownIcon fontSize="large" />
-        </Box>
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce text-white opacity-85">
+            <ChevronDown size={32} />
+        </div>
     );
 };
 

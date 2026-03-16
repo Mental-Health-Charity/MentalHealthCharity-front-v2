@@ -52,14 +52,11 @@ const UsersList = ({ data, onChange, onChangeSearchQuery, user, refetchUsers }: 
     };
 
     return (
-        <div style={{ minHeight: "100vh" }}>
+        <div className="min-h-screen">
             <SimpleCard
                 title={t("admin_screen.user_list_title")}
                 subtitle={t("admin_screen.user_list_subtitle")}
-                style={{
-                    height: "100%",
-                    marginBottom: "20px",
-                }}
+                className="mb-5 h-full"
             >
                 <SearchUser onChangeSearchQuery={onChangeSearchQuery} onChange={onChange} value={user} />
             </SimpleCard>

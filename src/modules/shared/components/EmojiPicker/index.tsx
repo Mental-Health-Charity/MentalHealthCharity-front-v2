@@ -1,6 +1,5 @@
-import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
-import { Box, IconButton } from "@mui/material";
 import Picker, { EmojiClickData, EmojiStyle, Theme } from "emoji-picker-react";
+import { Smile } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 interface Props {
@@ -16,7 +15,7 @@ const EmojiPicker = ({ onChange, textFieldRef }: Props) => {
         if (!textFieldRef.current) return;
 
         const cursor = textFieldRef.current.selectionStart || 0;
-        const currentMessage = textFieldRef.current.value; // aktualna wartość z DOM
+        const currentMessage = textFieldRef.current.value;
 
         const newText = currentMessage.slice(0, cursor) + emojiObject.emoji + currentMessage.slice(cursor);
         onChange(newText);
@@ -43,20 +42,8 @@ const EmojiPicker = ({ onChange, textFieldRef }: Props) => {
     }, [setShowEmojiPicker, containerRef]);
 
     return (
-        <Box
-            ref={containerRef}
-            sx={{
-                position: "relative",
-            }}
-        >
-            <Box
-                sx={{
-                    position: "absolute",
-                    bottom: "40px",
-                    right: { xs: "-70px", sm: "30px" },
-                    zIndex: 10,
-                }}
-            >
+        <div ref={containerRef} className="relative">
+            <div className="absolute -right-[70px] bottom-10 z-10 sm:right-[30px]">
                 <Picker
                     open={showEmojiPicker}
                     theme={Theme.AUTO}
@@ -64,11 +51,15 @@ const EmojiPicker = ({ onChange, textFieldRef }: Props) => {
                     onEmojiClick={onEmojiClick}
                     lazyLoadEmojis
                 />
-            </Box>
-            <IconButton onClick={() => setShowEmojiPicker((prev) => !prev)} sx={{ height: "fit-content" }}>
-                <EmojiEmotionsIcon />
-            </IconButton>
-        </Box>
+            </div>
+            <button
+                type="button"
+                onClick={() => setShowEmojiPicker((prev) => !prev)}
+                className="text-muted-foreground hover:bg-muted hover:text-foreground inline-flex h-fit items-center justify-center rounded-md p-2 transition-colors"
+            >
+                <Smile size={24} />
+            </button>
+        </div>
     );
 };
 

@@ -1,17 +1,17 @@
-import { IconButton } from "@mui/material";
+import { cn } from "@/lib/utils";
+import { X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Wrapper } from "./style";
 
 interface Props {
     children?: React.ReactNode;
-    id: string; // unikalny identyfikator, np. "auto_delete_info"
+    id: string;
+    className?: string;
 }
 
-const Info = ({ children, id }: Props) => {
+const Info = ({ children, id, className }: Props) => {
     const [visible, setVisible] = useState(true);
 
     useEffect(() => {
-        // Sprawdź, czy użytkownik już zamknął ten komunikat
         const isClosed = localStorage.getItem(`info_closed_${id}`);
         if (isClosed) {
             setVisible(false);
@@ -19,7 +19,6 @@ const Info = ({ children, id }: Props) => {
     }, [id]);
 
     const handleClose = () => {
-        // Ukryj i zapisz do localStorage
         setVisible(false);
         localStorage.setItem(`info_closed_${id}`, "true");
     };
@@ -27,25 +26,22 @@ const Info = ({ children, id }: Props) => {
     if (!visible) return null;
 
     return (
-        <Wrapper>
+        <div
+            className={cn(
+                "border-info-brand/10 bg-info-brand/10 text-info-brand flex items-center justify-center gap-2 rounded-lg border-2 p-4 text-center text-base font-semibold sm:text-left sm:text-sm",
+                className
+            )}
+        >
             {children}
-            <IconButton
-                color="info"
-                size="small"
+            <button
+                type="button"
                 onClick={handleClose}
-                // style={{
-                //     background: "transparent",
-                //     border: "none",
-                //     cursor: "pointer",
-                //     fontSize: "16px",
-                //     marginLeft: "8px",
-                // }}
-
-                aria-label="Zamknij komunikat"
+                className="text-info-brand ml-2 inline-flex shrink-0 items-center justify-center rounded-sm p-0.5 transition-opacity hover:opacity-70"
+                aria-label="Close message"
             >
-                ✕
-            </IconButton>
-        </Wrapper>
+                <X size={16} />
+            </button>
+        </div>
     );
 };
 

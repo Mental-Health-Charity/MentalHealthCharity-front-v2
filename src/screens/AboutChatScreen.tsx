@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import background from "../assets/static/admin_panel_bg.svg";
@@ -10,25 +10,11 @@ const AboutChatScreen = () => {
 
     return (
         <Container
-            parentProps={{
-                sx: {
-                    backgroundImage: `url(${background})`,
-                    backgroundPosition: "center",
-                    backgroundSize: "cover",
-                    backgroundRepeat: "no-repeat",
-                },
-            }}
+            parentClassName="bg-cover bg-center bg-no-repeat"
+            parentStyle={{ backgroundImage: `url(${background})` }}
         >
             <Card title={t("chat.about.title")} subtitle={t("chat.about.subtitle")}>
-                <Button
-                    sx={{
-                        width: { xs: "100%", md: "auto" },
-                        marginTop: "20px",
-                    }}
-                    component={Link}
-                    variant="contained"
-                    to="/form/mentee-getting-started"
-                >
+                <Button className="mt-5 w-full md:w-auto" render={<Link to="/form/mentee-getting-started" />}>
                     {t("homepage.choose_mentee_button")}
                 </Button>
             </Card>

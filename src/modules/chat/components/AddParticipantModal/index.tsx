@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Button } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
@@ -51,34 +51,17 @@ const AddParticipantModal = ({ chat, onSuccess, ...props }: Props) => {
 
     return (
         <Modal {...props} title={t("chat.add_participant")}>
-            <Box>
-                <Box
-                    component="form"
-                    onSubmit={formik.handleSubmit}
-                    noValidate
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 2,
-                        width: "400px",
+            <form onSubmit={formik.handleSubmit} noValidate className="flex min-h-[200px] flex-col gap-4">
+                <SearchUser
+                    onChange={(user) => {
+                        formik.setFieldValue("participant", user);
                     }}
-                >
-                    <SearchUser
-                        onChange={(user) => {
-                            formik.setFieldValue("participant", user);
-                        }}
-                        value={formik.values.participant}
-                    />
-                    <Button
-                        onClick={() => console.log(formik.errors, formik.values)}
-                        disabled={!formik.dirty}
-                        type="submit"
-                        variant="contained"
-                    >
-                        {!formik.dirty ? t("common.make_changes_to_save") : t("common.submit")}
-                    </Button>
-                </Box>
-            </Box>
+                    value={formik.values.participant}
+                />
+                <Button disabled={!formik.dirty} type="submit">
+                    {!formik.dirty ? t("common.make_changes_to_save") : t("common.submit")}
+                </Button>
+            </form>
         </Modal>
     );
 };

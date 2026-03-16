@@ -1,4 +1,3 @@
-import { Box, Typography } from "@mui/material";
 import { Roles, translatedRoles } from "../../constants";
 import ChangeAvatar from "../ChangeAvatar";
 
@@ -12,40 +11,15 @@ interface Props {
 
 const UserProfileHeading = ({ role, username, avatar_url, isOwner, onSubmit }: Props) => {
     return (
-        <Box>
-            <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "flex-end",
-                    gap: "20px",
-                }}
-            >
+        <div>
+            <div className="flex flex-row items-end gap-5">
                 <ChangeAvatar disabled={!isOwner} avatar={avatar_url} username={username} onSubmit={onSubmit} />
-                <Box>
-                    <Typography
-                        color="text.secondary"
-                        sx={{
-                            fontSize: "24px",
-                            fontWeight: "bold",
-                            textTransform: "uppercase",
-                        }}
-                    >
-                        {username}
-                    </Typography>
-                    <Typography
-                        color="text.secondary"
-                        sx={{
-                            fontSize: "20px",
-                            fontWeight: "bold",
-                            textTransform: "uppercase",
-                        }}
-                    >
-                        {translatedRoles[role]}
-                    </Typography>
-                </Box>
-            </Box>
-        </Box>
+                <div>
+                    <p className="text-muted-foreground text-2xl font-bold uppercase">{username}</p>
+                    <p className="text-muted-foreground text-xl font-bold uppercase">{translatedRoles[role]}</p>
+                </div>
+            </div>
+        </div>
     );
 };
 

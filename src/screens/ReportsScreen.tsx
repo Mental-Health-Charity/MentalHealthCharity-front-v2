@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import ReportItem from "../modules/report/components/ReportItem";
@@ -23,16 +22,9 @@ const ReportsScreen = () => {
                 title={t("admin.reports.title")}
                 text={t("admin.reports.text")}
             />
-            <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "20px",
-                }}
-                width="100%"
-            >
+            <div className="flex w-full flex-col gap-5">
                 {data && data.items.map((report) => <ReportItem report={report} key={report.id} />)}
-            </Box>
+            </div>
         </AdminLayout>
     );
 };

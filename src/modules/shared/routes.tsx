@@ -10,6 +10,7 @@ import { RouteType } from "./types";
 const AboutChatScreen = React.lazy(() => import("../../screens/AboutChatScreen"));
 const ArticleDashboardScreen = React.lazy(() => import("../../screens/ArticlesDashboardScreen"));
 const CreateArticleScreen = React.lazy(() => import("../../screens/CreateArticleScreen"));
+const DonationsScreen = React.lazy(() => import("../../screens/DonationsScreen"));
 const EditArticleScreen = React.lazy(() => import("../../screens/EditArticleScreen"));
 const ForgetPasswordScreen = React.lazy(() => import("../../screens/ForgetPasswordScreen"));
 const ManageArticlesScreen = React.lazy(() => import("../../screens/ManageArticlesScreen"));
@@ -106,6 +107,11 @@ const routes: RouteType[] = [
     {
         url: "/support",
         onRender: <SupportUsScreen />,
+        requiresAuth: false,
+    },
+    {
+        url: "/donations",
+        onRender: <DonationsScreen />,
         requiresAuth: false,
     },
     {

@@ -1,19 +1,16 @@
-import FacebookIcon from "@mui/icons-material/Facebook";
-import { Box, Button, IconButton } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { Facebook } from "lucide-react";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import CardImage01 from "../../../../assets/static/head_1.svg";
 import CardImage02 from "../../../../assets/static/head_2.svg";
 import CardImage03 from "../../../../assets/static/head_3.svg";
-import useTheme from "../../../../theme";
 import Card from "../Card";
 import SimpleCard from "../SimpleCard";
-import { ImageWrapperControl, StyledImageWrapper } from "./style";
 
 const AboutUs = () => {
     const { t } = useTranslation();
-    const theme = useTheme();
 
     const cards = useMemo(
         () => [
@@ -58,107 +55,60 @@ const AboutUs = () => {
     );
 
     return (
-        <Box
-            width="100%"
-            maxWidth={1600}
-            id="about-us"
-            sx={{
-                margin: "0 auto",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: "20px",
-                flexDirection: "column",
-                position: "relative",
-            }}
-        >
-            <Box
-                sx={{
-                    width: "100%",
-                    gap: { xs: "30px", md: "60px" },
-                    display: "flex",
-                    justifyContent: "center",
-                    flexDirection: "column",
-                    margin: "50px 0",
-                    padding: { xs: "10px", md: 0 },
-                }}
-            >
+        <section id="about-us" className="mx-auto max-w-[1200px] px-5 py-16 md:py-24">
+            {/* Feature cards with illustrations */}
+            <div className="flex flex-col gap-10 md:gap-16">
                 {smallCards.map(({ id, text, title, img }) => (
-                    <Box key={id} display="flex" gap={10} flexDirection={id % 2 === 0 ? "row" : "row-reverse"}>
-                        <Card textAlign="justify" sx={{ width: "100%" }} title={title} subtitle={text}></Card>
-                        <ImageWrapperControl>
-                            <StyledImageWrapper>
-                                <img width={180} loading="lazy" height={200} alt="People icon" src={img} />
-                            </StyledImageWrapper>
-                        </ImageWrapperControl>
-                    </Box>
+                    <div
+                        key={id}
+                        className={`flex items-center gap-8 md:gap-12 ${id % 2 === 0 ? "flex-row" : "flex-row-reverse"}`}
+                    >
+                        <Card textAlign="justify" className="w-full flex-1" title={title} subtitle={text} />
+                        <div className="hidden shrink-0 items-center justify-center min-[650px]:flex">
+                            <div className="bg-primary-brand-50 flex w-48 items-center justify-center rounded-xl p-5">
+                                <img width={140} loading="lazy" height={160} alt="People icon" src={img} />
+                            </div>
+                        </div>
+                    </div>
                 ))}
-            </Box>
-            <Box zIndex={1} display="flex" gap={8} flexDirection="column" sx={{ padding: { xs: "10px", md: 0 } }}>
+            </div>
+
+            {/* CTA cards */}
+            <div className="mt-16 flex flex-col gap-10 md:mt-24">
                 {cards.map(({ id, text, title, subtitle }) => (
                     <SimpleCard
-                        titleProps={{
-                            sx: {
-                                textAlign: "start",
-                            },
-                        }}
+                        titleClassName="text-start"
                         textAlign="justify"
                         key={id}
                         subtitle={subtitle}
                         title={title}
                         text={text}
                     >
-                        <Box
-                            sx={{
-                                marginTop: "20px",
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                flexWrap: { xs: "wrap", md: "nowrap" },
-                                gap: "20px",
-                            }}
-                        >
-                            <Box
-                                sx={{
-                                    flexWrap: {
-                                        xs: "wrap",
-                                        md: "nowrap",
-                                        width: "100%",
-                                        maxWidth: "700px",
-                                        marginTop: "10px",
-                                    },
-                                }}
-                                display="flex"
-                                gap={2}
-                            >
-                                <Button component={Link} variant="contained" to="/form/volunteer" fullWidth>
-                                    {t("homepage.choose_volunteer_button")}
-                                </Button>
-                                <Button component={Link} to="/form/mentee-getting-started" fullWidth variant="outlined">
-                                    {t("homepage.choose_mentee_button")}
-                                </Button>
-                            </Box>
-                            <IconButton
-                                component="a"
+                        <div className="mt-6 flex flex-wrap items-center justify-between gap-4 md:flex-nowrap">
+                            <div className="flex w-full max-w-[700px] flex-wrap gap-3 md:flex-nowrap">
+                                <Link to="/form/volunteer" className="w-full">
+                                    <Button className="w-full">{t("homepage.choose_volunteer_button")}</Button>
+                                </Link>
+                                <Link to="/form/mentee-getting-started" className="w-full">
+                                    <Button variant="outline" className="w-full">
+                                        {t("homepage.choose_mentee_button")}
+                                    </Button>
+                                </Link>
+                            </div>
+                            <a
                                 href="https://www.facebook.com/groups/1340769720143310"
                                 target="_blank"
                                 rel="noreferrer"
-                                sx={{
-                                    color: theme.palette.text.primary,
-                                    padding: "10px",
-                                    width: "50px",
-                                    height: "50px",
-                                    backgroundColor: theme.palette.colors.accent,
-                                    borderRadius: "50%",
-                                }}
+                                aria-label="Facebook"
+                                className="bg-accent-brand text-foreground hover:bg-accent-brand/80 flex size-11 items-center justify-center rounded-full transition-colors"
                             >
-                                <FacebookIcon fontSize="large" />
-                            </IconButton>
-                        </Box>
+                                <Facebook className="size-5" />
+                            </a>
+                        </div>
                     </SimpleCard>
                 ))}
-            </Box>
-        </Box>
+            </div>
+        </section>
     );
 };
 

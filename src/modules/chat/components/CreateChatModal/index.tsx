@@ -1,11 +1,10 @@
-import { Box } from "@mui/material";
-import Modal from "../../../shared/components/Modal";
-import CreateChatForm from "../CreateChatForm";
-import { useTranslation } from "react-i18next";
 import { useMutation } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
+import Modal from "../../../shared/components/Modal";
 import convertToCreateChatPayload from "../../helpers/convertToCreateChatPayload";
 import createChatMutation from "../../queries/createChatMutation";
 import { CreateChatFormValues } from "../../types";
+import CreateChatForm from "../CreateChatForm";
 
 interface Props {
     open: boolean;
@@ -28,9 +27,7 @@ const CreateChatModal = ({ onSuccess, ...props }: Props) => {
 
     return (
         <Modal {...props} title={t("chat.create_new_chat")}>
-            <Box>
-                <CreateChatForm onSubmit={handleCreateChat} />
-            </Box>
+            <CreateChatForm onSubmit={handleCreateChat} />
         </Modal>
     );
 };

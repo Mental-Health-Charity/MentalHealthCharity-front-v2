@@ -19,8 +19,6 @@ export class ChatDataParser {
         try {
             const obj = JSON.parse(raw);
 
-            console.log("Parsed object:", obj);
-
             switch (true) {
                 case isChatDeleteEvent(obj):
                     this.onDeleteHandler?.(obj);

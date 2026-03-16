@@ -1,8 +1,6 @@
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import { Box, Button, Typography } from "@mui/material";
+import { Heart } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import InternalLink from "../InternalLink/styles";
-import { StyledAnnouncementWrapper } from "./style";
+import { Link } from "react-router-dom";
 
 const Announcement = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -31,17 +29,19 @@ const Announcement = () => {
     }
 
     return (
-        <StyledAnnouncementWrapper>
-            <Box className="announcement-content">
-                <Typography color="text.secondary">Chcesz nas wesprzeć?</Typography>
-                <InternalLink to="/support">Kliknij tutaj</InternalLink>
-            </Box>
-            <Box sx={{ padding: "10px" }}>
-                <Button style={{ color: "white", padding: 0, margin: 0 }}>
-                    <FavoriteIcon />
-                </Button>
-            </Box>
-        </StyledAnnouncementWrapper>
+        <div className="fixed top-[100px] left-0 z-[1000] flex -translate-x-[78%] rounded-[10px] shadow-[0_0_10px_rgba(0,0,0,0.15)] transition-transform duration-500 hover:translate-x-0 max-[768px]:top-auto max-[768px]:bottom-5">
+            <div className="bg-background flex items-center gap-2.5 rounded-l-[10px] p-2.5">
+                <span className="text-muted-foreground text-sm">Chcesz nas wesprzeć?</span>
+                <Link to="/support" className="text-primary-brand text-sm font-medium no-underline hover:underline">
+                    Kliknij tutaj
+                </Link>
+            </div>
+            <div className="bg-primary-brand flex items-center rounded-r-[10px] p-2.5">
+                <button className="border-none bg-transparent p-0 text-white">
+                    <Heart className="size-5" />
+                </button>
+            </div>
+        </div>
     );
 };
 

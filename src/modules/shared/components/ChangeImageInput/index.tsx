@@ -1,11 +1,8 @@
-import DeleteIcon from "@mui/icons-material/Delete";
-import ImageIcon from "@mui/icons-material/Image";
-import { Button } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { Image, Loader2, Trash2 } from "lucide-react";
 import { useRef } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import useTheme from "../../../../theme";
-import Loader from "../Loader";
 
 interface Props {
     value?: File;
@@ -16,7 +13,6 @@ interface Props {
 const ChangeImageInput = ({ onChange, value, isLoading }: Props) => {
     const { t } = useTranslation();
     const inputRef = useRef<HTMLInputElement>(null);
-    const theme = useTheme();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const MAX_BANNER_SIZE = 1024 * 1024 * 3;
@@ -45,35 +41,24 @@ const ChangeImageInput = ({ onChange, value, isLoading }: Props) => {
             <input type="file" hidden accept="image/*" ref={inputRef} onChange={handleChange} />
             {value && (
                 <Button
-                    variant="contained"
+                    variant="destructive"
                     disabled={isLoading}
                     onClick={() => {
                         onChange(undefined);
                         inputRef.current!.value = "";
                     }}
-                    sx={{
-                        backgroundColor: theme.palette.colors.danger,
-                        gap: "10px",
-                    }}
+                    className="gap-2.5"
                 >
-                    <DeleteIcon fontSize="large" />
+                    <Trash2 className="size-6" />
                 </Button>
             )}
             <Button
-                variant="contained"
                 disabled={isLoading}
                 onClick={() => inputRef.current?.click()}
-                sx={{
-                    gap: "10px",
-                    zIndex: 1,
-                    opacity: value ? 0.8 : 1,
-
-                    "&:hover": {
-                        opacity: 1,
-                    },
-                }}
+                className="z-[1] gap-2.5"
+                style={{ opacity: value ? 0.8 : 1 }}
             >
-                {isLoading ? <Loader size={25} /> : <ImageIcon fontSize="large" />}
+                {isLoading ? <Loader2 className="size-6 animate-spin" /> : <Image className="size-6" />}
                 {value ? t("articles.form.change_banner") : t("articles.form.upload_banner")}
             </Button>
         </>

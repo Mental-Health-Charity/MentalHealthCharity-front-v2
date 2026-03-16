@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
+import useDebounce from "../../shared/hooks/useDebounce";
 import { Pagination } from "../../shared/types";
 import { ChatSortByOptions } from "../constants";
 import { getChatsQueryOptions } from "../queries/getChatsQueryOptions";
@@ -7,12 +8,16 @@ import { Chat } from "../types";
 
 export default function useChatListLoader(pageSize = 100) {
     const queryClient = useQueryClient();
-    const { data, isLoading } = useQuery(
+    const [searchQuery, setSearchQuery] = useState("");
+    const debouncedSearch = useDebounce(searchQuery, 400);
+
+    const { data, isLoading, isFetching } = useQuery(
         getChatsQueryOptions({
             size: pageSize,
             page: 1,
             unread_first: true,
             sort_by: ChatSortByOptions.LATEST_MESSAGE_DATE,
+            ...(debouncedSearch ? { search: debouncedSearch } : {}),
         })
     );
 
@@ -32,7 +37,13 @@ export default function useChatListLoader(pageSize = 100) {
 
             loadingPagesRef.current.add(pageNumber);
             try {
-                const next = await queryClient.fetchQuery(getChatsQueryOptions({ size: pageSize, page: pageNumber }));
+                const next = await queryClient.fetchQuery(
+                    getChatsQueryOptions({
+                        size: pageSize,
+                        page: pageNumber,
+                        ...(debouncedSearch ? { search: debouncedSearch } : {}),
+                    })
+                );
 
                 setAggregatedData((prev) => {
                     if (!prev) return next;
@@ -50,7 +61,7 @@ export default function useChatListLoader(pageSize = 100) {
                 loadingPagesRef.current.delete(pageNumber);
             }
         },
-        [aggregatedData, queryClient, pageSize]
+        [aggregatedData, queryClient, pageSize, debouncedSearch]
     );
 
     const loadNextPage = useCallback(async () => {
@@ -66,5 +77,9 @@ export default function useChatListLoader(pageSize = 100) {
         aggregatedData,
         loadPage,
         loadNextPage,
+        searchQuery,
+        setSearchQuery,
+        isSearching: searchQuery !== debouncedSearch,
+        isFetching,
     } as const;
 }

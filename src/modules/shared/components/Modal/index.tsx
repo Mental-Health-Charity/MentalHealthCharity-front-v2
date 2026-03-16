@@ -1,56 +1,30 @@
-import { Box, BoxProps, ModalProps, Modal as MUIModal, Typography, useTheme } from "@mui/material";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 import CloseButton from "../CloseButton";
 
-interface Props extends ModalProps {
+interface Props {
+    open: boolean;
+    onClose: (event?: React.MouseEvent | React.KeyboardEvent | Event, reason?: string) => void;
     title: string;
-    modalContentProps?: BoxProps;
+    children?: React.ReactNode;
+    className?: string;
+    contentClassName?: string;
 }
 
-const Modal = ({ title, modalContentProps, ...props }: Props) => {
-    const theme = useTheme();
-
+const Modal = ({ open, onClose, title, children, className, contentClassName }: Props) => {
     return (
-        <MUIModal
-            sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-            }}
-            {...props}
-        >
-            <Box
-                {...modalContentProps}
-                sx={{
-                    backgroundColor: theme.palette.background.paper,
-                    padding: "10px 15px",
-                    borderRadius: "8px",
-                    minWidth: "300px",
-                    ...modalContentProps?.sx,
-                }}
+        <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
+            <DialogContent
+                className={cn("max-h-[90vh] overflow-y-auto sm:max-w-lg", className)}
+                showCloseButton={false}
             >
-                <Box
-                    sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        gap: "10px",
-                        marginBottom: "10px",
-                    }}
-                >
-                    <Typography
-                        sx={{
-                            fontSize: "24px",
-                            color: theme.palette.text.secondary,
-                            fontWeight: "bold",
-                        }}
-                    >
-                        {title}
-                    </Typography>
-                    <CloseButton onClick={(event) => props.onClose?.(event, "backdropClick")} />
-                </Box>
-                <Box>{props.children}</Box>
-            </Box>
-        </MUIModal>
+                <DialogHeader className="flex flex-row items-center justify-between gap-2.5">
+                    <DialogTitle className="text-foreground text-2xl font-bold">{title}</DialogTitle>
+                    <CloseButton onClick={() => onClose()} />
+                </DialogHeader>
+                <div className={cn(contentClassName)}>{children}</div>
+            </DialogContent>
+        </Dialog>
     );
 };
 

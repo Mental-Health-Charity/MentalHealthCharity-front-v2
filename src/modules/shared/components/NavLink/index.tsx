@@ -1,55 +1,42 @@
-import { Button, useTheme } from "@mui/material";
+import { cn } from "@/lib/utils";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
-
-interface Props {
-    name: string;
-    to: string;
-    fullWidth?: boolean;
-}
+import { NavlinkProps } from "../../types";
 
 const reloadDocumentRoutes = ["/admin/"];
 
-const NavLink = ({ name, to, fullWidth }: Props) => {
+const NavLink = ({ name, to, fullWidth, className, indicator }: NavlinkProps) => {
     const location = useLocation();
     const isCurrentRoute = location.pathname === to;
-    const theme = useTheme();
+    const { t } = useTranslation();
 
     const reloadDocument = useMemo(() => reloadDocumentRoutes.includes(to), [to]);
 
     return (
-        <Button
-            href={to}
+        <Link
             to={to}
-            component={Link}
             reloadDocument={reloadDocument}
-            fullWidth={fullWidth}
-            sx={{
-                color: "text.secondary",
-                display: "block",
-                textWrap: "nowrap",
-                fontSize: "20px",
-                fontWeight: 600,
-                opacity: isCurrentRoute ? 1 : 0.9,
-                position: "relative",
-
-                "&::after": {
-                    position: "absolute",
-                    content: "''",
-                    display: "block",
-                    minHeight: "5px",
-                    borderRadius: "5px",
-                    left: 0,
-                    bottom: fullWidth ? 2 : 15,
-                    zIndex: -1,
-                    width: isCurrentRoute ? "100%" : 0,
-                    background: isCurrentRoute ? theme.palette.colors.accent : "transparent",
-                    transition: "width 0.3s",
-                },
-            }}
+            aria-current={isCurrentRoute ? "page" : undefined}
+            className={cn(
+                "text-foreground relative block px-3 py-2 text-xl font-semibold whitespace-nowrap no-underline transition-colors duration-200",
+                isCurrentRoute ? "text-primary-brand" : "hover:text-primary-brand opacity-90 hover:opacity-100",
+                fullWidth && "w-full",
+                "after:absolute after:bottom-0 after:left-0 after:block after:h-[2px] after:rounded-full after:transition-all after:duration-300",
+                isCurrentRoute
+                    ? "after:bg-primary-brand after:w-full"
+                    : "hover:after:bg-primary-brand/50 after:w-0 after:bg-transparent hover:after:w-full",
+                className
+            )}
         >
             {name}
-        </Button>
+            {indicator && (
+                <span
+                    aria-label={t("common.navigation.aria.unread_messages")}
+                    className="absolute -right-0 inline-flex h-2 w-2 items-center justify-center rounded-full bg-red-500 text-xs text-white"
+                />
+            )}
+        </Link>
     );
 };
 

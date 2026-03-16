@@ -1,13 +1,9 @@
-import { Box, Chip, IconButton, ListItem, ListItemText, TextField } from "@mui/material";
+import { Badge } from "@/components/ui/badge";
+import { Pause, Play, Trash2 } from "lucide-react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import useTheme from "../../../../theme";
 import ActionMenu from "../../../shared/components/ActionMenu";
 import { ArticleCategory } from "../../types";
-
-import DeleteIcon from "@mui/icons-material/Delete";
-import PauseIcon from "@mui/icons-material/Pause";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import { useRef, useState } from "react";
 
 interface Props {
     category: ArticleCategory;
@@ -17,7 +13,6 @@ interface Props {
 }
 
 const CategoryItem = ({ category, onDelete, onEdit, onToggleActive }: Props) => {
-    const theme = useTheme();
     const { t } = useTranslation();
     const [isEditMode, setIsEditMode] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -34,58 +29,41 @@ const CategoryItem = ({ category, onDelete, onEdit, onToggleActive }: Props) => 
     };
 
     return (
-        <ListItem
-            sx={{
-                padding: "10px 20px",
-                border: `2px solid ${theme.palette.colors.border}`,
-                borderRadius: "5px",
-                width: "100%",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-            }}
-        >
+        <div className="border-border-brand flex w-full items-center justify-between rounded-[5px] border-2 p-2.5 px-5">
             {isEditMode ? (
-                <TextField ref={inputRef} value={category.name} />
-            ) : (
-                <ListItemText>{category.name}</ListItemText>
-            )}
-            <Box>
-                <IconButton
-                    sx={{
-                        display: "none",
-                    }}
-                    onClick={toggleEditMode}
-                >
-                    {isEditMode ? "Save" : "Edit"}
-                </IconButton>
-                <Chip
-                    sx={{
-                        backgroundColor: category.is_active
-                            ? theme.palette.colors.success
-                            : theme.palette.colors.danger,
-                        color: theme.palette.common.white,
-                    }}
-                    label={category.is_active ? t("common.active") : t("common.inactive")}
+                <input
+                    ref={inputRef}
+                    defaultValue={category.name}
+                    className="border-border-brand focus:border-primary-brand rounded border bg-transparent px-2 py-1 text-sm outline-none"
                 />
+            ) : (
+                <span className="text-foreground">{category.name}</span>
+            )}
+            <div className="flex items-center gap-1">
+                <button className="hidden" onClick={toggleEditMode}>
+                    {isEditMode ? "Save" : "Edit"}
+                </button>
+                <Badge className={category.is_active ? "bg-success-brand text-white" : "bg-danger-brand text-white"}>
+                    {category.is_active ? t("common.active") : t("common.inactive")}
+                </Badge>
                 <ActionMenu
                     actions={[
                         {
                             id: "delete",
                             label: t("common.remove"),
-                            icon: <DeleteIcon />,
+                            icon: <Trash2 className="size-4" />,
                             onClick: () => onDelete(category.id),
                         },
                         {
                             id: "toggle",
-                            icon: category.is_active ? <PauseIcon /> : <PlayArrowIcon />,
+                            icon: category.is_active ? <Pause className="size-4" /> : <Play className="size-4" />,
                             label: category.is_active ? t("common.disable") : t("common.enable"),
                             onClick: () => onToggleActive(category.id),
                         },
                     ]}
                 />
-            </Box>
-        </ListItem>
+            </div>
+        </div>
     );
 };
 

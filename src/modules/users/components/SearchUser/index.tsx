@@ -1,17 +1,10 @@
-import {
-    Autocomplete,
-    Avatar,
-    Box,
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select,
-    TextField,
-    Typography,
-    useTheme,
-} from "@mui/material";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { Loader2, User as UserIcon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { User } from "../../../auth/types";
 import useDebounce from "../../../shared/hooks/useDebounce";
 import { Roles } from "../../constants";
@@ -28,8 +21,11 @@ const SearchUser = ({ onChange, value, onChangeSearchQuery, disabled }: Props) =
     const [role, setRole] = useState<Roles | undefined>();
     const [username, setUsername] = useState<string>("");
     const [isLoading, setIsLoading] = useState(false);
-    const theme = useTheme();
+    const [open, setOpen] = useState(false);
+    const { t } = useTranslation();
     const debouncedValue = useDebounce(username, 500);
+    const inputRef = useRef<HTMLInputElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const { data, refetch } = useQuery(
         searchUserQueryOptions({
@@ -56,99 +52,112 @@ const SearchUser = ({ onChange, value, onChangeSearchQuery, disabled }: Props) =
         }
     }, [debouncedValue, role]);
 
+    // Close dropdown on outside click
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+                setOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
     const handleOptionChange = (selectedUser?: User) => {
         onChange(selectedUser || undefined);
+        setOpen(false);
+        if (selectedUser) {
+            setUsername(selectedUser.full_name);
+        }
     };
 
+    const options = data ? data.items : [];
+
     return (
-        <>
-            <Autocomplete
-                fullWidth
-                freeSolo
-                disabled={disabled}
-                disablePortal
-                options={data ? data.items : []}
-                getOptionLabel={(option) => (typeof option === "object" ? option.full_name : option)}
-                loading={isLoading}
-                loadingText={<p>loading</p>}
-                noOptionsText="Brak wyników"
-                filterOptions={(options) => options}
-                value={value || null}
-                onChange={(_, user) => handleOptionChange(user as User | undefined)}
-                renderOption={(props, option) => {
-                    return (
-                        <li {...props} key={option.id}>
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 2,
-                                }}
-                            >
-                                <Avatar variant="rounded" src={option.chat_avatar_url || ""} />
-                                <Box>
-                                    <Typography
-                                        variant="body1"
-                                        sx={{
-                                            fontWeight: "bold",
-                                            color: theme.palette.text.secondary,
-                                        }}
-                                    >
-                                        {option.full_name}
-                                    </Typography>
-                                    <Typography
-                                        variant="body2"
-                                        sx={{
-                                            color: theme.palette.text.secondary,
-                                        }}
-                                    >
-                                        {option.email}
-                                    </Typography>
-                                </Box>
-                            </Box>
-                        </li>
-                    );
-                }}
-                renderInput={(params) => (
-                    <Box
-                        sx={{
-                            display: "flex",
-                            gap: "10px",
-                            alignItems: "center",
-                            width: "100%",
+        <div className="flex w-full items-end gap-2.5">
+            <div ref={containerRef} className="relative flex-1">
+                <Label htmlFor="search-user">{t("search_user.label", "Wyszukaj użytkownika")}</Label>
+                <div className="relative">
+                    <Input
+                        ref={inputRef}
+                        id="search-user"
+                        disabled={disabled}
+                        value={username}
+                        onChange={(e) => {
+                            setUsername(e.target.value);
+                            if (!open) setOpen(true);
                         }}
-                    >
-                        <TextField
-                            {...params}
-                            label="Wyszukaj użytkownika"
-                            onChange={(e) => setUsername(e.target.value)}
-                            value={username}
-                        />
-                        <FormControl
-                            sx={{
-                                minWidth: "120px",
-                            }}
-                        >
-                            <InputLabel id="Role">Role</InputLabel>
-                            <Select
-                                disabled={disabled}
-                                labelId="Role"
-                                value={role || ""}
-                                onChange={(e) => setRole(e.target.value === "" ? undefined : (e.target.value as Roles))}
-                                variant="filled"
+                        onFocus={() => {
+                            if (username || options.length > 0) setOpen(true);
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === "Escape") setOpen(false);
+                        }}
+                        placeholder={value?.full_name || t("search_user.placeholder", "Wyszukaj użytkownika")}
+                        autoComplete="off"
+                    />
+                    {isLoading && (
+                        <Loader2 className="text-muted-foreground absolute top-1/2 right-2 size-4 -translate-y-1/2 animate-spin" />
+                    )}
+                </div>
+
+                {/* Dropdown */}
+                {open && (username || options.length > 0) && (
+                    <div className="bg-popover ring-foreground/10 absolute top-full right-0 left-0 z-50 mt-1 max-h-64 overflow-y-auto rounded-lg shadow-md ring-1">
+                        {options.length === 0 && !isLoading && (
+                            <p className="text-muted-foreground py-4 text-center text-sm">
+                                {t("search_user.no_results", "Brak wyników")}
+                            </p>
+                        )}
+                        {isLoading && options.length === 0 && (
+                            <div className="flex items-center justify-center py-4">
+                                <Loader2 className="text-muted-foreground size-4 animate-spin" />
+                            </div>
+                        )}
+                        {options.map((option) => (
+                            <button
+                                key={option.id}
+                                type="button"
+                                onMouseDown={(e) => {
+                                    e.preventDefault();
+                                    handleOptionChange(option);
+                                }}
+                                className="hover:bg-accent flex w-full cursor-pointer items-center gap-3 px-3 py-2.5 text-left transition-colors"
                             >
-                                <MenuItem value={""}>Każda rola</MenuItem>
-                                {Object.values(Roles).map((role) => (
-                                    <MenuItem key={role} value={role}>
-                                        {role}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Box>
+                                <Avatar className="size-8 rounded-md">
+                                    <AvatarImage src={option.chat_avatar_url || ""} />
+                                    <AvatarFallback className="rounded-md text-xs">
+                                        <UserIcon className="size-3.5" />
+                                    </AvatarFallback>
+                                </Avatar>
+                                <div className="min-w-0 flex-1">
+                                    <p className="text-foreground truncate text-sm font-medium">{option.full_name}</p>
+                                    <p className="text-muted-foreground truncate text-xs">{option.email}</p>
+                                </div>
+                            </button>
+                        ))}
+                    </div>
                 )}
-            />
-        </>
+            </div>
+
+            <div className="min-w-[120px]">
+                <Label htmlFor="role-filter">{t("search_user.role_label", "Role")}</Label>
+                <select
+                    id="role-filter"
+                    disabled={disabled}
+                    value={role || ""}
+                    onChange={(e) => setRole(e.target.value === "" ? undefined : (e.target.value as Roles))}
+                    className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-10 w-full rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3 disabled:opacity-50"
+                >
+                    <option value="">{t("search_user.any_role", "Każda rola")}</option>
+                    {Object.values(Roles).map((r) => (
+                        <option key={r} value={r}>
+                            {r}
+                        </option>
+                    ))}
+                </select>
+            </div>
+        </div>
     );
 };
 

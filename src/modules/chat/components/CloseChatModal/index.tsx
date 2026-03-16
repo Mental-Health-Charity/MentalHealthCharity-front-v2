@@ -1,22 +1,23 @@
-import type { ModalProps } from "@mui/material";
-import { Box, Button, LinearProgress, List, ListItem, Typography } from "@mui/material";
+import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Modal from "../../../shared/components/Modal";
 
-interface Props extends Omit<ModalProps, "children"> {
+interface Props {
+    open: boolean;
+    onClose: () => void;
     onConfirm: () => void;
 }
 
 const WAIT_TIME = 5_000;
 
-const CloseChatModal = ({ onConfirm, ...rest }: Props) => {
+const CloseChatModal = ({ onConfirm, open, onClose }: Props) => {
     const { t } = useTranslation();
     const [progress, setProgress] = useState(0);
     const [canConfirm, setCanConfirm] = useState(false);
 
     useEffect(() => {
-        if (!rest.open) return;
+        if (!open) return;
         setProgress(0);
         setCanConfirm(false);
 
@@ -33,64 +34,41 @@ const CloseChatModal = ({ onConfirm, ...rest }: Props) => {
         }, 100);
 
         return () => clearInterval(timer);
-    }, [rest.open]);
+    }, [open]);
 
     return (
-        <Modal {...rest} title={t("chat.close_chat_confirmation")}>
-            <Box sx={{ maxWidth: 500 }} display="flex" flexDirection="column" gap={3}>
-                <Typography
-                    sx={{
-                        opacity: 0.7,
-                    }}
-                    variant="body1"
-                >
-                    {t("chat.close_chat_confirmation_text_1")}
-                </Typography>
+        <Modal open={open} onClose={onClose} title={t("chat.close_chat_confirmation")}>
+            <div className="flex max-w-[500px] flex-col gap-6">
+                <p className="opacity-70">{t("chat.close_chat_confirmation_text_1")}</p>
 
-                <Box>
-                    <Typography variant="subtitle1" fontWeight={600}>
-                        {t("chat.close_chat_when_title")}
-                    </Typography>
-                    <List sx={{ listStyleType: "disc", pl: 4, opacity: 0.7 }}>
-                        <ListItem sx={{ display: "list-item" }}>{t("chat.close_reasons.close_chat_reason_1")}</ListItem>
-                        <ListItem sx={{ display: "list-item" }}>{t("chat.close_reasons.close_chat_reason_2")}</ListItem>
-                        <ListItem sx={{ display: "list-item" }}>{t("chat.close_reasons.close_chat_reason_3")}</ListItem>
-                    </List>
-                </Box>
+                <div>
+                    <p className="font-semibold">{t("chat.close_chat_when_title")}</p>
+                    <ul className="mt-2 list-disc space-y-1 pl-8 opacity-70">
+                        <li>{t("chat.close_reasons.close_chat_reason_1")}</li>
+                        <li>{t("chat.close_reasons.close_chat_reason_2")}</li>
+                        <li>{t("chat.close_reasons.close_chat_reason_3")}</li>
+                    </ul>
+                </div>
 
-                <Box position="relative" mt={2}>
-                    <LinearProgress
-                        variant="determinate"
-                        value={progress}
-                        sx={{
-                            height: 4,
-                            borderRadius: 2,
-                            mb: 1,
-                            bgcolor: "action.hover",
-                            "& .MuiLinearProgress-bar": {
-                                transition: "width 0.1s linear",
-                            },
-                        }}
-                    />
+                <div className="relative mt-4">
+                    <div className="bg-muted mb-2 h-1 w-full overflow-hidden rounded-full">
+                        <div
+                            className="bg-primary h-full transition-[width] duration-100 ease-linear"
+                            style={{ width: `${progress}%` }}
+                        />
+                    </div>
 
                     <Button
-                        fullWidth
-                        variant="contained"
-                        color="error"
+                        className="w-full font-semibold"
+                        variant="destructive"
                         disabled={!canConfirm}
                         onClick={onConfirm}
-                        sx={{
-                            transition: "opacity 0.3s",
-                            opacity: canConfirm ? 1 : 0.6,
-                            fontWeight: 600,
-                        }}
+                        style={{ opacity: canConfirm ? 1 : 0.6 }}
                     >
-                        {canConfirm
-                            ? t("chat.close_chat_button_confirm", "Zamknij czat")
-                            : t("chat.close_chat_button_wait", "Poczekaj...")}
+                        {canConfirm ? t("chat.close_chat_button_confirm") : t("chat.close_chat_button_wait")}
                     </Button>
-                </Box>
-            </Box>
+                </div>
+            </div>
         </Modal>
     );
 };

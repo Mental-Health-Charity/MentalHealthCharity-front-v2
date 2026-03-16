@@ -1,36 +1,15 @@
-import { Box } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import bgImage from "../assets/static/admin_panel_bg.svg";
 import Card from "../modules/shared/components/Card";
 import Container from "../modules/shared/components/Container";
-import InternalLink from "../modules/shared/components/InternalLink/styles";
+import InternalLink from "../modules/shared/components/InternalLink";
 
 const TosScreen = () => {
     const { t } = useTranslation();
     return (
-        <Container
-            sx={{
-                backgroundImage: `url(${bgImage})`,
-                backgroundPosition: "center",
-                backgroundSize: "100%",
-                width: "100%",
-            }}
-        >
-            <Card
-                title={t("tos.title")}
-                subtitle={t("tos.subtitle")}
-                sx={{
-                    width: "100%",
-                }}
-            >
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "20px",
-                        marginTop: "20px",
-                    }}
-                >
+        <Container className="w-full bg-[length:100%] bg-center" style={{ backgroundImage: `url(${bgImage})` }}>
+            <Card title={t("tos.title")} subtitle={t("tos.subtitle")} className="w-full">
+                <div className="mt-5 flex flex-col gap-5">
                     <InternalLink target="_blank" to="/klauzula-informacyjna-RODO.pdf">
                         {t("tos.clause")}
                     </InternalLink>
@@ -43,7 +22,7 @@ const TosScreen = () => {
                     <InternalLink target="_blank" to="/regulamin-serwisu.pdf">
                         {t("tos.terms")}
                     </InternalLink>
-                </Box>
+                </div>
             </Card>
         </Container>
     );

@@ -1,143 +1,120 @@
-import DeleteIcon from "@mui/icons-material/Delete";
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import InventoryIcon from "@mui/icons-material/Inventory";
-import { Avatar, Box, Chip, Typography, useTheme } from "@mui/material";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { t } from "i18next";
+import { AlertCircle, Archive, RotateCcw, Trash2, User as UserIcon } from "lucide-react";
 import { useUser } from "../../../auth/components/AuthProvider";
 import ActionMenu from "../../../shared/components/ActionMenu";
 import { Permissions } from "../../../shared/constants";
 import formatDate from "../../../shared/helpers/formatDate";
 import usePermissions from "../../../shared/hooks/usePermissions";
 import { Message } from "../../types";
-import { StyledMessageWrapper } from "./style";
 
 interface Props {
     message: Message;
     onDeleteMessage: (id: number) => void;
+    onRetryMessage?: (id: number) => void;
     showArchiveChip?: boolean;
+    isNew?: boolean;
 }
 
-const ChatMessage = ({ message, onDeleteMessage, showArchiveChip = false }: Props) => {
-    const theme = useTheme();
+const ChatMessage = ({ message, onDeleteMessage, onRetryMessage, showArchiveChip = false, isNew = false }: Props) => {
     const { user } = useUser();
     const senderIsCurrentUser = user && user.id === message.sender.id;
     const { hasPermissions } = usePermissions();
     const canDeleteMessage = senderIsCurrentUser || hasPermissions(Permissions.DELETE_OTHERS_CHAT_MESSAGES);
 
     return (
-        <StyledMessageWrapper senderIsUser={senderIsCurrentUser || false}>
-            {!senderIsCurrentUser && (
-                <Avatar
-                    variant="rounded"
-                    src={message.sender.full_name}
-                    alt={message.sender.full_name}
-                    sx={{
-                        fontSize: "24px",
-                        marginTop: "auto",
-                        width: { xs: "30px", md: "50px" },
-                        height: { xs: "30px", md: "50px" },
-                    }}
-                />
+        <div
+            className={cn(
+                "group flex w-full items-end gap-2.5",
+                senderIsCurrentUser ? "flex-row-reverse" : "flex-row",
+                isNew && (senderIsCurrentUser ? "animate-msg-in-right" : "animate-msg-in-left")
             )}
-            <Box
-                sx={{
-                    backgroundColor: senderIsCurrentUser
-                        ? `${theme.palette.secondary.main}9A`
-                        : `${theme.palette.colors.border}66`,
-                    padding: { xs: "10px", md: "15px 30px" },
-                    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.05)",
-                    borderRadius: "10px",
-                    width: { xs: "100%", md: "auto" },
-                    maxWidth: { xs: "100%", md: "70%" },
-                    opacity: message.isPending ? 0.5 : 1,
-                    color: senderIsCurrentUser ? theme.palette.text.primary : theme.palette.text.secondary,
-                    textAlign: senderIsCurrentUser ? "right" : "left",
-                }}
-            >
-                <Box
-                    sx={{
-                        color: senderIsCurrentUser ? theme.palette.primary.dark : theme.palette.colors.accent,
-                    }}
-                >
-                    <Box
-                        sx={{
-                            display: "flex",
-                            justifyContent: { xs: "space-between", md: "flex-end" },
-                            alignItems: "center",
-                            flexDirection: senderIsCurrentUser ? "row" : "row-reverse",
-                            gap: { xs: "5px", md: "10px" },
-                        }}
-                    >
-                        {showArchiveChip && (
-                            <Chip
-                                icon={<InventoryIcon sx={{ fontSize: "14px !important" }} />}
-                                label={t("chat.archive")}
-                                size="small"
-                                variant="outlined"
-                                sx={{
-                                    fontSize: "11px",
-                                    height: "22px",
-                                    borderColor: theme.palette.warning.main,
-                                    color: theme.palette.warning.main,
-                                    "& .MuiChip-icon": {
-                                        color: theme.palette.warning.main,
-                                    },
-                                }}
-                            />
-                        )}
-                        <Typography
-                            sx={{
-                                fontSize: { xs: "14px", md: "16px" },
-                                width: { xs: "100%", md: "auto" },
-                            }}
-                        >
-                            {formatDate(message.creation_date, "dd/MM/yyyy HH:mm")}
-                        </Typography>
-                        <FiberManualRecordIcon
-                            sx={{
-                                fontSize: "10px",
-                                marginBottom: "2px",
-                                display: { xs: "none", md: "block" },
-                            }}
-                        />
-                        <Typography
-                            sx={{
-                                fontSize: { xs: "14px", md: "18px" },
-                                fontWeight: 600,
-
-                                marginTop: "-3px",
-                            }}
-                        >
-                            {message.sender.full_name}
-                        </Typography>
-                    </Box>
-                </Box>
-
-                <Typography
-                    sx={{
-                        wordBreak: "break-word",
-                    }}
-                    fontSize="18px"
-                    textAlign="start"
-                >
-                    {message.content}
-                </Typography>
-                {message.isPending && (
-                    <Box>
-                        <Typography
-                            sx={{
-                                fontSize: "14px",
-                                textAlign: "start",
-                            }}
-                            color="info"
-                        >
-                            Wysyłanie...
-                        </Typography>
-                    </Box>
+        >
+            {!senderIsCurrentUser && (
+                <Avatar className="ring-background size-8 shrink-0 rounded-full ring-2 md:size-10">
+                    <AvatarImage src={message.sender.full_name} alt={message.sender.full_name} />
+                    <AvatarFallback className="rounded-full text-sm">
+                        <UserIcon className="size-4" />
+                    </AvatarFallback>
+                </Avatar>
+            )}
+            <div className={cn("flex max-w-[65%] flex-col gap-0.5", senderIsCurrentUser ? "items-end" : "items-start")}>
+                {/* Sender name above bubble */}
+                {!senderIsCurrentUser && (
+                    <span className="text-muted-foreground px-1 text-[11px] font-semibold">
+                        {message.sender.full_name}
+                    </span>
                 )}
-            </Box>
-            {canDeleteMessage && (
-                <div className="message-actions">
+
+                {/* Message bubble */}
+                <div
+                    className={cn(
+                        "max-w-full overflow-hidden rounded-2xl px-4 py-2.5 shadow-xs",
+                        senderIsCurrentUser
+                            ? "bg-primary-brand rounded-br-md text-white"
+                            : "border-border/30 bg-card text-foreground rounded-bl-md border",
+                        message.isPending && "opacity-50",
+                        message.isFailed && "border-destructive/50 opacity-70"
+                    )}
+                >
+                    <p className="text-start text-[15px] leading-relaxed [overflow-wrap:anywhere] break-all">
+                        {message.content}
+                    </p>
+                    <div
+                        className={cn(
+                            "mt-1 flex items-center gap-1.5 text-[11px]",
+                            senderIsCurrentUser ? "justify-end text-white/60" : "text-muted-foreground justify-end"
+                        )}
+                    >
+                        <span>{formatDate(message.creation_date, "HH:mm")}</span>
+                        {showArchiveChip && (
+                            <Badge
+                                variant="outline"
+                                className={cn(
+                                    "ml-1 h-[18px] gap-1 text-[9px]",
+                                    senderIsCurrentUser
+                                        ? "border-white/40 text-white/60"
+                                        : "border-warning-brand text-warning-brand"
+                                )}
+                            >
+                                <Archive className="size-2.5" />
+                                {t("chat.archive")}
+                            </Badge>
+                        )}
+                    </div>
+                    {message.isPending && (
+                        <p
+                            className={cn(
+                                "mt-0.5 text-start text-[11px]",
+                                senderIsCurrentUser ? "text-white/50" : "text-info-brand"
+                            )}
+                        >
+                            {t("chat.sending", { defaultValue: "Wysyłanie..." })}
+                        </p>
+                    )}
+                    {message.isFailed && (
+                        <div className="mt-1 flex items-center gap-1.5">
+                            <AlertCircle className="size-3 text-red-300" />
+                            <span className="text-[11px] text-red-300">
+                                {t("chat.send_failed", { defaultValue: "Failed to send" })}
+                            </span>
+                            {onRetryMessage && (
+                                <button
+                                    onClick={() => onRetryMessage(message.id)}
+                                    className="ml-1 inline-flex cursor-pointer items-center gap-0.5 text-[11px] text-white/80 underline underline-offset-2 hover:text-white"
+                                >
+                                    <RotateCcw className="size-2.5" />
+                                    {t("chat.retry", { defaultValue: "Retry" })}
+                                </button>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </div>
+            {canDeleteMessage && !message.isPending && !message.isFailed && (
+                <div className="invisible shrink-0 group-hover:visible">
                     <ActionMenu
                         actions={[
                             {
@@ -146,13 +123,13 @@ const ChatMessage = ({ message, onDeleteMessage, showArchiveChip = false }: Prop
                                 disabled: !canDeleteMessage,
                                 variant: "default",
                                 onClick: () => onDeleteMessage(message.id),
-                                icon: <DeleteIcon />,
+                                icon: <Trash2 className="size-4" />,
                             },
                         ]}
                     />
                 </div>
             )}
-        </StyledMessageWrapper>
+        </div>
     );
 };
 

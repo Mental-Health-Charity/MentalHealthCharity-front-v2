@@ -1,5 +1,5 @@
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { Box, Button, Card, TextField } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { PlusCircle, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Permissions } from "../../../shared/constants";
@@ -15,37 +15,27 @@ const ArticlesHeading = ({ onSearch, search }: Props) => {
     const { hasPermissions } = usePermissions();
 
     return (
-        <>
-            <Card
-                style={{
-                    width: "100%",
-                    margin: "0 auto 20px auto",
-                    padding: "15px",
-                }}
-            >
-                <Box sx={{ display: "flex", gap: "20px", flexWrap: { xs: "wrap", md: "nowrap" } }}>
-                    <TextField
-                        label={t("common.search")}
-                        fullWidth
-                        variant="filled"
-                        value={search}
-                        onChange={(e) => onSearch(e.target.value)}
-                    />
-                    {hasPermissions(Permissions.CREATE_ARTICLE) && (
-                        <Button
-                            fullWidth
-                            component={Link}
-                            to="/articles/dashboard"
-                            variant="contained"
-                            sx={{ gap: "5px", width: "300px" }}
-                        >
-                            <AddCircleIcon fontSize="large" />
-                            {t("articles.add_article")}
-                        </Button>
-                    )}
-                </Box>
-            </Card>
-        </>
+        <div className="flex flex-wrap gap-3 md:flex-nowrap">
+            <div className="bg-card/80 flex flex-1 items-center gap-2 rounded-full border px-4 py-2.5 backdrop-blur-sm">
+                <Search className="text-muted-foreground size-4 shrink-0" />
+                <label htmlFor="articles-search" className="sr-only">
+                    {t("common.search")}
+                </label>
+                <input
+                    id="articles-search"
+                    className="text-foreground placeholder:text-muted-foreground min-w-0 flex-1 bg-transparent text-sm outline-none"
+                    placeholder={t("common.search")}
+                    value={search}
+                    onChange={(e) => onSearch(e.target.value)}
+                />
+            </div>
+            {hasPermissions(Permissions.CREATE_ARTICLE) && (
+                <Button className="gap-1.5 rounded-full" render={<Link to="/articles/dashboard" />}>
+                    <PlusCircle className="size-5" />
+                    {t("articles.add_article")}
+                </Button>
+            )}
+        </div>
     );
 };
 

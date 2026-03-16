@@ -18,6 +18,9 @@ import { Chat, ConnectionStatus, Message } from "../types";
 /** Page size for backwards history pagination */
 const HISTORY_PAGE_SIZE = 50;
 
+/** Time in ms before a pending message is marked as failed */
+const PENDING_MESSAGE_TIMEOUT = 15_000;
+
 export interface HistoryPaginationState {
     currentPage: number;
     totalPages: number;
@@ -25,10 +28,11 @@ export interface HistoryPaginationState {
     isLoadingHistory: boolean;
 }
 
-const useChat = (chatId: number, options?: Options) => {
+const useChat = (chatId?: number, options?: Options) => {
     const token = Cookies.get("token");
     const [messages, setMessages] = useState<Message[]>([]);
     const [pendingMessages, setPendingMessages] = useState<Message[]>([]);
+    const pendingTimeoutsRef = useRef<Set<number>>(new Set());
 
     // Pagination state for backwards history loading
     const [historyState, setHistoryState] = useState<HistoryPaginationState>({
@@ -44,6 +48,9 @@ const useChat = (chatId: number, options?: Options) => {
     // Track message IDs from initial load (non-archived messages)
     const initialMessageIdsRef = useRef<Set<number>>(new Set());
 
+    // Track all known message IDs for deduplication
+    const knownMessageIdsRef = useRef<Set<number>>(new Set());
+
     // Mutation for fetching history pages
     const { mutateAsync: fetchHistory } = useMutation({
         mutationFn: fetchChatHistory,
@@ -56,7 +63,11 @@ const useChat = (chatId: number, options?: Options) => {
     const { mutate: markAsRead } = useMutation({
         mutationFn: markAsReadMutation,
     });
-    const { data: selectedChat, refetch: reloadChat } = useQuery(getChatById({ id: chatId || -9 }));
+    const {
+        data: selectedChat,
+        refetch: reloadChat,
+        isPending: isSelectedChatLoading,
+    } = useQuery(getChatById({ id: chatId ?? 0 }));
     const { mutate: deleteChatMessage } = useMutation({
         mutationFn: deleteChatMessageMutation,
     });
@@ -70,25 +81,43 @@ const useChat = (chatId: number, options?: Options) => {
         },
     });
 
+    // Use ref for selectedChat so the parser callback always has the latest value
+    const selectedChatRef = useRef(selectedChat);
+    selectedChatRef.current = selectedChat;
+
     const parser = new ChatDataParser()
         .onNewMessage((msg) => {
-            const sender =
-                selectedChat && selectedChat.participants.find((participant) => participant.id === msg.sender_id);
+            // Deduplicate: ignore if we already have this message
+            if (knownMessageIdsRef.current.has(msg.id)) {
+                return;
+            }
+            knownMessageIdsRef.current.add(msg.id);
+
+            const chat = selectedChatRef.current;
+            const sender = chat && chat.participants.find((participant) => participant.id === msg.sender_id);
 
             const newMessage: Message = {
                 ...msg,
-                chat_id: chatId,
+                chat_id: chatId ?? 0,
                 sender: sender || UnknownUser,
             };
 
-            setPendingMessages((prev) =>
-                prev.filter((msg) => msg.content !== newMessage.content || msg.sender.id !== newMessage.sender.id)
-            );
+            // Remove matching pending message by tempId (first match only)
+            setPendingMessages((prev) => {
+                const idx = prev.findIndex(
+                    (pending) => pending.content === newMessage.content && pending.sender.id === newMessage.sender.id
+                );
+                if (idx === -1) return prev;
+                return [...prev.slice(0, idx), ...prev.slice(idx + 1)];
+            });
 
             setMessages((prev) => [newMessage, ...prev]);
-            markAsRead({ id: chatId });
+            if (chatId) {
+                markAsRead({ id: chatId });
+            }
         })
         .onDelete(({ id }) => {
+            knownMessageIdsRef.current.delete(id);
             setMessages((prev) => prev.filter((m) => m.id !== id));
         });
 
@@ -109,28 +138,70 @@ const useChat = (chatId: number, options?: Options) => {
         throw new Error("Token not found");
     }
 
-    const { readyState, lastMessage, sendJsonMessage } = useWebSocket(
-        url.chat.connect({
-            token,
-            chat_id: String(chatId),
-        }),
-        options
+    const wsUrl =
+        typeof chatId === "number" && chatId > 0
+            ? url.chat.connect({
+                  token,
+                  chat_id: String(chatId),
+              })
+            : null;
+
+    const { readyState, lastMessage, sendJsonMessage } = useWebSocket(wsUrl, options);
+
+    // Expose readyState via ref so send() always has the latest value
+    const readyStateRef = useRef(readyState);
+    readyStateRef.current = readyState;
+
+    const send = useCallback(
+        (content: string) => {
+            // Block sending if WebSocket is not connected
+            if (readyStateRef.current !== ReadyState.OPEN) {
+                toast.error(t("chat.send_failed_not_connected"));
+                return;
+            }
+
+            const tempId = Date.now();
+            const pendingMessage: Message = {
+                id: tempId,
+                content,
+                sender: user || UnknownUser,
+                chat_id: chatId ?? 0,
+                creation_date: new Date().toISOString(),
+                isPending: true,
+            };
+
+            setPendingMessages((prev) => [pendingMessage, ...prev]);
+            sendJsonMessage({ chatId, content });
+
+            // Timeout: mark pending message as failed if not confirmed
+            const timeoutId = window.setTimeout(() => {
+                setPendingMessages((prev) => {
+                    const msg = prev.find((m) => m.id === tempId);
+                    if (!msg) return prev; // Already confirmed, no change needed
+                    return prev.map((m) => (m.id === tempId ? { ...m, isFailed: true, isPending: false } : m));
+                });
+                pendingTimeoutsRef.current.delete(timeoutId);
+            }, PENDING_MESSAGE_TIMEOUT);
+
+            pendingTimeoutsRef.current.add(timeoutId);
+        },
+        [chatId, user, sendJsonMessage]
     );
 
-    const send = (content: string) => {
-        const tempId = Date.now();
-        const pendingMessage: Message = {
-            id: tempId,
-            content,
-            sender: user || UnknownUser,
-            chat_id: chatId,
-            creation_date: new Date().toISOString(),
-            isPending: true,
-        };
+    // Retry a failed message
+    const retrySend = useCallback(
+        (failedMessageId: number) => {
+            const failedMsg = pendingMessages.find((m) => m.id === failedMessageId);
+            if (!failedMsg) return;
 
-        setPendingMessages((prev) => [pendingMessage, ...prev]);
-        sendJsonMessage({ chatId, content });
-    };
+            // Remove the failed message
+            setPendingMessages((prev) => prev.filter((m) => m.id !== failedMessageId));
+
+            // Re-send
+            send(failedMsg.content);
+        },
+        [pendingMessages, send]
+    );
 
     useEffect(() => {
         if (lastMessage !== null) {
@@ -142,6 +213,15 @@ const useChat = (chatId: number, options?: Options) => {
         }
     }, [lastMessage]);
 
+    useEffect(() => {
+        return () => {
+            pendingTimeoutsRef.current.forEach((timeoutId) => {
+                clearTimeout(timeoutId);
+            });
+            pendingTimeoutsRef.current.clear();
+        };
+    }, [chatId]);
+
     // Load initial page when chatId changes
     useEffect(() => {
         const loadInitialHistory = async () => {
@@ -149,8 +229,10 @@ const useChat = (chatId: number, options?: Options) => {
 
             // Reset state for new chat
             setMessages([]);
+            setPendingMessages([]);
             loadedPagesRef.current.clear();
             initialMessageIdsRef.current.clear();
+            knownMessageIdsRef.current.clear();
             setHistoryState({
                 currentPage: 1,
                 totalPages: 1,
@@ -166,8 +248,11 @@ const useChat = (chatId: number, options?: Options) => {
                 });
 
                 loadedPagesRef.current.add(1);
-                // Store initial message IDs (non-archived)
-                response.items.forEach((m) => initialMessageIdsRef.current.add(m.id));
+                // Store initial message IDs (non-archived) and track for deduplication
+                response.items.forEach((m) => {
+                    initialMessageIdsRef.current.add(m.id);
+                    knownMessageIdsRef.current.add(m.id);
+                });
                 setMessages(response.items);
                 setHistoryState({
                     currentPage: 1,
@@ -195,6 +280,10 @@ const useChat = (chatId: number, options?: Options) => {
      * @returns Promise that resolves when loading is complete
      */
     const loadBackHistory = useCallback(async (): Promise<void> => {
+        if (!chatId || chatId <= 0) {
+            return;
+        }
+
         // Guard: Don't load if already loading or no more pages
         if (historyState.isLoadingHistory || !historyState.hasMore) {
             return;
@@ -232,6 +321,7 @@ const useChat = (chatId: number, options?: Options) => {
                 const newMessages = response.items
                     .filter((m) => !existingIds.has(m.id))
                     .map((m) => ({ ...m, isArchived: true }));
+                newMessages.forEach((m) => knownMessageIdsRef.current.add(m.id));
                 return [...prev, ...newMessages];
             });
 
@@ -292,9 +382,11 @@ const useChat = (chatId: number, options?: Options) => {
 
     return {
         send,
+        retrySend,
         messages: allMessages,
         connectionStatus,
         selectedChat,
+        isSelectedChatLoading,
         handleDeleteMessage,
         handleCloseChat,
         reloadChat,

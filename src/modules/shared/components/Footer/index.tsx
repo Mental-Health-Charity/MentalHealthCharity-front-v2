@@ -1,101 +1,93 @@
-import { Box, Grid, Stack, Typography, useTheme } from "@mui/material";
-import { t } from "i18next";
-import Container from "../Container";
-import InternalLink, { ExternalLink } from "../InternalLink/styles";
+import { Facebook, Heart, Linkedin } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import InternalLink, { ExternalLink } from "../InternalLink";
 
 const Footer = () => {
-    const theme = useTheme();
+    const { t } = useTranslation();
 
     return (
-        <Box component="footer" sx={{ bgcolor: theme.palette.colors.dark, color: "white", py: 4 }}>
-            <Container
-                parentProps={{
-                    sx: {
-                        minHeight: "fit-content",
-                        padding: "0px",
-                    },
-                }}
-                sx={{
-                    marginTop: 2,
-                }}
-            >
-                <Grid
-                    sx={{
-                        textAlign: { xs: "center", sm: "left" },
-                    }}
-                    container
-                    spacing={4}
-                    justifyContent="space-between"
-                >
-                    <Grid item xs={12} sm={4}>
-                        <Typography variant="h6" sx={{ mb: 2 }}>
-                            Fundacja Peryskop
-                        </Typography>
-                        <Stack spacing={1}>
+        <footer role="contentinfo" className="bg-dark text-white dark:bg-[#0a1620]">
+            <div className="mx-auto max-w-[1200px] px-5 py-12">
+                <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+                    {/* Brand column */}
+                    <div className="sm:col-span-2 lg:col-span-1">
+                        <div className="mb-3 flex items-center gap-2">
+                            <Heart className="text-primary-brand size-5" />
+                            <span className="text-lg font-bold">Peryskop</span>
+                        </div>
+                        <p className="text-sm leading-relaxed text-white/70">
+                            {t("homepage.trust_mission.description")}
+                        </p>
+                    </div>
+
+                    {/* Navigation */}
+                    <div>
+                        <h3 className="mb-4 text-sm font-semibold tracking-wide text-white/50 uppercase">
+                            {t("footer.about_us")}
+                        </h3>
+                        <div className="flex flex-col gap-2.5">
                             <InternalLink color="secondary" to="/#about-us">
                                 {t("footer.about_us")}
                             </InternalLink>
-                            <InternalLink color="secondary" to="/tos">
-                                {t("footer.privacy_policy")}
+                            <InternalLink color="secondary" to="/articles">
+                                {t("common.navigation.articles")}
                             </InternalLink>
                             <InternalLink color="secondary" to="/tos">
                                 {t("footer.terms_of_service")}
                             </InternalLink>
-                        </Stack>
-                    </Grid>
+                            <InternalLink color="secondary" to="/tos">
+                                {t("footer.privacy_policy")}
+                            </InternalLink>
+                        </div>
+                    </div>
 
-                    <Grid item xs={12} sm={4}>
-                        <Typography variant="h6" sx={{ mb: 2 }}>
-                            {t("footer.social")}
-                        </Typography>
-                        <Stack spacing={1}>
-                            <ExternalLink
-                                href="https://www.facebook.com/groups/1340769720143310"
-                                target="_blank"
-                                color="secondary"
-                                rel="noopener noreferrer"
-                            >
-                                Facebook
-                            </ExternalLink>
-                            <ExternalLink
-                                href="https://www.facebook.com/groups/1340769720143310"
-                                target="_blank"
-                                color="secondary"
-                                rel="noopener noreferrer"
-                            >
-                                Twitter
-                            </ExternalLink>
-                            <ExternalLink
-                                href="https://www.linkedin.com/company/fundacja-peryskop"
-                                target="_blank"
-                                color="secondary"
-                                rel="noopener noreferrer"
-                            >
-                                LinkedIn
-                            </ExternalLink>
-                        </Stack>
-                    </Grid>
-
-                    <Grid item xs={12} sm={4}>
-                        <Typography variant="h6" sx={{ mb: 2 }}>
+                    {/* Contact */}
+                    <div>
+                        <h3 className="mb-4 text-sm font-semibold tracking-wide text-white/50 uppercase">
                             {t("footer.contact")}
-                        </Typography>
-                        <Typography variant="body2">
-                            Email:{" "}
+                        </h3>
+                        <div className="flex flex-col gap-2.5">
                             <ExternalLink color="secondary" href="mailto:kontakt@fundacjaperyskop.org">
                                 kontakt@fundacjaperyskop.org
                             </ExternalLink>
-                        </Typography>
-                    </Grid>
-                </Grid>
+                        </div>
+                    </div>
 
-                <Box sx={{ textAlign: "center", mt: 4 }}>
-                    <Typography variant="body2">
+                    {/* Social */}
+                    <div>
+                        <h3 className="mb-4 text-sm font-semibold tracking-wide text-white/50 uppercase">
+                            {t("footer.social")}
+                        </h3>
+                        <div className="flex gap-3">
+                            <a
+                                href="https://www.facebook.com/groups/1340769720143310"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex size-10 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-white/20"
+                                aria-label="Facebook"
+                            >
+                                <Facebook className="size-4" />
+                            </a>
+                            <a
+                                href="https://www.linkedin.com/company/fundacja-peryskop"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex size-10 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-white/20"
+                                aria-label="LinkedIn"
+                            >
+                                <Linkedin className="size-4" />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-10 border-t border-white/10 pt-6 text-center">
+                    <p className="text-sm text-white/50">
                         &copy; {new Date().getFullYear()} {t("footer.rights_reserved")}
-                    </Typography>
-                </Box>
-            </Container>
-        </Box>
+                    </p>
+                </div>
+            </div>
+        </footer>
     );
 };
 

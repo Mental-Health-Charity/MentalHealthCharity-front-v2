@@ -1,7 +1,8 @@
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { Box, Button } from "@mui/material";
+import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
+import { ArrowRight } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useUser } from "../../../auth/components/AuthProvider";
 import { User } from "../../../auth/types";
 import ReportItem from "../../../report/components/ReportItem";
@@ -11,6 +12,7 @@ import SimpleCard from "../SimpleCard";
 
 const Dashboard = () => {
     const { user } = useUser();
+    const { t } = useTranslation();
     const { data } = useQuery(
         getReportsQueryOptions({
             page: 1,
@@ -21,49 +23,34 @@ const Dashboard = () => {
     const [quickSearchUser, setQuickSearchUser] = useState<User>();
 
     return (
-        <Box
-            sx={{
-                width: "100%",
-                maxWidth: "1400px",
-                display: "flex",
-                flexDirection: "column",
-                gap: "20px",
-            }}
-        >
+        <div className="flex w-full max-w-[1200px] flex-col gap-5">
             <SimpleCard
-                subtitle={`Witaj ponownie ${user?.full_name}`}
-                title="Panel administracyjny Fundacja Peryskop"
-                text="Status serwera jest aktywny"
+                subtitle={t("admin.dashboard.welcome", { name: user?.full_name })}
+                title={t("admin.dashboard.title")}
+                text={t("admin.dashboard.server_status")}
             />
-            <SimpleCard subtitle="Wyszukiwarka" title="Szybkie wyszukiwanie użytkowników">
-                <Box width="100%" marginTop="20px" display="flex" flexDirection="column" gap="10px">
+            <SimpleCard subtitle={t("admin.dashboard.search_subtitle")} title={t("admin.dashboard.search_title")}>
+                <div className="mt-5 flex w-full flex-col gap-2.5">
                     <SearchUser value={quickSearchUser} onChange={(user) => setQuickSearchUser(user)} />
-                    {quickSearchUser && <p>{quickSearchUser.full_name}</p>}
-                </Box>
+                    {quickSearchUser && <p className="text-foreground">{quickSearchUser.full_name}</p>}
+                </div>
             </SimpleCard>
-            <SimpleCard subtitle={`Aktywnych zgłoszeń ${data?.total}`} title="Zgłoszenia">
-                <Box width="100%" marginTop="20px" display="flex" flexDirection="column" gap="10px">
+            <SimpleCard
+                subtitle={t("admin.dashboard.reports_subtitle", { count: data?.total ?? 0 })}
+                title={t("admin.dashboard.reports_title")}
+            >
+                <div className="mt-5 flex w-full flex-col gap-2.5">
                     {data && data.items.slice(0, 3).map((report) => <ReportItem report={report} key={report.id} />)}
-                </Box>
-                <Box
-                    sx={{
-                        marginTop: "20px",
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "flex-end",
-                    }}
-                >
-                    <Button
-                        href="/admin/reports"
-                        sx={{
-                            gap: "10px",
-                        }}
-                    >
-                        Sprawdź więcej <ArrowForwardIcon />
-                    </Button>
-                </Box>
+                </div>
+                <div className="mt-5 flex w-full justify-end">
+                    <a href="/admin/reports" className="no-underline">
+                        <Button variant="ghost" className="gap-2.5">
+                            {t("admin.dashboard.check_more")} <ArrowRight className="size-5" />
+                        </Button>
+                    </a>
+                </div>
             </SimpleCard>
-        </Box>
+        </div>
     );
 };
 

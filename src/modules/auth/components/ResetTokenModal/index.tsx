@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import Modal from "../../../shared/components/Modal";
@@ -27,17 +27,17 @@ const ResetTokenModal = ({ token, ...props }: Props) => {
 
     return (
         <Modal {...props} title={t("auth.reset_token_modal.title")}>
-            <Box maxWidth={600}>
-                <Typography fontSize={20}>{t("auth.reset_token_modal.subtitle")}</Typography>
-                <Box sx={{ marginTop: "20px", display: "flex", gap: "10px", flexDirection: "column" }}>
-                    <Button onClick={handleDownload} fullWidth variant="contained">
+            <div className="max-w-[600px]">
+                <p className="text-xl">{t("auth.reset_token_modal.subtitle")}</p>
+                <div className="mt-5 flex flex-col gap-2.5">
+                    <Button onClick={handleDownload} className="w-full">
                         {t("auth.reset_token_modal.download")}
                     </Button>
-                    <Button onClick={handleCopy} fullWidth variant="outlined">
+                    <Button onClick={handleCopy} variant="outline" className="w-full">
                         {t("auth.reset_token_modal.copy")}
                     </Button>
-                </Box>
-            </Box>
+                </div>
+            </div>
         </Modal>
     );
 };

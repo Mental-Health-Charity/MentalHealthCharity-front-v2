@@ -1,16 +1,5 @@
-import {
-    Box,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Typography,
-} from "@mui/material";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useTranslation } from "react-i18next";
-import useTheme from "../../../../theme";
 
 interface DataSet {
     [key: string]: string | number | boolean | null;
@@ -23,7 +12,7 @@ interface Props {
 
 const DataComparison = ({ dataA, dataB }: Props) => {
     const { t } = useTranslation();
-    const theme = useTheme();
+
     const differences = Object.keys(dataA).reduce(
         (acc, key) => {
             if (dataA[key] !== dataB[key]) {
@@ -37,68 +26,31 @@ const DataComparison = ({ dataA, dataB }: Props) => {
         {} as Record<string, { oldValue: unknown; newValue: unknown }>
     );
 
+    if (Object.keys(differences).length === 0) {
+        return <p className="text-foreground">{t("common.compare_changes.no_changes")}</p>;
+    }
+
     return (
-        <Box>
-            {Object.keys(differences).length === 0 ? (
-                <Typography
-                    sx={{
-                        color: theme.palette.text.secondary,
-                    }}
-                    variant="body1"
-                >
-                    {t("common.compare_changes.no_changes")}
-                </Typography>
-            ) : (
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell
-                                    sx={{
-                                        color: theme.palette.text.secondary,
-                                    }}
-                                >
-                                    {t("common.compare_changes.field")}
-                                </TableCell>
-                                <TableCell
-                                    sx={{
-                                        color: theme.palette.text.secondary,
-                                    }}
-                                >
-                                    {t("common.compare_changes.old_value")}
-                                </TableCell>
-                                <TableCell
-                                    sx={{
-                                        color: theme.palette.text.secondary,
-                                    }}
-                                >
-                                    {t("common.compare_changes.new_value")}
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody
-                            sx={{
-                                color: theme.palette.text.secondary,
-                            }}
-                        >
-                            {Object.entries(differences).map(([field, { oldValue, newValue }]) => (
-                                <TableRow key={field}>
-                                    <TableCell
-                                        sx={{
-                                            color: theme.palette.text.secondary,
-                                        }}
-                                    >
-                                        {field}
-                                    </TableCell>
-                                    <TableCell style={{ color: "red" }}>{String(oldValue) || "—"}</TableCell>
-                                    <TableCell style={{ color: "green" }}>{String(newValue) || "—"}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            )}
-        </Box>
+        <div className="bg-card rounded-lg border">
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead className="text-foreground">{t("common.compare_changes.field")}</TableHead>
+                        <TableHead className="text-foreground">{t("common.compare_changes.old_value")}</TableHead>
+                        <TableHead className="text-foreground">{t("common.compare_changes.new_value")}</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {Object.entries(differences).map(([field, { oldValue, newValue }]) => (
+                        <TableRow key={field}>
+                            <TableCell className="text-foreground">{field}</TableCell>
+                            <TableCell className="text-red-600">{String(oldValue) || "—"}</TableCell>
+                            <TableCell className="text-green-600">{String(newValue) || "—"}</TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </div>
     );
 };
 

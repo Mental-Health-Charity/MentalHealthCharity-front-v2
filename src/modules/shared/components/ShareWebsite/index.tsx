@@ -1,12 +1,8 @@
-import FacebookIcon from "@mui/icons-material/Facebook";
-import InstagramIcon from "@mui/icons-material/Instagram";
-import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import XIcon from "@mui/icons-material/X";
-import { Box, Button } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 import { useMemo } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
 
 const ShareWebsite = () => {
     const { t } = useTranslation();
@@ -16,66 +12,49 @@ const ShareWebsite = () => {
             {
                 name: "Facebook",
                 color: "#1877f2",
-                icon: <FacebookIcon />,
+                icon: <Facebook size={18} />,
                 to: "https://www.facebook.com/sharer/sharer.php?u=https://fundacjaperyskop.org",
             },
             {
                 name: "Twitter",
                 color: "#000",
-                icon: <XIcon />,
+                icon: <Twitter size={18} />,
                 to: "https://twitter.com/intent/tweet?url=https://fundacjaperyskop.org",
             },
             {
                 name: "Instagram",
-                color: "linear-gradient( to right, #833ab4,#fd1d1d,#fcb045 )",
-                icon: <InstagramIcon />,
+                color: "linear-gradient(to right, #833ab4, #fd1d1d, #fcb045)",
+                icon: <Instagram size={18} />,
                 to: "https://www.instagram.com/?url=https://fundacjaperyskop.org",
             },
             {
                 name: "LinkedIn",
                 color: "#0077b5",
-                icon: <LinkedInIcon />,
+                icon: <Linkedin size={18} />,
                 to: "https://www.linkedin.com/shareArticle?mini=true&url=https://fundacjaperyskop.org",
             },
         ],
-        [t]
+        []
     );
 
     return (
-        <Box
-            sx={{
-                display: "flex",
-                padding: "20px 0",
-                gap: "10px",
-                flexWrap: "wrap",
-            }}
-        >
+        <div className="flex flex-wrap gap-2.5 py-5">
             {shareOptions.map((option) => (
-                <Button
-                    variant="contained"
-                    component={Link}
-                    to={option.to}
+                <a
                     key={option.name}
-                    sx={{
-                        background: option.color,
-                        color: "white",
-                        width: { xs: "100%", sm: "auto" },
-                        "&:hover": {
-                            background: option.color,
-                        },
-                    }}
+                    href={option.to}
                     target="_blank"
                     rel="noreferrer noopener"
+                    className="w-full sm:w-auto"
                 >
-                    {option.icon}
-                    {option.name}
-                </Button>
+                    <Button className="w-full gap-2 text-white hover:opacity-90" style={{ background: option.color }}>
+                        {option.icon}
+                        {option.name}
+                    </Button>
+                </a>
             ))}
             <Button
-                variant="contained"
-                sx={{
-                    width: { xs: "100%", sm: "auto" },
-                }}
+                className="w-full sm:w-auto"
                 onClick={() => {
                     navigator.clipboard.writeText("https://fundacjaperyskop.org");
                     toast.success(t("common.copied_to_clipboard"));
@@ -83,7 +62,7 @@ const ShareWebsite = () => {
             >
                 {t("support_us.options.share.copy")}
             </Button>
-        </Box>
+        </div>
     );
 };
 

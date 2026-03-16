@@ -1,6 +1,12 @@
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, MenuList } from "@mui/material";
-import { MouseEvent, useMemo, useState } from "react";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal } from "lucide-react";
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ComponentAction } from "../../types";
 
@@ -9,18 +15,6 @@ interface Props {
 }
 
 const ActionMenu = ({ actions }: Props) => {
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
-    const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-
     const { defaultActions, dividerActions } = useMemo(() => {
         return actions.reduce(
             (acc, action) => {
@@ -38,95 +32,56 @@ const ActionMenu = ({ actions }: Props) => {
         );
     }, [actions]);
 
-    return (
-        <>
-            <Menu
-                id="basic-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                MenuListProps={{
-                    "aria-labelledby": "basic-button",
+    const renderItem = (action: ComponentAction) => {
+        const content = (
+            <DropdownMenuItem
+                key={action.id}
+                disabled={action.disabled}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    action.onClick?.(e);
                 }}
+                className="cursor-pointer gap-2"
             >
-                <MenuList>
-                    {defaultActions.map((action) =>
-                        action.href ? (
-                            <Link
-                                reloadDocument
-                                to={action.href}
-                                key={action.id}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                }}
-                                style={{
-                                    textDecoration: "none",
-                                    color: "inherit",
-                                }}
-                            >
-                                <MenuItem {...action}>
-                                    <ListItemIcon>{action.icon}</ListItemIcon>
-                                    <ListItemText>{action.label}</ListItemText>
-                                </MenuItem>
-                            </Link>
-                        ) : (
-                            <MenuItem {...action} key={action.id}>
-                                <ListItemIcon>{action.icon}</ListItemIcon>
-                                <ListItemText>{action.label}</ListItemText>
-                            </MenuItem>
-                        )
-                    )}
-                    {dividerActions.length > 0 && (
-                        <Divider
-                            sx={{
-                                margin: "8px 0 6px 0",
-                            }}
-                        />
-                    )}
-                    {dividerActions.map((action) =>
-                        action.href ? (
-                            <Link
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                }}
-                                to={action.href}
-                                key={action.id}
-                                style={{
-                                    textDecoration: "none",
-                                    color: "inherit",
-                                }}
-                            >
-                                <MenuItem {...action}>
-                                    <ListItemIcon>{action.icon}</ListItemIcon>
-                                    <ListItemText>{action.label}</ListItemText>
-                                </MenuItem>
-                            </Link>
-                        ) : (
-                            <MenuItem
-                                {...action}
-                                key={action.id}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    action.onClick && action.onClick(e);
-                                }}
-                            >
-                                <ListItemIcon>{action.icon}</ListItemIcon>
-                                <ListItemText>{action.label}</ListItemText>
-                            </MenuItem>
-                        )
-                    )}
-                </MenuList>
-            </Menu>
-            <IconButton
-                id="basic-button"
-                aria-controls={open ? "basic-menu" : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? "true" : undefined}
-                onClick={handleClick}
+                {action.icon && <span className="flex h-5 w-5 shrink-0 items-center">{action.icon}</span>}
+                <span>{action.label}</span>
+            </DropdownMenuItem>
+        );
+
+        if (action.href) {
+            return (
+                <Link
+                    key={action.id}
+                    to={action.href}
+                    reloadDocument
+                    onClick={(e) => e.stopPropagation()}
+                    className="no-underline"
+                >
+                    {content}
+                </Link>
+            );
+        }
+
+        return content;
+    };
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger
+                onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }}
+                className="text-muted-foreground hover:bg-muted hover:text-foreground inline-flex h-9 w-9 items-center justify-center rounded-md transition-colors focus-visible:outline-none"
             >
-                <MoreHorizIcon />
-            </IconButton>
-        </>
+                <MoreHorizontal size={20} />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                {defaultActions.map(renderItem)}
+                {dividerActions.length > 0 && <DropdownMenuSeparator />}
+                {dividerActions.map(renderItem)}
+            </DropdownMenuContent>
+        </DropdownMenu>
     );
 };
 

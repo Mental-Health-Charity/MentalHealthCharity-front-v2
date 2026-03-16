@@ -1,4 +1,4 @@
-import { Box, Button, Container, Paper, Stack, Typography } from "@mui/material";
+import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { Link as ReactRouterLink } from "react-router-dom";
 import ScrollIndicator from "../modules/shared/components/ScrollIndicator";
@@ -9,107 +9,67 @@ const MenteeFormGettingStartedScreen = () => {
     return (
         <>
             {/* HEADER */}
-            <Box
-                sx={{
-                    background: (theme) => theme.palette.gradients.primary,
-                    color: "white",
-                    p: "160px 20px 120px",
-                }}
-            >
-                <Container maxWidth="md">
-                    <Typography variant="h3" fontWeight={800}>
-                        {t("mentee_form_getting_started_screen.header.title")}
-                    </Typography>
+            <div className="from-primary-brand to-primary-brand-dark bg-gradient-to-br px-5 pt-[160px] pb-[120px] text-white">
+                <div className="mx-auto max-w-[768px]">
+                    <h1 className="text-3xl font-extrabold">{t("mentee_form_getting_started_screen.header.title")}</h1>
 
-                    <Typography variant="body1" sx={{ opacity: 0.9, mt: 2, maxWidth: 520 }}>
+                    <p className="mt-4 max-w-[520px] text-white/90">
                         {t("mentee_form_getting_started_screen.header.subtitle")}
-                    </Typography>
-                </Container>
-            </Box>
+                    </p>
+                </div>
+            </div>
 
             {/* CONTENT */}
-            <Container
-                maxWidth="md"
-                sx={{
-                    mt: -6,
-                    pb: 10,
-                }}
-            >
-                <Paper
-                    sx={{
-                        p: { xs: 3, md: 5 },
-                        borderRadius: 3,
-                        border: "1px solid",
-                        borderColor: "colors.border",
-                        boxShadow: "none",
-                        backgroundColor: "background.paper",
-                    }}
-                >
-                    <Stack spacing={3}>
-                        <Typography fontWeight={700} color="text.secondary">
+            <div className="mx-auto -mt-12 max-w-[768px] px-4 pb-20">
+                <div className="border-border bg-card rounded-xl border p-6 shadow-sm md:p-10">
+                    <div className="flex flex-col gap-6">
+                        <p className="text-foreground font-bold">
                             {t("mentee_form_getting_started_screen.content.p1")}
-                        </Typography>
+                        </p>
 
-                        <Typography color="text.secondary">
-                            {t("mentee_form_getting_started_screen.content.p2")}
-                        </Typography>
+                        <p className="text-foreground">{t("mentee_form_getting_started_screen.content.p2")}</p>
 
-                        <Typography color="text.secondary">
-                            {t("mentee_form_getting_started_screen.content.p3")}
-                        </Typography>
+                        <p className="text-foreground">{t("mentee_form_getting_started_screen.content.p3")}</p>
 
-                        <Box>
-                            <Typography color="text.secondary" fontWeight={700} gutterBottom>
+                        <div>
+                            <p className="text-foreground mb-2 font-bold">
                                 {t("mentee_form_getting_started_screen.content.chat_section.title")}
-                            </Typography>
+                            </p>
 
-                            <Stack spacing={2}>
-                                <Typography color="text.secondary">
+                            <div className="flex flex-col gap-4">
+                                <p className="text-foreground">
                                     {t("mentee_form_getting_started_screen.content.chat_section.p4")}
-                                </Typography>
+                                </p>
 
-                                <Typography color="text.secondary">
+                                <p className="text-foreground">
                                     {t("mentee_form_getting_started_screen.content.chat_section.p5")}
-                                </Typography>
+                                </p>
 
-                                <Typography color="text.secondary">
+                                <p className="text-foreground">
                                     {t("mentee_form_getting_started_screen.content.chat_section.p6")}
-                                </Typography>
-                            </Stack>
-                        </Box>
+                                </p>
+                            </div>
+                        </div>
 
-                        <Typography color="text.secondary">
-                            {t("mentee_form_getting_started_screen.content.p7")}
-                        </Typography>
+                        <p className="text-foreground">{t("mentee_form_getting_started_screen.content.p7")}</p>
 
-                        <Typography color="text.secondary">
-                            {t("mentee_form_getting_started_screen.content.p8")}
-                        </Typography>
+                        <p className="text-foreground">{t("mentee_form_getting_started_screen.content.p8")}</p>
 
                         {/* CTA SECTION */}
-                        <Box
-                            sx={{
-                                mt: 4,
-                                pt: 4,
-                                borderTop: "1px solid",
-                                borderColor: "colors.border",
-                                display: "flex",
-                                justifyContent: "center",
-                            }}
-                        >
-                            <Button component={ReactRouterLink} to="/form/mentee" variant="contained" fullWidth>
+                        <div className="border-border mt-8 flex justify-center border-t pt-8">
+                            <Button className="w-full" render={<ReactRouterLink to="/form/mentee" />}>
                                 {t("homepage.chat_now")}
                             </Button>
-                        </Box>
-                    </Stack>
-                </Paper>
+                        </div>
+                    </div>
+                </div>
 
-                <Typography variant="body2" color="text.light" textAlign="center" sx={{ mt: 3 }}>
-                    {t("mentee_form_getting_started_screen.content.footer")} 💙
-                </Typography>
+                <p className="text-muted-foreground mt-6 text-center text-sm">
+                    {t("mentee_form_getting_started_screen.content.footer")}
+                </p>
 
                 <ScrollIndicator />
-            </Container>
+            </div>
         </>
     );
 };

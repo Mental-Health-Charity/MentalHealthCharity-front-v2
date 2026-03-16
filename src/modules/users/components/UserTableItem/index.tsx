@@ -1,95 +1,60 @@
-import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import DownloadIcon from "@mui/icons-material/Download";
-import EditIcon from "@mui/icons-material/Edit";
-import Person2Icon from "@mui/icons-material/Person2";
-import { Avatar, Box, BoxProps, Button, Chip, Typography } from "@mui/material";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { t } from "i18next";
+import { Copy, Download, MessageSquare, Pencil, User } from "lucide-react";
 import toast from "react-hot-toast";
-import useTheme from "../../../../theme";
-import { User } from "../../../auth/types";
+import { User as UserType } from "../../../auth/types";
 import ActionMenu from "../../../shared/components/ActionMenu";
 import { downloadFile } from "../../../shared/helpers/downloadFile";
 import { ComponentAction } from "../../../shared/types";
 import { Roles, translatedRoles } from "../../constants";
 
-interface Props extends BoxProps {
-    user: User;
-    onEdit: (user: User) => void;
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
+    user: UserType;
+    onEdit: (user: UserType) => void;
     additionalActions?: ComponentAction[];
 }
 
-const UserTableItem = ({ onEdit, user, additionalActions, ...props }: Props) => {
-    const theme = useTheme();
-
+const UserTableItem = ({ onEdit, user, additionalActions, className, ...props }: Props) => {
     const handleCopy = (text: string) => {
         navigator.clipboard.writeText(text);
         toast.success(t("common.copied_to_clipboard"));
     };
 
     return (
-        <Box
+        <div
+            className={cn(
+                "border-border-brand bg-card flex flex-wrap items-center justify-between rounded-lg border-2 p-4",
+                className
+            )}
             {...props}
-            sx={{
-                padding: " 15px",
-                backgroundColor: theme.palette.background.paper,
-                border: `2px solid ${theme.palette.colors.border}`,
-                borderRadius: "8px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-                ...props.sx,
-            }}
         >
-            <Box display="flex" alignItems="center" justifyContent="center" gap={2}>
-                <Avatar
-                    sx={{ width: 50, height: 50 }}
-                    src={user.chat_avatar_url}
-                    alt={user.full_name}
-                    variant="rounded"
-                />
-                <Box>
-                    <Typography variant="h6" color="textSecondary">
+            <div className="flex items-center gap-4">
+                <Avatar className="size-[50px] rounded-md">
+                    <AvatarImage src={user.chat_avatar_url || undefined} alt={user.full_name} />
+                    <AvatarFallback className="rounded-md">{user.full_name?.charAt(0)?.toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <div>
+                    <p className="text-muted-foreground text-lg font-semibold">
                         {user.full_name} ({user.id})
-                    </Typography>
-                    <Button
-                        variant="text"
+                    </p>
+                    <button
                         onClick={() => handleCopy(user.email)}
-                        sx={{
-                            padding: 0,
-                            color: theme.palette.text.secondary,
-                            gap: "10px",
-                        }}
+                        className="text-muted-foreground flex items-center gap-2.5 border-none bg-transparent p-0 text-sm hover:underline"
                     >
                         {user.email}
-                        <ContentCopyIcon fontSize="small" />
-                    </Button>
-                </Box>
-            </Box>
-            <Box
-                sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 2,
-                }}
-            >
-                <Chip
-                    color={user.is_assigned_to_chat ? "info" : "default"}
-                    sx={{
-                        color: theme.palette.text.primary,
-                    }}
-                    label={
-                        user.is_assigned_to_chat ? t("users.is_assigned_to_chat") : t("users.is_not_assigned_to_chat")
-                    }
-                />
-                <Chip
-                    color={user.user_role === Roles.USER ? "secondary" : "error"}
-                    sx={{
-                        color: theme.palette.text.primary,
-                    }}
-                    label={translatedRoles[user.user_role]}
-                />
+                        <Copy className="size-3.5" />
+                    </button>
+                </div>
+            </div>
+            <div className="flex items-center gap-4">
+                <Badge variant={user.is_assigned_to_chat ? "secondary" : "outline"}>
+                    {user.is_assigned_to_chat ? t("users.is_assigned_to_chat") : t("users.is_not_assigned_to_chat")}
+                </Badge>
+                <Badge variant={user.user_role === Roles.USER ? "secondary" : "destructive"}>
+                    {translatedRoles[user.user_role]}
+                </Badge>
 
                 <ActionMenu
                     actions={[
@@ -97,19 +62,19 @@ const UserTableItem = ({ onEdit, user, additionalActions, ...props }: Props) => 
                             id: "edit",
                             label: t("common.edit"),
                             onClick: () => onEdit(user),
-                            icon: <EditIcon />,
+                            icon: <Pencil className="size-4" />,
                         },
                         {
                             id: "go_to_profile",
                             label: t("common.go_to_profile"),
                             href: `/profile/${user?.id}`,
-                            icon: <Person2Icon />,
+                            icon: <User className="size-4" />,
                         },
                         {
                             id: "connected_chats_to_user",
                             label: t("common.check_connected_chats"),
                             href: `/admin/chats/?search=${user?.email}`,
-                            icon: <ChatBubbleIcon />,
+                            icon: <MessageSquare className="size-4" />,
                         },
                         {
                             id: "download",
@@ -118,13 +83,13 @@ const UserTableItem = ({ onEdit, user, additionalActions, ...props }: Props) => 
                                 downloadFile(user, user.full_name + ".json", "application/json");
                             },
                             variant: "divider",
-                            icon: <DownloadIcon />,
+                            icon: <Download className="size-4" />,
                         },
                         ...(additionalActions || []),
                     ]}
                 />
-            </Box>
-        </Box>
+            </div>
+        </div>
     );
 };
 

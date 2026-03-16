@@ -1,6 +1,7 @@
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import { Box, Button, Tooltip, Typography } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { Filter } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -48,33 +49,30 @@ const ManageArticlesScreen = () => {
     return (
         <AdminLayout>
             <SimpleCard title={t("manage_articles.title")} subtitle={t("manage_articles.subtitle")}>
-                <Tooltip title={t("common.unavailable_in_beta")}>
-                    <Box>
-                        <SearchUser disabled onChange={(user) => setFilterByUser(user?.id)} />
-                    </Box>
-                </Tooltip>
-                <Box sx={{ marginTop: "20px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger render={<div />}>
+                            <SearchUser disabled onChange={(user) => setFilterByUser(user?.id)} />
+                        </TooltipTrigger>
+                        <TooltipContent>{t("common.unavailable_in_beta")}</TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+                <div className="mt-5 flex flex-wrap gap-2.5">
                     {Object.keys(ArticleStatus).map((option) => (
                         <Button
-                            sx={{
-                                backgroundColor: "primary.main",
-                                color: "white",
-                                opacity: option === status ? 1 : 0.5,
-                            }}
+                            key={option}
+                            className="text-white"
+                            style={{ opacity: option === status ? 1 : 0.5 }}
                             onClick={() => setStatus(option as ArticleStatus)}
                         >
-                            <FilterAltIcon />
+                            <Filter className="size-4" />
                             {translatedAdminArticleStatus[option as ArticleStatus]}
                         </Button>
                     ))}
-                </Box>
+                </div>
             </SimpleCard>
             {isLoading && <Loader />}
-            {data && data.total === 0 && (
-                <Typography color="textSecondary" variant="h6" textAlign="center">
-                    {t("common.not_found")}
-                </Typography>
-            )}
+            {data && data.total === 0 && <p className="text-foreground text-center text-lg">{t("common.not_found")}</p>}
             {data && data.items && <ArticlesManager onChangeStatus={handleChangeStatus} articles={data.items} />}
         </AdminLayout>
     );

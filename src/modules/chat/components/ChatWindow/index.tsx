@@ -1,72 +1,81 @@
-import EventNoteIcon from "@mui/icons-material/EventNote";
-import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
-import MenuIcon from "@mui/icons-material/Menu";
-import ReportIcon from "@mui/icons-material/Report";
-import TuneIcon from "@mui/icons-material/Tune";
-import { Box, IconButton, Tooltip, useTheme } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { BookOpen, Flag, LockKeyhole, Menu, StickyNote, Users } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
-import Logo from "../../../../assets/static/logo_small.webp";
+import { useParams } from "react-router-dom";
+import { useIsMobile } from "../../../../hooks/useBreakpoint";
 import { useUser } from "../../../auth/components/AuthProvider";
 import ReportModal from "../../../report/components/ReportModal";
-import Info from "../../../shared/components/Info";
 import { Permissions } from "../../../shared/constants";
 import usePermissions from "../../../shared/hooks/usePermissions";
 import useChat from "../../hooks/useChat";
 import useChatListLoader from "../../hooks/useChatListLoader";
 import { Chat as ChatType } from "../../types";
+import AddParticipantModal from "../AddParticipantModal";
 import Chat from "../Chat";
 import ChatDetails from "../ChatDetails";
 import ChatSidebar from "../ChatSidebar";
-import ContractModal from "../ContractModal/ContractModal";
+import CloseChatModal from "../CloseChatModal";
+import ContractSidebar from "../ContractModal/ContractModal";
 import CustomizeChatModal from "../CustomizeChatModal";
+import NewChatModal from "../NewChatModal";
 import Note from "../Note";
 
-interface Props {
-    onChangeWallpaper?: (wallpaper: string) => void;
-}
-
-const ChatWindow = ({ onChangeWallpaper }: Props) => {
-    const theme = useTheme();
+const ChatWindow = () => {
     const { id } = useParams<{ id: string }>();
-    const { data, isLoading, aggregatedData, loadNextPage } = useChatListLoader(100);
+    const { data, aggregatedData, loadNextPage, searchQuery, setSearchQuery, isSearching } = useChatListLoader(100);
     const effectiveData = aggregatedData || data;
-    const [showDetails, setShowDetails] = useState(false);
+    const isMobile = useIsMobile();
+    const [showDetails, setShowDetails] = useState(!isMobile);
     const [showNote, setShowNote] = useState(false);
     const [showReportModal, setShowReportModal] = useState(false);
     const { user } = useUser();
     const [showCustomizeModal, setShowCustomizeModal] = useState(false);
     const [showContractModal, setShowContractModal] = useState(false);
+    const [showNewChatModal, setShowNewChatModal] = useState(false);
+    const [showAddParticipant, setShowAddParticipant] = useState(false);
+    const [showCloseChatModal, setShowCloseChatModal] = useState(false);
     const { t } = useTranslation();
-    const [chatId, setChatId] = useState(id || "");
-    const navigate = useNavigate();
+    const [chatId, setChatId] = useState(id);
     const [showSidebar, setShowSidebar] = useState(false);
     const { hasPermissions } = usePermissions();
+
+    // Use a ref-based shouldReconnect to avoid stale closure over selectedChat
+    const selectedChatRef = useRef<ChatType | undefined>(undefined);
 
     const {
         messages,
         connectionStatus,
         send,
+        retrySend,
         selectedChat,
+        isSelectedChatLoading,
         handleDeleteMessage,
         handleCloseChat,
         reloadChat,
         loadBackHistory,
         historyState,
-    } = useChat(Number(chatId), {
-        shouldReconnect: (closeEvent) => {
-            const isParticipant = selectedChat && user && selectedChat.participants.some((p) => p.id === user.id);
+    } = useChat(chatId ? Number(chatId) : undefined, {
+        shouldReconnect: () => {
+            if (!chatId || !user) {
+                return false;
+            }
 
-            if (isParticipant) {
-                console.warn("Socket closed, attempting to reconnect...", closeEvent);
+            const chat = selectedChatRef.current;
+            if (!chat) {
+                // Keep reconnecting while chat metadata is still loading.
                 return true;
             }
 
-            return false;
+            return chat.participants.some((p) => p.id === user.id);
         },
+        reconnectAttempts: Infinity,
+        reconnectInterval: (attemptNumber) => Math.min(1000 * 2 ** attemptNumber, 30000),
     });
+
+    // Keep the ref in sync
+    selectedChatRef.current = selectedChat;
 
     const closeChat = useCallback(
         (chat: ChatType) => {
@@ -76,6 +85,12 @@ const ChatWindow = ({ onChangeWallpaper }: Props) => {
         [handleCloseChat, reloadChat]
     );
 
+    const canCloseChat =
+        selectedChat &&
+        !selectedChat.is_supervisor_chat &&
+        selectedChat.is_active &&
+        (hasPermissions(Permissions.EDIT_CHAT_DATA) || hasPermissions(Permissions.MANAGE_CHATS));
+
     const handleChangeChat = useCallback(
         (id: string) => {
             setShowNote(false);
@@ -84,118 +99,102 @@ const ChatWindow = ({ onChangeWallpaper }: Props) => {
         [setChatId, setShowNote]
     );
 
-    if (!isLoading && (!effectiveData || effectiveData.total === 0)) {
-        toast(t("chat.no_available_chats_found"));
-        navigate("/");
-    }
-
     useEffect(() => {
         if (!chatId && effectiveData) {
             setChatId(String(effectiveData.items[0].id));
         }
     }, [effectiveData, chatId]);
 
-    return (
-        <>
-            {" "}
-            {showNote && selectedChat && (
-                <Note key={selectedChat.id} onClose={() => setShowNote(false)} chat={selectedChat} />
-            )}
-            <Box margin="0px 0 10px 0">
-                <Info id="chat-delete-info">{t("chat.auto_delete_info")}</Info>
-            </Box>
-            <Box
-                sx={{
-                    backgroundColor: theme.palette.colors.dark,
-                    display: "flex",
-                    gap: { xs: "4px", md: "15px" },
-                    padding: { xs: "4px", md: "15px" },
-                    borderRadius: "10px",
-                    flexDirection: { xs: "column", md: "row" },
-                }}
-            >
-                {/* sidebar dark */}
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexDirection: { xs: "row", md: "column" },
-                        gap: "15px",
-                    }}
-                >
-                    <Box
-                        sx={{
-                            backgroundColor: theme.palette.background.default,
-                            borderRadius: "8px",
-                            boxShadow: `0 0 10px 5px ${theme.palette.shadows.box}`,
-                            width: "55px",
-                            height: "55px",
-                            display: { xs: "none", md: "flex" },
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }}
-                    >
-                        <img src={Logo} alt="logo" width={45} height={41} />
-                    </Box>
-
-                    <Tooltip title={t("chat.show_more_chats")}>
-                        <IconButton
-                            onClick={() => setShowSidebar((prev) => !prev)}
-                            sx={{
-                                display: { xs: "flex", md: "none" },
-                                color: theme.palette.text.primary,
-                            }}
-                        >
-                            <MenuIcon fontSize="large" />
-                        </IconButton>
-                    </Tooltip>
-
-                    {hasPermissions(Permissions.EDIT_CHAT_NOTE) && (
-                        <Tooltip title={t("chat.notes")}>
-                            <IconButton
+    const headerActions = (
+        <div className="flex items-center gap-0.5">
+            {hasPermissions(Permissions.EDIT_CHAT_NOTE) && (
+                <Tooltip>
+                    <TooltipTrigger
+                        render={
+                            <button
                                 onClick={() => setShowNote(!showNote)}
-                                sx={{
-                                    color: theme.palette.text.primary,
-                                    display: { xs: "none", md: "flex" },
-                                }}
+                                className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-2 transition-colors"
+                                aria-label={t("chat.notes")}
                             >
-                                <EventNoteIcon fontSize="large" />
-                            </IconButton>
-                        </Tooltip>
-                    )}
+                                <StickyNote className="size-5" />
+                            </button>
+                        }
+                    />
+                    <TooltipContent>{t("chat.notes")}</TooltipContent>
+                </Tooltip>
+            )}
 
-                    <Tooltip title={t("chat.report")}>
-                        <IconButton
-                            sx={{
-                                color: theme.palette.text.primary,
-                            }}
+            <Tooltip>
+                <TooltipTrigger
+                    render={
+                        <button
                             onClick={() => setShowReportModal(!showReportModal)}
+                            className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-2 transition-colors"
+                            aria-label={t("chat.report")}
                         >
-                            <ReportIcon fontSize="large" />
-                        </IconButton>
-                    </Tooltip>
-                    {onChangeWallpaper && (
-                        <Tooltip title={t("chat.customize")}>
-                            <IconButton
-                                sx={{
-                                    color: theme.palette.text.primary,
-                                }}
-                                onClick={() => setShowCustomizeModal(!showCustomizeModal)}
-                            >
-                                <TuneIcon fontSize="large" />
-                            </IconButton>
-                        </Tooltip>
-                    )}
-                    <Tooltip title={t("chat.contract")}>
-                        <IconButton
-                            sx={{
-                                color: theme.palette.text.primary,
-                            }}
+                            <Flag className="size-5" />
+                        </button>
+                    }
+                />
+                <TooltipContent>{t("chat.report")}</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+                <TooltipTrigger
+                    render={
+                        <button
                             onClick={() => setShowContractModal(!showContractModal)}
+                            className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-2 transition-colors"
+                            aria-label={t("chat.contract")}
                         >
-                            <HistoryEduIcon fontSize="large" />
-                        </IconButton>
+                            <BookOpen className="size-5" />
+                        </button>
+                    }
+                />
+                <TooltipContent>{t("chat.contract")}</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+                <TooltipTrigger
+                    render={
+                        <button
+                            onClick={() => setShowDetails(!showDetails)}
+                            className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-2 transition-colors"
+                            aria-label={t("chat.show_details", { defaultValue: "Details" })}
+                        >
+                            <Users className="size-5" />
+                        </button>
+                    }
+                />
+                <TooltipContent>{t("chat.show_details", { defaultValue: "Details" })}</TooltipContent>
+            </Tooltip>
+
+            {canCloseChat && (
+                <>
+                    <div className="bg-border/60 mx-1 h-5 w-px" />
+                    <Tooltip>
+                        <TooltipTrigger
+                            render={
+                                <button
+                                    onClick={() => setShowCloseChatModal(true)}
+                                    className="text-destructive hover:bg-destructive/10 rounded-lg p-2 transition-colors"
+                                    aria-label={t("chat.close_chat")}
+                                >
+                                    <LockKeyhole className="size-5" />
+                                </button>
+                            }
+                        />
+                        <TooltipContent>{t("chat.close_chat")}</TooltipContent>
                     </Tooltip>
-                </Box>
+                </>
+            )}
+        </div>
+    );
+
+    return (
+        <TooltipProvider>
+            <div className="flex h-full flex-1 overflow-hidden">
+                {/* Left: sidebar */}
                 <ChatSidebar
                     handleDrawerToggle={() => setShowSidebar((prev) => !prev)}
                     showSidebar={showSidebar}
@@ -203,44 +202,117 @@ const ChatWindow = ({ onChangeWallpaper }: Props) => {
                     loadMore={loadNextPage}
                     onChangeChat={handleChangeChat}
                     currentChatId={Number(chatId)}
+                    searchQuery={searchQuery}
+                    onSearchChange={setSearchQuery}
+                    isSearching={isSearching}
+                    onNewChat={hasPermissions(Permissions.MANAGE_CHATS) ? () => setShowNewChatModal(true) : undefined}
                 />
-                <Box
-                    sx={{
-                        width: "100%",
-                    }}
-                >
+
+                {/* Center: header + messages + input */}
+                <div className="flex min-w-0 flex-1 flex-col">
+                    {/* Header bar */}
+                    <div className="border-border/50 bg-card flex h-16 shrink-0 items-center justify-between border-b px-4">
+                        <div className="flex items-center gap-3">
+                            <button
+                                onClick={() => setShowSidebar((prev) => !prev)}
+                                className="text-muted-foreground hover:text-foreground transition-colors md:hidden"
+                                aria-label={t("chat.show_more_chats")}
+                            >
+                                <Menu className="size-6" />
+                            </button>
+                            {selectedChat ? (
+                                <div className="flex items-center gap-3">
+                                    <div className="bg-primary-brand/20 text-primary-brand flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-bold">
+                                        {selectedChat.name.charAt(0).toUpperCase()}
+                                    </div>
+                                    <h2 className="text-foreground truncate text-sm font-semibold">
+                                        {selectedChat.name}
+                                    </h2>
+                                </div>
+                            ) : (
+                                <div className="flex items-center gap-3">
+                                    <Skeleton className="size-9 rounded-full" />
+                                    <Skeleton className="h-4 w-32" />
+                                </div>
+                            )}
+                        </div>
+                        {headerActions}
+                    </div>
+
+                    {/* Chat area */}
+
                     <Chat
-                        onCloseChat={closeChat}
                         onDeleteMessage={handleDeleteMessage}
+                        onRetryMessage={retrySend}
                         status={connectionStatus}
                         messages={messages}
                         onSendMessage={send}
                         chat={selectedChat}
-                        onShowDetails={() => setShowDetails(true)}
+                        isChatInitializing={isSelectedChatLoading}
                         onLoadMoreMessages={loadBackHistory}
                         historyState={historyState}
                     />
-                </Box>
-                {showDetails && selectedChat && (
-                    <ChatDetails onClose={() => setShowDetails(false)} chat={selectedChat} />
+                </div>
+
+                {/* Right: note sidebar */}
+                {showNote && selectedChat && (
+                    <Note key={selectedChat.id} onClose={() => setShowNote(false)} chat={selectedChat} />
                 )}
-                {showReportModal && <ReportModal open={showReportModal} onClose={() => setShowReportModal(false)} />}
-                {showCustomizeModal && onChangeWallpaper && (
-                    <CustomizeChatModal
-                        onChangeWallpaper={onChangeWallpaper}
-                        open={showCustomizeModal}
-                        onClose={() => setShowCustomizeModal(false)}
-                    />
-                )}
-                {showContractModal && (
-                    <ContractModal
-                        chatId={chatId.toString()}
-                        isOpen={showContractModal}
+
+                {/* Right: contract sidebar */}
+                {showContractModal && selectedChat && (
+                    <ContractSidebar
+                        key={`contract-${selectedChat.id}`}
+                        chatId={selectedChat.id.toString()}
                         onClose={() => setShowContractModal(false)}
                     />
                 )}
-            </Box>
-        </>
+
+                {/* Right: details panel */}
+                {showDetails && selectedChat && (
+                    <ChatDetails
+                        onClose={() => setShowDetails(false)}
+                        chat={selectedChat}
+                        onAddParticipant={
+                            hasPermissions(Permissions.MANAGE_CHATS) ? () => setShowAddParticipant(true) : undefined
+                        }
+                        canManageParticipants={hasPermissions(Permissions.MANAGE_CHATS)}
+                        onParticipantRemoved={reloadChat}
+                        onCloseChat={canCloseChat ? () => setShowCloseChatModal(true) : undefined}
+                    />
+                )}
+            </div>
+
+            {showReportModal && <ReportModal open={showReportModal} onClose={() => setShowReportModal(false)} />}
+            {showCustomizeModal && (
+                <CustomizeChatModal open={showCustomizeModal} onClose={() => setShowCustomizeModal(false)} />
+            )}
+            {showNewChatModal && (
+                <NewChatModal
+                    open={showNewChatModal}
+                    onClose={() => setShowNewChatModal(false)}
+                    onSuccess={reloadChat}
+                />
+            )}
+            {showAddParticipant && selectedChat && (
+                <AddParticipantModal
+                    open={showAddParticipant}
+                    onClose={() => setShowAddParticipant(false)}
+                    chat={selectedChat}
+                    onSuccess={reloadChat}
+                />
+            )}
+            {selectedChat && (
+                <CloseChatModal
+                    open={showCloseChatModal}
+                    onClose={() => setShowCloseChatModal(false)}
+                    onConfirm={() => {
+                        closeChat(selectedChat);
+                        setShowCloseChatModal(false);
+                    }}
+                />
+            )}
+        </TooltipProvider>
     );
 };
 

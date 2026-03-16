@@ -1,55 +1,56 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { MDXEditorMethods } from "@mdxeditor/editor";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { t } from "i18next";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { BookOpen, CheckCircle, Loader2, X } from "lucide-react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import Loader from "../../../shared/components/Loader";
 import Markdown from "../../../shared/components/Markdown";
-import Modal from "../../../shared/components/Modal";
 import { Permissions } from "../../../shared/constants";
 import useDebounce from "../../../shared/hooks/useDebounce";
 import usePermissions from "../../../shared/hooks/usePermissions";
 import { confirmContractForChatMutation } from "../../queries/confirmContractForChat";
 import { editContractForChatMutation } from "../../queries/editContractForChat";
 import { getContractForChat } from "../../queries/getContractForChat";
+
 interface Props {
     onClose: () => void;
-    isOpen: boolean;
     chatId: string;
 }
 
-const ContractModal = ({ isOpen, onClose, chatId }: Props) => {
-    const [modalContent, setModalContent] = useState("");
+const ContractSidebar = ({ onClose, chatId }: Props) => {
+    const [content, setContent] = useState("");
+    const [edited, setEdited] = useState(false);
+    const ref = useRef<MDXEditorMethods>(null);
     const { data, isLoading, refetch } = useQuery(getContractForChat({ id: chatId }));
     const { hasPermissions } = usePermissions();
-    const debouncedModalContent = useDebounce(modalContent, 1000);
+    const debouncedContent = useDebounce(content, 1000);
 
     useLayoutEffect(() => {
         if (data) {
-            setModalContent(data.content);
+            ref.current?.setMarkdown(data.content);
+            setContent(data.content);
         }
     }, [data, chatId]);
 
-    const handleModalContentChange = (content: string) => {
-        setModalContent(content);
-    };
-
-    useEffect(() => {
-        if (debouncedModalContent && data && !data.is_confirmed && debouncedModalContent !== data.content) {
-            editContractForChat({ id: chatId, body: modalContent });
-        }
-    }, [debouncedModalContent, data]);
-
-    const { mutate: editContractForChat } = useMutation({
+    const { mutate: editContract, isPending: isSaving } = useMutation({
         mutationFn: editContractForChatMutation,
         onSuccess: () => {
-            toast.success(t("common.saved"));
-
+            setEdited(false);
             refetch();
+        },
+        onError: () => {
+            setEdited(true);
         },
     });
 
-    const { mutate } = useMutation({
+    useEffect(() => {
+        if (debouncedContent && edited && data && !data.is_confirmed && debouncedContent !== data.content) {
+            editContract({ id: chatId, body: debouncedContent });
+        }
+    }, [debouncedContent, data, edited, chatId, editContract]);
+
+    const { mutate: confirmContract } = useMutation({
         mutationFn: confirmContractForChatMutation,
         onSuccess: () => {
             toast.success(t("chat.contract_confirmed"));
@@ -57,46 +58,68 @@ const ContractModal = ({ isOpen, onClose, chatId }: Props) => {
         },
     });
 
-    const handleConfirmContract = async () => {
-        mutate({
+    const handleConfirmContract = () => {
+        confirmContract({
             id: chatId,
-            body: {
-                is_confirmed: true,
-            },
+            body: { is_confirmed: true },
         });
     };
 
-    if (isLoading || !data) {
-        return <Loader />;
-    }
-
     return (
-        <Modal title="Kontrakt" onClose={onClose} open={isOpen}>
-            <Box sx={{ width: "800px" }}>
-                <Markdown
-                    onChange={handleModalContentChange}
-                    content={modalContent}
-                    className="markdown-editor"
-                    readOnly={data.is_confirmed}
-                />
-                <Box
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "20px",
-                        justifyContent: "space-between",
-                    }}
+        <div className="border-border/50 bg-card flex h-full w-[320px] shrink-0 flex-col border-l">
+            {/* Header */}
+            <div className="border-border/50 flex h-16 items-center justify-between border-b px-4">
+                <div className="flex items-center gap-2.5">
+                    <BookOpen className="text-primary-brand size-5" />
+                    <h3 className="text-foreground text-sm font-semibold">{t("chat.contract")}</h3>
+                    {isSaving && <Loader2 className="text-muted-foreground size-4 animate-spin" />}
+                </div>
+                <button
+                    onClick={onClose}
+                    className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-1.5 transition-colors"
+                    aria-label={t("common.close", { defaultValue: "Close" })}
                 >
-                    {hasPermissions(Permissions.CAN_CONFIRM_CONTRACT) && (
-                        <Button variant="contained" onClick={handleConfirmContract} disabled={data.is_confirmed}>
-                            {t("chat.accept_contract")}
-                        </Button>
-                    )}
-                    {data.is_confirmed && <Typography color="success">{t("chat.contract_confirmed_desc")}</Typography>}
-                </Box>
-            </Box>
-        </Modal>
+                    <X className="size-4" />
+                </button>
+            </div>
+
+            {/* Confirmed banner */}
+            {data?.is_confirmed && (
+                <div className="bg-success-brand/10 border-success-brand/20 flex items-center gap-2 border-b px-4 py-2">
+                    <CheckCircle className="text-success-brand size-4" />
+                    <p className="text-success-brand text-xs font-medium">{t("chat.contract_confirmed_desc")}</p>
+                </div>
+            )}
+
+            {/* Editor */}
+            <div onClick={() => ref.current?.focus()} className="min-h-0 flex-1 overflow-auto">
+                {isLoading ? (
+                    <div className="flex items-center justify-center py-8">
+                        <Loader2 className="text-muted-foreground size-6 animate-spin" />
+                    </div>
+                ) : (
+                    <Markdown
+                        onChange={(value) => {
+                            setContent(value);
+                            setEdited(true);
+                        }}
+                        ref={ref}
+                        content={content}
+                        readonly={data?.is_confirmed}
+                    />
+                )}
+            </div>
+
+            {/* Footer */}
+            {hasPermissions(Permissions.CAN_CONFIRM_CONTRACT) && data && !data.is_confirmed && (
+                <div className="border-border/50 border-t px-4 py-3">
+                    <Button onClick={handleConfirmContract} size="sm" className="w-full">
+                        {t("chat.accept_contract")}
+                    </Button>
+                </div>
+            )}
+        </div>
     );
 };
 
-export default ContractModal;
+export default ContractSidebar;

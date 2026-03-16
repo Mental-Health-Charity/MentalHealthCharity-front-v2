@@ -1,15 +1,7 @@
-import {
-    Box,
-    Button,
-    Checkbox,
-    FormControl,
-    FormHelperText,
-    InputLabel,
-    ListItemText,
-    MenuItem,
-    Select,
-    TextField,
-} from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
@@ -45,78 +37,71 @@ const CreateChatForm = ({ onSubmit }: Props) => {
     });
 
     return (
-        <Box
-            component="form"
-            onSubmit={formik.handleSubmit}
-            noValidate
-            sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-                width: "400px",
-            }}
-        >
-            <TextField
-                fullWidth
-                id="name"
-                name="name"
-                label="Nazwa"
-                value={formik.values.name}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.name && Boolean(formik.errors.name)}
-                helperText={formik.touched.name && formik.errors.name}
-            />
-
-            <FormControl fullWidth error={formik.touched.flags && Boolean(formik.errors.flags)}>
-                <InputLabel id="flags-label">Rozszerzenia</InputLabel>
-                <Select
-                    labelId="flags-label"
-                    id="flags"
-                    name="flags"
-                    multiple
-                    value={formik.values.flags}
+        <form onSubmit={formik.handleSubmit} noValidate className="flex w-[400px] flex-col gap-4">
+            <div className="space-y-1.5">
+                <Label htmlFor="name">Nazwa</Label>
+                <Input
+                    id="name"
+                    name="name"
+                    value={formik.values.name}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    renderValue={(selected) =>
-                        selected.map((flag) => FLAG_OPTIONS.find((f) => f.value === flag)?.label).join(", ")
-                    }
-                >
-                    {FLAG_OPTIONS.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                            <Checkbox checked={formik.values.flags.includes(option.value)} />
-                            <ListItemText primary={option.label} />
-                        </MenuItem>
-                    ))}
-                </Select>
-                {formik.touched.flags && <FormHelperText>{formik.errors.flags}</FormHelperText>}
-            </FormControl>
+                />
+                {formik.touched.name && formik.errors.name && (
+                    <p className="text-destructive text-sm">{formik.errors.name}</p>
+                )}
+            </div>
+
+            <div className="space-y-1.5">
+                <Label>Rozszerzenia</Label>
+                {FLAG_OPTIONS.map((option) => (
+                    <div key={option.value} className="flex items-center gap-2">
+                        <Checkbox
+                            id={`flag-${option.value}`}
+                            checked={formik.values.flags.includes(option.value)}
+                            onCheckedChange={(checked) => {
+                                const flags = checked
+                                    ? [...formik.values.flags, option.value]
+                                    : formik.values.flags.filter((f) => f !== option.value);
+                                formik.setFieldValue("flags", flags);
+                            }}
+                        />
+                        <Label htmlFor={`flag-${option.value}`} className="font-normal">
+                            {option.label}
+                        </Label>
+                    </div>
+                ))}
+                {formik.touched.flags && formik.errors.flags && (
+                    <p className="text-destructive text-sm">{formik.errors.flags}</p>
+                )}
+            </div>
 
             {formik.values.flags.includes("autoGroupChat") && (
-                <FormControl fullWidth error={formik.touched.role && Boolean(formik.errors.role)}>
-                    <InputLabel id="role-label">Rola</InputLabel>
-                    <Select
-                        labelId="role-label"
+                <div className="space-y-1.5">
+                    <Label htmlFor="role">Rola</Label>
+                    <select
                         id="role"
                         name="role"
                         value={formik.values.role}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-8 w-full rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3"
                     >
+                        <option value="">---</option>
                         {Object.values(Roles).map((role) => (
-                            <MenuItem key={role} value={role}>
+                            <option key={role} value={role}>
                                 {role}
-                            </MenuItem>
+                            </option>
                         ))}
-                    </Select>
-                    {formik.touched.role && <FormHelperText>{formik.errors.role}</FormHelperText>}
-                </FormControl>
+                    </select>
+                    {formik.touched.role && formik.errors.role && (
+                        <p className="text-destructive text-sm">{formik.errors.role}</p>
+                    )}
+                </div>
             )}
 
-            <Button variant="contained" type="submit">
-                {t("common.create")}
-            </Button>
-        </Box>
+            <Button type="submit">{t("common.create")}</Button>
+        </form>
     );
 };
 

@@ -1,8 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import Confetti from "react-confetti";
-import bgImg from "../assets/static/admin_panel_bg.svg";
-import { useUser } from "../modules/auth/components/AuthProvider";
 import MenteeForm from "../modules/forms/components/MenteeForm";
 import sendFormMutation from "../modules/forms/queries/sendFormMutation";
 import { formTypes, MenteeForm as MenteeFormType, MenteeFormValues } from "../modules/forms/types";
@@ -13,7 +11,6 @@ const MenteeFormScreen = () => {
     const [showConfetti, setShowConfetti] = useState(false);
     const isFormSend = localStorage.getItem(SessionStorage.SEND_FORM);
     const [step, setStep] = useState(isFormSend ? 5 : 0);
-    const { user } = useUser();
 
     const { mutate, isPending } = useMutation({
         mutationFn: sendFormMutation,
@@ -47,24 +44,10 @@ const MenteeFormScreen = () => {
         });
     };
 
-    console.log("user", user);
-
     return (
         <Container
-            parentProps={{
-                sx: {
-                    backgroundImage: `url(${bgImg})`,
-                    backgroundSize: { xs: "cover", md: "100% auto" },
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    alignItems: "center",
-                    backgroundAttachment: "fixed",
-                    minHeight: { xs: "100vh", md: "calc(100vh - 100px)" },
-                },
-            }}
-            sx={{
-                width: "fit-content",
-            }}
+            parentClassName="items-center min-h-[100vh] md:min-h-[calc(100vh-100px)]"
+            className="flex items-center justify-center py-10"
         >
             <MenteeForm isLoading={isPending} onSubmit={handleSubmit} step={step} setStep={setStep} />
 

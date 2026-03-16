@@ -1,9 +1,8 @@
-import { Box } from "@mui/material";
 import React from "react";
 import { Toaster } from "react-hot-toast";
-import useTheme from "../../../../theme";
-import Announcement from "../Announcement";
+import { useLocation } from "react-router-dom";
 import CookiesBar from "../CookiesBar";
+import CrisisBar from "../CrisisBar";
 import Footer from "../Footer";
 
 interface Props {
@@ -11,31 +10,37 @@ interface Props {
 }
 
 const Layout = ({ children }: Props) => {
-    const theme = useTheme();
-    const isAdminScreen = window.location.pathname.includes("/admin");
+    const { pathname } = useLocation();
+    const isAdminScreen = pathname.includes("/admin");
+    const isChatScreen = pathname.startsWith("/chat");
 
     return (
-        <Box
-            sx={{
-                minHeight: "100vh",
-                backgroundColor: theme.palette.background.default,
-            }}
+        <div
+            className={`bg-background font-ubuntu flex min-h-screen flex-col ${isChatScreen ? "h-[100dvh] overflow-hidden" : ""}`}
         >
+            <a
+                href="#main-content"
+                className="bg-primary text-primary-foreground sr-only rounded-md px-4 py-2 font-medium focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200]"
+            >
+                Skip to main content
+            </a>
+            {!isAdminScreen && !isChatScreen && <CrisisBar />}
             <Toaster
                 toastOptions={{
                     style: {
-                        fontFamily: theme.typography.fontFamily,
+                        fontFamily: "Ubuntu, sans-serif",
                         fontSize: "18px",
                     },
                 }}
                 position="top-center"
                 reverseOrder={false}
             />
-            {children}
-            {!isAdminScreen && <Footer />}
+            <main id="main-content" className={`flex-1 ${isChatScreen ? "flex min-h-0 flex-col" : ""}`}>
+                {children}
+            </main>
+            {!isAdminScreen && !isChatScreen && <Footer />}
             <CookiesBar />
-            <Announcement />
-        </Box>
+        </div>
     );
 };
 

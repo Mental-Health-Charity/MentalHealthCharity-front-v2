@@ -1,4 +1,6 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
@@ -33,34 +35,24 @@ const EditChatModal = ({ onSubmit, chat, ...props }: Props) => {
 
     return (
         <Modal {...props} title={t("chat.edit_chat")}>
-            <Box>
-                <Box
-                    component="form"
-                    onSubmit={formik.handleSubmit}
-                    noValidate
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 2,
-                        width: "400px",
-                    }}
-                >
-                    <TextField
-                        fullWidth
+            <form onSubmit={formik.handleSubmit} noValidate className="flex w-[400px] flex-col gap-4">
+                <div className="space-y-1.5">
+                    <Label htmlFor="name">Nazwa</Label>
+                    <Input
                         id="name"
                         name="name"
-                        label="Nazwa"
                         value={formik.values.name}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.name && Boolean(formik.errors.name)}
-                        helperText={formik.touched.name && formik.errors.name}
                     />
-                    <Button disabled={!formik.dirty} type="submit" variant="contained">
-                        {!formik.dirty ? t("common.make_changes_to_save") : t("chat.edit_chat")}
-                    </Button>
-                </Box>
-            </Box>
+                    {formik.touched.name && formik.errors.name && (
+                        <p className="text-destructive text-sm">{formik.errors.name}</p>
+                    )}
+                </div>
+                <Button disabled={!formik.dirty} type="submit">
+                    {!formik.dirty ? t("common.make_changes_to_save") : t("chat.edit_chat")}
+                </Button>
+            </form>
         </Modal>
     );
 };
