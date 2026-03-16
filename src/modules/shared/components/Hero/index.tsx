@@ -1,14 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
-import { CheckCircle, Send } from "lucide-react";
+import useEmblaCarousel from "embla-carousel-react";
+import { CheckCircle, Clock, Send } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { useUser } from "../../../auth/components/AuthProvider";
 import { getChatsQueryOptions } from "../../../chat/queries/getChatsQueryOptions";
+import { SessionStorage } from "../../types";
 
 interface MockMessage {
     own: boolean;
@@ -24,7 +25,7 @@ interface MockConversation {
 const Hero = () => {
     const { t } = useTranslation();
     const { user } = useUser();
-    const { data: chats } = useQuery(
+    const { data: chats, isLoading: isChatsLoading } = useQuery(
         getChatsQueryOptions(
             { size: 50, page: 1 },
             {
@@ -86,6 +87,10 @@ const Hero = () => {
 
     const trustBadges = [t("homepage.trust_free"), t("homepage.trust_anonymous"), t("homepage.trust_safe")];
 
+    const isFormSent = localStorage.getItem(SessionStorage.SEND_FORM) === "true";
+    const hasNoChats = !chats || chats.total === 0;
+    const isProcessing = !!user && isFormSent && hasNoChats && !isChatsLoading; // User has sent the form, there are no chats, and we're not currently loading chats (which means we've already loaded and confirmed there are no chats)
+
     return (
         <section className="from-primary-brand-50 bg-gradient-to-b to-transparent">
             <div className="mx-auto flex max-w-[1200px] flex-col items-center gap-10 px-5 pt-16 pb-20 md:flex-row md:gap-16 md:pt-24 md:pb-32">
@@ -95,6 +100,24 @@ const Hero = () => {
                         {t("homepage.title")}
                     </h1>
                     <p className="text-muted-foreground mt-5 max-w-[520px] text-lg md:text-xl">{t("homepage.desc")}</p>
+
+                    {isProcessing && (
+                        <div className="border-primary-brand/20 bg-primary-brand/5 mt-8 w-full rounded-2xl border p-5 md:max-w-[440px]">
+                            <div className="flex items-start gap-3.5">
+                                <div className="bg-primary-brand/10 flex size-10 shrink-0 items-center justify-center rounded-full">
+                                    <Clock className="text-primary-brand size-5" />
+                                </div>
+                                <div>
+                                    <p className="text-foreground text-sm font-semibold">
+                                        {t("homepage.processing.title")}
+                                    </p>
+                                    <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
+                                        {t("homepage.processing.description")}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     <div className="mt-8 flex w-full flex-wrap justify-center gap-3 md:justify-start">
                         {chats && chats.total > 0 ? (

@@ -10,7 +10,10 @@
             "chat_with_volunteer": "Otrzymaj pomoc",
             "donations": "Dotacje",
             "chat": "Czat",
-            "admin": "Zarządzaj stroną"
+            "admin": "Zarządzaj stroną",
+            "aria": {
+                "unread_messages": "Czat ma nieprzeczytane wiadomości"
+            }
         },
         "roles": {
             "admin": "Administrator",
@@ -376,6 +379,10 @@
         "choose_volunteer_button": "Zostań wolontariuszem",
         "title": "Darmowe i anonimowe wsparcie psychologiczne w formie czatu",
         "chat_now": "Rozmawiaj teraz",
+        "processing": {
+            "title": "Twój formularz jest w trakcie przetwarzania!",
+            "description": "Dziękujemy za wypełnienie formularza. Nie zapomnij sprawdzać naszej strony"
+        },
         "desc": "Uzyskaj pomoc, lub zostań wolontariuszem już teraz",
         "trust_free": "Darmowe",
         "trust_anonymous": "Anonimowe",
@@ -503,7 +510,7 @@
                 "Wybierz jak najwięcej terminów, abyśmy mogli umówić się na krótką rozmowę kwalifikacyjną.",
                 "Skąd dowiedziałeś się o naszej fundacji? Pomóż nam rozwijać się i dotrzeć do większej liczby osób!",
                 "Daj nam znać z którymi tematami nie chcesz się mierzyć. Możesz wybrać kilka.",
-                "Twoje zgłoszenie to cegiełka do budowy lepszej dostępności pomocy psychologicznej dla każdego. Powiadomimy Cię o dalszych krokach na {{contact}}. Dziękujemy za zaufanie!"
+                "Twoje zgłoszenie to cegiełka do budowy lepszej dostępności pomocy psychologicznej dla każdego. Powiadomimy Cię o dalszych krokach na twój adres email. Dziękujemy za zaufanie!"
             ],
             "title": [
                 "Dołacz do grona wolontariuszy z misją, aby pomagać!",
@@ -542,7 +549,8 @@
                 "trauma": "Trauma",
                 "anxiety": "Lęk",
                 "burnout": "Wypalenie zawodowe",
-                "loneliness": "Samotność"
+                "loneliness": "Samotność",
+                "other": "Inne"
             },
             "prior_experience": {
                 "yes_professional": "Tak, zawodowe",
@@ -564,14 +572,14 @@
                 "Wybierz jak najlepiej rodzaj problemu, abyśmy mogli dopasować Ci najlepszego wolontariusza! Możesz wybrać kilka.",
                 "Opisz jak najlepiej swój problem, abyśmy mogli dopasować Ci najlepszego wolontariusza!",
                 "Skąd dowiedziałeś się o naszej fundacji? Pomóż nam rozwijać się i dotrzeć do większej liczby osób!",
-                "To wszystko! Już wkrótce otrzymasz informacje na temat dalszych kroków na {{contact}} gdy znajdziemy dla Ciebie odpowiedniego wolontariusza. Dziękujemy za zaufanie!"
+                "To wszystko! Już wkrótce otrzymasz informacje na twój adres email, gdy znajdziemy dla Ciebie wolontariusza. Zaglądaj na naszą stronę i sprawdzaj czy w pasku na górze nie pojawi się zakładka CZAT. Dziękujemy za zaufanie!"
             ],
             "title": [
                 "Otrzymaj darmowe wsparcie",
                 "Kontakt",
                 "Wybierz rodzaj problemu",
                 "Opisz swój problem",
-                "Skąd się o nas dowiedziałeś?",
+                "Skąd wiesz o Fundacji Peryskop?",
                 "Dziękujemy za wypełnienie formularza!"
             ],
             "subtitle_new_user": [
@@ -580,7 +588,7 @@
                 "Wybierz jak najlepiej rodzaj problemu, abyśmy mogli dopasować Ci najlepszego wolontariusza! Możesz wybrać kilka.",
                 "Opisz jak najlepiej swój problem, abyśmy mogli dopasować Ci najlepszego wolontariusza!",
                 "Musisz utworzyć konto, aby dołączyć i korzystać w pełni z naszych usług",
-                "To wszystko! Już wkrótce otrzymasz informacje na temat dalszych kroków na {{contact}} gdy znajdziemy dla Ciebie odpowiedniego wolontariusza. Dziękujemy za zaufanie!"
+                "To wszystko! Już wkrótce otrzymasz informacje na twój adres email, gdy znajdziemy dla Ciebie wolontariusza. Zaglądaj na naszą stronę i sprawdzaj czy w pasku na górze nie pojawi się zakładka CZAT. Dziękujemy za zaufanie!"
             ],
             "title_new_user": [
                 "Otrzymaj darmowe wsparcie",
@@ -610,7 +618,7 @@
             },
             "issue_description_label": "Opisz swój problem"
         },
-        "referral_source_label": "Skąd się o nas dowiedziałeś?",
+        "referral_source_label": "Skąd wiesz o Fundacji Peryskop?",
 
         "referral_source_options": {
             "friend": "Znajomy",

@@ -1,19 +1,15 @@
 import { cn } from "@/lib/utils";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
-
-interface Props {
-    name: string;
-    to: string;
-    fullWidth?: boolean;
-    className?: string;
-}
+import { NavlinkProps } from "../../types";
 
 const reloadDocumentRoutes = ["/admin/"];
 
-const NavLink = ({ name, to, fullWidth, className }: Props) => {
+const NavLink = ({ name, to, fullWidth, className, indicator }: NavlinkProps) => {
     const location = useLocation();
     const isCurrentRoute = location.pathname === to;
+    const { t } = useTranslation();
 
     const reloadDocument = useMemo(() => reloadDocumentRoutes.includes(to), [to]);
 
@@ -34,6 +30,12 @@ const NavLink = ({ name, to, fullWidth, className }: Props) => {
             )}
         >
             {name}
+            {indicator && (
+                <span
+                    aria-label={t("common.navigation.aria.unread_messages")}
+                    className="absolute -right-0 inline-flex h-2 w-2 items-center justify-center rounded-full bg-red-500 text-xs text-white"
+                />
+            )}
         </Link>
     );
 };

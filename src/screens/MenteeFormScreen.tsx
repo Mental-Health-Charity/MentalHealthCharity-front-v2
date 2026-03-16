@@ -45,7 +45,10 @@ const MenteeFormScreen = () => {
     };
 
     return (
-        <Container parentClassName="items-center min-h-[100vh] md:min-h-[calc(100vh-100px)]" className="w-fit">
+        <Container
+            parentClassName="items-center min-h-[100vh] md:min-h-[calc(100vh-100px)]"
+            className="flex items-center justify-center py-10"
+        >
             <MenteeForm isLoading={isPending} onSubmit={handleSubmit} step={step} setStep={setStep} />
 
             {showConfetti && <Confetti recycle={false} width={window.innerWidth} height={window.innerHeight} />}

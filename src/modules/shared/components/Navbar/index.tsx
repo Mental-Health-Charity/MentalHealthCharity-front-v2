@@ -6,26 +6,29 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useQuery } from "@tanstack/react-query";
-import { Menu, X } from "lucide-react";
-import React, { useEffect } from "react";
+import { ChevronRight, LogOut, Menu, Moon, Sun, X } from "lucide-react";
+import React, { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Logo from "../../../../assets/static/logo_small.webp";
+import { useTheme } from "../../../../hooks/useTheme";
 import { useUser } from "../../../auth/components/AuthProvider";
 import { getChatsQueryOptions } from "../../../chat/queries/getChatsQueryOptions";
 import { Permissions } from "../../constants";
 import usePermissions from "../../hooks/usePermissions";
+import { NavlinkProps } from "../../types";
 import NavLink from "../NavLink";
 import ThemeToggle from "../ThemeToggle";
 
 const Navbar = () => {
     const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
-    const location = window.location.pathname;
+    const location = useLocation();
     const { user, logout } = useUser();
-    const isAdminPanel = window.location.pathname.includes("/admin");
+    const isAdminPanel = location.pathname.includes("/admin");
     const { data: chats } = useQuery(
         getChatsQueryOptions(
             { size: 50, page: 1 },
@@ -35,20 +38,33 @@ const Navbar = () => {
             }
         )
     );
+    const { resolvedTheme, setTheme } = useTheme();
 
     const { hasPermissions } = usePermissions();
     const { t } = useTranslation();
 
-    const pages = [
-        { name: t("common.navigation.home"), path: "/" },
-        { name: t("common.navigation.articles"), path: "/articles" },
-        { name: t("common.navigation.donations"), path: "/donations" },
-        { name: t("common.navigation.admin"), path: "/admin/", permissions: Permissions.ADMIN_DASHBOARD },
-    ];
+    const pages: NavlinkProps[] = useMemo(() => {
+        const basePages: NavlinkProps[] = [
+            { name: t("common.navigation.home"), to: "/" },
+            { name: t("common.navigation.articles"), to: "/articles" },
+            { name: t("common.navigation.donations"), to: "/donations" },
+            {
+                name: t("common.navigation.admin"),
+                to: "/admin/",
+                permissions: Permissions.ADMIN_DASHBOARD,
+            },
+        ];
 
-    if (chats && chats.total > 0) {
-        pages.push({ name: t("common.navigation.chat"), path: "/chat" });
-    }
+        if (chats && chats.total > 0) {
+            basePages.push({
+                name: t("common.navigation.chat"),
+                to: "/chat",
+                indicator: chats.items.some((chat) => chat.unread_count > 0),
+            });
+        }
+
+        return basePages;
+    }, [chats, t]);
 
     useEffect(() => {
         setIsDrawerOpen(false);
@@ -69,58 +85,130 @@ const Navbar = () => {
 
                 {/* Mobile Menu Toggle */}
                 <button
-                    className="text-muted-foreground hover:bg-muted hover:text-foreground inline-flex items-center justify-center rounded-md p-2 transition-colors md:hidden"
+                    className="text-muted-foreground hover:bg-muted hover:text-foreground inline-flex items-center justify-center rounded-lg p-2 transition-colors md:hidden"
                     onClick={() => setIsDrawerOpen(!isDrawerOpen)}
                     aria-label="Toggle navigation menu"
                     aria-expanded={isDrawerOpen}
                 >
-                    {isDrawerOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+                    {isDrawerOpen ? <X className="size-5" /> : <Menu className="size-5" />}
                 </button>
 
                 {/* Mobile Sheet */}
                 <Sheet open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
                     <SheetContent
-                        side="top"
+                        side="right"
                         showCloseButton={false}
-                        className="mt-[56px] flex min-h-[50vh] flex-col justify-between p-4"
+                        className="flex w-[280px] flex-col gap-0 p-0 sm:max-w-[280px]"
                     >
-                        <div className="flex flex-col gap-1">
-                            {filteredPages.map(({ name, path }) => (
-                                <div key={path}>
-                                    <NavLink fullWidth name={name} to={path} />
-                                </div>
-                            ))}
+                        {/* Mobile header */}
+                        <div className="flex items-center justify-between px-5 py-4">
+                            <Link to="/" className="flex items-center gap-2 no-underline">
+                                <img src={Logo} alt="Logo" className="w-8" />
+                                <span className="text-foreground text-base font-bold">Peryskop</span>
+                            </Link>
+                            <button
+                                onClick={() => setIsDrawerOpen(false)}
+                                className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-1.5 transition-colors"
+                                aria-label="Close menu"
+                            >
+                                <X className="size-4" />
+                            </button>
                         </div>
 
-                        {user ? (
-                            <div className="mt-auto">
-                                <NavLink to={`/profile/${user.id}`} name={t("common.navigation.my_account")} />
-                                <button
-                                    onClick={logout}
-                                    className="bg-destructive hover:bg-destructive/80 mt-2 w-full rounded-lg px-4 py-3 text-sm font-medium text-white transition-colors"
-                                >
-                                    {t("common.navigation.logout")}
-                                </button>
-                            </div>
-                        ) : (
-                            <div className="mt-auto flex flex-col gap-2.5">
-                                <Link to="/login">
-                                    <Button className="w-full py-3">{t("common.join_us")}</Button>
-                                </Link>
-                                <Link to="/auth/register">
-                                    <Button variant="outline" className="w-full py-3">
-                                        {t("common.sign_up")}
-                                    </Button>
-                                </Link>
-                            </div>
-                        )}
+                        <Separator />
+
+                        {/* Navigation links */}
+                        <div className="flex flex-col px-3 py-3">
+                            {filteredPages.map(({ name, to }) => {
+                                const isActive = location.pathname === to;
+                                return (
+                                    <Link
+                                        key={to}
+                                        to={to}
+                                        className={`flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium no-underline transition-colors ${
+                                            isActive
+                                                ? "bg-primary-brand/10 text-primary-brand"
+                                                : "text-foreground hover:bg-muted"
+                                        }`}
+                                    >
+                                        {name}
+                                        <ChevronRight
+                                            className={`size-4 ${isActive ? "text-primary-brand" : "text-muted-foreground"}`}
+                                        />
+                                    </Link>
+                                );
+                            })}
+                        </div>
+
+                        <Separator />
+
+                        {/* Theme toggle */}
+                        <div className="px-3 py-3">
+                            <button
+                                onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+                                className="text-foreground hover:bg-muted flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors"
+                            >
+                                {resolvedTheme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+                                {resolvedTheme === "dark"
+                                    ? t("common.light_mode", {
+                                          defaultValue: "Light mode",
+                                      })
+                                    : t("common.dark_mode", {
+                                          defaultValue: "Dark mode",
+                                      })}
+                            </button>
+                        </div>
+
+                        {/* Bottom: user section */}
+                        <div className="mt-auto">
+                            <Separator />
+                            {user ? (
+                                <div className="flex flex-col gap-1 px-3 py-3">
+                                    <Link
+                                        to={`/profile/${user.id}`}
+                                        className="hover:bg-muted flex items-center gap-3 rounded-lg px-3 py-2.5 no-underline transition-colors"
+                                    >
+                                        <Avatar className="size-8 rounded-full">
+                                            <AvatarImage src={user.chat_avatar_url || undefined} alt={user.full_name} />
+                                            <AvatarFallback className="bg-primary-brand/15 text-primary-brand rounded-full text-xs">
+                                                {user.full_name?.charAt(0)?.toUpperCase()}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-foreground truncate text-sm font-medium">
+                                                {user.full_name}
+                                            </p>
+                                            <p className="text-muted-foreground truncate text-xs">{user.email}</p>
+                                        </div>
+                                    </Link>
+                                    <button
+                                        onClick={logout}
+                                        className="text-destructive hover:bg-destructive/10 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors"
+                                    >
+                                        <LogOut className="size-4" />
+                                        {t("common.navigation.logout")}
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col gap-2 px-5 py-4">
+                                    <Link to="/login" className="no-underline">
+                                        <Button className="w-full">{t("common.join_us")}</Button>
+                                    </Link>
+                                    <Link to="/auth/register" className="no-underline">
+                                        <Button variant="outline" className="w-full">
+                                            {t("common.sign_up")}
+                                        </Button>
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
                     </SheetContent>
                 </Sheet>
 
                 {/* Desktop Menu */}
                 <div className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-6 md:flex">
-                    {filteredPages.map(({ name, path }) => (
-                        <NavLink key={path} name={name} to={path} />
+                    {filteredPages.map((props) => (
+                        <NavLink key={props.to} {...props} />
                     ))}
                 </div>
 
@@ -155,7 +243,7 @@ const Navbar = () => {
                                 </Tooltip>
                                 <DropdownMenuContent align="end">
                                     <DropdownMenuItem
-                                        render={<a href={`/profile/${user.id}`} className="no-underline" />}
+                                        render={<Link to={`/profile/${user.id}`} className="no-underline" />}
                                     >
                                         {t("common.navigation.my_account")}
                                     </DropdownMenuItem>

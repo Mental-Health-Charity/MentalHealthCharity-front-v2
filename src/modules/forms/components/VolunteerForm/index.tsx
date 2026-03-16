@@ -2,8 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 import { useFormik } from "formik";
-import { useState } from "react";
+import { ArrowLeft, ArrowRight, CheckCircle, Home, RefreshCw } from "lucide-react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
@@ -41,6 +43,8 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
     const { user } = useUser();
 
     const [step, setStep] = useState(initStep);
+    const [direction, setDirection] = useState(1);
+    const prevStepRef = useRef(step);
 
     const initialValues: VolunteerFormValues = {
         age: "",
@@ -85,20 +89,28 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
         }),
     ];
 
+    const LAST_STEP = validationSchemas.length - 1;
+
     const formik = useFormik({
         initialValues,
         validationSchema: validationSchemas[step],
         onSubmit: (values) => {
-            if (step === validationSchemas.length - 1) {
+            if (step === LAST_STEP) {
                 onSubmit(values);
+                setDirection(1);
+                prevStepRef.current = step;
                 setStep(validationSchemas.length);
             } else {
+                setDirection(1);
+                prevStepRef.current = step;
                 setStep((prevStep) => prevStep + 1);
             }
         },
     });
 
     const handleBack = () => {
+        setDirection(-1);
+        prevStepRef.current = step;
         setStep((prevStep) => (prevStep > 0 ? prevStep - 1 : prevStep));
     };
 
@@ -108,17 +120,61 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
         formik.setFieldValue("age", formattedText);
     };
 
+    const handleThemeToggle = (value: string) => {
+        const current = formik.values.themes;
+        const next = current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
+        formik.setFieldValue("themes", next);
+    };
+
+    // Success state
+    if (step > LAST_STEP) {
+        return (
+            <FormWrapper subtitle="" title="" progress={100} direction={direction}>
+                <div className="flex flex-col items-center py-6 text-center">
+                    <div className="bg-primary-brand/10 mb-5 flex size-16 items-center justify-center rounded-full">
+                        <CheckCircle className="text-primary-brand size-8" />
+                    </div>
+                    <h2 className="text-foreground text-2xl font-bold">
+                        {t("form.volunteer.title.7", { defaultValue: "Dziękujemy!" })}
+                    </h2>
+                    <p className="text-muted-foreground mt-2 max-w-sm text-[15px]">
+                        {t("form.volunteer.subtitle.7", {
+                            defaultValue: "Twoje zgłoszenie zostało wysłane. Skontaktujemy się z Tobą wkrótce.",
+                        })}
+                    </p>
+                    <div className="mt-8 flex w-full flex-col gap-2.5">
+                        <Button className="w-full gap-2" render={<Link to="/" />}>
+                            <Home className="size-4" />
+                            {t("form.homepage")}
+                        </Button>
+                        <Button
+                            className="w-full gap-2"
+                            variant="ghost"
+                            type="button"
+                            onClick={() => {
+                                setStep(0);
+                                formik.resetForm();
+                            }}
+                        >
+                            <RefreshCw className="size-4" />
+                            {t("form.retry")}
+                        </Button>
+                    </div>
+                </div>
+            </FormWrapper>
+        );
+    }
+
     return (
         <FormWrapper
-            subtitle={t(`form.volunteer.subtitle.${step}`, {
-                contact: user?.email,
-            })}
-            title={t(`form.volunteer.title.${step}`, {
-                contact: user?.email,
-            })}
-            progress={(step / validationSchemas.length) * 100}
+            subtitle={t(`form.volunteer.subtitle.${step}`, { contact: user?.email })}
+            title={t(`form.volunteer.title.${step}`, { contact: user?.email })}
+            progress={((step + 1) / (LAST_STEP + 2)) * 100}
+            stepIndicator={`${step + 1} / ${validationSchemas.length}`}
+            direction={direction}
         >
             <form onSubmit={formik.handleSubmit}>
+                {/* Step 0: Age */}
                 {step === 0 && (
                     <div className="flex flex-col gap-5">
                         <div className="space-y-1.5">
@@ -128,17 +184,22 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                                 name="age"
                                 type="number"
                                 min={0}
+                                autoFocus
                                 value={formik.values.age}
                                 onChange={handleAgeInputChange}
                                 onBlur={formik.handleBlur}
+                                className="h-12"
                             />
                             {formik.touched.age && formik.errors.age && (
-                                <p className="text-destructive text-sm">{formik.errors.age}</p>
+                                <p role="alert" className="text-destructive text-sm">
+                                    {formik.errors.age}
+                                </p>
                             )}
                         </div>
                     </div>
                 )}
 
+                {/* Step 1: Education */}
                 {step === 1 && (
                     <div className="flex flex-col gap-5">
                         <div className="space-y-1.5">
@@ -146,10 +207,11 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                             <select
                                 id="education"
                                 name="education"
+                                autoFocus
                                 value={formik.values.education}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-8 w-full rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3"
+                                className="border-input focus-visible:border-ring focus-visible:ring-ring/30 h-12 w-full rounded-xl border bg-transparent px-3 py-1 text-sm transition-colors outline-none focus-visible:ring-2"
                             >
                                 <option value="">---</option>
                                 <option value="elementary">{t("form.volunteer.education.elementary")}</option>
@@ -159,12 +221,15 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                                 <option value="phd">{t("form.volunteer.education.phd")}</option>
                             </select>
                             {formik.touched.education && formik.errors.education && (
-                                <p className="text-destructive text-sm">{formik.errors.education}</p>
+                                <p role="alert" className="text-destructive text-sm">
+                                    {formik.errors.education}
+                                </p>
                             )}
                         </div>
                     </div>
                 )}
 
+                {/* Step 2: Phone */}
                 {step === 2 && (
                     <div className="flex flex-col gap-5">
                         <div className="space-y-1.5">
@@ -172,17 +237,22 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                             <Input
                                 id="phone"
                                 name="phone"
+                                autoFocus
                                 value={formik.values.phone}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
+                                className="h-12"
                             />
                             {formik.touched.phone && formik.errors.phone && (
-                                <p className="text-destructive text-sm">{formik.errors.phone}</p>
+                                <p role="alert" className="text-destructive text-sm">
+                                    {formik.errors.phone}
+                                </p>
                             )}
                         </div>
                     </div>
                 )}
 
+                {/* Step 3: Description / Motivation */}
                 {step === 3 && (
                     <div className="flex flex-col gap-5">
                         <div className="space-y-1.5">
@@ -190,19 +260,24 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                             <textarea
                                 id="description"
                                 name="description"
-                                value={formik.values.description}
+                                autoFocus
                                 autoComplete="off"
+                                value={formik.values.description}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                rows={4}
-                                className="border-input focus-visible:border-ring focus-visible:ring-ring/50 w-full rounded-lg border bg-transparent px-3 py-2 text-sm outline-none focus-visible:ring-3"
+                                rows={5}
+                                className="border-input focus-visible:border-ring focus-visible:ring-ring/30 w-full rounded-xl border bg-transparent px-4 py-3 text-sm leading-relaxed transition-colors outline-none focus-visible:ring-2"
                             />
                             {formik.touched.description && formik.errors.description && (
-                                <p className="text-destructive text-sm">{formik.errors.description}</p>
+                                <p role="alert" className="text-destructive text-sm">
+                                    {formik.errors.description}
+                                </p>
                             )}
                         </div>
                     </div>
                 )}
+
+                {/* Step 4: Interview dates */}
                 {step === 4 && (
                     <div className="flex w-full flex-col items-center gap-5">
                         <DateTimePicker
@@ -210,13 +285,14 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                             onChange={(newValue) => formik.setFieldValue("interview_meeting_dates", newValue)}
                         />
                         {formik.touched.interview_meeting_dates && formik.errors.interview_meeting_dates && (
-                            <span className="text-destructive text-sm">
+                            <span role="alert" className="text-destructive text-sm">
                                 {formik.errors.interview_meeting_dates as string}
                             </span>
                         )}
                     </div>
                 )}
 
+                {/* Step 5: Source + Experience */}
                 {step === 5 && (
                     <div className="flex flex-col gap-5">
                         <div className="space-y-1.5">
@@ -224,10 +300,11 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                             <select
                                 id="source"
                                 name="source"
+                                autoFocus
                                 value={formik.values.source}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-8 w-full rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3"
+                                className="border-input focus-visible:border-ring focus-visible:ring-ring/30 h-12 w-full rounded-xl border bg-transparent px-3 py-1 text-sm transition-colors outline-none focus-visible:ring-2"
                             >
                                 <option value="">---</option>
                                 <option value="friend">{t("form.referral_source_options.friend")}</option>
@@ -235,7 +312,9 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                                 <option value="google">{t("form.referral_source_options.google")}</option>
                             </select>
                             {formik.touched.source && formik.errors.source && (
-                                <p className="text-destructive text-sm">{formik.errors.source}</p>
+                                <p role="alert" className="text-destructive text-sm">
+                                    {formik.errors.source}
+                                </p>
                             )}
                         </div>
 
@@ -247,7 +326,7 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                                 value={formik.values.did_help}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-8 w-full rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3"
+                                className="border-input focus-visible:border-ring focus-visible:ring-ring/30 h-12 w-full rounded-xl border bg-transparent px-3 py-1 text-sm transition-colors outline-none focus-visible:ring-2"
                             >
                                 <option value="">---</option>
                                 <option value="yes_professional">
@@ -259,80 +338,75 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                                 <option value="no">{t("form.volunteer.prior_experience.no")}</option>
                             </select>
                             {formik.touched.did_help && formik.errors.did_help && (
-                                <p className="text-destructive text-sm">{formik.errors.did_help as string}</p>
+                                <p role="alert" className="text-destructive text-sm">
+                                    {formik.errors.did_help as string}
+                                </p>
                             )}
                         </div>
                     </div>
                 )}
 
+                {/* Step 6: Themes to avoid + TOS */}
                 {step === 6 && (
                     <div className="flex flex-col gap-5">
-                        <div className="max-w-[85vw] space-y-1.5">
-                            <Label htmlFor="themes">{t("form.volunteer.issues_to_avoid_label")}</Label>
-                            <select
-                                id="themes"
-                                name="themes"
-                                multiple
-                                value={formik.values.themes}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-auto min-h-[200px] w-full rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3"
-                            >
+                        <div className="space-y-3">
+                            <Label>{t("form.volunteer.issues_to_avoid_label")}</Label>
+                            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                                 {THEME_OPTIONS.map((opt) => (
-                                    <option key={opt.value} value={opt.value}>
-                                        {t(`form.volunteer.issues_to_avoid.${opt.key}`)}
-                                    </option>
+                                    <label
+                                        key={opt.value}
+                                        className={cn(
+                                            "border-border hover:bg-muted/50 flex cursor-pointer items-center gap-2.5 rounded-xl border px-3.5 py-3 transition-all",
+                                            formik.values.themes.includes(opt.value) &&
+                                                "border-primary-brand bg-primary-brand/5 ring-primary-brand/20 ring-1"
+                                        )}
+                                    >
+                                        <Checkbox
+                                            checked={formik.values.themes.includes(opt.value)}
+                                            onCheckedChange={() => handleThemeToggle(opt.value)}
+                                        />
+                                        <span className="text-sm">
+                                            {t(`form.volunteer.issues_to_avoid.${opt.key}`)}
+                                        </span>
+                                    </label>
                                 ))}
-                            </select>
+                            </div>
                         </div>
-                        <div className="flex items-center gap-2">
+
+                        <label className="flex cursor-pointer items-start gap-3 rounded-xl p-0">
                             <Checkbox
                                 id="tos"
                                 checked={formik.values.tos}
                                 onCheckedChange={(checked) => formik.setFieldValue("tos", checked)}
+                                className="mt-0.5"
                             />
-                            <Label htmlFor="tos" className="font-normal">
-                                Wyrażam zgodę na{" "}
+                            <span className="text-muted-foreground text-sm leading-relaxed">
+                                {t("crisis.tos_label", { defaultValue: "Wyrażam zgodę na" })}{" "}
                                 <InternalLink target="_blank" to="/tos">
-                                    warunki użytkowania i politykę prywatności
+                                    {t("crisis.tos_link", {
+                                        defaultValue: "warunki użytkowania i politykę prywatności",
+                                    })}
                                 </InternalLink>
-                            </Label>
-                        </div>
+                            </span>
+                        </label>
                         {formik.touched.tos && formik.errors.tos && (
-                            <span className="text-destructive text-sm">{formik.errors.tos}</span>
+                            <span role="alert" className="text-destructive text-sm">
+                                {formik.errors.tos}
+                            </span>
                         )}
                     </div>
                 )}
 
-                <div className="mt-5 flex justify-between">
-                    {step < 7 && (
-                        <>
-                            <Button variant="ghost" type="button" onClick={handleBack} disabled={step === 0}>
-                                {t("form.back")}
-                            </Button>
-                            <Button type="submit">
-                                {step === validationSchemas.length - 1 ? t("form.submit") : t("form.next")}
-                            </Button>
-                        </>
-                    )}
-                    {step === 7 && (
-                        <div className="flex w-full flex-col gap-2.5">
-                            <Button className="w-full" render={<Link to="/" />}>
-                                {t("form.homepage")}
-                            </Button>
-                            <Button
-                                className="w-full"
-                                variant="ghost"
-                                type="button"
-                                onClick={() => {
-                                    setStep(0);
-                                    formik.resetForm();
-                                }}
-                            >
-                                {t("form.retry")}
-                            </Button>
-                        </div>
-                    )}
+                {/* Navigation */}
+                <div className="mt-8 flex items-center justify-between gap-3">
+                    <Button variant="ghost" type="button" onClick={handleBack} disabled={step === 0} className="gap-2">
+                        <ArrowLeft className="size-4" />
+                        {t("form.back")}
+                    </Button>
+                    <Button type="submit" className="gap-2">
+                        {step === LAST_STEP ? t("form.submit") : t("form.next")}
+                        {step < LAST_STEP && <ArrowRight className="size-4" />}
+                    </Button>
                 </div>
             </form>
         </FormWrapper>

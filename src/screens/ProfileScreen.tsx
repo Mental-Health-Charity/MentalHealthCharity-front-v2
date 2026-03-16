@@ -94,7 +94,8 @@ const ProfileScreen = () => {
     const avatar = data && data.avatar_url;
 
     return (
-        <div className="w-full">
+        // min height 100vh
+        <div className="h-full w-full">
             {/* Taller gradient banner */}
             <div className="from-primary-brand-50 to-background h-[280px] w-full bg-gradient-to-b" />
 

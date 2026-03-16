@@ -1,7 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import Confetti from "react-confetti";
-import bgImg from "../assets/static/admin_panel_bg.svg";
 import VolunteerForm from "../modules/forms/components/VolunteerForm";
 import sendFormMutation from "../modules/forms/queries/sendFormMutation";
 import { formTypes, VolunteerForm as VolunteerFormType, VolunteerFormValues } from "../modules/forms/types";
@@ -42,9 +41,8 @@ const VolunteerFormScreen = () => {
 
     return (
         <Container
-            parentClassName="items-center bg-no-repeat bg-center bg-fixed min-h-[100vh] md:min-h-[calc(100vh-100px)] bg-cover md:bg-[length:100%_auto]"
-            parentStyle={{ backgroundImage: `url(${bgImg})` }}
-            className="w-fit"
+            parentClassName="items-center min-h-[100vh] md:min-h-[calc(100vh-100px)]"
+            className="flex items-center justify-center py-10"
         >
             <VolunteerForm initStep={isFormSend ? 7 : 0} onSubmit={handleSubmit} />
 

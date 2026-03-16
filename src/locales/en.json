@@ -22,6 +22,10 @@
         "title": "Free and anonymous psychological support via chat",
         "desc": "Get help or become a volunteer today",
         "chat_now": "Chat now",
+        "processing": {
+            "title": "Your form is being processed!",
+            "description": "Our team is matching you with the right person. We'll let you know when your chat is ready — it won't take long!"
+        },
         "trust_free": "Free",
         "trust_anonymous": "Anonymous",
         "trust_safe": "Safe",

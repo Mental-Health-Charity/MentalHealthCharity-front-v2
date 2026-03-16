@@ -21,6 +21,15 @@ export interface RouteType {
     permission?: Permissions;
 }
 
+export interface NavlinkProps {
+    name: string;
+    to: string;
+    fullWidth?: boolean;
+    className?: string;
+    indicator?: boolean;
+    permissions?: Permissions;
+}
+
 export class ApiError extends Error {
     status: number;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
