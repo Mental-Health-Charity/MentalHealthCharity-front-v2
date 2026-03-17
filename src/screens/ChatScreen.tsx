@@ -3,7 +3,7 @@ import ChatWindow from "../modules/chat/components/ChatWindow";
 
 const ChatScreen = () => {
     return (
-        <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <div className="flex h-full min-h-0 flex-1 flex-col">
             <ChatInfoModal />
             <ChatWindow />
         </div>

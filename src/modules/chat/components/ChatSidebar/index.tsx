@@ -1,5 +1,5 @@
-import { Skeleton } from "@/components/ui/skeleton";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Loader2, Plus, Search, X } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -52,7 +52,7 @@ const ChatSidebar = ({
                         value={searchQuery}
                         onChange={(e) => onSearchChange(e.target.value)}
                         placeholder={t("chat.search_label")}
-                        className="text-foreground placeholder:text-muted-foreground min-w-0 flex-1 bg-transparent text-sm outline-none"
+                        className="text-foreground placeholder:text-muted-foreground min-w-0 flex-1 bg-transparent text-base outline-none md:text-sm"
                         aria-label={t("common.search")}
                     />
                     {searchQuery && (

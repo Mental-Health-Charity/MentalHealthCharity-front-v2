@@ -201,6 +201,24 @@ html,
 #root {
     margin: 0;
     padding: 0;
+    height: 100%;
+    background: var(--card);
+}
+
+:root {
+    --app-viewport-height: 100dvh;
+    --chat-keyboard-inset: 0px;
+}
+
+@supports not (height: 100dvh) {
+    :root {
+        --app-viewport-height: 100dvh;
+    }
+}
+
+html.chat-route,
+body.chat-route {
+    height: 100%;
 }
 
 /* ---- Scrollbar ---- */

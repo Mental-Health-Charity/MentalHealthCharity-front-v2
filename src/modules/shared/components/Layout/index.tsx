@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { useLocation } from "react-router-dom";
 import CookiesBar from "../CookiesBar";
@@ -14,9 +14,19 @@ const Layout = ({ children }: Props) => {
     const isAdminScreen = pathname.includes("/admin");
     const isChatScreen = pathname.startsWith("/chat");
 
+    useEffect(() => {
+        document.documentElement.classList.toggle("chat-route", isChatScreen);
+        document.body.classList.toggle("chat-route", isChatScreen);
+
+        return () => {
+            document.documentElement.classList.remove("chat-route");
+            document.body.classList.remove("chat-route");
+        };
+    }, [isChatScreen]);
+
     return (
         <div
-            className={`bg-background font-ubuntu flex min-h-screen flex-col ${isChatScreen ? "h-[100dvh] overflow-hidden" : ""}`}
+            className={`bg-background font-ubuntu flex min-h-screen flex-col ${isChatScreen ? "h-[var(--app-viewport-height)]" : ""}`}
         >
             <a
                 href="#main-content"

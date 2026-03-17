@@ -193,7 +193,7 @@ const ChatWindow = () => {
 
     return (
         <TooltipProvider>
-            <div className="flex h-full flex-1 overflow-hidden">
+            <div className="flex h-full flex-1">
                 {/* Left: sidebar */}
                 <ChatSidebar
                     handleDrawerToggle={() => setShowSidebar((prev) => !prev)}

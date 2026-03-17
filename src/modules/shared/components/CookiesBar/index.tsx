@@ -17,10 +17,10 @@ const CookiesBar = () => {
     if (!isOpen) return null;
 
     return (
-        <div className="bg-dark fixed bottom-0 left-0 z-[9999] w-full p-2 text-white opacity-90 transition-opacity hover:opacity-100">
+        <div className="bg-background text-foreground fixed bottom-0 left-0 z-[9999] w-full p-2 opacity-90 transition-opacity hover:opacity-100">
             <div className="mx-auto max-w-screen-xl px-4">
                 <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-                    <p className="inline-flex flex-wrap items-center gap-2.5 text-sm">
+                    <p className="text-foreground inline-flex flex-wrap items-center gap-2.5 text-sm">
                         <Cookie className="size-5" />
                         {t("common.cookies_message")}
                         <InternalLink color="secondary" to="/tos">

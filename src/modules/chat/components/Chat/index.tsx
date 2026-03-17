@@ -21,6 +21,7 @@ import ChatMessage from "../Message";
 
 const LOAD_MORE_THRESHOLD = 200;
 const ESTIMATED_ROW_HEIGHT = 100;
+const IOS_KEYBOARD_MIN_INSET = 120;
 
 type AlertVariant = "danger" | "warning" | "info";
 
@@ -54,6 +55,7 @@ const Chat = ({
     historyState,
 }: Props) => {
     const { t } = useTranslation();
+    const chatRootRef = useRef<HTMLDivElement | null>(null);
     const { user } = useUser();
     const textFieldRef = useRef<HTMLInputElement | null>(null);
     const listRef = useRef<List | null>(null);
@@ -67,6 +69,9 @@ const Chat = ({
 
     const shouldScrollToBottomRef = useRef(true);
     const prevMessagesLengthRef = useRef(0);
+    const isEditableFocusedRef = useRef(false);
+    const keyboardOpenRef = useRef(false);
+    const keyboardResetTimersRef = useRef<number[]>([]);
 
     const [initialScrollDone, setInitialScrollDone] = useState(false);
     const [isNearTop, setIsNearTop] = useState(false);
@@ -137,6 +142,130 @@ const Chat = ({
     }, [chat?.id]);
 
     useEffect(() => {
+        const target = chatRootRef.current;
+        if (!target) {
+            return;
+        }
+
+        const isEditableElement = (element: EventTarget | null): boolean => {
+            if (!(element instanceof HTMLElement)) {
+                return false;
+            }
+
+            return element.tagName === "INPUT" || element.tagName === "TEXTAREA" || element.isContentEditable;
+        };
+
+        const clearKeyboardResetTimers = () => {
+            for (const timerId of keyboardResetTimersRef.current) {
+                window.clearTimeout(timerId);
+            }
+            keyboardResetTimersRef.current = [];
+        };
+
+        const normalizeViewportAfterKeyboardClose = () => {
+            keyboardOpenRef.current = false;
+            target.style.setProperty("--chat-keyboard-inset", "0px");
+
+            const resetScroll = () => {
+                window.scrollTo(0, 0);
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+            };
+
+            requestAnimationFrame(resetScroll);
+            clearKeyboardResetTimers();
+            keyboardResetTimersRef.current.push(window.setTimeout(resetScroll, 80));
+            keyboardResetTimersRef.current.push(window.setTimeout(resetScroll, 220));
+        };
+
+        const updateKeyboardInset = () => {
+            const visualViewport = window.visualViewport;
+            const shouldApplyInset = isMobile && isEditableFocusedRef.current;
+
+            if (!visualViewport || !shouldApplyInset) {
+                target.style.setProperty("--chat-keyboard-inset", "0px");
+                return;
+            }
+
+            const rawKeyboardInset = Math.max(
+                0,
+                Math.round(window.innerHeight - visualViewport.height - visualViewport.offsetTop)
+            );
+
+            // Ignore browser toolbar deltas; apply only keyboard-sized insets.
+            const keyboardInset = rawKeyboardInset >= IOS_KEYBOARD_MIN_INSET ? rawKeyboardInset : 0;
+
+            if (keyboardOpenRef.current && keyboardInset === 0) {
+                normalizeViewportAfterKeyboardClose();
+                return;
+            }
+
+            keyboardOpenRef.current = keyboardInset > 0;
+
+            target.style.setProperty("--chat-keyboard-inset", `${keyboardInset}px`);
+        };
+
+        const handleFocusIn = (event: FocusEvent) => {
+            if (isEditableElement(event.target)) {
+                isEditableFocusedRef.current = true;
+                updateKeyboardInset();
+            }
+        };
+
+        const handleFocusOut = () => {
+            setTimeout(() => {
+                const activeElement = document.activeElement;
+                const stillInsideChat = activeElement instanceof Node ? target.contains(activeElement) : false;
+                const stillFocusedEditable = stillInsideChat && isEditableElement(activeElement);
+
+                if (!stillFocusedEditable) {
+                    isEditableFocusedRef.current = false;
+                    normalizeViewportAfterKeyboardClose();
+                    return;
+                }
+
+                updateKeyboardInset();
+            }, 100);
+        };
+
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === "visible" && !isEditableElement(document.activeElement)) {
+                isEditableFocusedRef.current = false;
+                normalizeViewportAfterKeyboardClose();
+            }
+        };
+
+        const handlePageShow = () => {
+            if (!isEditableElement(document.activeElement)) {
+                isEditableFocusedRef.current = false;
+                normalizeViewportAfterKeyboardClose();
+            }
+        };
+
+        updateKeyboardInset();
+        window.addEventListener("resize", updateKeyboardInset);
+        window.addEventListener("orientationchange", normalizeViewportAfterKeyboardClose);
+        window.addEventListener("pageshow", handlePageShow);
+        window.visualViewport?.addEventListener("resize", updateKeyboardInset);
+        window.visualViewport?.addEventListener("scroll", updateKeyboardInset);
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+        target.addEventListener("focusin", handleFocusIn);
+        target.addEventListener("focusout", handleFocusOut);
+
+        return () => {
+            window.removeEventListener("resize", updateKeyboardInset);
+            window.removeEventListener("orientationchange", normalizeViewportAfterKeyboardClose);
+            window.removeEventListener("pageshow", handlePageShow);
+            window.visualViewport?.removeEventListener("resize", updateKeyboardInset);
+            window.visualViewport?.removeEventListener("scroll", updateKeyboardInset);
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+            target.removeEventListener("focusin", handleFocusIn);
+            target.removeEventListener("focusout", handleFocusOut);
+            clearKeyboardResetTimers();
+        };
+    }, [isMobile]);
+
+    useEffect(() => {
         if (listRef.current && reversedMessages.length > 0) {
             const prevLength = prevMessagesLengthRef.current;
             const newLength = reversedMessages.length;
@@ -191,6 +320,17 @@ const Chat = ({
         },
         [onLoadMoreMessages, historyState, canReadChatHistory]
     );
+
+    const focusMessageInput = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+        const target = event.target as HTMLElement;
+        const interactiveParent = target.closest("button, a, [role='button']");
+
+        if (interactiveParent) {
+            return;
+        }
+
+        textFieldRef.current?.focus({ preventScroll: true });
+    }, []);
 
     const rowRenderer = useCallback(
         ({ index, key, parent, style }: ListRowProps) => {
@@ -257,7 +397,11 @@ const Chat = ({
     };
 
     return (
-        <div className="bg-background/50 relative flex min-h-0 flex-1 flex-col">
+        <div
+            ref={chatRootRef}
+            className="bg-background/50 relative flex min-h-0 flex-1 flex-col"
+            style={{ ["--chat-keyboard-inset" as string]: "0px" }}
+        >
             {/* Connection status banner */}
             {showConnectionBanner && (
                 <div
@@ -372,7 +516,13 @@ const Chat = ({
 
             {/* Input bar */}
             {isChatInitializing ? (
-                <div className="border-border/50 border-t px-4 py-3">
+                <div
+                    className="border-border/50 border-t px-4 pt-3"
+                    style={{
+                        paddingBottom:
+                            "max(env(safe-area-inset-bottom), calc(0.75rem + var(--chat-keyboard-inset, 0px)))",
+                    }}
+                >
                     <div className="bg-muted/60 rounded-lg p-3">
                         <div className="mx-auto h-4 w-48">
                             <Skeleton className="h-4 w-full" />
@@ -380,17 +530,32 @@ const Chat = ({
                     </div>
                 </div>
             ) : chat && !chat.is_active ? (
-                <div className="border-border/50 border-t px-4 py-3">
+                <div
+                    className="border-border/50 border-t px-4 pt-3"
+                    style={{
+                        paddingBottom:
+                            "max(env(safe-area-inset-bottom), calc(0.75rem + var(--chat-keyboard-inset, 0px)))",
+                    }}
+                >
                     <div className="border-destructive bg-destructive/10 rounded-lg border p-3 text-center">
                         <p className="text-destructive text-sm font-bold">{t("chat.chat_closed")}</p>
                     </div>
                 </div>
             ) : (
-                <div className="border-border/50 bg-card flex items-center gap-2.5 border-t px-3 py-3 md:px-5 md:py-4">
-                    <div className="border-border bg-background flex min-h-[52px] flex-1 items-center gap-2 rounded-2xl border px-4 shadow-sm md:min-h-[56px]">
+                <div
+                    className="border-border/50 bg-card flex items-center gap-2.5 border-t px-3 pt-3 md:px-5 md:pt-4"
+                    style={{
+                        paddingBottom:
+                            "max(env(safe-area-inset-bottom), calc(0.75rem + var(--chat-keyboard-inset, 0px)))",
+                    }}
+                >
+                    <div
+                        className="border-border bg-background flex min-h-[52px] flex-1 cursor-text items-center gap-2 rounded-2xl border px-4 shadow-sm md:min-h-[56px]"
+                        onClick={focusMessageInput}
+                    >
                         <input
                             maxLength={1500}
-                            className="text-foreground placeholder:text-muted-foreground min-w-0 flex-1 bg-transparent text-[15px] outline-none disabled:opacity-50"
+                            className="text-foreground placeholder:text-muted-foreground min-w-0 flex-1 bg-transparent text-base outline-none disabled:opacity-50 md:text-[15px]"
                             disabled={!canSendMessage}
                             placeholder={
                                 isConnected
