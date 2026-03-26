@@ -8,7 +8,7 @@
             "logout": "Wyloguj",
             "articles": "Artykuły",
             "chat_with_volunteer": "Otrzymaj pomoc",
-            "donations": "Dotacje",
+            "donations": "Wesprzyj nas",
             "chat": "Czat",
             "admin": "Zarządzaj stroną",
             "aria": {
@@ -403,9 +403,9 @@
         "how_it_works": {
             "title": "Jak to działa?",
             "step1_title": "Wypełnij formularz",
-            "step1_desc": "Odpowiedz na kilka pytań, abyśmy mogli poznać Twoje potrzeby i dopasować odpowiednią osobę.",
+            "step1_desc": "Odpowiedz na kilka pytań, abyśmy mogli poznać Twoje potrzeby i problem, z którym się do nas zgłaszasz",
             "step2_title": "Dopasujemy wolontariusza",
-            "step2_desc": "Nasz zespół dobierze dla Ciebie odpowiedniego wolontariusza na podstawie Twoich odpowiedzi.",
+            "step2_desc": "Poinformujemy Cię mailowo, gdy znajdziemy dla Ciebie wolontariusza i utworzymy czat. Sprawdzaj swoją skrzynkę mailową, w tym folder spam",
             "step3_title": "Rozmawiaj na czacie",
             "step3_desc": "Rozpocznij regularne rozmowy z wolontariuszem w wygodnej formie czatu online."
         },
@@ -438,12 +438,12 @@
         "trust_mission": {
             "title": "Nasza misja",
             "description": "Tworzymy bezpieczną przestrzeń, w której każdy może uzyskać anonimowe wsparcie psychologiczne. Łączymy osoby potrzebujące pomocy z przeszkolonymi wolontariuszami, którzy są gotowi towarzyszyć im w trudnych chwilach.",
-            "stat1_value": "100+",
-            "stat1_label": "wolontariuszy",
-            "stat2_value": "500+",
-            "stat2_label": "osób otrzymało pomoc",
-            "stat3_value": "24/7",
-            "stat3_label": "dostępność platformy"
+            "stat1_value": "400+",
+            "stat1_label": "Użytkowników",
+            "stat2_value": "200+",
+            "stat2_label": "Utworzonych czatów",
+            "stat3_value": "Wiele",
+            "stat3_label": "Różnych sytuacji życiowych"
         },
         "final_cta": {
             "title": "Nie musisz radzić sobie sam/a",
@@ -762,9 +762,9 @@
         }
     },
     "donations": {
-        "nav": "Dotacje",
+        "nav": "Wesprzyj nas",
         "hero_title": "Wesprzyj Fundację Peryskop",
-        "hero_subtitle": "Razem możemy sprawić, by wsparcie psychiczne było dostępne dla każdego.",
+        "hero_subtitle": "Razem możemy sprawić, by wsparcie psychologiczne było dostępne dla każdego.",
         "what_is": {
             "title": "Czym jest Fundacja Peryskop?",
             "p1": "Pomysł na powstanie projektu narodził się w wyniku kryzysu osobistego i potrzeby wsparcia w trudnym czasie. Z doświadczenia wiemy, jak ogromną rolę odgrywają w takiej sytuacji towarzyszące nam osoby.",
@@ -813,7 +813,7 @@
         }
     },
     "crisis": {
-        "banner_text": "W kryzysie? Zadzwoń — pomoc jest bezpłatna i anonimowa, 24/7.",
+        "banner_text": "Inne formy pomocy (telefoniczne) - bezpłatne i anonimowe 24/7",
         "emergency": "pogotowie",
         "helpline": "telefon zaufania",
         "quick_exit": "Szybkie wyjście",

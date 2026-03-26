@@ -11,7 +11,10 @@ interface Props extends React.HTMLAttributes<HTMLElement> {
 const SimpleCard = ({ text, title, subtitle, className, titleClassName, textAlign, children, ...props }: Props) => {
     return (
         <article
-            className={cn("bg-card border-border/50 rounded-xl border px-5 py-5 shadow-sm md:px-10 md:py-7", className)}
+            className={cn(
+                "bg-card border-border/50 flex flex-col gap-4 rounded-xl border px-5 py-5 shadow-sm md:px-10 md:py-7",
+                className
+            )}
             style={{ textAlign }}
             {...props}
         >

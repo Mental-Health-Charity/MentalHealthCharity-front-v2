@@ -159,14 +159,35 @@ const FormsTable = ({ data, renderStepAddnotation, onRefetch, formNoteKeys }: Pr
             cells: [
                 {
                     type: "text",
+
                     text: form.created_by.full_name || (t("forms_fields.unknown_name") as string),
                     nonEditable: true,
+                    renderer: (props) => <span className="text-foreground truncate text-sm font-medium">{props}</span>,
                 },
-                { type: "text", text: form.created_by.email, nonEditable: true },
-                { type: "text", text: translatedRoles[form.created_by.user_role], nonEditable: true },
-                { type: "date", date: new Date(form.creation_date), nonEditable: true },
                 {
                     type: "text",
+
+                    text: form.created_by.email,
+                    nonEditable: true,
+                    renderer: (props) => <span className="text-foreground truncate text-sm">{props}</span>,
+                },
+                {
+                    type: "text",
+
+                    text: translatedRoles[form.created_by.user_role],
+                    nonEditable: true,
+                    renderer: (props) => <span className="text-foreground truncate text-sm">{props}</span>,
+                },
+                {
+                    type: "text",
+
+                    text: new Date(form.creation_date).toLocaleDateString(),
+                    nonEditable: true,
+                    renderer: (props) => <span className="text-foreground truncate text-sm">{props}</span>,
+                },
+                {
+                    type: "text",
+
                     text: `${renderStepAddnotation(form.current_step)} (${form.current_step}/${form.form_type.max_step})`,
                     nonEditable: true,
                     renderer: (props) =>
@@ -189,6 +210,7 @@ const FormsTable = ({ data, renderStepAddnotation, onRefetch, formNoteKeys }: Pr
                             text: notes[form.id]?.[key] || "",
 
                             editable: true,
+                            renderer: (props) => <span className="text-foreground truncate text-sm">{props}</span>,
                         }) as TextCell
                 ),
                 {

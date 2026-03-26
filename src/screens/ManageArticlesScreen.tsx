@@ -72,7 +72,9 @@ const ManageArticlesScreen = () => {
                 </div>
             </SimpleCard>
             {isLoading && <Loader />}
-            {data && data.total === 0 && <p className="text-foreground text-center text-lg">{t("common.not_found")}</p>}
+            {data && data.total === 0 && (
+                <p className="text-foreground my-4 text-center text-lg">{t("common.not_found")}</p>
+            )}
             {data && data.items && <ArticlesManager onChangeStatus={handleChangeStatus} articles={data.items} />}
         </AdminLayout>
     );

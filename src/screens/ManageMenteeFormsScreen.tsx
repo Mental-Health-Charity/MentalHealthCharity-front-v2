@@ -29,7 +29,7 @@ const ManageMenteeFormsScreen = () => {
     return (
         <AdminLayout>
             <SimpleCard title={t("manage_mentee_forms.title")} subtitle={t("manage_mentee_forms.subtitle")} />
-            <div className="mb-4 flex w-full gap-4">
+            <div className="mt-5 mb-4 flex w-full gap-4">
                 {Object.keys(formStatus).map((option) => (
                     <Button
                         key={option}
