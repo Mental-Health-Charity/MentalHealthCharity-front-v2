@@ -3,7 +3,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { BookOpen, Flag, LockKeyhole, Menu, StickyNote, Users } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useIsMobile } from "../../../../hooks/useBreakpoint";
 import { useUser } from "../../../auth/components/AuthProvider";
 import ReportModal from "../../../report/components/ReportModal";
@@ -24,6 +24,9 @@ import Note from "../Note";
 
 const ChatWindow = () => {
     const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
+    const parsedChatId = id ? Number(id) : Number.NaN;
+    const chatId = Number.isInteger(parsedChatId) && parsedChatId > 0 ? parsedChatId : undefined;
     const { data, aggregatedData, loadNextPage, searchQuery, setSearchQuery, isSearching } = useChatListLoader(100);
     const effectiveData = aggregatedData || data;
     const isMobile = useIsMobile();
@@ -37,7 +40,6 @@ const ChatWindow = () => {
     const [showAddParticipant, setShowAddParticipant] = useState(false);
     const [showCloseChatModal, setShowCloseChatModal] = useState(false);
     const { t } = useTranslation();
-    const [chatId, setChatId] = useState(id);
     const [showSidebar, setShowSidebar] = useState(false);
     const { hasPermissions } = usePermissions();
 
@@ -56,7 +58,7 @@ const ChatWindow = () => {
         reloadChat,
         loadBackHistory,
         historyState,
-    } = useChat(chatId ? Number(chatId) : undefined, {
+    } = useChat(chatId, {
         shouldReconnect: () => {
             if (!chatId || !user) {
                 return false;
@@ -82,7 +84,7 @@ const ChatWindow = () => {
             handleCloseChat(chat);
             setShowDetails(false);
         },
-        [handleCloseChat, reloadChat]
+        [handleCloseChat]
     );
 
     const canCloseChat =
@@ -91,19 +93,11 @@ const ChatWindow = () => {
         selectedChat.is_active &&
         (hasPermissions(Permissions.EDIT_CHAT_DATA) || hasPermissions(Permissions.MANAGE_CHATS));
 
-    const handleChangeChat = useCallback(
-        (id: string) => {
-            setShowNote(false);
-            setChatId(id);
-        },
-        [setChatId, setShowNote]
-    );
-
     useEffect(() => {
-        if (!chatId && effectiveData) {
-            setChatId(String(effectiveData.items[0].id));
+        if (!chatId && effectiveData?.items.length) {
+            navigate(`/chat/${effectiveData.items[0].id}`, { replace: true });
         }
-    }, [effectiveData, chatId]);
+    }, [chatId, effectiveData, navigate]);
 
     const headerActions = (
         <div className="flex items-center gap-0.5">
@@ -200,8 +194,7 @@ const ChatWindow = () => {
                     showSidebar={showSidebar}
                     data={effectiveData}
                     loadMore={loadNextPage}
-                    onChangeChat={handleChangeChat}
-                    currentChatId={Number(chatId)}
+                    currentChatId={chatId}
                     searchQuery={searchQuery}
                     onSearchChange={setSearchQuery}
                     isSearching={isSearching}

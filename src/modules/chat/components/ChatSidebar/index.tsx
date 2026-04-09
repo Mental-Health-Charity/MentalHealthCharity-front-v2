@@ -11,7 +11,6 @@ import ChatItem from "../ChatItem";
 
 interface Props {
     data?: Pagination<Chat>;
-    onChangeChat: (id: string) => void;
     currentChatId?: number;
     showSidebar?: boolean;
     handleDrawerToggle?: () => void;
@@ -24,7 +23,6 @@ interface Props {
 
 const ChatSidebar = ({
     data,
-    onChangeChat,
     currentChatId,
     showSidebar,
     handleDrawerToggle,
@@ -122,14 +120,13 @@ const ChatSidebar = ({
                                             return (
                                                 <div key={key} style={style}>
                                                     <ChatItem
-                                                        onChange={(id) => {
-                                                            onChangeChat(id);
+                                                        onClick={() => {
                                                             setReaded((prev) => ({ ...prev, [chat.id]: true }));
                                                             if (isMobile) {
                                                                 handleDrawerToggle?.();
                                                             }
                                                         }}
-                                                        selected={!!currentChatId && chat.id === currentChatId}
+                                                        selected={chat.id === currentChatId}
                                                         readed={readed[chat.id]}
                                                         chat={chat}
                                                     />

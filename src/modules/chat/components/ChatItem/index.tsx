@@ -1,24 +1,22 @@
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 import { Chat } from "../../types";
 
 interface Props {
     chat: Chat;
-    onChange: (id: string) => void;
     selected: boolean;
     readed?: boolean;
+    onClick?: () => void;
 }
 
-const ChatItem = ({ chat, onChange, selected, readed }: Props) => {
+const ChatItem = ({ chat, selected, readed, onClick }: Props) => {
     const showUnreadIndicator = chat.unread_count > 0 && !readed;
     const { is_active } = chat;
 
     return (
-        <a
-            href={`/chat/${chat.id}`}
-            onClick={(e) => {
-                e.preventDefault();
-                onChange(String(chat.id));
-            }}
+        <Link
+            to={`/chat/${chat.id}`}
+            onClick={onClick}
             aria-current={selected ? "true" : undefined}
             className={cn(
                 "flex items-center gap-3 px-3 py-3 no-underline transition-colors",
@@ -57,7 +55,7 @@ const ChatItem = ({ chat, onChange, selected, readed }: Props) => {
                     {chat.unread_count}
                 </span>
             )}
-        </a>
+        </Link>
     );
 };
 
