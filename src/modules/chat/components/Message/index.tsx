@@ -68,7 +68,7 @@ const ChatMessage = ({ message, onDeleteMessage, onRetryMessage, showArchiveChip
                             senderIsCurrentUser ? "justify-end text-white/60" : "text-muted-foreground justify-end"
                         )}
                     >
-                        <span>{formatDate(message.creation_date, "HH:mm")}</span>
+                        <span>{formatDate(message.creation_date)}</span>
                         {showArchiveChip && (
                             <Badge
                                 variant="outline"
