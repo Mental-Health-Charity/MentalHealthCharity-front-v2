@@ -1,17 +1,15 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Form, Formik } from "formik";
 import { Camera } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import * as Yup from "yup";
 import Modal from "../../../shared/components/Modal";
 
 interface Props {
     avatar?: string;
     username: string;
     disabled?: boolean;
-    onSubmit: (values: { avatar: string }) => void;
+    onSubmit: (values: { avatar: File }) => void;
 }
 
 const MAX_AVATAR_SIZE = 1024 * 1024;
@@ -20,10 +18,20 @@ const ChangeAvatar = ({ avatar, username, disabled, onSubmit }: Props) => {
     const { t } = useTranslation();
     const avatarInputRef = useRef<HTMLInputElement>(null);
     const [showModal, setShowModal] = useState(false);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [preview, setPreview] = useState(avatar || "");
+    const [error, setError] = useState<string | null>(null);
 
-    const validationSchema = Yup.object({
-        avatar: Yup.string().required(t("validation.required")),
-    });
+    useEffect(() => {
+        if (!showModal) {
+            setSelectedFile(null);
+            setPreview(avatar || "");
+            setError(null);
+            if (avatarInputRef.current) {
+                avatarInputRef.current.value = "";
+            }
+        }
+    }, [avatar, showModal]);
 
     const validateFile = (file: File | null) => {
         if (!file) return null;
@@ -32,19 +40,40 @@ const ChangeAvatar = ({ avatar, username, disabled, onSubmit }: Props) => {
         return null;
     };
 
-    const handleFileChange = (
-        event: React.ChangeEvent<HTMLInputElement>,
-        setFieldValue: (field: string, value: unknown) => void
-    ) => {
+    const handleOpenModal = () => {
+        setShowModal(true);
+        setTimeout(() => avatarInputRef.current?.click(), 0);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0] ?? null;
-        const error = validateFile(file);
-        if (!error && file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setFieldValue("avatar", reader.result as string);
-            };
-            reader.readAsDataURL(file);
+        const validationError = validateFile(file);
+
+        if (validationError || !file) {
+            setSelectedFile(null);
+            setPreview(avatar || "");
+            setError(validationError || t("validation.required"));
+            event.target.value = "";
+            return;
         }
+
+        setSelectedFile(file);
+        setPreview(URL.createObjectURL(file));
+        setError(null);
+    };
+
+    const handleSubmit = () => {
+        if (!selectedFile) {
+            setError(t("validation.required"));
+            return;
+        }
+
+        onSubmit({ avatar: selectedFile });
+        setShowModal(false);
     };
 
     return (
@@ -55,67 +84,43 @@ const ChangeAvatar = ({ avatar, username, disabled, onSubmit }: Props) => {
             </Avatar>
             <button
                 className="absolute inset-0 flex items-center justify-center rounded-md opacity-0 transition-opacity hover:bg-black/50 hover:opacity-100"
-                onClick={() => {
-                    setShowModal(true);
-                    setTimeout(() => avatarInputRef.current?.click(), 0);
-                }}
+                onClick={handleOpenModal}
                 disabled={disabled}
                 type="button"
             >
                 <Camera className="text-foreground size-8" />
             </button>
-            <Modal open={showModal} onClose={() => setShowModal(false)} title={t("profile.change_avatar_title")}>
+            <Modal open={showModal} onClose={handleCloseModal} title={t("profile.change_avatar_title")}>
                 <div>
-                    <Formik
-                        initialValues={{ avatar: avatar || "" }}
-                        onSubmit={(values) => {
-                            if (values.avatar) {
-                                onSubmit({ avatar: values.avatar });
-                                setShowModal(false);
-                            }
-                        }}
-                        validationSchema={validationSchema}
-                    >
-                        {({ setFieldValue, values, errors, touched }) => (
-                            <Form>
-                                <div className="relative flex w-full justify-center">
-                                    <Avatar className="size-[165px] rounded-md">
-                                        <AvatarImage src={values.avatar || avatar} alt={username} />
-                                        <AvatarFallback className="rounded-md text-3xl">
-                                            {username?.charAt(0)?.toUpperCase()}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                    <button
-                                        className="absolute top-0 left-1/2 flex size-[165px] -translate-x-1/2 items-center justify-center rounded-md opacity-0 transition-opacity hover:bg-black/50 hover:opacity-100"
-                                        onClick={() => avatarInputRef.current?.click()}
-                                        disabled={disabled}
-                                        type="button"
-                                    >
-                                        <Camera className="text-foreground size-8" />
-                                    </button>
-                                </div>
-                                <input
-                                    ref={avatarInputRef}
-                                    hidden
-                                    id="avatar"
-                                    name="avatar"
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={(event) => handleFileChange(event, setFieldValue)}
-                                />
-                                {errors.avatar && touched.avatar && (
-                                    <p className="text-destructive mt-2.5 text-center text-sm">{errors.avatar}</p>
-                                )}
-                                <Button
-                                    type="submit"
-                                    className="mt-5 w-full"
-                                    disabled={!values.avatar || !!errors.avatar}
-                                >
-                                    {t("common.save")}
-                                </Button>
-                            </Form>
-                        )}
-                    </Formik>
+                    <div className="relative flex w-full justify-center">
+                        <Avatar className="size-[165px] rounded-md">
+                            <AvatarImage src={preview || avatar} alt={username} />
+                            <AvatarFallback className="rounded-md text-3xl">
+                                {username?.charAt(0)?.toUpperCase()}
+                            </AvatarFallback>
+                        </Avatar>
+                        <button
+                            className="absolute top-0 left-1/2 flex size-[165px] -translate-x-1/2 items-center justify-center rounded-md opacity-0 transition-opacity hover:bg-black/50 hover:opacity-100"
+                            onClick={() => avatarInputRef.current?.click()}
+                            disabled={disabled}
+                            type="button"
+                        >
+                            <Camera className="text-foreground size-8" />
+                        </button>
+                    </div>
+                    <input
+                        ref={avatarInputRef}
+                        hidden
+                        id="avatar"
+                        name="avatar"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                    />
+                    {error && <p className="text-destructive mt-2.5 text-center text-sm">{error}</p>}
+                    <Button type="button" className="mt-5 w-full" disabled={!selectedFile || !!error} onClick={handleSubmit}>
+                        {t("common.save")}
+                    </Button>
                 </div>
             </Modal>
         </div>

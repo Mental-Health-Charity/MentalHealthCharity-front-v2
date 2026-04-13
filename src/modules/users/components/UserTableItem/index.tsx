@@ -9,6 +9,7 @@ import ActionMenu from "../../../shared/components/ActionMenu";
 import { downloadFile } from "../../../shared/helpers/downloadFile";
 import { ComponentAction } from "../../../shared/types";
 import { Roles, translatedRoles } from "../../constants";
+import getUserAvatarUrl from "../../helpers/getUserAvatarUrl";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
     user: UserType;
@@ -17,6 +18,8 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const UserTableItem = ({ onEdit, user, additionalActions, className, ...props }: Props) => {
+    const avatarUrl = getUserAvatarUrl(user);
+
     const handleCopy = (text: string) => {
         navigator.clipboard.writeText(text);
         toast.success(t("common.copied_to_clipboard"));
@@ -32,7 +35,7 @@ const UserTableItem = ({ onEdit, user, additionalActions, className, ...props }:
         >
             <div className="flex items-center gap-4">
                 <Avatar className="size-[50px] rounded-md">
-                    <AvatarImage src={user.chat_avatar_url || undefined} alt={user.full_name} />
+                    <AvatarImage src={avatarUrl} alt={user.full_name} />
                     <AvatarFallback className="rounded-md">{user.full_name?.charAt(0)?.toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div>

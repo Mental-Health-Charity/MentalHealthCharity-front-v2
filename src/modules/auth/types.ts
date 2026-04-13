@@ -28,6 +28,10 @@ export interface User {
     user_role: Roles;
     is_assigned_to_chat: boolean;
     chat_avatar_url?: string;
+    user_public_profile?: {
+        avatar_url?: string;
+        description?: string;
+    } | null;
     id: number;
 }
 

@@ -6,7 +6,7 @@ interface Props {
     role: Roles;
     avatar_url?: string;
     isOwner: boolean;
-    onSubmit: (values: { avatar: string }) => void;
+    onSubmit: (values: { avatar: File }) => void;
 }
 
 const UserProfileHeading = ({ role, username, avatar_url, isOwner, onSubmit }: Props) => {

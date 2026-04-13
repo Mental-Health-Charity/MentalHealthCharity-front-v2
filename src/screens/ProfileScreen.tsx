@@ -14,6 +14,7 @@ import { Roles } from "../modules/users/constants";
 import { editPublicProfileMutation } from "../modules/users/queries/editPublicProfileMutation";
 import { readPublicProfileQueryOptions } from "../modules/users/queries/readPublicProfileQueryOptions";
 import updateAvatarMutation from "../modules/users/queries/updateAvatarMutation";
+import resolveAssetUrl from "../modules/shared/helpers/resolveAssetUrl";
 
 const ProfileScreen = () => {
     const { userId } = useParams();
@@ -91,7 +92,7 @@ const ProfileScreen = () => {
 
     const role = isPublicProfile ? data.user.user_role : (user?.user_role ?? null);
     const username = isPublicProfile ? data.user.full_name : (user?.full_name ?? null);
-    const avatar = data && data.avatar_url;
+    const avatar = data ? resolveAssetUrl(data.avatar_url) : undefined;
 
     return (
         // min height 100vh

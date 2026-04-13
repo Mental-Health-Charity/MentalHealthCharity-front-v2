@@ -52,5 +52,5 @@ export interface EditUserFormValues {
 }
 
 export interface EditUserAvatar {
-    avatar: string; // base64
+    avatar: File;
 }

@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { User } from "../../../auth/types";
 import useDebounce from "../../../shared/hooks/useDebounce";
 import { Roles } from "../../constants";
+import getUserAvatarUrl from "../../helpers/getUserAvatarUrl";
 import { searchUserQueryOptions } from "../../queries/searchUserQueryOptions";
 
 interface Props {
@@ -125,7 +126,7 @@ const SearchUser = ({ onChange, value, onChangeSearchQuery, disabled }: Props) =
                                 className="hover:bg-accent flex w-full cursor-pointer items-center gap-3 px-3 py-2.5 text-left transition-colors"
                             >
                                 <Avatar className="size-8 rounded-md">
-                                    <AvatarImage src={option.chat_avatar_url || ""} />
+                                    <AvatarImage src={getUserAvatarUrl(option) || ""} />
                                     <AvatarFallback className="rounded-md text-xs">
                                         <UserIcon className="size-3.5" />
                                     </AvatarFallback>
