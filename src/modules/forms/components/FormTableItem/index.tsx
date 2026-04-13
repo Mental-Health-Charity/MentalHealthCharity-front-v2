@@ -12,7 +12,7 @@ import UserTableItem from "../../../users/components/UserTableItem";
 import { FormResponse, MenteeForm, VolunteerForm } from "../../types";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
-    form: FormResponse<MenteeForm | VolunteerForm>;
+    form?: FormResponse<MenteeForm | VolunteerForm> | null;
     refetch?: () => void;
 }
 
@@ -27,7 +27,19 @@ const FormTableItem = ({ form, className, ...props }: Props) => {
         booleanPlugin,
     ]);
 
+    if (!form || !form.fields) {
+        return null;
+    }
+
     const fieldsArray = Object.entries(form.fields);
+
+    const renderFormFieldValue = (key: string, value: unknown) => {
+        if (key === "contact_preference" && typeof value === "string") {
+            return t(`form.mentee.contact_preference_options.${value}.title`, { defaultValue: value });
+        }
+
+        return renderFieldValue(value);
+    };
 
     return (
         <div className={cn(className)} {...props}>
@@ -46,7 +58,7 @@ const FormTableItem = ({ form, className, ...props }: Props) => {
                             className="border-border-brand bg-bg-brand flex flex-col rounded-[10px] border px-[18px] py-[14px]"
                         >
                             <p className="mb-1.5 text-base font-semibold">{t(`forms_fields.${key}`)}</p>
-                            <p className="text-base">{renderFieldValue(value as unknown)}</p>
+                            <p className="text-base">{renderFormFieldValue(key, value as unknown)}</p>
                         </div>
                     ))}
 

@@ -161,6 +161,7 @@
         "admin_chat": "Czat koordynacyjny",
         "participants": "Uczestnicy",
         "details": "Szczegóły",
+        "show_details": "Szczegóły",
         "connection_closed": "Przerwano połączenie z rozmówcą. Sprawdź swoje połączenie internetowe. Spróbuj odświeżyć stronę",
         "connection_closing": "Połączenie z rozmówcą zostało przerwane. Sprawdź swoje połączenie internetowe. Aby naprawić problem odśwież stronę",
         "connection_connecting": "Łączenie z rozmówcą... Jeśli trwa to za długo - sprawdź swoje połączenie z internetem lub spróbuj odświeżyć stronę",
@@ -205,6 +206,7 @@
         "create_chat_success": "Czat został utworzony",
         "go_to_chat": "Przejdź do czatu",
         "contract": "Kontrakt",
+        "help_rules": "Zasady pomocy",
         "report": "Zgłoś",
         "add_participant_success": "Uczestnik został dodany",
         "add_participant": "Dodaj uczestnika",
@@ -234,7 +236,8 @@
             "no_messages_title": "Czat bez żadnych wiadomości",
             "no_messages_body": "Czaty, w których nie wysłano żadnej wiadomości, są usuwane po 3 dniach braku aktywności.",
             "dismiss": "Rozumiem"
-        }
+        },
+        "help_rules_placeholder": "Treść zasad pomocy pojawi się wkrótce."
     },
     "auth": {
         "login": {
@@ -248,6 +251,12 @@
             "subtitle": "Zarejestruj się korzystając z poniższego formularza, cieszymy się, że do nas dołączasz!",
             "has_account": "Masz już konto?",
             "login_link": "Zaloguj się"
+        },
+        "register_chat_support": {
+            "title": "Załóż konto, aby zacząć rozmowę",
+            "subtitle": "",
+            "notice": "Wsparcie w Fundacji Peryskop jest anonimowe i darmowe. Konto jest potrzebne tylko po to, aby bezpiecznie połączyć Cię z wolontariuszem na czacie i poinformować Cię, gdy znajdziemy odpowiednią osobę.",
+            "has_account": "Masz już konto?"
         },
         "reset_token_modal": {
             "title": "Pomyślnie zarejestrowano!",
@@ -580,35 +589,53 @@
         },
         "mentee": {
             "subtitle": [
-                "Dziękujemy za Twoje zaufanie. Wypełnij krótki formularz, aby uzyskać pomoc. Dołącz do nas i otrzymaj darmowe wsparcie, które działa dzięki wolontariuszom z całej Polski. To pierwszy krok ku zmianie na lepsze",
+                "Dziękujemy za Twoje zaufanie. Wypełnij krótki formularz, aby uzyskać pomoc.",
                 "Na ten adres email wyślemy Ci informacje, gdy znajdziemy dla Ciebie odpowiedniego wolontariusza.",
-                "Wybierz jak najlepiej rodzaj problemu, abyśmy mogli dopasować Ci najlepszego wolontariusza! Możesz wybrać kilka.",
                 "Opisz jak najlepiej swój problem, abyśmy mogli dopasować Ci najlepszego wolontariusza!",
+                "Powiedz nam, czy wolisz regularne, umówione terminy na czacie czy luźną wymianę wiadomości.",
                 "Skąd dowiedziałeś się o naszej fundacji? Pomóż nam rozwijać się i dotrzeć do większej liczby osób!",
-                "To wszystko! Już wkrótce otrzymasz informacje na twój adres email, gdy znajdziemy dla Ciebie wolontariusza. Zaglądaj na naszą stronę i sprawdzaj czy w pasku na górze nie pojawi się zakładka CZAT. Dziękujemy za zaufanie!"
+                "To wszystko! Już wkrótce otrzymasz informacje na twój adres email, gdy znajdziemy dla Ciebie wolontariusza. Zaglądaj na naszą stronę, gdy pojawi się w górnym menu zakładka „CZAT” – wszystko poszło dobrze. Gdybyś miał jakiekolwiek problemy z czatem pisz do nas na: kontakt@fundacjaperyskop.org. Pamiętaj, że mail może wpaść do SPAMU, więc szukaj go również tam. Obojętnie, czy wybrałeś/łaś opcję luźnej wymiany wiadomości czy umówionych spotkań – nie spodziewaj się odpowiedzi na czacie od razu, lecz dopiero w przeciągu kilku dni od przypisania do danego wolontariusza. Dziękujemy za zaufanie!"
             ],
             "title": [
                 "Otrzymaj darmowe wsparcie",
                 "Kontakt",
-                "Wybierz rodzaj problemu",
                 "Opisz swój problem",
+                "Wybierz formę kontaktu",
                 "Skąd wiesz o Fundacji Peryskop?",
                 "Dziękujemy za wypełnienie formularza!"
             ],
             "subtitle_new_user": [
                 "Dziękujemy za Twoje zaufanie. Wypełnij krótki formularz, aby uzyskać pomoc realizowaną przez wolontariuszy z całego świata.",
                 "Na ten adres email wyślemy Ci informacje, gdy znajdziemy dla Ciebie odpowiedniego wolontariusza.",
-                "Wybierz jak najlepiej rodzaj problemu, abyśmy mogli dopasować Ci najlepszego wolontariusza! Możesz wybrać kilka.",
                 "Opisz jak najlepiej swój problem, abyśmy mogli dopasować Ci najlepszego wolontariusza!",
-                "Musisz utworzyć konto, aby dołączyć i korzystać w pełni z naszych usług",
-                "To wszystko! Już wkrótce otrzymasz informacje na twój adres email, gdy znajdziemy dla Ciebie wolontariusza. Zaglądaj na naszą stronę i sprawdzaj czy w pasku na górze nie pojawi się zakładka CZAT. Dziękujemy za zaufanie!"
+                "Powiedz nam, czy wolisz regularne, umówione terminy na czacie czy luźną wymianę wiadomości.",
+                "Musisz utworzyć konto, aby rozmawiać na czacie. Wsparcie jest anonimowe i darmowe.",
+                "To wszystko! Już wkrótce otrzymasz informacje na twój adres email, gdy znajdziemy dla Ciebie wolontariusza. Zaglądaj na naszą stronę, gdy pojawi się w górnym menu zakładka „CZAT” – wszystko poszło dobrze. Gdybyś miał jakiekolwiek problemy z czatem pisz do nas na: kontakt@fundacjaperyskop.org. Pamiętaj, że mail może wpaść do SPAMU, więc szukaj go również tam. Obojętnie, czy wybrałeś/łaś opcję luźnej wymiany wiadomości czy umówionych spotkań – nie spodziewaj się odpowiedzi na czacie od razu, lecz dopiero w przeciągu kilku dni od przypisania do danego wolontariusza. Dziękujemy za zaufanie!"
             ],
+            "success": {
+                "lead": "To wszystko! Już wkrótce otrzymasz informacje na twój adres email, gdy znajdziemy dla Ciebie wolontariusza.",
+                "cards": {
+                    "chat": {
+                        "title": "Co dalej",
+                        "body": "Zaglądaj na naszą stronę, gdy pojawi się w górnym menu zakładka „CZAT” – wszystko poszło dobrze. Gdybyś miał jakiekolwiek problemy z czatem pisz do nas na: kontakt@fundacjaperyskop.org"
+                    },
+                    "email": {
+                        "title": "Sprawdź skrzynkę",
+                        "body": "Pamiętaj, że mail może wpaść do SPAMU, więc szukaj go również tam."
+                    },
+                    "timing": {
+                        "title": "Kiedy pojawi się odpowiedź",
+                        "body": "Obojętnie, czy wybrałeś/łaś opcję luźnej wymiany wiadomości czy umówionych spotkań – nie spodziewaj się odpowiedzi na czacie od razu, lecz dopiero w przeciągu kilku dni od przypisania do danego wolontariusza."
+                    }
+                },
+                "closing": "Dziękujemy za zaufanie!"
+            },
             "title_new_user": [
                 "Otrzymaj darmowe wsparcie",
                 "Kontakt",
-                "Wybierz rodzaj problemu",
                 "Opisz swój problem",
-                "Zarejestruj się, aby dołączyć do zespołu podopiecznych!",
+                "Wybierz formę kontaktu",
+                "Załóż konto, aby kontynuować",
                 "Dziękujemy za wypełnienie formularza!"
             ],
             "name_label": "Podaj imię, ksywkę lub jak mamy się do Ciebie zwracać?",
@@ -629,7 +656,19 @@
                 "email": "Podaj adres email",
                 "phone": "Podaj numer telefonu"
             },
-            "issue_description_label": "Opisz swój problem"
+            "issue_description_label": "Opisz swój problem",
+            "contact_preference_label": "Jakiej formy kontaktu oczekujesz?",
+            "contact_preference_hint": "Nie dysponujemy jeszcze aplikacją z powiadomieniami, więc luźna wymiana wiadomości będzie przypominała bardziej rozmowę mailową niż komunikator w czasie rzeczywistym.",
+            "contact_preference_options": {
+                "scheduled": {
+                    "title": "Regularne, umówione terminy",
+                    "description": "Wybierasz stały rytm rozmów i obecność o wcześniej ustalonych porach."
+                },
+                "asynchronous": {
+                    "title": "Luźna wymiana wiadomości",
+                    "description": "Wiadomości będą bardziej przypominały kontakt mailowy niż natychmiastowy czat."
+                }
+            }
         },
         "referral_source_label": "Skąd wiesz o Fundacji Peryskop?",
 
@@ -694,6 +733,7 @@
     "forms_fields": {
         "source": "Skąd nas poznał",
         "contacts": "Preferowana forma kontaktu",
+        "contact_preference": "Preferowany tryb kontaktu",
         "description": "Opis",
         "name": "Imię",
         "note": "Notatka",

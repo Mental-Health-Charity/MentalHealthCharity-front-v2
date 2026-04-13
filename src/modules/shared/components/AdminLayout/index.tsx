@@ -11,8 +11,8 @@ const AdminLayout = ({ children }: Props) => {
     return (
         <div className="bg-background flex min-h-screen w-full">
             <AdminSidebar open={isSidebarOpen} handleToggle={() => setSidebarOpen(!isSidebarOpen)} />
-            <div className="flex w-full flex-1 flex-col items-center justify-start gap-5 p-4 pt-10">
-                <div className="w-full max-w-[1650px]">{children}</div>
+            <div className="flex w-full min-w-0 flex-1 flex-col items-center justify-start gap-5 p-4 pt-10">
+                <div className="w-full max-w-[1650px] min-w-0">{children}</div>
             </div>
         </div>
     );

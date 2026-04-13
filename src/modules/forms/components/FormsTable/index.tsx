@@ -240,7 +240,7 @@ const FormsTable = ({ data, renderStepAddnotation, onRefetch, formNoteKeys }: Pr
     };
 
     return (
-        <div className="w-full">
+        <div className="w-max min-w-full">
             <ReactGrid
                 onContextMenu={simpleHandleContextMenu}
                 rows={rows}
@@ -248,11 +248,13 @@ const FormsTable = ({ data, renderStepAddnotation, onRefetch, formNoteKeys }: Pr
                 onColumnResized={handleColumnResize}
                 onCellsChanged={handleCellsChanged}
             />
-            <Modal title={t("common.preview")} open={!!showForm} onClose={() => setShowForm(null)}>
-                <div className="flex max-h-[80vh] max-w-[900px] justify-center overflow-y-auto">
-                    <FormTableItem form={showForm!} />
-                </div>
-            </Modal>
+            {showForm && (
+                <Modal title={t("common.preview")} open={!!showForm} onClose={() => setShowForm(null)}>
+                    <div className="flex max-w-[900px] justify-center">
+                        <FormTableItem form={showForm} />
+                    </div>
+                </Modal>
+            )}
             {showManageModal && (
                 <Modal
                     title={t("form.manage_forms_title")}
@@ -260,19 +262,25 @@ const FormsTable = ({ data, renderStepAddnotation, onRefetch, formNoteKeys }: Pr
                     onClose={() => setShowManageModal(null)}
                 >
                     <div className="flex max-w-[900px] flex-col justify-center">
-                        <p className="text-xl">
+                        <p className="text-xl leading-relaxed">
                             {t("form.manage_forms_subtitle", {
                                 step: renderStepAddnotation(showManageModal.current_step + 1),
                             })}
                         </p>
-                        <div className="mt-4 flex flex-col gap-2">
-                            <div className="flex gap-4">
-                                <Button onClick={() => acceptForm(showManageModal)}>{t("form.next_step")}</Button>
-                                <Button onClick={() => rejectForm(showManageModal)} variant="outline">
+                        <div className="border-border/60 mt-8 flex flex-col gap-4 border-t pt-6">
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                <Button className="w-full" onClick={() => acceptForm(showManageModal)}>
+                                    {t("form.next_step")}
+                                </Button>
+                                <Button
+                                    className="w-full"
+                                    onClick={() => rejectForm(showManageModal)}
+                                    variant="outline"
+                                >
                                     {t("form.reject")}
                                 </Button>
                             </div>
-                            <Button variant="ghost" onClick={() => setShowForm(showManageModal)}>
+                            <Button className="mx-auto" variant="ghost" onClick={() => setShowForm(showManageModal)}>
                                 {t("forms_fields.show_form")}
                             </Button>
                         </div>

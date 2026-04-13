@@ -2,9 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { useFormik } from "formik";
-import { ArrowLeft, ArrowRight, CheckCircle, Home, Phone, RefreshCw, ShieldAlert } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle, Clock3, Home, Mail, Phone, ShieldAlert } from "lucide-react";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -13,7 +14,6 @@ import { useUser } from "../../../auth/components/AuthProvider";
 import InternalLink from "../../../shared/components/InternalLink";
 import Loader from "../../../shared/components/Loader";
 import { validation } from "../../../shared/constants";
-import handleApiError from "../../../shared/helpers/handleApiError";
 import { MenteeFormValues } from "../../types";
 import FormWrapper from "../FormWrapper";
 
@@ -24,28 +24,9 @@ interface Props {
     isLoading?: boolean;
 }
 
-const THEME_OPTIONS = [
-    { value: "no", key: "no" },
-    { value: "depression", key: "depression" },
-    { value: "alcoholism", key: "alcoholism" },
-    { value: "drug_addiction", key: "drug_addiction" },
-    { value: "anxiety", key: "anxiety" },
-    { value: "eating_disorders", key: "eating_disorders" },
-    { value: "burnout", key: "burnout" },
-    { value: "loneliness", key: "loneliness" },
-    { value: "grief_loss", key: "grief_loss" },
-    { value: "homelessness", key: "homelessness" },
-    { value: "trauma", key: "trauma" },
-    { value: "self_harm", key: "self_harm", sensitive: true },
-    { value: "suicidal_thoughts", key: "suicidal_thoughts", sensitive: true },
-    { value: "domestic_violence", key: "domestic_violence", sensitive: true },
-    { value: "sexual_assault", key: "sexual_assault", sensitive: true },
-    { value: "other", key: "other", sensitive: false },
-];
-
 const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
     const { t } = useTranslation();
-    const { user, register, isFetchingUser: isLoadingUserSession } = useUser();
+    const { user, isFetchingUser: isLoadingUserSession } = useUser();
     const isFormDataLoading = (isLoadingUserSession && !user) || isLoading;
     const [direction, setDirection] = useState(1);
     const prevStepRef = useRef(step);
@@ -56,12 +37,10 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
         contacts: ["email"],
         email: user?.email || "",
         phone: "",
-        themes: [],
         description: "",
+        contact_preference: "",
         source: "",
         tos: false,
-        password: "",
-        confirmPassword: "",
     };
 
     const validationSchemas = [
@@ -74,16 +53,12 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
             email: validation.email,
         }),
         Yup.object({
-            themes: Yup.array().min(1, t("validation.issueType.min")),
-        }),
-        Yup.object({
             description: Yup.string().min(10, t("validation.description.tooShort")).required(t("validation.required")),
         }),
         Yup.object({
-            ...(!user && {
-                password: validation.password,
-                confirmPassword: validation.confirmPassword,
-            }),
+            contact_preference: Yup.string().oneOf(["scheduled", "asynchronous"]).required(t("validation.required")),
+        }),
+        Yup.object({
             source: Yup.string().required(t("validation.required")),
             tos: Yup.boolean().oneOf([true], t("validation.consent.required")),
         }),
@@ -94,38 +69,7 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
     const formik = useFormik({
         initialValues,
         validationSchema: validationSchemas[step],
-        onSubmit: async (values) => {
-            if (step === LAST_STEP && !user) {
-                try {
-                    await new Promise<void>((resolve, reject) => {
-                        register.mutate(
-                            {
-                                confirmPassword: values.confirmPassword,
-                                email: values.email,
-                                full_name: values.name,
-                                password: values.password,
-                                policy_confirm: true,
-                            },
-                            {
-                                onSuccess: () => resolve(),
-                                onError: (error) => reject(error),
-                            }
-                        );
-                    });
-
-                    onSubmit(values);
-                    return;
-                } catch (error) {
-                    formik.setErrors({
-                        email: t("validation.registration_failed"),
-                        password: t("validation.registration_failed"),
-                        confirmPassword: t("validation.registration_failed"),
-                    });
-                    handleApiError(error);
-                    return;
-                }
-            }
-
+        onSubmit: (values) => {
             if (step === LAST_STEP) {
                 onSubmit(values);
                 return;
@@ -149,17 +93,37 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
         formik.setFieldValue("age", formattedText);
     };
 
-    const handleThemeToggle = (value: string) => {
-        const current = formik.values.themes;
-        const next = current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
-        formik.setFieldValue("themes", next);
-    };
-
     const ageNum = Number(formik.values.age);
     const isUnder18 = formik.values.age !== "" && ageNum > 0 && ageNum < 18;
+    const referralSourceOptions = [
+        { value: "friend", label: t("form.referral_source_options.friend") },
+        { value: "socialMedia", label: t("form.referral_source_options.social_media") },
+        { value: "google", label: t("form.referral_source_options.google") },
+    ];
+    const selectedReferralSourceLabel = referralSourceOptions.find(
+        (option) => option.value === formik.values.source
+    )?.label;
 
     // Success state
     if (step > LAST_STEP) {
+        const successCards = [
+            {
+                icon: Home,
+                title: t("form.mentee.success.cards.chat.title"),
+                body: t("form.mentee.success.cards.chat.body"),
+            },
+            {
+                icon: Mail,
+                title: t("form.mentee.success.cards.email.title"),
+                body: t("form.mentee.success.cards.email.body"),
+            },
+            {
+                icon: Clock3,
+                title: t("form.mentee.success.cards.timing.title"),
+                body: t("form.mentee.success.cards.timing.body"),
+            },
+        ];
+
         return (
             <FormWrapper subtitle="" title="" progress={100} direction={direction}>
                 <div className="flex flex-col items-center py-6 text-center">
@@ -169,27 +133,30 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
                     <h2 className="text-foreground text-2xl font-bold">
                         {t("form.mentee.title.5", { defaultValue: "Dziękujemy!" })}
                     </h2>
-                    <p className="text-muted-foreground mt-2 max-w-sm text-[15px]">
-                        {t("form.mentee.subtitle.5", {
-                            defaultValue: "Twoje zgłoszenie zostało wysłane. Skontaktujemy się z Tobą wkrótce.",
-                        })}
+                    <p className="text-muted-foreground mt-3 max-w-2xl text-[15px] leading-relaxed">
+                        {t("form.mentee.success.lead")}
                     </p>
+                    <div className="mt-8 grid w-full gap-3 text-left">
+                        {successCards.map(({ icon: Icon, title, body }) => (
+                            <div
+                                key={title}
+                                className="border-border bg-muted/30 flex items-start gap-3 rounded-2xl border px-4 py-4"
+                            >
+                                <div className="bg-primary-brand/10 mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-full">
+                                    <Icon className="text-primary-brand size-4.5" />
+                                </div>
+                                <div>
+                                    <p className="text-foreground text-sm font-semibold">{title}</p>
+                                    <p className="text-muted-foreground mt-1 text-sm leading-relaxed">{body}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <p className="text-foreground mt-5 text-sm font-semibold">{t("form.mentee.success.closing")}</p>
                     <div className="mt-8 flex w-full flex-col gap-2.5">
                         <Button className="w-full gap-2" render={<Link to="/" />}>
                             <Home className="size-4" />
                             {t("form.homepage")}
-                        </Button>
-                        <Button
-                            className="w-full gap-2"
-                            variant="ghost"
-                            type="button"
-                            onClick={() => {
-                                setStep(0);
-                                formik.resetForm();
-                            }}
-                        >
-                            <RefreshCw className="size-4" />
-                            {t("form.retry")}
                         </Button>
                     </div>
                 </div>
@@ -326,45 +293,8 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
                     </div>
                 )}
 
-                {/* Step 2: Themes */}
+                {/* Step 2: Description */}
                 {step === 2 && (
-                    <div className="flex flex-col gap-4">
-                        <div className="space-y-3">
-                            <Label>{t("form.mentee.issue_type_label")}</Label>
-                            <p className="text-muted-foreground -mt-1 text-sm">{t("crisis.content_warning")}</p>
-
-                            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                                {THEME_OPTIONS.map((opt) => (
-                                    <label
-                                        key={opt.value}
-                                        className={cn(
-                                            "border-border hover:bg-muted/50 flex cursor-pointer items-center gap-2.5 rounded-xl border px-3.5 py-3 transition-all",
-                                            formik.values.themes.includes(opt.value) &&
-                                                "border-primary-brand bg-primary-brand/5 ring-primary-brand/20 ring-1"
-                                        )}
-                                    >
-                                        <Checkbox
-                                            checked={formik.values.themes.includes(opt.value)}
-                                            onCheckedChange={() => handleThemeToggle(opt.value)}
-                                        />
-                                        <span className="text-sm">
-                                            {t(`form.volunteer.issues_to_avoid.${opt.key}`)}
-                                        </span>
-                                    </label>
-                                ))}
-                            </div>
-
-                            {formik.touched.themes && formik.errors.themes && (
-                                <p role="alert" className="text-destructive text-sm">
-                                    {formik.errors.themes as string}
-                                </p>
-                            )}
-                        </div>
-                    </div>
-                )}
-
-                {/* Step 3: Description */}
-                {step === 3 && (
                     <div className="flex flex-col gap-5">
                         <div className="space-y-1.5">
                             <Label htmlFor="description">{t("form.mentee.issue_description_label")}</Label>
@@ -392,76 +322,82 @@ const MenteeForm = ({ onSubmit, setStep, step, isLoading }: Props) => {
                     </div>
                 )}
 
+                {/* Step 3: Contact preference */}
+                {step === 3 && (
+                    <div className="flex flex-col gap-5">
+                        <div className="space-y-2">
+                            <Label>{t("form.mentee.contact_preference_label")}</Label>
+                            <p className="text-muted-foreground text-sm">{t("form.mentee.contact_preference_hint")}</p>
+                        </div>
+
+                        <div className="border-border bg-muted/40 relative grid grid-cols-2 rounded-2xl border p-1">
+                            <div
+                                className={cn(
+                                    "bg-background absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-xl shadow-sm transition-transform duration-200",
+                                    !formik.values.contact_preference && "opacity-0",
+                                    formik.values.contact_preference === "asynchronous"
+                                        ? "translate-x-[calc(100%+4px)]"
+                                        : "translate-x-0"
+                                )}
+                            />
+                            {(["scheduled", "asynchronous"] as const).map((value) => (
+                                <button
+                                    key={value}
+                                    type="button"
+                                    onClick={() => formik.setFieldValue("contact_preference", value)}
+                                    className="relative z-10 rounded-xl px-4 py-4 text-left transition-colors"
+                                >
+                                    <span className="text-foreground block text-sm font-semibold">
+                                        {t(`form.mentee.contact_preference_options.${value}.title`)}
+                                    </span>
+                                    <span className="text-muted-foreground mt-1 block text-xs leading-relaxed">
+                                        {t(`form.mentee.contact_preference_options.${value}.description`)}
+                                    </span>
+                                </button>
+                            ))}
+                        </div>
+
+                        {(formik.touched.contact_preference || formik.submitCount > 0) &&
+                            formik.errors.contact_preference && (
+                                <p role="alert" className="text-destructive text-sm">
+                                    {formik.errors.contact_preference}
+                                </p>
+                            )}
+                    </div>
+                )}
+
                 {/* Step 4: Account + Source + TOS */}
                 {step === 4 && (
                     <div className="flex flex-col gap-5">
-                        {!user && (
-                            <>
-                                <div className="space-y-1.5">
-                                    <Label htmlFor="password">{t("common.password")}</Label>
-                                    <Input
-                                        id="password"
-                                        name="password"
-                                        type="password"
-                                        autoFocus
-                                        aria-describedby={
-                                            formik.touched.password && formik.errors.password
-                                                ? "password-error"
-                                                : undefined
-                                        }
-                                        value={formik.values.password}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        className="h-12"
-                                    />
-                                    {formik.touched.password && formik.errors.password && (
-                                        <p id="password-error" role="alert" className="text-destructive text-sm">
-                                            {formik.errors.password}
-                                        </p>
-                                    )}
-                                </div>
-                                <div className="space-y-1.5">
-                                    <Label htmlFor="confirmPassword">{t("common.password_confirmation")}</Label>
-                                    <Input
-                                        id="confirmPassword"
-                                        name="confirmPassword"
-                                        type="password"
-                                        aria-describedby={
-                                            formik.touched.confirmPassword && formik.errors.confirmPassword
-                                                ? "confirmPassword-error"
-                                                : undefined
-                                        }
-                                        value={formik.values.confirmPassword}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        className="h-12"
-                                    />
-                                    {formik.touched.confirmPassword && formik.errors.confirmPassword && (
-                                        <p id="confirmPassword-error" role="alert" className="text-destructive text-sm">
-                                            {formik.errors.confirmPassword}
-                                        </p>
-                                    )}
-                                </div>
-                            </>
-                        )}
                         <div className="space-y-1.5">
                             <Label htmlFor="source">{t("form.referral_source_label")}</Label>
-                            <select
-                                id="source"
-                                name="source"
-                                aria-describedby={
-                                    formik.touched.source && formik.errors.source ? "source-error" : undefined
-                                }
+                            <Select
                                 value={formik.values.source}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                className="border-input focus-visible:border-ring focus-visible:ring-ring/30 h-12 w-full rounded-xl border bg-transparent px-3 py-1 text-sm transition-colors outline-none focus-visible:ring-2"
+                                onValueChange={(value) => formik.setFieldValue("source", value)}
+                                onOpenChange={(open) => {
+                                    if (!open) {
+                                        formik.setFieldTouched("source", true);
+                                    }
+                                }}
                             >
-                                <option value="">---</option>
-                                <option value="friend">{t("form.referral_source_options.friend")}</option>
-                                <option value="socialMedia">{t("form.referral_source_options.social_media")}</option>
-                                <option value="google">{t("form.referral_source_options.google")}</option>
-                            </select>
+                                <SelectTrigger
+                                    id="source"
+                                    aria-describedby={
+                                        formik.touched.source && formik.errors.source ? "source-error" : undefined
+                                    }
+                                    className="h-12 w-full rounded-xl bg-transparent px-4 text-sm"
+                                    onBlur={() => formik.setFieldTouched("source", true)}
+                                >
+                                    <SelectValue>{selectedReferralSourceLabel ?? "---"}</SelectValue>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {referralSourceOptions.map((option) => (
+                                        <SelectItem key={option.value} value={option.value}>
+                                            {option.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                             {formik.touched.source && formik.errors.source && (
                                 <p id="source-error" role="alert" className="text-destructive text-sm">
                                     {formik.errors.source}

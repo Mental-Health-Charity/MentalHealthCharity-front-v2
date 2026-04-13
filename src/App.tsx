@@ -21,10 +21,16 @@ function App() {
         ReactGA.pageview(window.location.pathname + window.location.search);
     }, []);
 
-    posthog.init(posthogKey, {
-        api_host: "https://eu.i.posthog.com",
-        person_profiles: "identified_only",
-    });
+    useEffect(() => {
+        if (!posthogKey) {
+            return;
+        }
+
+        posthog.init(posthogKey, {
+            api_host: "https://eu.i.posthog.com",
+            person_profiles: "identified_only",
+        });
+    }, []);
 
     return (
         <Suspense fallback={<Loader variant="fullscreen" />}>
