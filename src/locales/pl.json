@@ -387,6 +387,19 @@
         "contact": "Kontakt",
         "rights_reserved": "Fundacja Peryskop - wszelkie prawa zastrzeżone"
     },
+    "technical_break": {
+        "logo_alt": "Logo Fundacji Peryskop",
+        "brand": "Fundacja Peryskop",
+        "title": "Przerwa techniczna",
+        "hardcoded_description": "Pracujemy nad aktualizacją aplikacji. Przepraszamy za utrudnienia i dziękujemy za cierpliwość.",
+        "planned_end": "Planowane zakończenie prac:",
+        "refresh": "Odśwież stronę",
+        "contact": "Kontakt",
+        "social": {
+            "facebook": "Facebook",
+            "linkedin": "LinkedIn"
+        }
+    },
     "homepage": {
         "choose_mentee_button": "Uzyskaj wsparcie",
         "choose_volunteer_button": "Zostań wolontariuszem",
