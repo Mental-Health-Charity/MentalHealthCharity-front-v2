@@ -1,10 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { Link as ReactRouterLink } from "react-router-dom";
+import { useUser } from "../modules/auth/components/AuthProvider";
+import { buildChatSupportRegisterUrl } from "../modules/auth/helpers/authRedirect";
 import ScrollIndicator from "../modules/shared/components/ScrollIndicator";
 
 const MenteeFormGettingStartedScreen = () => {
     const { t } = useTranslation();
+    const { user } = useUser();
+    const chatSupportHref = user ? "/form/mentee" : buildChatSupportRegisterUrl("/form/mentee");
 
     return (
         <>
@@ -57,7 +61,7 @@ const MenteeFormGettingStartedScreen = () => {
 
                         {/* CTA SECTION */}
                         <div className="border-border mt-8 flex justify-center border-t pt-8">
-                            <Button className="w-full" render={<ReactRouterLink to="/form/mentee" />}>
+                            <Button className="w-full" render={<ReactRouterLink to={chatSupportHref} />}>
                                 {t("homepage.chat_now")}
                             </Button>
                         </div>

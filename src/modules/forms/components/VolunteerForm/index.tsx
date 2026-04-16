@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { useFormik } from "formik";
-import { ArrowLeft, ArrowRight, CheckCircle, Home, RefreshCw } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle, Home } from "lucide-react";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -146,18 +146,6 @@ const VolunteerForm = ({ onSubmit, initStep = 0 }: Props) => {
                         <Button className="w-full gap-2" render={<Link to="/" />}>
                             <Home className="size-4" />
                             {t("form.homepage")}
-                        </Button>
-                        <Button
-                            className="w-full gap-2"
-                            variant="ghost"
-                            type="button"
-                            onClick={() => {
-                                setStep(0);
-                                formik.resetForm();
-                            }}
-                        >
-                            <RefreshCw className="size-4" />
-                            {t("form.retry")}
                         </Button>
                     </div>
                 </div>

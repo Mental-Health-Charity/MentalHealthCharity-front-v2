@@ -39,7 +39,7 @@ const RegisterForm = ({ onSubmit, initial }: Props) => {
             {({ isSubmitting, errors, touched, handleChange, handleBlur, values, setFieldValue }) => (
                 <Form className="flex flex-col gap-4">
                     <div className="space-y-1.5">
-                        <Label htmlFor="full_name">Imie lub ksywka</Label>
+                        <Label htmlFor="full_name">Imię lub ksywka</Label>
                         <Input
                             id="full_name"
                             name="full_name"
@@ -82,7 +82,7 @@ const RegisterForm = ({ onSubmit, initial }: Props) => {
                     </div>
 
                     <div className="space-y-1.5">
-                        <Label htmlFor="confirmPassword">Potwierdź Hasło</Label>
+                        <Label htmlFor="confirmPassword">Potwierdź hasło</Label>
                         <Input
                             id="confirmPassword"
                             name="confirmPassword"
@@ -103,7 +103,7 @@ const RegisterForm = ({ onSubmit, initial }: Props) => {
                                 Zapamiętaj mnie
                             </Label>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-start gap-2">
                             <Field name="policy_confirm">
                                 {({ field }: { field: { value: boolean } }) => (
                                     <Checkbox
@@ -113,8 +113,11 @@ const RegisterForm = ({ onSubmit, initial }: Props) => {
                                     />
                                 )}
                             </Field>
-                            <Label htmlFor="policy_confirm" className="cursor-pointer text-sm">
-                                Rejestrując się wyrażam zgodę na{" "}
+                            <Label
+                                htmlFor="policy_confirm"
+                                className="inline cursor-pointer text-sm leading-relaxed font-normal"
+                            >
+                                Rejestrując się, akceptuję{" "}
                                 <InternalLink to="/tos">warunki użytkowania i politykę prywatności</InternalLink>
                             </Label>
                         </div>

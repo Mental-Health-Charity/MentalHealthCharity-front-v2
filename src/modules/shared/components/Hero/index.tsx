@@ -8,8 +8,9 @@ import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { useUser } from "../../../auth/components/AuthProvider";
+import { getCanUserSendFormQueryOptions } from "../../../forms/queries/getCanUserSendFormQueryOptions";
+import { formTypes } from "../../../forms/types";
 import { getChatsQueryOptions } from "../../../chat/queries/getChatsQueryOptions";
-import { SessionStorage } from "../../types";
 
 interface MockMessage {
     own: boolean;
@@ -31,6 +32,14 @@ const Hero = () => {
             {
                 enabled: !!user,
                 queryKey: ["chats"],
+            }
+        )
+    );
+    const { data: canSendMenteeForm, isLoading: isCanSendFormLoading } = useQuery(
+        getCanUserSendFormQueryOptions(
+            { form_type_id: formTypes.MENTEE },
+            {
+                enabled: !!user,
             }
         )
     );
@@ -87,9 +96,9 @@ const Hero = () => {
 
     const trustBadges = [t("homepage.trust_free"), t("homepage.trust_anonymous"), t("homepage.trust_safe")];
 
-    const isFormSent = localStorage.getItem(SessionStorage.SEND_FORM) === "true";
+    const isFormSent = !!user && canSendMenteeForm?.can_send_form === false;
     const hasNoChats = !chats || chats.total === 0;
-    const isProcessing = !!user && isFormSent && hasNoChats && !isChatsLoading; // User has sent the form, there are no chats, and we're not currently loading chats (which means we've already loaded and confirmed there are no chats)
+    const isProcessing = !!user && isFormSent && hasNoChats && !isChatsLoading && !isCanSendFormLoading;
 
     return (
         <section className="from-primary-brand-50 bg-gradient-to-b to-transparent">

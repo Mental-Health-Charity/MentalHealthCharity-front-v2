@@ -19,6 +19,7 @@ export interface RouteType {
     onRender: React.ReactNode;
     requiresAuth?: boolean;
     permission?: Permissions;
+    unauthenticatedRedirect?: string;
 }
 
 export interface NavlinkProps {
@@ -73,8 +74,4 @@ export enum ErrorMessage {
     FAILED_TO_CREATE_CHAT = "failed_to_create_chat",
     FAILED_TO_EDIT_CHAT = "failed_to_edit_chat",
     UNKNOWN = "unknown",
-}
-
-export enum SessionStorage {
-    SEND_FORM = "send_form",
 }

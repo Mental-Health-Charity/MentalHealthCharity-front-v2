@@ -55,15 +55,17 @@ const ManageMenteeFormsScreen = () => {
                 </select>
             </div>
             {isLoading && <Loader />}
-            <div className="w-full overflow-x-auto md:max-w-[calc(100vw-240px)]">
-                {data && (
-                    <FormsTable
-                        formNoteKeys={[formNoteFields.NOTE]}
-                        onRefetch={refetch}
-                        data={data}
-                        renderStepAddnotation={(id) => t(`manage_volunteer_mentee.steps.${id - 1}`)}
-                    />
-                )}
+            <div className="w-full min-w-0">
+                <div className="w-full max-w-full overflow-x-auto overflow-y-hidden">
+                    {data && (
+                        <FormsTable
+                            formNoteKeys={[formNoteFields.NOTE]}
+                            onRefetch={refetch}
+                            data={data}
+                            renderStepAddnotation={(id) => t(`manage_volunteer_mentee.steps.${id - 1}`)}
+                        />
+                    )}
+                </div>
             </div>
             {isError && <p className="text-destructive">{t("common.no_data")}</p>}
         </AdminLayout>

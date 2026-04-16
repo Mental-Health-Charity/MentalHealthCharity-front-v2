@@ -1,8 +1,9 @@
 import { Heart } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useUser } from "../modules/auth/components/AuthProvider";
+import { buildForwardedAuthSearch, getAuthRedirectTarget } from "../modules/auth/helpers/authRedirect";
 import LoginForm from "../modules/auth/components/LoginForm";
 import { LoginFormValues } from "../modules/auth/types";
 import InternalLink from "../modules/shared/components/InternalLink";
@@ -12,12 +13,14 @@ const LoginScreen = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const { t } = useTranslation();
+    const [searchParams] = useSearchParams();
+    const authSearch = buildForwardedAuthSearch(searchParams);
 
     const handleSubmit = (values: LoginFormValues) => {
         setLoading(true);
         login.mutate(values, {
             onSuccess: () => {
-                navigate("/");
+                navigate(getAuthRedirectTarget(searchParams));
                 setLoading(false);
             },
             onError: () => {
@@ -55,7 +58,7 @@ const LoginScreen = () => {
                 </div>
                 <p className="text-muted-foreground mt-6 text-sm">
                     {t("auth.login.no_account")}{" "}
-                    <InternalLink className="text-primary-brand font-semibold" to="/auth/register">
+                    <InternalLink className="text-primary-brand font-semibold" to={`/auth/register${authSearch}`}>
                         {t("auth.login.register_link")}
                     </InternalLink>
                 </p>

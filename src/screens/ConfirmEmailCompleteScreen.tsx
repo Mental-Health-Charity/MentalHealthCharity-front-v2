@@ -1,23 +1,28 @@
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { buildForwardedAuthSearch } from "../modules/auth/helpers/authRedirect";
 import Loader from "../modules/shared/components/Loader";
 import { confirmEmailCompleteQueryOptions } from "../modules/users/queries/confirmEmailCompleteQueryOptions";
 
 const ConfirmEmailCompleteScreen = () => {
     const navigate = useNavigate();
     const { t } = useTranslation();
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get("token");
+    const [searchParams] = useSearchParams();
+    const authSearch = buildForwardedAuthSearch(searchParams);
+    const token = searchParams.get("token");
     const { isSuccess, isError } = useQuery(
         confirmEmailCompleteQueryOptions({
             token: token || "",
         })
     );
 
-    if (isSuccess) {
-        navigate("/login");
-    }
+    useEffect(() => {
+        if (isSuccess) {
+            navigate(`/login${authSearch}`, { replace: true });
+        }
+    }, [authSearch, isSuccess, navigate]);
 
     if (isError) {
         return (
