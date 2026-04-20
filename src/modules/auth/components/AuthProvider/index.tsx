@@ -6,14 +6,14 @@ import handleApiError from "../../../shared/helpers/handleApiError";
 import fetchUserData from "../../queries/fetchUserDataQuery";
 import { registerMutation } from "../../queries/registerMutation";
 import { loginMutation } from "../../queries/tokenMutation";
-import { LoginAccessTokenResponse, LoginFormValues, RegisterFormValues, RegisterResponse, User } from "../../types";
+import { LoginAccessTokenResponse, LoginFormValues, RegisterPayload, RegisterResponse, User } from "../../types";
 
 interface UserContextType {
     user: User | undefined;
     login: UseMutationResult<LoginAccessTokenResponse, Error, LoginFormValues>;
     isLoading: boolean;
     error: Error | null;
-    register: UseMutationResult<RegisterResponse, Error, RegisterFormValues>;
+    register: UseMutationResult<RegisterResponse, Error, RegisterPayload>;
     logout: () => void;
     isFetchingUser: boolean;
 }
@@ -29,12 +29,6 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
 
     const register = useMutation({
         mutationFn: registerMutation,
-        onMutate: () => {
-            setIsAuthenticated(true);
-        },
-        onError: () => {
-            setIsAuthenticated(false);
-        },
     });
 
     const login = useMutation({

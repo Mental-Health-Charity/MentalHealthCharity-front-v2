@@ -4,6 +4,7 @@ import ChangePasswordScreen from "../../screens/ChangePasswordScreen";
 import ConfirmEmailCompleteScreen from "../../screens/ConfirmEmailCompleteScreen";
 import ConfirmEmailScreen from "../../screens/ConfirmEmailScreen";
 import SupportUsScreen from "../../screens/SupportUsScreen";
+import { buildChatSupportRegisterUrl } from "../auth/helpers/authRedirect";
 import { Permissions } from "./constants";
 import { RouteType } from "./types";
 
@@ -43,6 +44,7 @@ const routes: RouteType[] = [
         url: "/form/mentee",
         onRender: <MenteeFormScreen />,
         requiresAuth: true,
+        unauthenticatedRedirect: buildChatSupportRegisterUrl("/form/mentee"),
     },
     {
         url: "/form/mentee-getting-started",

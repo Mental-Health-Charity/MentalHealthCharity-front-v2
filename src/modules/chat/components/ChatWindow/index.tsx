@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { BookOpen, Flag, LockKeyhole, Menu, StickyNote, Users } from "lucide-react";
+import { BookOpen, Flag, LockKeyhole, Menu, ScrollText, StickyNote, Users } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -19,6 +19,7 @@ import ChatSidebar from "../ChatSidebar";
 import CloseChatModal from "../CloseChatModal";
 import ContractSidebar from "../ContractModal/ContractModal";
 import CustomizeChatModal from "../CustomizeChatModal";
+import HelpRulesSidebar from "../HelpRulesSidebar";
 import NewChatModal from "../NewChatModal";
 import Note from "../Note";
 
@@ -36,6 +37,7 @@ const ChatWindow = () => {
     const { user } = useUser();
     const [showCustomizeModal, setShowCustomizeModal] = useState(false);
     const [showContractModal, setShowContractModal] = useState(false);
+    const [showHelpRules, setShowHelpRules] = useState(false);
     const [showNewChatModal, setShowNewChatModal] = useState(false);
     const [showAddParticipant, setShowAddParticipant] = useState(false);
     const [showCloseChatModal, setShowCloseChatModal] = useState(false);
@@ -152,6 +154,21 @@ const ChatWindow = () => {
                 <TooltipTrigger
                     render={
                         <button
+                            onClick={() => setShowHelpRules(!showHelpRules)}
+                            className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-2 transition-colors"
+                            aria-label={t("chat.help_rules")}
+                        >
+                            <ScrollText className="size-5" />
+                        </button>
+                    }
+                />
+                <TooltipContent>{t("chat.help_rules")}</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+                <TooltipTrigger
+                    render={
+                        <button
                             onClick={() => setShowDetails(!showDetails)}
                             className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-2 transition-colors"
                             aria-label={t("chat.show_details", { defaultValue: "Details" })}
@@ -260,6 +277,8 @@ const ChatWindow = () => {
                         onClose={() => setShowContractModal(false)}
                     />
                 )}
+
+                {showHelpRules && selectedChat && <HelpRulesSidebar onClose={() => setShowHelpRules(false)} />}
 
                 {/* Right: details panel */}
                 {showDetails && selectedChat && (

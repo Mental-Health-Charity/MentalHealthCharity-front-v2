@@ -118,7 +118,12 @@ const ChangeAvatar = ({ avatar, username, disabled, onSubmit }: Props) => {
                         onChange={handleFileChange}
                     />
                     {error && <p className="text-destructive mt-2.5 text-center text-sm">{error}</p>}
-                    <Button type="button" className="mt-5 w-full" disabled={!selectedFile || !!error} onClick={handleSubmit}>
+                    <Button
+                        type="button"
+                        className="mt-5 w-full"
+                        disabled={!selectedFile || !!error}
+                        onClick={handleSubmit}
+                    >
                         {t("common.save")}
                     </Button>
                 </div>

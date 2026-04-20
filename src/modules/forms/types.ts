@@ -4,6 +4,14 @@ export interface FormOptions {
     id: number;
 }
 
+export interface CanUserSendFormOptions {
+    form_type_id?: formTypes;
+}
+
+export interface CanUserSendFormResponse {
+    can_send_form: boolean;
+}
+
 export enum formStatus {
     WAITED = "WAITED",
     ACCEPTED = "ACCEPTED",
@@ -63,13 +71,11 @@ export interface MenteeFormValues {
     name: string;
     contacts: string[];
     description: string;
+    contact_preference: "scheduled" | "asynchronous" | "";
     phone?: string;
     email: string;
     tos: boolean;
     source: string;
-    themes: string[];
-    password: string;
-    confirmPassword: string;
 }
 
 export interface MenteeForm {
@@ -77,10 +83,10 @@ export interface MenteeForm {
     name: string;
     contacts: FormOption[];
     description: string;
+    contact_preference: "scheduled" | "asynchronous";
     phone?: string;
     tos: boolean;
     source: string;
-    themes: FormOption[];
 }
 
 export interface Form<T> {

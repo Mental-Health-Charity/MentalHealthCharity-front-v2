@@ -20,7 +20,7 @@ import {
     ReadChatOptions,
     SearchChatQueryOptions,
 } from "./modules/chat/types";
-import { FormOptions, ReadAllFormOptions } from "./modules/forms/types";
+import { CanUserSendFormOptions, FormOptions, ReadAllFormOptions } from "./modules/forms/types";
 import { ChangeReportStatusPayload } from "./modules/report/types";
 import {
     PublicProfileOptions,
@@ -216,6 +216,9 @@ export const url = {
             return `${baseUrl}/api/v1/form/${id}/notes`;
         },
         create: `${baseUrl}/api/v1/form/`,
-        canUserSendForm: `${baseUrl}/api/v1/form/can-send-form/`,
+        canUserSendForm(options?: CanUserSendFormOptions) {
+            const query = buildQuery(options ?? {});
+            return query ? `${baseUrl}/api/v1/form/can-send-form?${query}` : `${baseUrl}/api/v1/form/can-send-form`;
+        },
     },
 };

@@ -13,6 +13,11 @@ export interface RegisterFormValues {
     policy_confirm: boolean;
 }
 
+export interface RegisterPayload extends RegisterFormValues {
+    intent?: string;
+    next?: string;
+}
+
 export interface LoginAccessTokenResponse {
     access_token: string;
     token_type: string;

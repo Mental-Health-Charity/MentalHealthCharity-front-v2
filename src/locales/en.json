@@ -177,6 +177,91 @@
             "subtitle": "Register using the form below — we're glad you're joining us!",
             "has_account": "Already have an account?",
             "login_link": "Sign in"
+        },
+        "register_chat_support": {
+            "title": "Create an account to start the chat",
+            "subtitle": "You need an account to talk with a volunteer in the chat.",
+            "notice": "Support at Peryskop is anonymous and free. We only need an account to securely connect you with your chat and notify you when a volunteer is assigned.",
+            "has_account": "Already have an account?"
+        }
+    },
+    "chat": {
+        "notes": "Notes",
+        "contract": "Agreement",
+        "report": "Report",
+        "show_details": "Details",
+        "close_chat": "Close chat",
+        "help_rules": "Support rules",
+        "help_rules_placeholder": "Support rules will appear here soon."
+    },
+    "forms_fields": {
+        "contact_preference": "Preferred contact style"
+    },
+    "form": {
+        "mentee": {
+            "subtitle": [
+                "Thank you for your trust. Fill out this short form so we can prepare support for you.",
+                "We will use this email address to notify you when we find the right volunteer.",
+                "Describe your situation as clearly as you can so we can match you with the right volunteer.",
+                "Tell us whether you prefer regular scheduled chat sessions or a looser exchange of messages.",
+                "How did you hear about our foundation?",
+                "That's everything. We will email you when we find a volunteer for you. Keep checking the website for the “CHAT” tab, remember to check your spam folder as well, and if you have any problems with the chat write to kontakt@fundacjaperyskop.org. Whether you chose scheduled sessions or a looser exchange of messages, please do not expect an immediate reply right after assignment — it may take a few days. Thank you for your trust."
+            ],
+            "title": [
+                "Receive free support",
+                "Contact",
+                "Describe your situation",
+                "Choose contact style",
+                "How did you hear about Peryskop?",
+                "Thank you for filling out the form!"
+            ],
+            "subtitle_new_user": [
+                "Thank you for your trust. Fill out this short form so we can prepare support for you.",
+                "We will use this email address to notify you when we find the right volunteer.",
+                "Describe your situation as clearly as you can so we can match you with the right volunteer.",
+                "Tell us whether you prefer regular scheduled chat sessions or a looser exchange of messages.",
+                "You need to create an account to use the chat. Support is anonymous and free.",
+                "That's everything. We will email you when we find a volunteer for you. Keep checking the website for the “CHAT” tab, remember to check your spam folder as well, and if you have any problems with the chat write to kontakt@fundacjaperyskop.org. Whether you chose scheduled sessions or a looser exchange of messages, please do not expect an immediate reply right after assignment — it may take a few days. Thank you for your trust."
+            ],
+            "success": {
+                "lead": "That's everything. We will email you as soon as we find a volunteer for you.",
+                "cards": {
+                    "chat": {
+                        "title": "What happens next",
+                        "body": "Keep checking the website. When the “CHAT” tab appears in the top menu, everything is ready."
+                    },
+                    "email": {
+                        "title": "Check your inbox",
+                        "body": "Remember to check your spam folder as well. If you have any problems with the chat, write to kontakt@fundacjaperyskop.org."
+                    },
+                    "timing": {
+                        "title": "When to expect a reply",
+                        "body": "Whether you chose scheduled sessions or a looser exchange of messages, please do not expect an immediate reply. After you are assigned to a volunteer, it may still take a few days."
+                    }
+                },
+                "closing": "Thank you for your trust."
+            },
+            "title_new_user": [
+                "Receive free support",
+                "Contact",
+                "Describe your situation",
+                "Choose contact style",
+                "Create an account to continue",
+                "Thank you for filling out the form!"
+            ],
+            "issue_description_label": "Describe your situation",
+            "contact_preference_label": "What kind of contact would you prefer?",
+            "contact_preference_hint": "We do not have a mobile app with notifications yet, so a looser exchange of messages will feel closer to email than instant messaging.",
+            "contact_preference_options": {
+                "scheduled": {
+                    "title": "Regular, scheduled sessions",
+                    "description": "Choose a steady rhythm of conversations at agreed times."
+                },
+                "asynchronous": {
+                    "title": "Looser exchange of messages",
+                    "description": "Messages will feel more like email than real-time chat."
+                }
+            }
         }
     }
 }
