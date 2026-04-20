@@ -7,6 +7,7 @@ import { User } from "../../../auth/types";
 import SimpleCard from "../../../shared/components/SimpleCard";
 import WindowListVirtualizer, { CachedListRowProps } from "../../../shared/components/WindowListVirtualizer";
 import { Pagination } from "../../../shared/types";
+import { Roles } from "../../constants";
 import editUserAsAdminMutation from "../../queries/editUserAsAdminMutation";
 import EditUserModal from "../EditUserModal";
 import SearchUser from "../SearchUser";
@@ -17,11 +18,12 @@ interface Props {
     user?: User;
     onChange: (user?: User) => void;
     onChangeSearchQuery?: (nickname: string) => void;
+    onChangeRole?: (role?: Roles) => void;
     isLoading: boolean;
     refetchUsers: () => void;
 }
 
-const UsersList = ({ data, onChange, onChangeSearchQuery, user, refetchUsers }: Props) => {
+const UsersList = ({ data, onChange, onChangeSearchQuery, onChangeRole, user, refetchUsers }: Props) => {
     const [userToEdit, setUserToEdit] = useState<User>();
     const { t } = useTranslation();
     const { mutate } = useMutation({
@@ -58,7 +60,12 @@ const UsersList = ({ data, onChange, onChangeSearchQuery, user, refetchUsers }: 
                 subtitle={t("admin_screen.user_list_subtitle")}
                 className="mb-5 h-full"
             >
-                <SearchUser onChangeSearchQuery={onChangeSearchQuery} onChange={onChange} value={user} />
+                <SearchUser
+                    onChangeSearchQuery={onChangeSearchQuery}
+                    onChangeRole={onChangeRole}
+                    onChange={onChange}
+                    value={user}
+                />
             </SimpleCard>
 
             <WindowListVirtualizer rowCount={data ? data.items.length : 0} onRender={onRender} />

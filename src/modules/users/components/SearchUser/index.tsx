@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2, User as UserIcon } from "lucide-react";
+import { ChevronDown, Loader2, User as UserIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { User } from "../../../auth/types";
@@ -14,11 +14,12 @@ import { searchUserQueryOptions } from "../../queries/searchUserQueryOptions";
 interface Props {
     onChange: (user?: User) => void;
     onChangeSearchQuery?: (nickname: string) => void;
+    onChangeRole?: (role?: Roles) => void;
     value?: User;
     disabled?: boolean;
 }
 
-const SearchUser = ({ onChange, value, onChangeSearchQuery, disabled }: Props) => {
+const SearchUser = ({ onChange, value, onChangeSearchQuery, onChangeRole, disabled }: Props) => {
     const [role, setRole] = useState<Roles | undefined>();
     const [username, setUsername] = useState<string>("");
     const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +31,7 @@ const SearchUser = ({ onChange, value, onChangeSearchQuery, disabled }: Props) =
 
     const { data, refetch } = useQuery(
         searchUserQueryOptions({
-            query: debouncedValue,
+            query: debouncedValue.trim() || undefined,
             role,
         })
     );
@@ -143,20 +144,29 @@ const SearchUser = ({ onChange, value, onChangeSearchQuery, disabled }: Props) =
 
             <div className="min-w-[120px]">
                 <Label htmlFor="role-filter">{t("search_user.role_label", "Role")}</Label>
-                <select
-                    id="role-filter"
-                    disabled={disabled}
-                    value={role || ""}
-                    onChange={(e) => setRole(e.target.value === "" ? undefined : (e.target.value as Roles))}
-                    className="border-input focus-visible:border-ring focus-visible:ring-ring/50 my-2 h-10 w-full rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3 disabled:opacity-50"
-                >
-                    <option value="">{t("search_user.any_role", "Każda rola")}</option>
-                    {Object.values(Roles).map((r) => (
-                        <option key={r} value={r}>
-                            {r}
+                <div className="relative my-2">
+                    <select
+                        id="role-filter"
+                        disabled={disabled}
+                        value={role || ""}
+                        onChange={(e) => {
+                            const selectedRole = e.target.value === "" ? undefined : (e.target.value as Roles);
+                            setRole(selectedRole);
+                            onChangeRole?.(selectedRole);
+                        }}
+                        className="border-input bg-paper text-foreground focus-visible:border-ring focus-visible:ring-ring/50 h-10 w-full appearance-none rounded-lg border px-2.5 py-1 pr-8 text-sm outline-none focus-visible:ring-3 disabled:opacity-50"
+                    >
+                        <option className="bg-paper text-foreground" value="">
+                            {t("search_user.any_role", "Każda rola")}
                         </option>
-                    ))}
-                </select>
+                        {Object.values(Roles).map((r) => (
+                            <option className="bg-paper text-foreground" key={r} value={r}>
+                                {r}
+                            </option>
+                        ))}
+                    </select>
+                    <ChevronDown className="text-muted-foreground pointer-events-none absolute top-1/2 right-2 size-4 -translate-y-1/2" />
+                </div>
             </div>
         </div>
     );

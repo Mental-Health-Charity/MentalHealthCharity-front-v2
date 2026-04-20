@@ -8,14 +8,13 @@ import { Roles } from "../modules/users/constants";
 import { searchUserQueryOptions } from "../modules/users/queries/searchUserQueryOptions";
 
 const UserEditorScreen = () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [role, _setRole] = useState<Roles | undefined>();
+    const [role, setRole] = useState<Roles | undefined>();
     const [params, setParams] = useSearchParams();
     const [searchQuery, setSearchQuery] = useState<string>(params.get("search") || "");
 
     const { data, isLoading, refetch } = useQuery(
         searchUserQueryOptions({
-            query: searchQuery,
+            query: searchQuery.trim() || undefined,
             role,
         })
     );
@@ -33,6 +32,7 @@ const UserEditorScreen = () => {
                 <UsersList
                     isLoading={isLoading}
                     onChangeSearchQuery={handleSearch}
+                    onChangeRole={(selectedRole) => setRole(selectedRole)}
                     user={selectedUser}
                     onChange={(u) => setSelectedUser(u)}
                     data={data}

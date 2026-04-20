@@ -1,7 +1,7 @@
 import { User } from "../auth/types";
 
 export interface ReadSearchUsersOptions {
-    query: string;
+    query?: string;
     role?: string;
 }
 
