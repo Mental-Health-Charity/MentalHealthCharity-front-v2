@@ -6,8 +6,8 @@ import { Pagination } from "../../shared/types";
 import { FormResponse, MenteeForm, ReadAllFormOptions, VolunteerForm } from "../types";
 
 type FormTypeById<T extends number> = T extends 2
-    ? Pagination<FormResponse<VolunteerForm | MenteeForm>>
-    : Pagination<FormResponse<VolunteerForm | MenteeForm>>;
+    ? Pagination<FormResponse<MenteeForm>>
+    : Pagination<FormResponse<VolunteerForm>>;
 
 type InfiniteFormsOptions<T extends number> = Omit<ReadAllFormOptions, "page"> & { form_type_id: T };
 
