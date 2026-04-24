@@ -47,6 +47,9 @@
         "remove": "Usuń",
         "disable": "Wyłącz",
         "enable": "Włącz",
+        "expand": "Rozwiń",
+        "collapse": "Zwiń",
+        "show_more_count_click": "i {{count}} więcej. Kliknij aby pokazać",
         "inactive": "Nieaktywny",
         "save": "Zapisz",
         "created_at": "Utworzono {{date}}",
@@ -773,6 +776,47 @@
         "accepted": "Zaakceptowany",
         "rejected": "Odrzucony",
         "waited": "Oczekujący"
+    },
+    "recruitment_manager": {
+        "title": "Manager rekrutacji",
+        "tabs": {
+            "application_form": "Formularz zgłoszenia",
+            "transfer_to_chat": "Uzupełnij notatkę czatu",
+            "manage_recruitment": "Zarządzaj rekrutacją"
+        },
+        "manage": {
+            "title": "Akcje rekrutacyjne",
+            "notes_title": "Notatki rekrutacyjne",
+            "save_notes": "Zapisz notatki",
+            "notes_saved": "Notatki rekrutacyjne zostały zapisane",
+            "saving_notes": "Zapisywanie...",
+            "autosave_hint": "Automatyczny zapis jest aktywny"
+        },
+        "transfer": {
+            "step_label": "Krok {{step}}",
+            "select_chat_title": "Wybierz chat",
+            "select_chat_description": "Wyszukaj i wybierz chat, do którego chcesz przenieść wybrane pola formularza.",
+            "chat_search_placeholder": "Wyszukaj czat po nazwie",
+            "searching_chats": "Wyszukiwanie czatów...",
+            "no_chat_results": "Nie znaleziono czatów",
+            "chat_participants": "Uczestnicy: {{count}}",
+            "to_field_selection": "Dalej: wybór pól",
+            "select_fields_title": "Wybierz pola formularza",
+            "select_fields_description": "Zaznacz pola do przeniesienia. Wartości są skracane do 400 znaków.",
+            "to_confirmation": "Dalej: potwierdzenie",
+            "confirmation_title": "Potwierdzenie przeniesienia",
+            "confirmation_description": "Sprawdź zaznaczone dane i potwierdź aktualizację notatki na wybranym chacie.",
+            "selected_chat": "Wybrany chat",
+            "selected_fields": "Wybrane pola",
+            "confirm_transfer": "Potwierdź i zaktualizuj notatkę",
+            "note_update_success": "Notatka czatu została zaktualizowana",
+            "author_not_in_chat_title": "Autor formularza nie jest uczestnikiem czatu",
+            "author_not_in_chat_description": "Upewnij się, że wskazany chat jest poprawny przed potwierdzeniem.",
+            "note_header": "Przeniesienie danych formularza",
+            "form_id": "ID formularza",
+            "author": "Autor",
+            "role": "Rola"
+        }
     },
     "change_password_screen": {
         "title": "Rozpocznij zmiane hasła",

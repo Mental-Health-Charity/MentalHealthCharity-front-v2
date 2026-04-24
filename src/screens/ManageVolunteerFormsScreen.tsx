@@ -1,31 +1,31 @@
 import { Button } from "@/components/ui/button";
-import "@silevis/reactgrid/styles.css";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { Filter } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import FormsTable from "../modules/forms/components/FormsTable";
+import FormsTable from "../modules/forms/components/FormsTable/index.tsx";
 import { translatedFormStatus, translateFormSorting } from "../modules/forms/constants";
-import { getFormsQueryOptions } from "../modules/forms/queries/getFormsQueryOptions";
+import { getFormsInfiniteQueryOptions } from "../modules/forms/queries/getFormsQueryOptions";
 import { formNoteFields, formSorting, formStatus, formTypes } from "../modules/forms/types";
 import AdminLayout from "../modules/shared/components/AdminLayout";
-import Loader from "../modules/shared/components/Loader";
 import SimpleCard from "../modules/shared/components/SimpleCard";
 
 const ManageVolunteerFormsScreen = () => {
     const { t } = useTranslation();
     const [status, setStatus] = useState<formStatus>(formStatus.WAITED);
-    const [sort, setSort] = useState<formSorting>(formSorting.MIN_STAGE);
+    const [sort, setSort] = useState<formSorting>(formSorting.NEWEST);
 
-    const { data, isLoading, isError, refetch } = useQuery(
-        getFormsQueryOptions({
+    const { data, isLoading, isError, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
+        getFormsInfiniteQueryOptions({
             form_status: status,
             form_type_id: formTypes.VOLUNTEER,
             sort,
-            page: 1,
-            size: 100,
+            size: 25,
         })
     );
+
+    const forms = data?.pages.flatMap((page) => page.items) ?? [];
+    const totalForms = data?.pages[0]?.total ?? 0;
 
     return (
         <AdminLayout>
@@ -54,21 +54,23 @@ const ManageVolunteerFormsScreen = () => {
                     ))}
                 </select>
             </div>
-            {isLoading && <Loader />}
             <div className="w-full min-w-0">
                 <div className="w-full max-w-full overflow-x-auto overflow-y-hidden">
-                    {data && (
-                        <FormsTable
-                            formNoteKeys={[
-                                formNoteFields.AVAILABILITY,
-                                formNoteFields.INTERVIEW_DESCRIPTION,
-                                formNoteFields.WORK_AREA,
-                            ]}
-                            onRefetch={refetch}
-                            data={data}
-                            renderStepAddnotation={(id) => t(`manage_volunteer_forms.steps.${id - 1}`)}
-                        />
-                    )}
+                    <FormsTable
+                        onRefetch={refetch}
+                        data={forms}
+                        total={totalForms}
+                        hasNextPage={Boolean(hasNextPage)}
+                        isFetchingNextPage={isFetchingNextPage}
+                        isInitialLoading={isLoading}
+                        loadMore={fetchNextPage}
+                        formNoteKeys={[
+                            formNoteFields.AVAILABILITY,
+                            formNoteFields.INTERVIEW_DESCRIPTION,
+                            formNoteFields.WORK_AREA,
+                        ]}
+                        renderStepAddnotation={(id) => t(`manage_volunteer_forms.steps.${id - 1}`)}
+                    />
                 </div>
             </div>
             {isError && <p className="text-destructive">{t("common.no_data")}</p>}

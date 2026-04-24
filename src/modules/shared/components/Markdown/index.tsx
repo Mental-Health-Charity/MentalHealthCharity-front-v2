@@ -31,7 +31,7 @@ interface Props extends Omit<MDXEditorProps, "markdown"> {
 const Markdown = forwardRef<MDXEditorMethods, Props>(({ content, readonly = true, ...editorProps }, ref) => {
     return (
         <MDXEditor
-            className="markdown"
+            className={`markdown ${editorProps.className ? editorProps.className : ""}`}
             contentEditableClassName="markdown-editable"
             plugins={[
                 listsPlugin(),

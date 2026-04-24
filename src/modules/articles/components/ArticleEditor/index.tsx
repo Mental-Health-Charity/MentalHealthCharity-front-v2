@@ -218,7 +218,7 @@ const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft, articleId }: Prop
             >
                 <Markdown
                     onChange={(markdown) => formik.setFieldValue("content", markdown)}
-                    className="markdown-editor"
+                    // className="markdown-editor"
                     readOnly={false}
                     placeholder={t("articles.form.content")}
                     content={formik.values.content}

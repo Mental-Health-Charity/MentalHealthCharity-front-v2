@@ -245,7 +245,6 @@ body.chat-route {
 /* ---- Markdown editor ---- */
 .markdown {
     color: var(--foreground) !important;
-    height: 100%;
     overflow: hidden;
 
     & .mdxeditor-toolbar {

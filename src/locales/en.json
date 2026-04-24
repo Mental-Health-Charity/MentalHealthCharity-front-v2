@@ -14,6 +14,9 @@
         "delete": "Delete",
         "remove": "Remove",
         "back": "Back",
+        "expand": "Expand",
+        "collapse": "Collapse",
+        "show_more_count_click": "and {{count}} more. Click to show",
         "not_found": "Oops! No content found."
     },
     "homepage": {
@@ -195,7 +198,77 @@
         "help_rules_placeholder": "Support rules will appear here soon."
     },
     "forms_fields": {
-        "contact_preference": "Preferred contact style"
+        "source": "How they heard about us",
+        "contacts": "Preferred contact format",
+        "contact_preference": "Preferred contact style",
+        "description": "Description",
+        "name": "Name",
+        "note": "Note",
+        "interview_meeting_dates": "Available interview dates",
+        "interview_description": "Interview summary",
+        "work_area": "Work area",
+        "availability": "Availability",
+        "tos": "Terms accepted",
+        "email": "Email",
+        "actions": "Actions",
+        "show_form": "Show form",
+        "manage": "Manage",
+        "role": "Role",
+        "progress": "Progress",
+        "age": "Age",
+        "phone": "Phone number",
+        "creation_date": "Submission date",
+        "themes": "Issues",
+        "reason": "Reason for joining",
+        "did_help": "Helped before",
+        "education": "Education",
+        "unknown_name": "Unknown"
+    },
+    "form_status": {
+        "accepted": "Accepted",
+        "rejected": "Rejected",
+        "waited": "Waiting"
+    },
+    "recruitment_manager": {
+        "title": "Recruitment manager",
+        "tabs": {
+            "application_form": "Application form",
+            "transfer_to_chat": "Move form to chat",
+            "manage_recruitment": "Manage recruitment"
+        },
+        "manage": {
+            "title": "Recruitment actions",
+            "notes_title": "Recruitment notes",
+            "save_notes": "Save notes",
+            "notes_saved": "Recruitment notes saved",
+            "saving_notes": "Saving...",
+            "autosave_hint": "Autosave is enabled"
+        },
+        "transfer": {
+            "step_label": "Step {{step}}",
+            "select_chat_title": "Choose a chat",
+            "select_chat_description": "Search and pick the chat that should receive selected form fields.",
+            "chat_search_placeholder": "Search chats by name",
+            "searching_chats": "Searching chats...",
+            "no_chat_results": "No chats found",
+            "chat_participants": "Participants: {{count}}",
+            "to_field_selection": "Next: choose fields",
+            "select_fields_title": "Choose form fields",
+            "select_fields_description": "Select fields to transfer. Values are trimmed to 400 characters.",
+            "to_confirmation": "Next: confirm",
+            "confirmation_title": "Confirm transfer",
+            "confirmation_description": "Review selected data and confirm note update in the target chat.",
+            "selected_chat": "Selected chat",
+            "selected_fields": "Selected fields",
+            "confirm_transfer": "Confirm and update note",
+            "note_update_success": "Chat note updated successfully",
+            "author_not_in_chat_title": "Form author is not a chat member",
+            "author_not_in_chat_description": "Double-check whether the selected chat is correct before confirming.",
+            "note_header": "Recruitment data transfer",
+            "form_id": "Form ID",
+            "author": "Author",
+            "role": "Role"
+        }
     },
     "form": {
         "mentee": {

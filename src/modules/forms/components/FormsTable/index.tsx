@@ -1,292 +1,210 @@
-import { Button } from "@/components/ui/button";
-import {
-    CellChange,
-    CellLocation,
-    Column,
-    Id,
-    MenuOption,
-    ReactGrid,
-    Row,
-    SelectionMode,
-    TextCell,
-} from "@silevis/reactgrid";
-import "@silevis/reactgrid/styles.css";
-import { useMutation } from "@tanstack/react-query";
-import { t } from "i18next";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import toast from "react-hot-toast";
-import Modal from "../../../shared/components/Modal";
-import { Pagination } from "../../../shared/types";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { AutoSizer, InfiniteLoader, List, type ListRowRenderer, WindowScroller } from "react-virtualized";
 import { translatedRoles } from "../../../users/constants";
-import acceptFormMutation from "../../queries/acceptFormMutation";
-import rejectFormMutation from "../../queries/rejectFormMutation";
-import updateFormNoteMutation from "../../queries/updateFormNoteMutation";
-import { FormNote, formNoteFields, FormResponse, MenteeForm, VolunteerForm } from "../../types";
-import FormTableItem from "../FormTableItem";
+import { formNoteFields, FormResponse, MenteeForm, VolunteerForm } from "../../types";
+import RecruitmentManagerModal from "../RecruitmentManagerModal";
+
+const ROW_HEIGHT = 50;
+const GRID_TEMPLATE_COLUMNS =
+    "minmax(140px,1fr) minmax(200px,1.2fr) minmax(110px,0.8fr) minmax(110px,0.8fr) minmax(240px,1.4fr)";
+const SKELETON_COLUMN_COUNT = 5;
 
 interface Props {
-    data: Pagination<FormResponse<MenteeForm | VolunteerForm>>;
+    data: FormResponse<MenteeForm | VolunteerForm>[];
+    total: number;
+    hasNextPage: boolean;
+    isFetchingNextPage: boolean;
+    isInitialLoading?: boolean;
+    loadMore: () => Promise<unknown>;
     renderStepAddnotation: (step: number) => string;
-    onRefetch?: () => void;
+    onRefetch?: () => void | Promise<unknown>;
     formNoteKeys: formNoteFields[];
 }
 
-const FormsTable = ({ data, renderStepAddnotation, onRefetch, formNoteKeys }: Props) => {
-    const forms = useMemo(() => data?.items ?? [], [data]);
-    const [showForm, setShowForm] = useState<FormResponse<VolunteerForm | MenteeForm> | null>(null);
-    const [showManageModal, setShowManageModal] = useState<FormResponse<VolunteerForm | MenteeForm> | null>(null);
+const FormsTable = ({
+    data,
+    total,
+    hasNextPage,
+    isFetchingNextPage,
+    isInitialLoading,
+    loadMore,
+    renderStepAddnotation,
+    onRefetch,
+    formNoteKeys,
+}: Props) => {
+    const { t } = useTranslation();
+    const [selectedForm, setSelectedForm] = useState<FormResponse<MenteeForm | VolunteerForm> | null>(null);
 
-    const initializeNotes = useCallback(() => {
-        return forms.reduce((acc, form) => {
-            const formNotes = formNoteKeys.reduce((noteAcc, key) => {
-                if (noteAcc) {
-                    noteAcc[key] = form.notes?.[key] || "";
-                }
-                return noteAcc;
-            }, {} as FormNote);
-            return { ...acc, [form.id]: formNotes };
-        }, {});
-    }, [forms, formNoteKeys]);
+    const minTableWidth = useMemo(() => 860, []);
+    const rowCount = hasNextPage ? data.length + 1 : data.length;
 
-    const [notes, setNotes] = useState<{ [key: number]: FormNote }>(initializeNotes());
+    const isRowLoaded = useCallback(({ index }: { index: number }) => index < data.length, [data.length]);
 
-    useEffect(() => {
-        setNotes(initializeNotes());
-    }, [data]);
+    const loadMoreRows = useCallback(
+        async (_range: { startIndex: number; stopIndex: number }) => {
+            if (!hasNextPage || isFetchingNextPage) {
+                return;
+            }
 
-    const { mutate: updateNote } = useMutation({
-        mutationFn: updateFormNoteMutation,
-        onSuccess: () => {
-            toast.success(t("common.success"));
+            await loadMore();
         },
-    });
-
-    const { mutate: acceptForm } = useMutation({
-        mutationFn: acceptFormMutation,
-        onSuccess: () => {
-            onRefetch && onRefetch();
-            toast.success(t("common.success"));
-            setShowManageModal(null);
-        },
-    });
-
-    const { mutate: rejectForm } = useMutation({
-        mutationFn: rejectFormMutation,
-        onSuccess: () => {
-            onRefetch && onRefetch();
-            toast.success(t("common.success"));
-            setShowManageModal(null);
-        },
-    });
-
-    const handleCellsChanged = useCallback(
-        (changes: CellChange[]) => {
-            changes.forEach((change) => {
-                const rowIndex = parseInt((change.rowId as string).split("-")[1], 10);
-                const form = forms[rowIndex];
-                if (!form) return;
-
-                if (formNoteKeys.includes(change.columnId as formNoteFields)) {
-                    const newValue = (change.newCell as TextCell).text;
-
-                    setNotes((prev) => {
-                        const newNoteForForm = { ...prev[form.id], [change.columnId]: newValue };
-                        return { ...prev, [form.id]: newNoteForForm };
-                    });
-
-                    updateNote({ id: form.id, notes: { ...notes[form.id], [change.columnId]: newValue } });
-                }
-            });
-        },
-        [forms, formNoteKeys, updateNote]
+        [hasNextPage, isFetchingNextPage, loadMore]
     );
 
-    const [columns, setColumns] = useState<Column[]>([
-        { columnId: "name", width: 200, resizable: true, reorderable: true },
-        { columnId: "email", width: 220, resizable: true, reorderable: true },
-        { columnId: "role", width: 110, resizable: true, reorderable: true },
-        { columnId: "date", width: 110, resizable: true, reorderable: true },
-        { columnId: "progress", width: 340, resizable: true, reorderable: true },
-        ...formNoteKeys.map(
-            (key) =>
-                ({
-                    columnId: key,
-                    width: key.length * 13 > 100 ? key.length * 13 : 200,
-                    resizable: true,
-                    reorderable: true,
-                }) as Column
-        ),
-        { columnId: "actions", width: 120, resizable: true, reorderable: true },
-    ]);
+    const rowRenderer: ListRowRenderer = ({ index, key, style }) => {
+        if (index >= data.length) {
+            return (
+                <div key={key} style={style} className="px-2 py-1">
+                    <div
+                        className="bg-card border-border/50 grid gap-2 rounded-lg border p-2"
+                        style={{ gridTemplateColumns: GRID_TEMPLATE_COLUMNS }}
+                    >
+                        {Array.from({ length: SKELETON_COLUMN_COUNT }, (_, skeletonIdx) => (
+                            <Skeleton key={skeletonIdx} className="h-7 w-full" />
+                        ))}
+                    </div>
+                </div>
+            );
+        }
 
-    const headerRow: Row<TextCell> = {
-        rowId: "header",
-        reorderable: true,
-        resizable: true,
-        cells: [
-            { type: "text", text: t("forms_fields.name"), nonEditable: true, className: "header" },
-            { type: "text", text: t("forms_fields.email"), nonEditable: true, className: "header" },
-            { type: "text", text: t("forms_fields.role"), nonEditable: true, className: "header" },
-            { type: "text", text: t("forms_fields.creation_date"), nonEditable: true, className: "header" },
-            { type: "text", text: t("forms_fields.progress"), nonEditable: true, className: "header" },
-            ...(formNoteKeys.map(
-                (key) =>
-                    ({
-                        type: "text",
-                        text: t(`forms_fields.${key}`),
-                        nonEditable: true,
-                        className: "header",
-                    }) as TextCell
-            ) ?? []),
-            { type: "text", text: t("forms_fields.actions"), nonEditable: true, className: "header" },
-        ],
-    };
+        const form = data[index];
 
-    const simpleHandleContextMenu = (
-        _selectedRowIds: Id[],
-        _selectedColIds: Id[],
-        _selectionMode: SelectionMode,
-        menuOptions: MenuOption[],
-        _selectedRanges: CellLocation[][]
-    ): MenuOption[] => {
-        return menuOptions.filter((option) => option.id === "copy");
-    };
-
-    const getRows = (forms: FormResponse<VolunteerForm | MenteeForm>[]): Row[] => [
-        headerRow,
-        ...forms.map<Row>((form, idx) => ({
-            rowId: `row-${idx}`,
-            cells: [
-                {
-                    type: "text",
-
-                    text: form.created_by.full_name || (t("forms_fields.unknown_name") as string),
-                    nonEditable: true,
-                    renderer: (props) => <span className="text-foreground truncate text-sm font-medium">{props}</span>,
-                },
-                {
-                    type: "text",
-
-                    text: form.created_by.email,
-                    nonEditable: true,
-                    renderer: (props) => <span className="text-foreground truncate text-sm">{props}</span>,
-                },
-                {
-                    type: "text",
-
-                    text: translatedRoles[form.created_by.user_role],
-                    nonEditable: true,
-                    renderer: (props) => <span className="text-foreground truncate text-sm">{props}</span>,
-                },
-                {
-                    type: "text",
-
-                    text: new Date(form.creation_date).toLocaleDateString(),
-                    nonEditable: true,
-                    renderer: (props) => <span className="text-foreground truncate text-sm">{props}</span>,
-                },
-                {
-                    type: "text",
-
-                    text: `${renderStepAddnotation(form.current_step)} (${form.current_step}/${form.form_type.max_step})`,
-                    nonEditable: true,
-                    renderer: (props) =>
-                        form.current_step === 1 ? (
-                            <button
-                                className="text-primary-brand p-0 hover:underline"
-                                onClick={() => setShowForm(form)}
-                            >
-                                {props}
-                            </button>
-                        ) : (
-                            props
-                        ),
-                },
-
-                ...formNoteKeys.map(
-                    (key) =>
-                        ({
-                            type: "text",
-                            text: notes[form.id]?.[key] || "",
-
-                            editable: true,
-                            renderer: (props) => <span className="text-foreground truncate text-sm">{props}</span>,
-                        }) as TextCell
-                ),
-                {
-                    type: "text",
-                    text: "",
-                    nonEditable: true,
-                    renderer: () => (
-                        <Button
-                            variant="secondary"
-                            className="text-base text-white"
-                            onClick={() => setShowManageModal(form)}
-                        >
-                            {t("forms_fields.manage")}
-                        </Button>
-                    ),
-                },
-            ],
-        })),
-    ];
-
-    const rows = useMemo(() => getRows(forms), [forms, notes]);
-
-    const handleColumnResize = (columnId: string | number, newWidth: number) => {
-        setColumns((prevColumns) =>
-            prevColumns.map((col) => (col.columnId === columnId ? { ...col, width: newWidth } : col))
+        return (
+            <div key={key} style={style} className="px-2 py-1">
+                <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setSelectedForm(form)}
+                    onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
+                            setSelectedForm(form);
+                        }
+                    }}
+                    className="bg-card border-border/50 hover:border-primary-brand/40 hover:bg-muted/20 grid cursor-pointer items-center gap-2 rounded-lg border p-2.5 text-left shadow-sm transition-colors"
+                    style={{ gridTemplateColumns: GRID_TEMPLATE_COLUMNS }}
+                >
+                    <div className="min-w-0">
+                        <p className="text-foreground truncate text-sm font-medium">
+                            {form.created_by.full_name || t("forms_fields.unknown_name", { defaultValue: "Unknown" })}
+                        </p>
+                    </div>
+                    <div className="min-w-0">
+                        <p className="text-foreground truncate text-xs">{form.created_by.email}</p>
+                    </div>
+                    <div className="min-w-0">
+                        <p className="text-foreground truncate text-xs">{translatedRoles[form.created_by.user_role]}</p>
+                    </div>
+                    <div className="min-w-0">
+                        <p className="text-foreground truncate text-xs">
+                            {new Date(form.creation_date).toLocaleDateString()}
+                        </p>
+                    </div>
+                    <div className="min-w-0">
+                        <p className="text-primary-brand truncate text-xs font-medium">
+                            {`${renderStepAddnotation(form.current_step)} (${form.current_step}/${form.form_type.max_step})`}
+                        </p>
+                    </div>
+                </div>
+            </div>
         );
     };
 
-    return (
-        <div className="w-max min-w-full">
-            <ReactGrid
-                onContextMenu={simpleHandleContextMenu}
-                rows={rows}
-                columns={columns}
-                onColumnResized={handleColumnResize}
-                onCellsChanged={handleCellsChanged}
-            />
-            {showForm && (
-                <Modal title={t("common.preview")} open={!!showForm} onClose={() => setShowForm(null)}>
-                    <div className="flex max-w-[900px] justify-center">
-                        <FormTableItem form={showForm} />
+    if (isInitialLoading && data.length === 0) {
+        return (
+            <div className="flex flex-col gap-3 p-2">
+                {Array.from({ length: 6 }, (_, idx) => (
+                    <div key={idx} className="bg-card border-border/50 rounded-xl border p-4">
+                        <Skeleton className="h-8 w-full" />
                     </div>
-                </Modal>
-            )}
-            {showManageModal && (
-                <Modal
-                    title={t("form.manage_forms_title")}
-                    open={!!showManageModal}
-                    onClose={() => setShowManageModal(null)}
-                >
-                    <div className="flex max-w-[900px] flex-col justify-center">
-                        <p className="text-xl leading-relaxed">
-                            {t("form.manage_forms_subtitle", {
-                                step: renderStepAddnotation(showManageModal.current_step + 1),
-                            })}
-                        </p>
-                        <div className="border-border/60 mt-8 flex flex-col gap-4 border-t pt-6">
-                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                <Button className="w-full" onClick={() => acceptForm(showManageModal)}>
-                                    {t("form.next_step")}
-                                </Button>
-                                <Button
-                                    className="w-full"
-                                    onClick={() => rejectForm(showManageModal)}
-                                    variant="outline"
-                                >
-                                    {t("form.reject")}
-                                </Button>
-                            </div>
-                            <Button className="mx-auto" variant="ghost" onClick={() => setShowForm(showManageModal)}>
-                                {t("forms_fields.show_form")}
-                            </Button>
+                ))}
+            </div>
+        );
+    }
+
+    if (!isInitialLoading && data.length === 0) {
+        return (
+            <div className="flex min-h-40 items-center justify-center rounded-xl border border-dashed">
+                <p className="text-muted-foreground text-sm">{t("common.no_data", { defaultValue: "No data" })}</p>
+            </div>
+        );
+    }
+
+    return (
+        <div className="w-full">
+            <div className="border-border/50 overflow-x-auto rounded-xl border">
+                <div style={{ minWidth: minTableWidth }}>
+                    <div className="bg-muted/60 border-border/60 supports-[backdrop-filter]:bg-background/80 sticky top-0 z-20 border-b px-2 py-2 backdrop-blur">
+                        <div className="grid items-center gap-2" style={{ gridTemplateColumns: GRID_TEMPLATE_COLUMNS }}>
+                            <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+                                {t("forms_fields.name")}
+                            </p>
+                            <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+                                {t("forms_fields.email")}
+                            </p>
+                            <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+                                {t("forms_fields.role")}
+                            </p>
+                            <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+                                {t("forms_fields.creation_date")}
+                            </p>
+                            <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+                                {t("forms_fields.progress")}
+                            </p>
                         </div>
                     </div>
-                </Modal>
-            )}
+
+                    <InfiniteLoader
+                        isRowLoaded={isRowLoaded}
+                        loadMoreRows={loadMoreRows}
+                        rowCount={Math.max(rowCount, 1)}
+                        threshold={4}
+                        minimumBatchSize={10}
+                    >
+                        {({ onRowsRendered, registerChild }) => (
+                            <WindowScroller>
+                                {({ height, isScrolling, onChildScroll, scrollTop }) => (
+                                    <div>
+                                        <AutoSizer disableHeight>
+                                            {({ width }) => (
+                                                <List
+                                                    autoHeight
+                                                    height={height}
+                                                    width={Math.max(width, minTableWidth)}
+                                                    isScrolling={isScrolling}
+                                                    onScroll={onChildScroll}
+                                                    onRowsRendered={onRowsRendered}
+                                                    rowCount={rowCount}
+                                                    rowHeight={ROW_HEIGHT}
+                                                    rowRenderer={rowRenderer}
+                                                    overscanRowCount={5}
+                                                    scrollTop={scrollTop}
+                                                    ref={(ref) => {
+                                                        registerChild(ref);
+                                                    }}
+                                                />
+                                            )}
+                                        </AutoSizer>
+                                    </div>
+                                )}
+                            </WindowScroller>
+                        )}
+                    </InfiniteLoader>
+                </div>
+            </div>
+
+            <RecruitmentManagerModal
+                open={Boolean(selectedForm)}
+                form={selectedForm}
+                onClose={() => setSelectedForm(null)}
+                renderStepAddnotation={renderStepAddnotation}
+                onRefetch={onRefetch}
+                formNoteKeys={formNoteKeys}
+            />
+
+            {total > 0 && <p className="text-muted-foreground mt-3 px-1 text-xs">Total: {total}</p>}
         </div>
     );
 };
