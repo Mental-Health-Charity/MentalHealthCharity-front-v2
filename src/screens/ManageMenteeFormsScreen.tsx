@@ -30,11 +30,11 @@ const ManageMenteeFormsScreen = () => {
     return (
         <AdminLayout>
             <SimpleCard title={t("manage_mentee_forms.title")} subtitle={t("manage_mentee_forms.subtitle")} />
-            <div className="mt-5 mb-4 flex w-full gap-4">
+            <div className="mt-5 mb-4 flex w-full flex-wrap items-center gap-3">
                 {Object.keys(formStatus).map((option) => (
                     <Button
                         key={option}
-                        className="text-white"
+                        className="whitespace-nowrap text-white"
                         style={{ opacity: option === status ? 1 : 0.5 }}
                         onClick={() => setStatus(option as formStatus)}
                     >
@@ -46,7 +46,7 @@ const ManageMenteeFormsScreen = () => {
                 <select
                     value={sort}
                     onChange={(e) => setSort(e.target.value as formSorting)}
-                    className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-8 rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3"
+                    className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-8 min-w-[180px] rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3 max-sm:w-full"
                 >
                     {Object.values(formSorting).map((option) => (
                         <option key={option} value={option}>
