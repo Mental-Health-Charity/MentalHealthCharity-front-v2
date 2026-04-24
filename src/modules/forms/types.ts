@@ -85,7 +85,6 @@ export interface MenteeForm {
     description: string;
     contact_preference: "scheduled" | "asynchronous";
     phone?: string;
-    tos: boolean;
     source: string;
 }
 
@@ -131,6 +130,6 @@ export interface FormNotePayload {
 }
 
 export enum formTypes {
-    VOLUNTEER = 2,
-    MENTEE = 1,
+    VOLUNTEER = 1,
+    MENTEE = 2,
 }

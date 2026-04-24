@@ -40,8 +40,9 @@ const MenteeFormScreen = () => {
     });
 
     const handleSubmit = (values: MenteeFormValues) => {
+        const { tos: _tos, email: _email, ...formValues } = values;
         const fields: MenteeFormType = {
-            ...values,
+            ...formValues,
             contact_preference: values.contact_preference as MenteeFormType["contact_preference"],
             contacts: values.contacts.map((contact) => ({
                 name: contact,
