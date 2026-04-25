@@ -1,8 +1,9 @@
-import { useMutation, UseMutationResult, useQuery, UseQueryResult } from "@tanstack/react-query";
+import { useMutation, UseMutationResult, useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import Cookies from "js-cookie";
-import React, { createContext, ReactNode, useContext, useState } from "react";
+import React, { createContext, ReactNode, useCallback, useContext, useEffect, useState } from "react";
 import Loader from "../../../shared/components/Loader";
 import handleApiError from "../../../shared/helpers/handleApiError";
+import { clearAuthSession, isAuthSessionError, redirectToLogin } from "../../helpers/session";
 import fetchUserData from "../../queries/fetchUserDataQuery";
 import { registerMutation } from "../../queries/registerMutation";
 import { loginMutation } from "../../queries/tokenMutation";
@@ -26,6 +27,20 @@ interface Props {
 
 export const UserProvider: React.FC<Props> = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!Cookies.get("token"));
+    const queryClient = useQueryClient();
+
+    const endSession = useCallback(
+        (redirect = false) => {
+            clearAuthSession();
+            setIsAuthenticated(false);
+            queryClient.removeQueries({ queryKey: ["userData"] });
+
+            if (redirect) {
+                redirectToLogin();
+            }
+        },
+        [queryClient]
+    );
 
     const register = useMutation({
         mutationFn: registerMutation,
@@ -33,18 +48,16 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
 
     const login = useMutation({
         mutationFn: loginMutation,
-        onMutate: () => {
-            setIsAuthenticated(true);
-        },
         onSuccess: (data) => {
             Cookies.set("token", data.access_token, { expires: 7 });
             Cookies.set("jwt_type", data.token_type, { expires: 7 });
+            setIsAuthenticated(true);
 
             refetch();
         },
         onError: (error) => {
             handleApiError(error);
-            setIsAuthenticated(false);
+            endSession();
         },
     });
 
@@ -58,12 +71,18 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
         queryKey: ["userData"],
         queryFn: fetchUserData,
         enabled: isAuthenticated,
+        retry: false,
     });
 
+    useEffect(() => {
+        if (isAuthSessionError(error)) {
+            endSession(true);
+        }
+    }, [endSession, error]);
+
     const logout = () => {
-        Cookies.remove("token");
-        setIsAuthenticated(false);
-        window.location.reload();
+        endSession();
+        window.location.assign("/login");
     };
 
     return (

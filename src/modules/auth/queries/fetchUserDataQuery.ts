@@ -1,7 +1,18 @@
 import Cookies from "js-cookie";
-import { User } from "../types";
 import { url } from "../../../api";
-import handleApiError from "../../shared/helpers/handleApiError";
+import { ApiError } from "../../shared/types";
+import { User } from "../types";
+
+async function parseBody(response: Response) {
+    const text = await response.text();
+    if (!text) return null;
+
+    try {
+        return JSON.parse(text);
+    } catch {
+        return text;
+    }
+}
 
 const fetchUserData = async (): Promise<User> => {
     try {
@@ -9,7 +20,7 @@ const fetchUserData = async (): Promise<User> => {
         const tokenType = Cookies.get("jwt_type");
 
         if (!token || !tokenType) {
-            throw new Error("Brak tokenu.");
+            throw new ApiError("Missing token", 401);
         }
 
         const response = await fetch(url.users.readUsersMe, {
@@ -18,10 +29,11 @@ const fetchUserData = async (): Promise<User> => {
             },
         });
 
-        const data = await response.json();
+        const data = await parseBody(response);
 
         if (!response.ok) {
-            throw handleApiError(data);
+            const message = data?.detail ?? data?.message ?? response.statusText;
+            throw new ApiError(message, response.status, data);
         }
 
         return data;
