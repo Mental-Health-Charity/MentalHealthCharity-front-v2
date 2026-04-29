@@ -6,7 +6,7 @@ import handleApiError from "../../shared/helpers/handleApiError";
 
 export const getChatNoteQueryOptions = (options: ChatNoteOptions) =>
     queryOptions<Note | null>({
-        queryKey: ["chat_note"],
+        queryKey: ["chat_note", options.id],
         refetchOnMount: true,
         enabled: !!options.id,
         refetchOnWindowFocus: true,

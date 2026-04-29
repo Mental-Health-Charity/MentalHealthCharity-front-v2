@@ -97,6 +97,7 @@ export interface Chat {
     id: number;
     participants: User[];
     is_active: boolean;
+    is_group_chat: boolean;
     creation_date: string;
     last_message?: Message;
     is_supervisor_chat: boolean;

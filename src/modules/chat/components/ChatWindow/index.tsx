@@ -94,6 +94,7 @@ const ChatWindow = () => {
         !selectedChat.is_supervisor_chat &&
         selectedChat.is_active &&
         (hasPermissions(Permissions.EDIT_CHAT_DATA) || hasPermissions(Permissions.MANAGE_CHATS));
+    const canUseChatAttachments = selectedChat ? !selectedChat.is_group_chat : false;
 
     useEffect(() => {
         if (!chatId && effectiveData?.items.length) {
@@ -101,9 +102,17 @@ const ChatWindow = () => {
         }
     }, [chatId, effectiveData, navigate]);
 
+    useEffect(() => {
+        if (selectedChat?.is_group_chat) {
+            setShowNote(false);
+            setShowReportModal(false);
+            setShowContractModal(false);
+        }
+    }, [selectedChat?.id, selectedChat?.is_group_chat]);
+
     const headerActions = (
         <div className="flex items-center gap-0.5">
-            {hasPermissions(Permissions.EDIT_CHAT_NOTE) && (
+            {canUseChatAttachments && hasPermissions(Permissions.EDIT_CHAT_NOTE) && (
                 <Tooltip>
                     <TooltipTrigger
                         render={
@@ -120,35 +129,39 @@ const ChatWindow = () => {
                 </Tooltip>
             )}
 
-            <Tooltip>
-                <TooltipTrigger
-                    render={
-                        <button
-                            onClick={() => setShowReportModal(!showReportModal)}
-                            className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-2 transition-colors"
-                            aria-label={t("chat.report")}
-                        >
-                            <Flag className="size-5" />
-                        </button>
-                    }
-                />
-                <TooltipContent>{t("chat.report")}</TooltipContent>
-            </Tooltip>
+            {canUseChatAttachments && (
+                <>
+                    <Tooltip>
+                        <TooltipTrigger
+                            render={
+                                <button
+                                    onClick={() => setShowReportModal(!showReportModal)}
+                                    className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-2 transition-colors"
+                                    aria-label={t("chat.report")}
+                                >
+                                    <Flag className="size-5" />
+                                </button>
+                            }
+                        />
+                        <TooltipContent>{t("chat.report")}</TooltipContent>
+                    </Tooltip>
 
-            <Tooltip>
-                <TooltipTrigger
-                    render={
-                        <button
-                            onClick={() => setShowContractModal(!showContractModal)}
-                            className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-2 transition-colors"
-                            aria-label={t("chat.contract")}
-                        >
-                            <BookOpen className="size-5" />
-                        </button>
-                    }
-                />
-                <TooltipContent>{t("chat.contract")}</TooltipContent>
-            </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger
+                            render={
+                                <button
+                                    onClick={() => setShowContractModal(!showContractModal)}
+                                    className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-2 transition-colors"
+                                    aria-label={t("chat.contract")}
+                                >
+                                    <BookOpen className="size-5" />
+                                </button>
+                            }
+                        />
+                        <TooltipContent>{t("chat.contract")}</TooltipContent>
+                    </Tooltip>
+                </>
+            )}
 
             <Tooltip>
                 <TooltipTrigger
@@ -265,12 +278,12 @@ const ChatWindow = () => {
                 </div>
 
                 {/* Right: note sidebar */}
-                {showNote && selectedChat && (
+                {showNote && selectedChat && canUseChatAttachments && (
                     <Note key={selectedChat.id} onClose={() => setShowNote(false)} chat={selectedChat} />
                 )}
 
                 {/* Right: contract sidebar */}
-                {showContractModal && selectedChat && (
+                {showContractModal && selectedChat && canUseChatAttachments && (
                     <ContractSidebar
                         key={`contract-${selectedChat.id}`}
                         chatId={selectedChat.id.toString()}
@@ -295,7 +308,9 @@ const ChatWindow = () => {
                 )}
             </div>
 
-            {showReportModal && <ReportModal open={showReportModal} onClose={() => setShowReportModal(false)} />}
+            {showReportModal && selectedChat && canUseChatAttachments && (
+                <ReportModal open={showReportModal} onClose={() => setShowReportModal(false)} />
+            )}
             {showCustomizeModal && (
                 <CustomizeChatModal open={showCustomizeModal} onClose={() => setShowCustomizeModal(false)} />
             )}

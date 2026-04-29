@@ -6,10 +6,10 @@ import handleApiError from "../../shared/helpers/handleApiError";
 
 export const getContractForChat = (
     options: ChatContractOptions,
-    additionals?: Omit<UseQueryOptions<Contract>, "queryFn">
+    additionals?: Omit<UseQueryOptions<Contract | null>, "queryFn">
 ) =>
-    queryOptions<Contract>({
-        queryKey: ["chats", options],
+    queryOptions<Contract | null>({
+        queryKey: ["contract", options.id],
         queryFn: async () => {
             try {
                 const headers = getAuthHeaders();

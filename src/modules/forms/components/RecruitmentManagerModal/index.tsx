@@ -162,7 +162,7 @@ const RecruitmentManagerModal = ({ open, form, onClose, renderStepAddnotation, o
     const { mutate: searchChats, isPending: isSearchingChats } = useMutation({
         mutationFn: getChatsMutation,
         onSuccess: (data) => {
-            setChatResults(data.items);
+            setChatResults(data.items.filter((chat) => !chat.is_group_chat));
         },
     });
 
