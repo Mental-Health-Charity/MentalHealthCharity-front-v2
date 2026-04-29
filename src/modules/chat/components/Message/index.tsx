@@ -59,7 +59,7 @@ const ChatMessage = ({ message, onDeleteMessage, onRetryMessage, showArchiveChip
                         message.isFailed && "border-destructive/50 opacity-70"
                     )}
                 >
-                    <p className="text-start text-[15px] leading-relaxed [overflow-wrap:anywhere] break-all">
+                    <p className="text-start text-[15px] leading-relaxed [overflow-wrap:anywhere] break-words">
                         {message.content}
                     </p>
                     <div

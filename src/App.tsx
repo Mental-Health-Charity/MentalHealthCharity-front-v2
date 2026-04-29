@@ -102,6 +102,17 @@ function App() {
             api_host: "https://eu.i.posthog.com",
             person_profiles: "identified_only",
             loaded: syncTechnicalBreakState,
+            session_recording: {
+                maskTextFn(text) {
+                    // A simple email regex - you may want to use something more advanced
+                    const emailRegex = /(\S+)@(\S+\.\S+)/g;
+
+                    return text.trim().replace(emailRegex, (g1, g2) => {
+                        // Replace each email with asterisks - ben@posthog.com becomes ***@***********
+                        return "*".repeat(g1.length) + "@" + "*".repeat(g2.length);
+                    });
+                },
+            },
         });
 
         posthog.onFeatureFlags(syncTechnicalBreakState);
