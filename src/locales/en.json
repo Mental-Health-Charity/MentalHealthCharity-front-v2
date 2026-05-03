@@ -195,6 +195,21 @@
         "show_details": "Details",
         "close_chat": "Close chat",
         "help_rules": "Support rules",
+        "help_rules_title": "SUPPORT RULES",
+        "help_rules_items": {
+            "1": "Support for people in crisis is provided free of charge by volunteers.",
+            "2": "A volunteer is a psychology student, a psychologist after graduation, or a psychotherapist who provides services for the Peryskop Foundation voluntarily, without remuneration, in line with the assigned tasks. The volunteer works under the supervision of the appointed Volunteer Supervisor, who is responsible for onboarding, ongoing support, oversight of assigned tasks, and ensuring safe working conditions for the volunteer.",
+            "3": "The goal is not to provide professional psychiatric, psychological, or psychotherapeutic help, and the support is not a form of therapy nor a substitute for treatment.",
+            "4": "Foundation support is available only to adults (over 18 years of age).",
+            "5": "The “Agreement” concerns the frequency and rules of contact between the volunteer and the person in crisis.",
+            "6": "The volunteer does not receive any remuneration in any form and does not expect any compensation.",
+            "7": "The volunteer is obliged to maintain confidentiality and secrecy. The exception is situations where there is a threat to the life of the beneficiary — then the volunteer undertakes to report it to the Volunteer Coordinator and the appropriate services.",
+            "8": "The volunteer undertakes to treat the supported person as a subject and not to cross their boundaries.",
+            "9": "Arranging contact outside the Peryskop Foundation chat is prohibited.",
+            "10": "A person in crisis has the right to receive support no less than once a week, for at least one hour per week.",
+            "11": "Both the volunteer and the person in crisis are obliged to comply with the rules contained in the Agreement.",
+            "12": "Any abuse should be reported immediately via the form available on the Peryskop Foundation website."
+        },
         "help_rules_placeholder": "Support rules will appear here soon."
     },
     "forms_fields": {

@@ -1,5 +1,6 @@
 import { ScrollText, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import ChatSidebarPanel from "../ChatSidebarPanel";
 
 interface Props {
     onClose: () => void;
@@ -8,8 +9,23 @@ interface Props {
 const HelpRulesSidebar = ({ onClose }: Props) => {
     const { t } = useTranslation();
 
+    const rules = [
+        t("chat.help_rules_items.1"),
+        t("chat.help_rules_items.2"),
+        t("chat.help_rules_items.3"),
+        t("chat.help_rules_items.4"),
+        t("chat.help_rules_items.5"),
+        t("chat.help_rules_items.6"),
+        t("chat.help_rules_items.7"),
+        t("chat.help_rules_items.8"),
+        t("chat.help_rules_items.9"),
+        t("chat.help_rules_items.10"),
+        t("chat.help_rules_items.11"),
+        t("chat.help_rules_items.12"),
+    ];
+
     return (
-        <div className="border-border/50 bg-card flex h-full w-[320px] shrink-0 flex-col border-l">
+        <ChatSidebarPanel>
             <div className="border-border/50 flex h-16 items-center justify-between border-b px-4">
                 <div className="flex items-center gap-2.5">
                     <ScrollText className="text-primary-brand size-5" />
@@ -25,11 +41,15 @@ const HelpRulesSidebar = ({ onClose }: Props) => {
             </div>
 
             <div className="flex-1 overflow-auto p-4">
-                <div className="border-border bg-muted/40 rounded-xl border p-4">
-                    <p className="text-muted-foreground text-sm leading-relaxed">{t("chat.help_rules_placeholder")}</p>
+                <div className="rounded-xl">
+                    <ol className="text-muted-foreground list-inside list-decimal space-y-3 text-sm leading-relaxed">
+                        {rules.map((rule) => (
+                            <li key={rule}>{rule}</li>
+                        ))}
+                    </ol>
                 </div>
             </div>
-        </div>
+        </ChatSidebarPanel>
     );
 };
 

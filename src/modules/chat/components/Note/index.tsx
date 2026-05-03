@@ -9,6 +9,7 @@ import useDebounce from "../../../shared/hooks/useDebounce";
 import editNoteMutation from "../../queries/editNoteMutation";
 import { getChatNoteQueryOptions } from "../../queries/getChatNoteQueryOptions";
 import { Chat } from "../../types";
+import ChatSidebarPanel from "../ChatSidebarPanel";
 
 interface Props {
     chat: Chat;
@@ -56,7 +57,7 @@ const Note = ({ chat, onClose }: Props) => {
     }, [debounceValue, chat.id, mutate]);
 
     return (
-        <div className="border-border/50 bg-card flex h-full w-[320px] shrink-0 flex-col border-l">
+        <ChatSidebarPanel>
             {/* Header */}
             <div className="border-border/50 flex h-16 items-center justify-between border-b px-4">
                 <div className="flex items-center gap-2.5">
@@ -101,7 +102,7 @@ const Note = ({ chat, onClose }: Props) => {
 
                 {isError && <p className="text-destructive mt-2.5 px-4 text-center text-sm">{readError(error)}</p>}
             </div>
-        </div>
+        </ChatSidebarPanel>
     );
 };
 

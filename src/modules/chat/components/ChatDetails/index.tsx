@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
-import { Loader2, LockKeyhole, Trash2, UserPlus, User as UserIcon, X } from "lucide-react";
+import { Loader2, LockKeyhole, Trash2, User as UserIcon, UserPlus, X } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,7 @@ import formatDate from "../../../shared/helpers/formatDate";
 import { translatedRoles } from "../../../users/constants";
 import removeParticipantMutation from "../../queries/removeParticipantMutation";
 import { Chat } from "../../types";
+import ChatSidebarPanel from "../ChatSidebarPanel";
 
 interface Props {
     chat: Chat;
@@ -40,7 +41,7 @@ const ChatDetails = ({
     });
 
     return (
-        <div className="border-border/50 bg-card hidden w-[320px] shrink-0 flex-col border-l lg:flex">
+        <ChatSidebarPanel>
             {/* Header */}
             <div className="border-border/50 flex h-16 items-center justify-between border-b px-4">
                 <h3 className="text-foreground text-sm font-semibold">
@@ -171,7 +172,7 @@ const ChatDetails = ({
                     </div>
                 )}
             </div>
-        </div>
+        </ChatSidebarPanel>
     );
 };
 

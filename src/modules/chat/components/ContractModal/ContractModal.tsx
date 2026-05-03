@@ -12,6 +12,7 @@ import usePermissions from "../../../shared/hooks/usePermissions";
 import { confirmContractForChatMutation } from "../../queries/confirmContractForChat";
 import { editContractForChatMutation } from "../../queries/editContractForChat";
 import { getContractForChat } from "../../queries/getContractForChat";
+import ChatSidebarPanel from "../ChatSidebarPanel";
 
 interface Props {
     onClose: () => void;
@@ -66,7 +67,7 @@ const ContractSidebar = ({ onClose, chatId }: Props) => {
     };
 
     return (
-        <div className="border-border/50 bg-card flex h-full w-[320px] shrink-0 flex-col border-l">
+        <ChatSidebarPanel>
             {/* Header */}
             <div className="border-border/50 flex h-16 items-center justify-between border-b px-4">
                 <div className="flex items-center gap-2.5">
@@ -118,7 +119,7 @@ const ContractSidebar = ({ onClose, chatId }: Props) => {
                     </Button>
                 </div>
             )}
-        </div>
+        </ChatSidebarPanel>
     );
 };
 
