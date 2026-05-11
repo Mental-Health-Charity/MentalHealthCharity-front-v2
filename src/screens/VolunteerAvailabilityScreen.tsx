@@ -8,13 +8,15 @@ import { AlertTriangle, Loader2, RefreshCw, Save } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import Container from "../modules/shared/components/Container";
+import {
+    AVAILABILITY_CAPACITY_OPTIONS,
+    AVAILABILITY_WEEKLY_TIME_HINT,
+    LOW_AVAILABILITY_WARNING,
+    MIN_AVAILABILITY_CAPACITY,
+} from "../modules/matching/constants";
 import updateVolunteerAvailabilityMutation from "../modules/matching/queries/updateVolunteerAvailabilityMutation";
 import { volunteerAvailabilityQueryOptions } from "../modules/matching/queries/volunteerAvailabilityQueryOptions";
-
-const MIN_CAPACITY = 1;
-const MAX_CAPACITY = 10;
-const CAPACITY_OPTIONS = Array.from({ length: MAX_CAPACITY }, (_, index) => String(index + MIN_CAPACITY));
+import Container from "../modules/shared/components/Container";
 
 const formatDateTime = (value?: string | null) => {
     if (!value) return null;
@@ -43,7 +45,7 @@ const VolunteerAvailabilityScreen = () => {
         mutationFn: updateVolunteerAvailabilityMutation,
         onSuccess: (updatedAvailability) => {
             queryClient.setQueryData(["volunteerAvailability"], updatedAvailability);
-            setCapacity(String(updatedAvailability.declared_capacity ?? MIN_CAPACITY));
+            setCapacity(String(updatedAvailability.declared_capacity ?? MIN_AVAILABILITY_CAPACITY));
             toast.success(t("matching.availability_saved", { defaultValue: "Dyspozycyjność została zapisana" }));
         },
     });
@@ -51,7 +53,7 @@ const VolunteerAvailabilityScreen = () => {
     useEffect(() => {
         if (!data) return;
 
-        setCapacity(String(data.declared_capacity ?? MIN_CAPACITY));
+        setCapacity(String(data.declared_capacity ?? MIN_AVAILABILITY_CAPACITY));
     }, [data]);
 
     const activeChatCount = data?.active_chat_count ?? 0;
@@ -103,12 +105,6 @@ const VolunteerAvailabilityScreen = () => {
                     </h1>
                     {statusBadge}
                 </div>
-                <p className="text-muted-foreground max-w-3xl text-sm">
-                    {t("matching.availability_page_description", {
-                        defaultValue:
-                            "Zmieniaj na bieżąco liczbę osób w kryzysie, które możesz aktualnie przyjąć do rozmowy.",
-                    })}
-                </p>
             </header>
 
             {isError && (
@@ -162,7 +158,7 @@ const VolunteerAvailabilityScreen = () => {
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {CAPACITY_OPTIONS.map((option) => (
+                                    {AVAILABILITY_CAPACITY_OPTIONS.map((option) => (
                                         <SelectItem key={option} value={option}>
                                             {option}
                                         </SelectItem>
@@ -190,8 +186,7 @@ const VolunteerAvailabilityScreen = () => {
 
                     <p className="text-muted-foreground text-sm">
                         {t("matching.availability_weekly_time_hint", {
-                            defaultValue:
-                                "Na jedną osobę w kryzysie przypada co najmniej 1 godzina tygodniowo. Uwzględnij to przy podawaniu swojej dyspozycyjności.",
+                            defaultValue: AVAILABILITY_WEEKLY_TIME_HINT,
                         })}
                     </p>
                 </form>
@@ -202,11 +197,11 @@ const VolunteerAvailabilityScreen = () => {
                     <AlertTriangle />
                     <AlertTitle>{t("matching.availability_warning_title", { defaultValue: "Uwaga" })}</AlertTitle>
                     <AlertDescription>
-                        {data?.warning ??
-                            t("matching.availability_below_assignments_warning", {
-                                defaultValue:
-                                    "Liczba obecnych sparowań jest wyższa niż deklarowana dyspozycyjność. Skontaktuj się z koordynatorem, jeśli musisz zrezygnować z któregoś z prowadzonych czatów.",
+                        <span className="whitespace-pre-line">
+                            {t("matching.availability_below_assignments_warning", {
+                                defaultValue: LOW_AVAILABILITY_WARNING,
                             })}
+                        </span>
                     </AlertDescription>
                 </Alert>
             )}

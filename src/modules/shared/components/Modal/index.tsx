@@ -9,9 +9,10 @@ interface Props {
     children?: React.ReactNode;
     className?: string;
     contentClassName?: string;
+    hideCloseButton?: boolean;
 }
 
-const Modal = ({ open, onClose, title, children, className, contentClassName }: Props) => {
+const Modal = ({ open, onClose, title, children, className, contentClassName, hideCloseButton }: Props) => {
     return (
         <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
             <DialogContent
@@ -20,7 +21,7 @@ const Modal = ({ open, onClose, title, children, className, contentClassName }: 
             >
                 <DialogHeader className="flex flex-row items-center justify-between gap-2.5">
                     <DialogTitle className="text-foreground text-2xl font-bold">{title}</DialogTitle>
-                    <CloseButton onClick={() => onClose()} />
+                    {!hideCloseButton && <CloseButton onClick={() => onClose()} />}
                 </DialogHeader>
                 <div className={cn(contentClassName)}>{children}</div>
             </DialogContent>
