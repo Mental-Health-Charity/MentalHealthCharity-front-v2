@@ -11,6 +11,7 @@ import {
     Menu,
     MessageCircle,
     PlusCircle,
+    UserCheck,
     Users,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -62,6 +63,18 @@ export const AdminSidebar = ({ handleToggle, open }: Props) => {
             icon: <ClipboardList className="size-5" />,
             to: "/admin/forms/mentee",
             permissions: Permissions.MANAGE_MENTEE_FORMS,
+        },
+        {
+            text: t("admin.sidebar.matching_mentees", { defaultValue: "Osoby w kryzysie" }),
+            icon: <UserCheck className="size-5" />,
+            to: "/admin/matching/mentees",
+            permissions: Permissions.MANAGE_CHATS,
+        },
+        {
+            text: t("admin.sidebar.matching_volunteers", { defaultValue: "Wolontariusze" }),
+            icon: <Users className="size-5" />,
+            to: "/admin/matching/volunteers",
+            permissions: Permissions.MANAGE_CHATS,
         },
         {
             text: t("admin.sidebar.volunteer_forms"),

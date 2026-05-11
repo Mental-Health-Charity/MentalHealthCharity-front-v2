@@ -1,3 +1,14 @@
+import { User } from "../auth/types";
+
+export enum MenteeMatchingStatus {
+    WAITING = "WAITING",
+    MATCHED = "MATCHED",
+    PAUSED = "PAUSED",
+    DECLINED = "DECLINED",
+    REMATCH_REQUESTED = "REMATCH_REQUESTED",
+    CLOSED = "CLOSED",
+}
+
 export interface VolunteerAvailabilityStatus {
     volunteer_id: number;
     declared_capacity: number | null;
@@ -13,4 +24,25 @@ export interface VolunteerAvailabilityStatus {
 
 export interface VolunteerAvailabilityUpdate {
     declared_capacity: number;
+}
+
+export interface MenteeMatchingState {
+    user_id: number;
+    help_form_id: number | null;
+    status: MenteeMatchingStatus;
+    auto_matching_enabled: boolean;
+    excluded_from_automation: boolean;
+    queued_at: string;
+    matched_at: string | null;
+    current_chat_id: number | null;
+}
+
+export interface MenteeMatchingItem {
+    user: User;
+    state: MenteeMatchingState;
+}
+
+export interface VolunteerCapacityItem {
+    volunteer: User;
+    availability: VolunteerAvailabilityStatus;
 }

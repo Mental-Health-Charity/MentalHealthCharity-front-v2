@@ -194,6 +194,9 @@ export const url = {
     },
     matching: {
         volunteerAvailability: `${baseUrl}/api/v1/matching/volunteer/availability`,
+        waitingMentees: `${baseUrl}/api/v1/matching/admin/queue`,
+        matchedMentees: `${baseUrl}/api/v1/matching/admin/matched`,
+        volunteers: `${baseUrl}/api/v1/matching/admin/volunteers`,
         updateUserAutomationExclusion({ id }: ReadUserByIdOptions) {
             return `${baseUrl}/api/v1/matching/admin/users/${id}/automation-exclusion`;
         },
