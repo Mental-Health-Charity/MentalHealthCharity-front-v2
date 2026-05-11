@@ -49,6 +49,7 @@ export enum Permissions {
     MANAGE_VOLUNTEER_FORMS = "MANAGE_VOLUNTEER_FORMS",
     CAN_CONFIRM_CONTRACT = "CAN_CONFIRM_CONTRACT",
     DELETE_OTHERS_CHAT_MESSAGES = "DELETE_OTHERS_CHAT_MESSAGES",
+    MANAGE_OWN_AVAILABILITY = "MANAGE_OWN_AVAILABILITY",
 }
 
 export const groupedPermissions = {
@@ -62,6 +63,7 @@ export const groupedPermissions = {
         Permissions.EDIT_CHAT_DATA,
         Permissions.EDIT_CHAT_NOTE,
         Permissions.CAN_CONFIRM_CONTRACT,
+        Permissions.MANAGE_OWN_AVAILABILITY,
     ],
     [Roles.REDACTOR]: [
         Permissions.CREATE_ARTICLE,

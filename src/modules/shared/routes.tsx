@@ -23,6 +23,7 @@ const MenteeFormScreen = React.lazy(() => import("../../screens/MenteeFormScreen
 const NotFoundScreen = React.lazy(() => import("../../screens/NotFoundScreen"));
 const RegisterScreen = React.lazy(() => import("../../screens/RegisterScreen"));
 const TosScreen = React.lazy(() => import("../../screens/TosScreen"));
+const VolunteerAvailabilityScreen = React.lazy(() => import("../../screens/VolunteerAvailabilityScreen"));
 const VolunteerFormScreen = React.lazy(() => import("../../screens/VolunteerFormScreen"));
 const ManageChatsScreen = React.lazy(() => import("../../screens/ManageChatsScreen"));
 const AdminScreen = React.lazy(() => import("../../screens/AdminScreen"));
@@ -216,6 +217,12 @@ const routes: RouteType[] = [
         onRender: <ChatScreen />,
         requiresAuth: true,
         permission: Permissions.READ_OWN_CHATS,
+    },
+    {
+        url: "/volunteer/availability",
+        onRender: <VolunteerAvailabilityScreen />,
+        requiresAuth: true,
+        permission: Permissions.MANAGE_OWN_AVAILABILITY,
     },
 
     {

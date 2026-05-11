@@ -19,6 +19,7 @@ import Logo from "../../../../assets/static/logo_small.webp";
 import { useTheme } from "../../../../hooks/useTheme";
 import { useUser } from "../../../auth/components/AuthProvider";
 import { getChatsQueryOptions } from "../../../chat/queries/getChatsQueryOptions";
+import { Roles } from "../../../users/constants";
 import { Permissions } from "../../constants";
 import usePermissions from "../../hooks/usePermissions";
 import { NavlinkProps } from "../../types";
@@ -43,6 +44,7 @@ const Navbar = () => {
 
     const { hasPermissions } = usePermissions();
     const { t } = useTranslation();
+    const isVolunteer = user?.user_role === Roles.VOLUNTEER;
 
     const pages: NavlinkProps[] = useMemo(() => {
         const basePages: NavlinkProps[] = [
@@ -64,8 +66,16 @@ const Navbar = () => {
             });
         }
 
+        if (isVolunteer) {
+            basePages.push({
+                name: t("common.navigation.availability", { defaultValue: "Dyspozycyjnosc" }),
+                to: "/volunteer/availability",
+                permissions: Permissions.MANAGE_OWN_AVAILABILITY,
+            });
+        }
+
         return basePages;
-    }, [chats, t]);
+    }, [chats, isVolunteer, t]);
 
     useEffect(() => {
         setIsDrawerOpen(false);
