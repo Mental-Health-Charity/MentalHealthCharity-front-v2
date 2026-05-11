@@ -6,6 +6,7 @@ import { ArticleStatus } from "../modules/articles/constants";
 import { articlesByUserQueryOptions } from "../modules/articles/queries/articlesByUserQueryOptions";
 import { useUser } from "../modules/auth/components/AuthProvider";
 import Loader from "../modules/shared/components/Loader";
+import resolveAssetUrl from "../modules/shared/helpers/resolveAssetUrl";
 import UserProfileHeading from "../modules/users/components/Profile";
 import UserProfileArticles from "../modules/users/components/UserProfileArticles";
 import UserProfileDescription from "../modules/users/components/UserProfileDescription";
@@ -14,7 +15,6 @@ import { Roles } from "../modules/users/constants";
 import { editPublicProfileMutation } from "../modules/users/queries/editPublicProfileMutation";
 import { readPublicProfileQueryOptions } from "../modules/users/queries/readPublicProfileQueryOptions";
 import updateAvatarMutation from "../modules/users/queries/updateAvatarMutation";
-import resolveAssetUrl from "../modules/shared/helpers/resolveAssetUrl";
 
 const ProfileScreen = () => {
     const { userId } = useParams();

@@ -8,7 +8,7 @@ export const readPublicProfileQueryOptions = (
     additional: Omit<UseQueryOptions<PublicProfile>, "queryKey" | "queryFn">
 ) =>
     queryOptions<PublicProfile>({
-        queryKey: ["publicProfile"],
+        queryKey: ["publicProfile", options.id],
         queryFn: async () => {
             const response = await fetch(url.publicProfiles.read(options));
 

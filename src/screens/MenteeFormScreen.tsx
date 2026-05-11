@@ -15,7 +15,7 @@ const MenteeFormScreen = () => {
     const [showConfetti, setShowConfetti] = useState(false);
     const { data: canSendMenteeForm, isLoading: isFormStatusLoading } = useQuery(
         getCanUserSendFormQueryOptions(
-            { form_type_id: formTypes.MENTEE },
+            { form_type: formTypes.MENTEE },
             {
                 enabled: !!user,
             }
@@ -35,7 +35,7 @@ const MenteeFormScreen = () => {
         onSuccess: () => {
             setShowConfetti(true);
             setStep(5);
-            queryClient.invalidateQueries({ queryKey: ["can-user-send-form", { form_type_id: formTypes.MENTEE }] });
+            queryClient.invalidateQueries({ queryKey: ["can-user-send-form", { form_type: formTypes.MENTEE }] });
         },
     });
 
@@ -53,7 +53,7 @@ const MenteeFormScreen = () => {
 
         mutate({
             fields,
-            form_type_id: formTypes.MENTEE,
+            form_type: formTypes.MENTEE,
         });
     };
 

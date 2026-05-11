@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import resolveAssetUrl from "@/modules/shared/helpers/resolveAssetUrl";
 import { User as UserIcon } from "lucide-react";
 import { User } from "../../../auth/types";
 import { translatedRoles } from "../../../users/constants";
@@ -14,7 +15,7 @@ const ArticleAuthor = ({ user }: Props) => {
             className="bg-card flex items-center gap-2.5 rounded-lg p-2 text-left no-underline transition-opacity hover:opacity-80"
         >
             <Avatar className="size-[55px] rounded-[10px] shadow-md">
-                <AvatarImage src={user.chat_avatar_url} alt={user.full_name} />
+                <AvatarImage src={resolveAssetUrl(user.chat_avatar_url)} alt={user.full_name} />
                 <AvatarFallback className="rounded-[10px]">
                     <UserIcon className="size-5" />
                 </AvatarFallback>

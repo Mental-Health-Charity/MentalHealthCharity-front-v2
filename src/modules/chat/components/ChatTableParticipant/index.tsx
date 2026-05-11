@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import resolveAssetUrl from "@/modules/shared/helpers/resolveAssetUrl";
 import { Trash2, User as UserIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { User } from "../../../auth/types";
@@ -15,7 +16,7 @@ const ChatTableParticipant = ({ participant }: Props) => {
         <div className="flex w-full items-center justify-between gap-2">
             <div className="flex items-center gap-4">
                 <Avatar className="rounded-md">
-                    <AvatarImage src={participant.chat_avatar_url} />
+                    <AvatarImage src={resolveAssetUrl(participant.chat_avatar_url)} />
                     <AvatarFallback className="rounded-md">
                         <UserIcon className="size-4" />
                     </AvatarFallback>

@@ -10,6 +10,7 @@ import {
     LayoutDashboard,
     Menu,
     MessageCircle,
+    PlusCircle,
     Users,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -49,6 +50,12 @@ export const AdminSidebar = ({ handleToggle, open }: Props) => {
             icon: <FileText className="size-5" />,
             to: "/admin/articles/",
             permissions: Permissions.MANAGE_ARTICLES,
+        },
+        {
+            text: t("articles.add_article"),
+            icon: <PlusCircle className="size-5" />,
+            to: "/articles/dashboard",
+            permissions: Permissions.CREATE_ARTICLE,
         },
         {
             text: t("admin.sidebar.mentee_forms"),

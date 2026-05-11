@@ -37,7 +37,7 @@ const Hero = () => {
     );
     const { data: canSendMenteeForm, isLoading: isCanSendFormLoading } = useQuery(
         getCanUserSendFormQueryOptions(
-            { form_type_id: formTypes.MENTEE },
+            { form_type: formTypes.MENTEE },
             {
                 enabled: !!user,
             }

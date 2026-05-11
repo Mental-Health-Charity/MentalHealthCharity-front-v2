@@ -8,6 +8,7 @@ export const UnknownUser: User = {
     id: 999999,
     full_name: "ERROR",
     is_assigned_to_chat: false,
+    excluded_from_automation: false,
     user_role: Roles.USER,
     chat_avatar_url: "",
 };

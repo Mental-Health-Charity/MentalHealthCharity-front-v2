@@ -3,13 +3,13 @@ import { url } from "../../../api";
 import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
 import handleApiError from "../../shared/helpers/handleApiError";
 import { Pagination } from "../../shared/types";
-import { FormResponse, MenteeForm, ReadAllFormOptions, VolunteerForm } from "../types";
+import { formTypes, FormResponse, MenteeForm, ReadAllFormOptions, VolunteerForm } from "../types";
 
-type FormTypeById<T extends number> = T extends 2
+type FormTypeByCode<T extends formTypes> = T extends formTypes.MENTEE
     ? Pagination<FormResponse<MenteeForm>>
     : Pagination<FormResponse<VolunteerForm>>;
 
-type InfiniteFormsOptions<T extends number> = Omit<ReadAllFormOptions, "page"> & { form_type_id: T };
+type InfiniteFormsOptions<T extends formTypes> = Omit<ReadAllFormOptions, "page"> & { form_type: T };
 
 export const fetchForms = async (
     options: ReadAllFormOptions
@@ -36,13 +36,13 @@ export const fetchForms = async (
     }
 };
 
-export const getFormsQueryOptions = <T extends number>(options: ReadAllFormOptions & { form_type_id: T }) =>
-    queryOptions<FormTypeById<T>>({
+export const getFormsQueryOptions = <T extends formTypes>(options: ReadAllFormOptions & { form_type: T }) =>
+    queryOptions<FormTypeByCode<T>>({
         queryKey: ["forms", options],
-        queryFn: () => fetchForms(options) as Promise<FormTypeById<T>>,
+        queryFn: () => fetchForms(options) as Promise<FormTypeByCode<T>>,
     });
 
-export const getFormsInfiniteQueryOptions = <T extends number>(options: InfiniteFormsOptions<T>) =>
+export const getFormsInfiniteQueryOptions = <T extends formTypes>(options: InfiniteFormsOptions<T>) =>
     infiniteQueryOptions({
         queryKey: ["forms-infinite", options] as const,
         initialPageParam: 1,
@@ -50,7 +50,7 @@ export const getFormsInfiniteQueryOptions = <T extends number>(options: Infinite
             fetchForms({
                 ...options,
                 page: Number(pageParam),
-            }) as Promise<FormTypeById<T>>,
+            }) as Promise<FormTypeByCode<T>>,
         getNextPageParam: (lastPage) => {
             if (lastPage.page >= lastPage.pages) {
                 return undefined;

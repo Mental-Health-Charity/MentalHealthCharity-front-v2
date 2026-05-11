@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import resolveAssetUrl from "@/modules/shared/helpers/resolveAssetUrl";
 import { cn } from "@/lib/utils";
 import { t } from "i18next";
 import { AlertCircle, Archive, RotateCcw, Trash2, User as UserIcon } from "lucide-react";
@@ -34,7 +35,7 @@ const ChatMessage = ({ message, onDeleteMessage, onRetryMessage, showArchiveChip
         >
             {!senderIsCurrentUser && (
                 <Avatar className="ring-background size-8 shrink-0 rounded-full ring-2 md:size-10">
-                    <AvatarImage src={message.sender.full_name} alt={message.sender.full_name} />
+                    <AvatarImage src={resolveAssetUrl(message.sender.chat_avatar_url)} alt={message.sender.full_name} />
                     <AvatarFallback className="rounded-full text-sm">
                         <UserIcon className="size-4" />
                     </AvatarFallback>

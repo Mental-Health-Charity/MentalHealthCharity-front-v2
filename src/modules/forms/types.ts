@@ -5,7 +5,7 @@ export interface FormOptions {
 }
 
 export interface CanUserSendFormOptions {
-    form_type_id?: formTypes;
+    form_type?: formTypes;
 }
 
 export interface CanUserSendFormResponse {
@@ -32,7 +32,7 @@ export interface FormOption {
 
 export interface ReadAllFormOptions {
     form_status: formStatus;
-    form_type_id: formTypes;
+    form_type: formTypes;
     page: number;
     size: number;
     // Sorting options: "min_stage" (ascending order by current_step), "max_stage" (descending order by current_step), "newest" (descending order by creation_date), "oldest" (ascending order by creation_date)
@@ -91,7 +91,7 @@ export interface MenteeForm {
 export interface Form<T> {
     fields: T;
     message?: string;
-    form_type_id: formTypes;
+    form_type: formTypes;
 }
 
 export interface FormResponse<T> {
@@ -130,6 +130,6 @@ export interface FormNotePayload {
 }
 
 export enum formTypes {
-    VOLUNTEER = 1,
-    MENTEE = 2,
+    MENTEE = "HELP",
+    VOLUNTEER = "VOLUNTEER",
 }

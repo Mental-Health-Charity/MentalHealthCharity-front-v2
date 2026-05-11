@@ -18,7 +18,7 @@ const ManageVolunteerFormsScreen = () => {
     const { data, isLoading, isError, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
         getFormsInfiniteQueryOptions({
             form_status: status,
-            form_type_id: formTypes.VOLUNTEER,
+            form_type: formTypes.VOLUNTEER,
             sort,
             size: 25,
         })

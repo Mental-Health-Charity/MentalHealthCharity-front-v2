@@ -18,7 +18,7 @@ const ManageMenteeFormsScreen = () => {
     const { data, isLoading, isError, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
         getFormsInfiniteQueryOptions({
             form_status: status,
-            form_type_id: formTypes.MENTEE,
+            form_type: formTypes.MENTEE,
             sort,
             size: 25,
         })

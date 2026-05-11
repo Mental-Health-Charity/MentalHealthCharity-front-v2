@@ -1,9 +1,9 @@
 import { url } from "../../../api";
 import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
-import { User } from "../../auth/types";
 import handleApiError from "../../shared/helpers/handleApiError";
+import { PublicProfile } from "../types";
 
-const updateAvatarMutation = async ({ id, avatar }: { id: number; avatar: File }): Promise<User> => {
+const updateAvatarMutation = async ({ id, avatar }: { id: number; avatar: File }): Promise<PublicProfile> => {
     const headers = getAuthHeaders();
     headers.delete("Content-Type");
     headers.delete("content-type");

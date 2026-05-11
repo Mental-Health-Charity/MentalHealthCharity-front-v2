@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import resolveAssetUrl from "@/modules/shared/helpers/resolveAssetUrl";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2, LockKeyhole, Trash2, User as UserIcon, UserPlus, X } from "lucide-react";
 import { useState } from "react";
@@ -93,7 +94,10 @@ const ChatDetails = ({
                                 className="group hover:bg-muted/50 flex items-center gap-3 rounded-lg px-2 py-2 transition-colors"
                             >
                                 <Avatar className="ring-background size-9 shrink-0 rounded-full ring-2">
-                                    <AvatarImage src={participant.chat_avatar_url} alt={participant.full_name} />
+                                    <AvatarImage
+                                        src={resolveAssetUrl(participant.chat_avatar_url)}
+                                        alt={participant.full_name}
+                                    />
                                     <AvatarFallback className="rounded-full text-xs">
                                         <UserIcon className="size-4" />
                                     </AvatarFallback>

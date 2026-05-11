@@ -21,7 +21,23 @@ const editUserAsAdminMutation = async ({ id, payload }: { id: number; payload: E
             throw handleApiError(res);
         }
 
-        return await res.json();
+        let user = await res.json();
+
+        const automationRes = await fetch(url.matching.updateUserAutomationExclusion({ id }), {
+            method: "PUT",
+            headers,
+            body: JSON.stringify({
+                excluded_from_automation: payload.excluded_from_automation,
+            }),
+        });
+
+        if (!automationRes.ok) {
+            throw handleApiError(automationRes);
+        }
+
+        user = await automationRes.json();
+
+        return user;
     } catch (e) {
         console.error("While edit user:", e);
         throw e;

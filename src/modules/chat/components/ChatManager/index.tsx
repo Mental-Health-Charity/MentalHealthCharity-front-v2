@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import resolveAssetUrl from "@/modules/shared/helpers/resolveAssetUrl";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -212,7 +213,7 @@ const ChatManager = ({
                                         >
                                             <Avatar className="size-9 rounded-lg">
                                                 <AvatarImage
-                                                    src={participant.chat_avatar_url || undefined}
+                                                    src={resolveAssetUrl(participant.chat_avatar_url)}
                                                     alt={participant.full_name}
                                                 />
                                                 <AvatarFallback className="rounded-lg text-xs">

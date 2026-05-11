@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Filter } from "lucide-react";
+import { Filter, Plus } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import ArticlesManager from "../modules/articles/components/ArticlesManager";
 import { ArticleStatus, translatedAdminArticleStatus } from "../modules/articles/constants";
 import changeStatusMutation from "../modules/articles/queries/changeStatusMutation";
@@ -49,6 +50,12 @@ const ManageArticlesScreen = () => {
     return (
         <AdminLayout>
             <SimpleCard title={t("manage_articles.title")} subtitle={t("manage_articles.subtitle")}>
+                <div className="mb-5 flex justify-end">
+                    <Button className="gap-2.5" render={<Link to="/articles/create" />}>
+                        <Plus className="size-4" />
+                        {t("articles.add_article")}
+                    </Button>
+                </div>
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger render={<div />}>

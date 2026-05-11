@@ -192,6 +192,12 @@ export const url = {
             return `${baseUrl}/api/v1/user-public-profile/${id}`;
         },
     },
+    matching: {
+        volunteerAvailability: `${baseUrl}/api/v1/matching/volunteer/availability`,
+        updateUserAutomationExclusion({ id }: ReadUserByIdOptions) {
+            return `${baseUrl}/api/v1/matching/admin/users/${id}/automation-exclusion`;
+        },
+    },
     form: {
         readById({ id }: FormOptions) {
             return `${baseUrl}/api/v1/form/${id}`;

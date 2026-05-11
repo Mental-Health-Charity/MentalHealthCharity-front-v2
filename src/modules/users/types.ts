@@ -49,6 +49,7 @@ export interface ChangePasswordCompletePayload {
 export interface EditUserFormValues {
     full_name: string;
     user_role: string;
+    excluded_from_automation: boolean;
 }
 
 export interface EditUserAvatar {

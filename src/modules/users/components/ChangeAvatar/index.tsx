@@ -13,6 +13,7 @@ interface Props {
 }
 
 const MAX_AVATAR_SIZE = 1024 * 1024;
+const ALLOWED_AVATAR_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 const ChangeAvatar = ({ avatar, username, disabled, onSubmit }: Props) => {
     const { t } = useTranslation();
@@ -35,8 +36,12 @@ const ChangeAvatar = ({ avatar, username, disabled, onSubmit }: Props) => {
 
     const validateFile = (file: File | null) => {
         if (!file) return null;
-        if (!file.type.startsWith("image/")) return t("validation.invalid_file_type");
-        if (file.size > MAX_AVATAR_SIZE) return t("validation.file_size_limit");
+        if (!ALLOWED_AVATAR_TYPES.includes(file.type)) {
+            return t("validation.invalid_file", { type: "JPG, PNG, WEBP" });
+        }
+        if (file.size > MAX_AVATAR_SIZE) {
+            return t("validation.max_size", { size: "1MB" });
+        }
         return null;
     };
 
@@ -62,7 +67,11 @@ const ChangeAvatar = ({ avatar, username, disabled, onSubmit }: Props) => {
         }
 
         setSelectedFile(file);
-        setPreview(URL.createObjectURL(file));
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setPreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
         setError(null);
     };
 
@@ -114,7 +123,7 @@ const ChangeAvatar = ({ avatar, username, disabled, onSubmit }: Props) => {
                         id="avatar"
                         name="avatar"
                         type="file"
-                        accept="image/*"
+                        accept="image/png,image/jpeg,image/webp"
                         onChange={handleFileChange}
                     />
                     {error && <p className="text-destructive mt-2.5 text-center text-sm">{error}</p>}

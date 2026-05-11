@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { baseUrl } from "../../../../api";
 import Markdown from "../../../shared/components/Markdown";
 import formatDate from "../../../shared/helpers/formatDate";
+import resolveAssetUrl from "../../../shared/helpers/resolveAssetUrl";
 import { translatedRoles } from "../../../users/constants";
 import { Article } from "../../types";
 import ArticleCard from "../ArticleCard";
@@ -66,7 +67,7 @@ const ArticleView = ({ article, articles }: Props) => {
                             >
                                 <Avatar className="ring-background/50 size-10 ring-2">
                                     <AvatarImage
-                                        src={article.created_by.chat_avatar_url}
+                                        src={resolveAssetUrl(article.created_by.chat_avatar_url)}
                                         alt={article.created_by.full_name}
                                     />
                                     <AvatarFallback>

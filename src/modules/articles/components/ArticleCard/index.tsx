@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import resolveAssetUrl from "@/modules/shared/helpers/resolveAssetUrl";
 import { Badge } from "@/components/ui/badge";
 import { useMutation } from "@tanstack/react-query";
 import { Pencil, Trash2, User as UserIcon } from "lucide-react";
@@ -91,7 +92,7 @@ const ArticleCard = ({ article, onRefetch, draft }: Props) => {
                         <div className="flex items-center gap-2.5">
                             <Avatar className="size-8 rounded-full">
                                 <AvatarImage
-                                    src={article.created_by.chat_avatar_url}
+                                    src={resolveAssetUrl(article.created_by.chat_avatar_url)}
                                     alt={article.created_by.full_name}
                                 />
                                 <AvatarFallback className="rounded-full text-xs">

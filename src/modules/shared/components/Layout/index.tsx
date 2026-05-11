@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { useLocation } from "react-router-dom";
+import VolunteerAvailabilityPrompt from "../../../matching/components/VolunteerAvailabilityPrompt";
 import CookiesBar from "../CookiesBar";
 import CrisisBar from "../CrisisBar";
 import Footer from "../Footer";
@@ -48,6 +49,7 @@ const Layout = ({ children }: Props) => {
             <main id="main-content" className={`flex-1 ${isChatScreen ? "flex min-h-0 flex-col" : ""}`}>
                 {children}
             </main>
+            <VolunteerAvailabilityPrompt />
             {!isAdminScreen && !isChatScreen && <Footer />}
             <CookiesBar />
         </div>

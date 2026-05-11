@@ -1,3 +1,4 @@
+import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,11 +29,13 @@ const EditUserModal = ({ onClose, open, user, onSubmit }: Props) => {
         user_role: Yup.string()
             .oneOf(Object.values(Roles), t("users.validation.invalid_role"))
             .required(t("validation.required")),
+        excluded_from_automation: Yup.boolean().required(),
     });
 
     const initialValues = {
         full_name: user.full_name || "",
         user_role: user.user_role || Roles.USER,
+        excluded_from_automation: user.excluded_from_automation || false,
     };
 
     const handleSubmit = (values: EditUserFormValues) => {
@@ -52,7 +55,7 @@ const EditUserModal = ({ onClose, open, user, onSubmit }: Props) => {
             className="sm:max-w-[500px]"
         >
             <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
-                {({ values, errors, touched, handleChange, handleBlur, dirty }) => (
+                {({ values, errors, touched, handleChange, handleBlur, dirty, setFieldValue }) => (
                     <Form className="flex flex-col gap-4">
                         {step === 0 && (
                             <>
@@ -103,6 +106,28 @@ const EditUserModal = ({ onClose, open, user, onSubmit }: Props) => {
                                     <Label>{t("users.email")}</Label>
                                     <Input disabled value={user.email} />
                                 </div>
+                                <label className="border-border bg-muted/30 flex cursor-pointer items-start gap-3 rounded-lg border p-3">
+                                    <Checkbox
+                                        checked={values.excluded_from_automation}
+                                        onCheckedChange={(checked) =>
+                                            setFieldValue("excluded_from_automation", Boolean(checked))
+                                        }
+                                        className="mt-0.5"
+                                    />
+                                    <span className="flex flex-col gap-1">
+                                        <span className="text-foreground text-sm font-medium">
+                                            {t("users.exclude_from_automation", {
+                                                defaultValue: "Wyklucz z automatycznego parowania",
+                                            })}
+                                        </span>
+                                        <span className="text-muted-foreground text-xs leading-relaxed">
+                                            {t("users.exclude_from_automation_description", {
+                                                defaultValue:
+                                                    "Konto nie bedzie brane pod uwage przy automatycznym dopasowywaniu osob w kryzysie i wolontariuszy.",
+                                            })}
+                                        </span>
+                                    </span>
+                                </label>
                             </>
                         )}
                         {step === 1 && <DataComparison dataA={initialValues} dataB={values} />}

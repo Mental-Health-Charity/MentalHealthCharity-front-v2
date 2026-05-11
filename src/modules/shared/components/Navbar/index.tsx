@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import resolveAssetUrl from "@/modules/shared/helpers/resolveAssetUrl";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -169,7 +170,10 @@ const Navbar = () => {
                                         className="hover:bg-muted flex items-center gap-3 rounded-lg px-3 py-2.5 no-underline transition-colors"
                                     >
                                         <Avatar className="size-8 rounded-full">
-                                            <AvatarImage src={user.chat_avatar_url || undefined} alt={user.full_name} />
+                                            <AvatarImage
+                                                src={resolveAssetUrl(user.chat_avatar_url)}
+                                                alt={user.full_name}
+                                            />
                                             <AvatarFallback className="bg-primary-brand/15 text-primary-brand rounded-full text-xs">
                                                 {user.full_name?.charAt(0)?.toUpperCase()}
                                             </AvatarFallback>
@@ -230,7 +234,7 @@ const Navbar = () => {
                                             </span>
                                             <Avatar className="rounded-md">
                                                 <AvatarImage
-                                                    src={user.chat_avatar_url || undefined}
+                                                    src={resolveAssetUrl(user.chat_avatar_url)}
                                                     alt={user.full_name}
                                                 />
                                                 <AvatarFallback className="bg-primary-brand/15 text-primary-brand rounded-md">

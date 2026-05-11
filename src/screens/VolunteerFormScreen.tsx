@@ -15,7 +15,7 @@ const VolunteerFormScreen = () => {
     const [showConfetti, setShowConfetti] = useState(false);
     const { data: canSendVolunteerForm, isLoading: isFormStatusLoading } = useQuery(
         getCanUserSendFormQueryOptions(
-            { form_type_id: formTypes.VOLUNTEER },
+            { form_type: formTypes.VOLUNTEER },
             {
                 enabled: !!user,
             }
@@ -28,7 +28,7 @@ const VolunteerFormScreen = () => {
 
         onSuccess: () => {
             setShowConfetti(true);
-            queryClient.invalidateQueries({ queryKey: ["can-user-send-form", { form_type_id: formTypes.VOLUNTEER }] });
+            queryClient.invalidateQueries({ queryKey: ["can-user-send-form", { form_type: formTypes.VOLUNTEER }] });
         },
     });
 
@@ -47,7 +47,7 @@ const VolunteerFormScreen = () => {
 
         mutate({
             fields,
-            form_type_id: formTypes.VOLUNTEER,
+            form_type: formTypes.VOLUNTEER,
         });
     };
 
