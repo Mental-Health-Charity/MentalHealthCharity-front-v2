@@ -45,6 +45,10 @@ const Navbar = () => {
     const { hasPermissions } = usePermissions();
     const { t } = useTranslation();
     const isVolunteer = user?.user_role === Roles.VOLUNTEER;
+    const userDisplayName = user
+        ? user.full_name?.trim() || user.email || t("common.navigation.my_account", { defaultValue: "Moje konto" })
+        : "";
+    const userInitial = userDisplayName.charAt(0).toUpperCase();
 
     const pages: NavlinkProps[] = useMemo(() => {
         const basePages: NavlinkProps[] = [
@@ -87,9 +91,9 @@ const Navbar = () => {
 
     return (
         <header className="bg-card/95 border-border/60 sticky top-0 z-50 w-full border-b px-4 py-2 backdrop-blur-md">
-            <nav className="relative mx-auto flex w-full max-w-[1200px] items-center justify-between">
+            <nav className="mx-auto flex w-full max-w-[1200px] items-center justify-between gap-4">
                 {/* Logo + brand name */}
-                <Link to="/" className="flex items-center gap-2.5 no-underline">
+                <Link to="/" className="flex shrink-0 items-center gap-2.5 no-underline">
                     <img src={Logo} alt="Logo" className="w-10" />
                     <span className="text-foreground hidden text-lg font-bold sm:inline">Peryskop</span>
                 </Link>
@@ -182,15 +186,15 @@ const Navbar = () => {
                                         <Avatar className="size-8 rounded-full">
                                             <AvatarImage
                                                 src={resolveAssetUrl(user.chat_avatar_url)}
-                                                alt={user.full_name}
+                                                alt={userDisplayName}
                                             />
                                             <AvatarFallback className="bg-primary-brand/15 text-primary-brand rounded-full text-xs">
-                                                {user.full_name?.charAt(0)?.toUpperCase()}
+                                                {userInitial}
                                             </AvatarFallback>
                                         </Avatar>
                                         <div className="min-w-0 flex-1">
                                             <p className="text-foreground truncate text-sm font-medium">
-                                                {user.full_name}
+                                                {userDisplayName}
                                             </p>
                                             <p className="text-muted-foreground truncate text-xs">{user.email}</p>
                                         </div>
@@ -220,14 +224,14 @@ const Navbar = () => {
                 </Sheet>
 
                 {/* Desktop Menu */}
-                <div className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-6 md:flex">
+                <div className="hidden min-w-0 flex-1 items-center justify-center gap-3 md:flex xl:gap-6">
                     {filteredPages.map((props) => (
-                        <NavLink key={props.to} {...props} />
+                        <NavLink key={props.to} {...props} className="px-2 text-lg xl:px-3 xl:text-xl" />
                     ))}
                 </div>
 
                 {/* User Menu (Desktop) */}
-                <div className="hidden items-center gap-2 md:flex">
+                <div className="hidden min-w-0 shrink-0 items-center gap-2 md:flex">
                     <ThemeToggle />
                     {user ? (
                         <TooltipProvider>
@@ -236,19 +240,19 @@ const Navbar = () => {
                                     <TooltipTrigger render={<span />}>
                                         <DropdownMenuTrigger
                                             render={
-                                                <button className="bg-background hover:bg-muted flex items-center gap-2 rounded-lg p-2 transition-colors" />
+                                                <button className="bg-background hover:bg-muted flex max-w-[220px] min-w-0 items-center gap-2 rounded-lg p-2 transition-colors xl:max-w-[280px]" />
                                             }
                                         >
-                                            <span className="text-foreground text-sm font-medium">
-                                                {user.full_name}
+                                            <span className="text-foreground min-w-0 truncate text-sm font-medium">
+                                                {userDisplayName}
                                             </span>
-                                            <Avatar className="rounded-md">
+                                            <Avatar className="shrink-0 rounded-md">
                                                 <AvatarImage
                                                     src={resolveAssetUrl(user.chat_avatar_url)}
-                                                    alt={user.full_name}
+                                                    alt={userDisplayName}
                                                 />
                                                 <AvatarFallback className="bg-primary-brand/15 text-primary-brand rounded-md">
-                                                    {user.full_name?.charAt(0)?.toUpperCase()}
+                                                    {userInitial}
                                                 </AvatarFallback>
                                             </Avatar>
                                         </DropdownMenuTrigger>
