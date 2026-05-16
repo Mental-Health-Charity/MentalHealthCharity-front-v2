@@ -12,12 +12,15 @@ import {
     Menu,
     MessageCircle,
     PlusCircle,
+    Settings,
     UserCheck,
     Users,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { useUser } from "../../../auth/components/AuthProvider";
+import { Roles } from "../../../users/constants";
 import { Permissions } from "../../constants";
 import usePermissions from "../../hooks/usePermissions";
 
@@ -33,6 +36,7 @@ type MenuItem = {
     icon: ReactNode;
     to: string;
     permissions: Permissions;
+    roles?: Roles[];
 };
 
 type MenuSection = {
@@ -44,6 +48,7 @@ const normalizePath = (path: string) => path.replace(/\/+$/, "") || "/";
 
 export const AdminSidebar = ({ handleToggle, open }: Props) => {
     const isMobile = useIsMobile();
+    const { user } = useUser();
     const { hasPermissions } = usePermissions();
     const { t } = useTranslation();
 
@@ -139,6 +144,13 @@ export const AdminSidebar = ({ handleToggle, open }: Props) => {
                     to: "/admin/users/",
                     permissions: Permissions.MANAGE_USERS,
                 },
+                {
+                    text: t("admin.sidebar.settings", { defaultValue: "Ustawienia" }),
+                    icon: <Settings className="size-5" />,
+                    to: "/admin/settings",
+                    permissions: Permissions.MANAGE_USERS,
+                    roles: [Roles.ADMIN],
+                },
             ],
         },
     ];
@@ -151,7 +163,11 @@ export const AdminSidebar = ({ handleToggle, open }: Props) => {
             <hr className="border-sidebar-border" />
             <nav aria-label="Admin navigation" className="mt-3 flex flex-col pb-3">
                 {menuSections.map((section) => {
-                    const visibleItems = section.items.filter((item) => hasPermissions(item.permissions));
+                    const visibleItems = section.items.filter(
+                        (item) =>
+                            hasPermissions(item.permissions) &&
+                            (!item.roles || (!!user && item.roles.includes(user.user_role)))
+                    );
 
                     if (visibleItems.length === 0) {
                         return null;

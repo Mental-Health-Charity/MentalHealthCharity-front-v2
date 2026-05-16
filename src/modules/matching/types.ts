@@ -37,6 +37,23 @@ export interface ManualPairResponse {
     warning?: string | null;
 }
 
+export interface MatchingRunResult {
+    matched_count: number;
+    waiting_count: number;
+    no_capacity_count: number;
+    created_chat_ids: number[];
+}
+
+export interface MatchingAutomationSettings {
+    automatic_matching_enabled: boolean;
+    updated_at?: string | null;
+    updated_by_id?: number | null;
+}
+
+export interface MatchingAutomationSettingsUpdate {
+    automatic_matching_enabled: boolean;
+}
+
 export interface RematchDecisionRequest {
     wants_rematch: boolean;
 }

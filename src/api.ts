@@ -201,6 +201,8 @@ export const url = {
         matchedMentees: `${baseUrl}/api/v1/matching/admin/matched`,
         volunteers: `${baseUrl}/api/v1/matching/admin/volunteers`,
         alerts: `${baseUrl}/api/v1/matching/admin/alerts`,
+        settings: `${baseUrl}/api/v1/matching/admin/settings`,
+        run: `${baseUrl}/api/v1/matching/admin/run`,
         manualPair: `${baseUrl}/api/v1/matching/admin/manual-pair`,
         myState: `${baseUrl}/api/v1/matching/me/state`,
         rematchDecision: `${baseUrl}/api/v1/matching/me/rematch-decision`,

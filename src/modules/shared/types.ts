@@ -1,4 +1,5 @@
 import React from "react";
+import { Roles } from "../users/constants";
 import { Permissions } from "./constants";
 
 export interface Pagination<T> {
@@ -19,6 +20,7 @@ export interface RouteType {
     onRender: React.ReactNode;
     requiresAuth?: boolean;
     permission?: Permissions;
+    roles?: Roles[];
     unauthenticatedRedirect?: string;
 }
 

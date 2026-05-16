@@ -14,8 +14,11 @@ const RootRouter = () => {
             {routes.map((route) => {
                 const isAuthenticated = !!user;
                 const isAuthStatePending = route.requiresAuth && !isAuthenticated && (isLoading || isFetchingUser);
+                const hasAllowedRole = !route.roles || (!!user && route.roles.includes(user.user_role));
                 const canAccess =
-                    (!route.requiresAuth || isAuthenticated) && (!route.permission || hasPermissions(route.permission));
+                    (!route.requiresAuth || isAuthenticated) &&
+                    (!route.permission || hasPermissions(route.permission)) &&
+                    hasAllowedRole;
 
                 return (
                     <Route

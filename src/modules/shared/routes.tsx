@@ -5,6 +5,7 @@ import ConfirmEmailCompleteScreen from "../../screens/ConfirmEmailCompleteScreen
 import ConfirmEmailScreen from "../../screens/ConfirmEmailScreen";
 import SupportUsScreen from "../../screens/SupportUsScreen";
 import { buildChatSupportRegisterUrl } from "../auth/helpers/authRedirect";
+import { Roles } from "../users/constants";
 import { Permissions } from "./constants";
 import { RouteType } from "./types";
 
@@ -28,6 +29,7 @@ const VolunteerAvailabilityScreen = React.lazy(() => import("../../screens/Volun
 const VolunteerFormScreen = React.lazy(() => import("../../screens/VolunteerFormScreen"));
 const ManageChatsScreen = React.lazy(() => import("../../screens/ManageChatsScreen"));
 const AdminScreen = React.lazy(() => import("../../screens/AdminScreen"));
+const AdminSettingsScreen = React.lazy(() => import("../../screens/AdminSettingsScreen"));
 const ArticleScreen = React.lazy(() => import("../../screens/ArticleScreen"));
 const ArticlesScreen = React.lazy(() => import("../../screens/ArticlesScreen"));
 const ChatScreen = React.lazy(() => import("../../screens/ChatScreen"));
@@ -137,6 +139,13 @@ const routes: RouteType[] = [
         onRender: <UserEditorScreen />,
         requiresAuth: true,
         permission: Permissions.MANAGE_USERS,
+    },
+    {
+        url: "/admin/settings",
+        onRender: <AdminSettingsScreen />,
+        requiresAuth: true,
+        permission: Permissions.MANAGE_USERS,
+        roles: [Roles.ADMIN],
     },
     {
         url: "/admin/articles",
