@@ -41,6 +41,18 @@ export interface RematchDecisionRequest {
     wants_rematch: boolean;
 }
 
+export interface AdminAlertMetadata {
+    waiting_user_ids?: number[];
+    notified_user_ids?: number[];
+    [key: string]: unknown;
+}
+
+export interface AdminAlert {
+    message: string;
+    metadata: AdminAlertMetadata | null;
+    created_at: string;
+}
+
 export interface MenteeMatchingState {
     user_id: number;
     help_form_id: number | null;

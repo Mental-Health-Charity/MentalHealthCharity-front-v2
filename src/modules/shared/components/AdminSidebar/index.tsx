@@ -3,6 +3,7 @@ import { useIsMobile } from "@/hooks/useBreakpoint";
 import { cn } from "@/lib/utils";
 import {
     ArrowLeft,
+    Bell,
     ClipboardCheck,
     ClipboardList,
     FileText,
@@ -74,6 +75,12 @@ export const AdminSidebar = ({ handleToggle, open }: Props) => {
             text: t("admin.sidebar.matching_volunteers", { defaultValue: "Wolontariusze" }),
             icon: <Users className="size-5" />,
             to: "/admin/matching/volunteers",
+            permissions: Permissions.MANAGE_CHATS,
+        },
+        {
+            text: t("admin.sidebar.matching_alerts", { defaultValue: "Alerty parowania" }),
+            icon: <Bell className="size-5" />,
+            to: "/admin/matching/alerts",
             permissions: Permissions.MANAGE_CHATS,
         },
         {
