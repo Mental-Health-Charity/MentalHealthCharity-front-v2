@@ -1,24 +1,29 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import resolveAssetUrl from "@/modules/shared/helpers/resolveAssetUrl";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import resolveAssetUrl from "@/modules/shared/helpers/resolveAssetUrl";
+import { cn } from "@/lib/utils";
 import {
     ArrowRightCircle,
+    ChevronDown,
     Copy,
     LockKeyhole,
+    MousePointerClick,
     MessageSquare,
     Pencil,
     Play,
     Plus,
     RefreshCwOff,
+    Route,
     RotateCw,
+    ShieldCheck,
     Trash2,
     User as UserIcon,
     Users,
 } from "lucide-react";
-import { useCallback, useEffect, useRef } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
@@ -40,6 +45,20 @@ interface Props {
     onLoadMore: () => void;
 }
 
+const getInitial = (user: User) => (user.full_name || user.email || "?").charAt(0).toUpperCase();
+
+const InfoIcon = ({ children, label }: { children: ReactNode; label: string }) => (
+    <Tooltip>
+        <TooltipTrigger
+            className="border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground inline-flex size-8 items-center justify-center rounded-lg border transition-colors"
+            aria-label={label}
+        >
+            {children}
+        </TooltipTrigger>
+        <TooltipContent>{label}</TooltipContent>
+    </Tooltip>
+);
+
 const ChatManager = ({
     data,
     onEditChat,
@@ -53,6 +72,7 @@ const ChatManager = ({
     const { t } = useTranslation();
     const navigate = useNavigate();
     const sentinelRef = useRef<HTMLDivElement>(null);
+    const [expandedChatIds, setExpandedChatIds] = useState<Set<number>>(() => new Set());
 
     const handleCopy = useCallback(
         (text: string) => {
@@ -62,7 +82,28 @@ const ChatManager = ({
         [t]
     );
 
-    // Infinite scroll via IntersectionObserver
+    const toggleExpanded = useCallback((chatId: number) => {
+        setExpandedChatIds((current) => {
+            const next = new Set(current);
+            if (next.has(chatId)) {
+                next.delete(chatId);
+            } else {
+                next.add(chatId);
+            }
+            return next;
+        });
+    }, []);
+
+    const loadedCountLabel = useMemo(() => {
+        if (!data) return "";
+
+        return t("chat.loaded_chats_summary", {
+            defaultValue: "Pokazano {{loaded}} z {{total}}",
+            loaded: data.items.length,
+            total: data.total,
+        });
+    }, [data, t]);
+
     useEffect(() => {
         if (!data || !sentinelRef.current) return;
         if (data.items.length >= data.total) return;
@@ -79,20 +120,16 @@ const ChatManager = ({
 
     if (!data) {
         return (
-            <div className="flex flex-col gap-4 py-6">
-                {Array.from({ length: 4 }, (_, i) => (
-                    <div key={i} className="bg-card border-border/50 rounded-xl border p-5">
+            <div className="flex flex-col gap-3 py-5">
+                {Array.from({ length: 5 }, (_, i) => (
+                    <div key={i} className="bg-card border-border/50 rounded-xl border p-4">
                         <div className="flex items-center gap-4">
                             <Skeleton className="size-10 rounded-lg" />
-                            <Skeleton className="h-5 w-48" />
-                            <div className="ml-auto flex gap-2">
-                                <Skeleton className="h-6 w-20 rounded-full" />
-                                <Skeleton className="h-6 w-16 rounded-full" />
+                            <div className="flex-1 space-y-2">
+                                <Skeleton className="h-5 w-64 max-w-full" />
+                                <Skeleton className="h-4 w-96 max-w-full" />
                             </div>
-                        </div>
-                        <div className="mt-4 flex flex-col gap-3 pl-4">
-                            <Skeleton className="h-12 w-full rounded-lg" />
-                            <Skeleton className="h-12 w-full rounded-lg" />
+                            <Skeleton className="h-9 w-24 rounded-lg" />
                         </div>
                     </div>
                 ))}
@@ -107,218 +144,313 @@ const ChatManager = ({
                     <MessageSquare className="text-muted-foreground size-7" />
                 </div>
                 <p className="text-muted-foreground text-lg font-medium">
-                    {t("chat.no_chats_found", { defaultValue: "No chats found" })}
+                    {t("chat.no_chats_found", { defaultValue: "Nie znaleziono czatów" })}
                 </p>
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col gap-4 py-6">
-            {/* Chat count summary */}
-            <div className="text-muted-foreground flex items-center gap-2 px-1 text-sm">
-                <Users className="size-4" />
-                <span>
-                    {t("chat.total_chats", {
-                        defaultValue: "{{count}} chats",
-                        count: data.total,
-                    })}
-                </span>
-            </div>
+        <TooltipProvider>
+            <div className="flex flex-col gap-3 py-5">
+                <div className="text-muted-foreground flex flex-wrap items-center justify-between gap-2 px-1 text-sm">
+                    <span className="flex items-center gap-2">
+                        <Users className="size-4" />
+                        {loadedCountLabel}
+                    </span>
+                </div>
 
-            {data.items.map((chat) => (
-                <div
-                    key={chat.id}
-                    className="bg-card border-border/50 overflow-hidden rounded-xl border shadow-sm transition-shadow hover:shadow-md"
-                >
-                    {/* Chat header */}
-                    <div className="flex flex-wrap items-center gap-3 p-5">
-                        <div className="bg-primary-brand/10 flex size-11 shrink-0 items-center justify-center rounded-lg">
-                            <MessageSquare className="text-primary-brand size-5" />
-                        </div>
+                {data.items.map((chat) => {
+                    const isExpanded = expandedChatIds.has(chat.id);
+                    const visibleParticipants = chat.participants.slice(0, 3);
+                    const hiddenParticipantsCount = Math.max(chat.participants.length - visibleParticipants.length, 0);
+                    const isClosed = !chat.is_active || chat.status === "CLOSED";
 
-                        <div className="min-w-0 flex-1">
-                            <h3 className="text-foreground truncate text-lg font-semibold">{chat.name}</h3>
-                            <p className="text-muted-foreground text-xs">
-                                {t("common.created_at", { date: formatDate(chat.creation_date) })}
-                            </p>
-                        </div>
+                    const statusLabel = isClosed
+                        ? t("common.closed", { defaultValue: "Zamknięty" })
+                        : t("common.active", { defaultValue: "Aktywny" });
 
-                        <div className="flex flex-wrap items-center gap-2">
-                            {chat.is_supervisor_chat && (
-                                <Badge
-                                    variant="secondary"
-                                    className="bg-amber-500/15 text-amber-700 dark:text-amber-400"
-                                >
-                                    {t("chat.admin_chat")}
-                                </Badge>
-                            )}
-                            <Badge
-                                variant={chat.is_active ? "secondary" : "destructive"}
-                                className={
-                                    chat.is_active ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400" : ""
-                                }
-                            >
-                                {chat.is_active ? t("common.active") : t("common.inactive")}
-                            </Badge>
-                            <Badge variant={chat.auto_matching_enabled ? "secondary" : "outline"}>
-                                {chat.auto_matching_enabled
-                                    ? t("matching.auto_rematching_enabled", {
-                                          defaultValue: "Automatyczne ponowne parowanie",
-                                      })
-                                    : t("matching.auto_rematching_disabled", {
-                                          defaultValue: "Ręczne ponowne parowanie",
-                                      })}
-                            </Badge>
+                    const leadingIcon = isClosed ? (
+                        <LockKeyhole className="text-muted-foreground size-5" />
+                    ) : chat.is_supervisor_chat ? (
+                        <ShieldCheck className="text-warning-brand size-5" />
+                    ) : (
+                        <MessageSquare className="text-primary-brand size-5" />
+                    );
 
-                            <ActionMenu
-                                actions={[
-                                    {
-                                        id: "edit",
-                                        label: t("common.edit"),
-                                        onClick: () => onEditChat(chat),
-                                        icon: <Pencil className="size-4" />,
-                                    },
-                                    {
-                                        id: "go_to_chat",
-                                        label: t("chat.go_to_chat"),
-                                        href: `/chat/${chat.id}`,
-                                        icon: <ArrowRightCircle className="size-4" />,
-                                    },
-                                    {
-                                        id: "disable",
-                                        variant: "divider",
-                                        label: chat.is_active ? t("chat.close_chat") : t("common.enable"),
-                                        onClick: () => onToggleChat(chat),
-                                        icon: chat.is_active ? (
-                                            <LockKeyhole className="text-warning-brand size-4" />
-                                        ) : (
-                                            <Play className="text-success-brand size-4" />
-                                        ),
-                                    },
-                                    {
-                                        id: "toggle_auto_matching",
-                                        label: chat.auto_matching_enabled
-                                            ? t("matching.disable_auto_rematching", {
-                                                  defaultValue: "Wyłącz automatyczne ponowne parowanie",
-                                              })
-                                            : t("matching.enable_auto_rematching", {
-                                                  defaultValue: "Włącz automatyczne ponowne parowanie",
-                                              }),
-                                        onClick: () => onToggleAutoMatching(chat),
-                                        icon: chat.auto_matching_enabled ? (
-                                            <RefreshCwOff className="text-warning-brand size-4" />
-                                        ) : (
-                                            <RotateCw className="text-success-brand size-4" />
-                                        ),
-                                    },
-                                    {
-                                        id: "remove",
-                                        variant: "divider",
-                                        label: t("common.remove"),
-                                        onClick: () => onRemoveChat(chat),
-                                        icon: <Trash2 className="text-destructive size-4" />,
-                                    },
-                                ]}
-                            />
-                        </div>
-                    </div>
+                    const leadingIconClassName = isClosed
+                        ? "bg-muted"
+                        : chat.is_supervisor_chat
+                          ? "bg-warning-brand/10"
+                          : "bg-primary-brand/10";
 
-                    {/* Participants */}
-                    {chat.participants.length > 0 && (
-                        <>
-                            <Separator />
-                            <div className="px-5 py-4">
-                                <p className="text-muted-foreground mb-3 flex items-center gap-1.5 text-xs font-medium tracking-wider uppercase">
-                                    <Users className="size-3.5" />
-                                    {t("chat.participants", { defaultValue: "Participants" })} (
-                                    {chat.participants.length})
-                                </p>
-                                <div className="flex flex-col gap-2">
-                                    {chat.participants.map((participant) => (
-                                        <div
-                                            key={participant.id}
-                                            className="hover:bg-muted/50 flex flex-wrap items-center gap-3 rounded-lg p-2.5 transition-colors"
-                                        >
-                                            <Avatar className="size-9 rounded-lg">
+                    const matchingModeLabel =
+                        chat.matching_mode === "MANUAL"
+                            ? t("matching.manual_pairing_created", { defaultValue: "Czat utworzony ręcznie" })
+                            : t("matching.auto_pairing_created", { defaultValue: "Czat utworzony automatycznie" });
+
+                    const rematchingLabel = chat.auto_matching_enabled
+                        ? t("matching.auto_rematching_enabled", {
+                              defaultValue: "Ponowne parowanie po zamknięciu: automatyczne",
+                          })
+                        : t("matching.auto_rematching_disabled", {
+                              defaultValue: "Ponowne parowanie po zamknięciu: ręczne",
+                          });
+
+                    return (
+                        <article
+                            key={chat.id}
+                            className="bg-card border-border/50 hover:border-border overflow-hidden rounded-xl border shadow-sm transition-colors"
+                        >
+                            <div className="grid gap-4 p-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+                                <div className="flex min-w-0 gap-3">
+                                    <div
+                                        className={cn(
+                                            "flex size-10 shrink-0 items-center justify-center rounded-lg",
+                                            leadingIconClassName
+                                        )}
+                                    >
+                                        {leadingIcon}
+                                    </div>
+
+                                    <div className="min-w-0">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <h3 className="text-foreground max-w-full text-base font-semibold break-words">
+                                                {chat.name}
+                                            </h3>
+                                            {chat.is_supervisor_chat && (
+                                                <Badge variant="warning">
+                                                    {t("chat.admin_chat", { defaultValue: "Superwizyjny" })}
+                                                </Badge>
+                                            )}
+                                        </div>
+
+                                        <div className="text-muted-foreground mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+                                            <span>
+                                                {t("common.created_at", {
+                                                    defaultValue: "Utworzono {{date}}",
+                                                    date: formatDate(chat.creation_date),
+                                                })}
+                                            </span>
+                                            {chat.closed_at && (
+                                                <span>
+                                                    {t("chat.closed_at", {
+                                                        defaultValue: "Zamknięto {{date}}",
+                                                        date: formatDate(chat.closed_at),
+                                                    })}
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                                            <Badge variant={isClosed ? "outline" : "success"}>{statusLabel}</Badge>
+                                            <InfoIcon label={matchingModeLabel}>
+                                                {chat.matching_mode === "MANUAL" ? (
+                                                    <MousePointerClick className="size-4" />
+                                                ) : (
+                                                    <Route className="size-4" />
+                                                )}
+                                            </InfoIcon>
+                                            <InfoIcon label={rematchingLabel}>
+                                                {chat.auto_matching_enabled ? (
+                                                    <RotateCw className="text-info-brand size-4" />
+                                                ) : (
+                                                    <RefreshCwOff className="size-4" />
+                                                )}
+                                            </InfoIcon>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-wrap items-center gap-2 lg:justify-end">
+                                    <div className="flex items-center -space-x-2 pr-2">
+                                        {visibleParticipants.map((participant) => (
+                                            <Avatar
+                                                key={participant.id}
+                                                className="border-card bg-muted size-8 rounded-lg border-2"
+                                            >
                                                 <AvatarImage
                                                     src={resolveAssetUrl(participant.chat_avatar_url)}
-                                                    alt={participant.full_name}
+                                                    alt={participant.full_name || participant.email}
                                                 />
                                                 <AvatarFallback className="rounded-lg text-xs">
-                                                    {participant.full_name?.charAt(0)?.toUpperCase()}
+                                                    {getInitial(participant)}
                                                 </AvatarFallback>
                                             </Avatar>
-                                            <div className="min-w-0 flex-1">
-                                                <p className="text-foreground truncate text-sm font-medium">
-                                                    {participant.full_name}
-                                                </p>
-                                                <button
-                                                    onClick={() => handleCopy(participant.email)}
-                                                    className="text-muted-foreground flex items-center gap-1 border-none bg-transparent p-0 text-xs hover:underline"
-                                                >
-                                                    {participant.email}
-                                                    <Copy className="size-3" />
-                                                </button>
-                                            </div>
-                                            <Badge variant="outline" className="text-xs">
-                                                {translatedRoles[participant.user_role]}
-                                            </Badge>
-                                            <ActionMenu
-                                                actions={[
-                                                    {
-                                                        id: "go_to_profile",
-                                                        label: t("common.go_to_profile"),
-                                                        href: `/profile/${participant.id}`,
-                                                        icon: <UserIcon className="size-4" />,
-                                                    },
-                                                    {
-                                                        id: "edit_user",
-                                                        label: t("common.edit"),
-                                                        onClick: () =>
-                                                            navigate(`/admin/users?search=${participant.email}`),
-                                                        icon: <Pencil className="size-4" />,
-                                                    },
-                                                    {
-                                                        id: "remove",
-                                                        label: t("chat.remove_from_chat"),
-                                                        variant: "divider",
-                                                        onClick: () => onRemoveParticipant(chat, participant),
-                                                        icon: <Trash2 className="text-destructive size-4" />,
-                                                    },
-                                                ]}
-                                            />
-                                        </div>
-                                    ))}
+                                        ))}
+                                        {hiddenParticipantsCount > 0 && (
+                                            <span className="border-card bg-muted text-muted-foreground flex size-8 items-center justify-center rounded-lg border-2 text-xs font-medium">
+                                                +{hiddenParticipantsCount}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    <Button variant="outline" size="sm" onClick={() => toggleExpanded(chat.id)}>
+                                        <ChevronDown
+                                            className={cn(
+                                                "size-4 transition-transform",
+                                                isExpanded ? "rotate-180" : "rotate-0"
+                                            )}
+                                        />
+                                        {isExpanded
+                                            ? t("common.hide", { defaultValue: "Ukryj" })
+                                            : t("common.details", { defaultValue: "Szczegóły" })}
+                                    </Button>
+
+                                    <Button size="sm" render={<Link to={`/chat/${chat.id}`} />}>
+                                        <ArrowRightCircle className="size-4" />
+                                        {t("chat.go_to_chat", { defaultValue: "Otwórz" })}
+                                    </Button>
+
+                                    <ActionMenu
+                                        actions={[
+                                            {
+                                                id: "edit",
+                                                label: t("common.edit"),
+                                                onClick: () => onEditChat(chat),
+                                                icon: <Pencil className="size-4" />,
+                                            },
+                                            {
+                                                id: "add_participant",
+                                                label: t("chat.add_participant"),
+                                                onClick: () => onAddParticipant(chat),
+                                                icon: <Plus className="size-4" />,
+                                            },
+                                            {
+                                                id: "toggle_auto_matching",
+                                                label: chat.auto_matching_enabled
+                                                    ? t("matching.disable_auto_rematching", {
+                                                          defaultValue: "Wyłącz automatyczne ponowne parowanie",
+                                                      })
+                                                    : t("matching.enable_auto_rematching", {
+                                                          defaultValue: "Włącz automatyczne ponowne parowanie",
+                                                      }),
+                                                onClick: () => onToggleAutoMatching(chat),
+                                                icon: chat.auto_matching_enabled ? (
+                                                    <RefreshCwOff className="text-warning-brand size-4" />
+                                                ) : (
+                                                    <RotateCw className="text-success-brand size-4" />
+                                                ),
+                                            },
+                                            {
+                                                id: "disable",
+                                                variant: "divider",
+                                                label: chat.is_active ? t("chat.close_chat") : t("common.enable"),
+                                                onClick: () => onToggleChat(chat),
+                                                icon: chat.is_active ? (
+                                                    <LockKeyhole className="text-warning-brand size-4" />
+                                                ) : (
+                                                    <Play className="text-success-brand size-4" />
+                                                ),
+                                            },
+                                            {
+                                                id: "remove",
+                                                variant: "divider",
+                                                label: t("common.remove"),
+                                                onClick: () => onRemoveChat(chat),
+                                                icon: <Trash2 className="text-destructive size-4" />,
+                                            },
+                                        ]}
+                                    />
                                 </div>
                             </div>
-                        </>
-                    )}
 
-                    {/* Footer actions */}
-                    <div className="bg-muted/30 border-border/30 flex items-center gap-3 border-t px-5 py-3">
-                        <Button variant="ghost" size="sm" onClick={() => onAddParticipant(chat)} className="text-xs">
-                            <Plus className="mr-1 size-3.5" />
-                            {t("chat.add_participant")}
-                        </Button>
-                        <Link
-                            to={`/chat/${chat.id}`}
-                            className="text-primary-brand ml-auto flex items-center gap-1.5 text-xs font-medium no-underline transition-opacity hover:opacity-80"
-                        >
-                            {t("chat.go_to_chat")}
-                            <ArrowRightCircle className="size-3.5" />
-                        </Link>
+                            {isExpanded && (
+                                <div className="border-border/50 bg-muted/20 border-t px-4 py-4">
+                                    <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                                        <p className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium tracking-wider uppercase">
+                                            <Users className="size-3.5" />
+                                            {t("chat.participants", { defaultValue: "Uczestnicy" })} (
+                                            {chat.participants.length})
+                                        </p>
+                                        <Button variant="ghost" size="sm" onClick={() => onAddParticipant(chat)}>
+                                            <Plus className="size-4" />
+                                            {t("chat.add_participant")}
+                                        </Button>
+                                    </div>
+
+                                    {chat.participants.length > 0 ? (
+                                        <div className="grid gap-2 lg:grid-cols-2">
+                                            {chat.participants.map((participant) => (
+                                                <div
+                                                    key={participant.id}
+                                                    className="bg-background border-border/50 flex min-w-0 items-center gap-3 rounded-lg border p-3"
+                                                >
+                                                    <Avatar className="size-9 rounded-lg">
+                                                        <AvatarImage
+                                                            src={resolveAssetUrl(participant.chat_avatar_url)}
+                                                            alt={participant.full_name || participant.email}
+                                                        />
+                                                        <AvatarFallback className="rounded-lg text-xs">
+                                                            {getInitial(participant)}
+                                                        </AvatarFallback>
+                                                    </Avatar>
+
+                                                    <div className="min-w-0 flex-1">
+                                                        <div className="flex flex-wrap items-center gap-2">
+                                                            <p className="text-foreground min-w-0 text-sm font-medium break-words">
+                                                                {participant.full_name || participant.email}
+                                                            </p>
+                                                            <Badge variant="outline" className="text-xs">
+                                                                {translatedRoles[participant.user_role]}
+                                                            </Badge>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => handleCopy(participant.email)}
+                                                            className="text-muted-foreground mt-1 flex max-w-full items-center gap-1 border-none bg-transparent p-0 text-left text-xs hover:underline"
+                                                        >
+                                                            <span className="break-all">{participant.email}</span>
+                                                            <Copy className="size-3 shrink-0" />
+                                                        </button>
+                                                    </div>
+
+                                                    <ActionMenu
+                                                        actions={[
+                                                            {
+                                                                id: "go_to_profile",
+                                                                label: t("common.go_to_profile"),
+                                                                href: `/profile/${participant.id}`,
+                                                                icon: <UserIcon className="size-4" />,
+                                                            },
+                                                            {
+                                                                id: "edit_user",
+                                                                label: t("common.edit"),
+                                                                onClick: () =>
+                                                                    navigate(
+                                                                        `/admin/users?search=${participant.email}`
+                                                                    ),
+                                                                icon: <Pencil className="size-4" />,
+                                                            },
+                                                            {
+                                                                id: "remove",
+                                                                label: t("chat.remove_from_chat"),
+                                                                variant: "divider",
+                                                                onClick: () => onRemoveParticipant(chat, participant),
+                                                                icon: <Trash2 className="text-destructive size-4" />,
+                                                            },
+                                                        ]}
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="text-muted-foreground text-sm">
+                                            {t("chat.no_participants", { defaultValue: "Brak uczestników." })}
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+                        </article>
+                    );
+                })}
+
+                {data.items.length < data.total && (
+                    <div ref={sentinelRef} className="flex justify-center py-6">
+                        <Skeleton className="h-8 w-32 rounded-full" />
                     </div>
-                </div>
-            ))}
-
-            {/* Infinite scroll sentinel */}
-            {data.items.length < data.total && (
-                <div ref={sentinelRef} className="flex justify-center py-6">
-                    <Skeleton className="h-8 w-32 rounded-full" />
-                </div>
-            )}
-        </div>
+                )}
+            </div>
+        </TooltipProvider>
     );
 };
 

@@ -17,20 +17,32 @@ import deleteChatMutation from "../modules/chat/queries/deleteChatMutation";
 import editChatMutation from "../modules/chat/queries/editChatMutation";
 import removeParticipantMutation from "../modules/chat/queries/removeParticipantMutation";
 import updateChatAutoMatchingMutation from "../modules/chat/queries/updateChatAutoMatchingMutation";
-import { Chat } from "../modules/chat/types";
+import { Chat, ChatListFilter } from "../modules/chat/types";
 import AdminLayout from "../modules/shared/components/AdminLayout";
 import useDebounce from "../modules/shared/hooks/useDebounce";
 import { Roles } from "../modules/users/constants";
+
+const chatListFilters: { label: string; value: ChatListFilter }[] = [
+    { label: "Wszystkie", value: "all" },
+    { label: "Aktywne", value: "active" },
+    { label: "Zamknięte", value: "closed" },
+    { label: "Superwizyjne", value: "supervisor" },
+];
+
+const getInitialChatFilter = (filter: string | null): ChatListFilter => {
+    return chatListFilters.some((item) => item.value === filter) ? (filter as ChatListFilter) : "all";
+};
 
 const ManageChatsScreen = () => {
     const { t } = useTranslation();
     const [params, setParams] = useSearchParams();
     const [searchQuery, setSearchQuery] = useState(params.get("search") || "");
+    const [chatFilter, setChatFilter] = useState<ChatListFilter>(getInitialChatFilter(params.get("filter")));
     const debouncedQuery = useDebounce(searchQuery, 500);
     const [showCreateChatModal, setShowCreateChatModal] = useState(false);
     const [selectedChatToEdit, setSelectedChatToEdit] = useState<Chat | null>(null);
     const [selectedChatToAddParticipant, setSelectedChatToAddParticipant] = useState<Chat | null>(null);
-    const { chats, handleLoadChats, handleRefetch } = useChatList(debouncedQuery);
+    const { chats, handleLoadChats, handleRefetch } = useChatList(debouncedQuery, chatFilter);
 
     const { mutate: deleteChat } = useMutation({
         mutationFn: deleteChatMutation,
@@ -83,8 +95,25 @@ const ManageChatsScreen = () => {
 
     const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
         const query = e.target.value;
-        setParams({ search: query });
         setSearchQuery(query);
+        const nextParams = new URLSearchParams(params);
+        if (query) {
+            nextParams.set("search", query);
+        } else {
+            nextParams.delete("search");
+        }
+        setParams(nextParams);
+    };
+
+    const handleFilterChange = (filter: ChatListFilter) => {
+        setChatFilter(filter);
+        const nextParams = new URLSearchParams(params);
+        if (filter === "all") {
+            nextParams.delete("filter");
+        } else {
+            nextParams.set("filter", filter);
+        }
+        setParams(nextParams);
     };
 
     return (
@@ -123,6 +152,19 @@ const ManageChatsScreen = () => {
                         className="pl-9"
                         placeholder={t("chat.search_label")}
                     />
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                    {chatListFilters.map((filter) => (
+                        <Button
+                            key={filter.value}
+                            type="button"
+                            size="sm"
+                            variant={chatFilter === filter.value ? "secondary" : "outline"}
+                            onClick={() => handleFilterChange(filter.value)}
+                        >
+                            {filter.label}
+                        </Button>
+                    ))}
                 </div>
             </div>
 

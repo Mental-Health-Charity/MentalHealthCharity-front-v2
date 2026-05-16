@@ -112,7 +112,11 @@ export interface SearchChatQueryOptions extends DefaultPaginationOptions {
     search?: string;
     unread_first?: boolean;
     sort_by?: ChatSortByOptions;
+    status?: "active" | "closed" | "archived";
+    supervisor_chat?: boolean;
 }
+
+export type ChatListFilter = "all" | "active" | "closed" | "supervisor";
 
 export interface ConnectionStatus {
     text: string;

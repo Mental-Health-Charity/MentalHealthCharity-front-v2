@@ -4,9 +4,16 @@ import handleApiError from "../../shared/helpers/handleApiError";
 import { Pagination } from "../../shared/types";
 import { ChatSortByOptions } from "../constants";
 import getChatsMutation from "../queries/getChatsMutation";
-import { Chat } from "../types";
+import { Chat, ChatListFilter, SearchChatQueryOptions } from "../types";
 
-const useChatList = (searchQuery?: string) => {
+const getFilterOptions = (filter: ChatListFilter): Pick<SearchChatQueryOptions, "status" | "supervisor_chat"> => {
+    if (filter === "active") return { status: "active" };
+    if (filter === "closed") return { status: "closed" };
+    if (filter === "supervisor") return { supervisor_chat: true };
+    return {};
+};
+
+const useChatList = (searchQuery?: string, filter: ChatListFilter = "all") => {
     const { mutate: loadChats, isPending: isLoadingChats } = useMutation({
         mutationFn: getChatsMutation,
     });
@@ -22,6 +29,7 @@ const useChatList = (searchQuery?: string) => {
                 search: searchQuery || "",
                 unread_first: true,
                 sort_by: ChatSortByOptions.LATEST_MESSAGE_DATE,
+                ...getFilterOptions(filter),
             },
             {
                 onSuccess: (data) => {
@@ -41,7 +49,7 @@ const useChatList = (searchQuery?: string) => {
                 },
             }
         );
-    }, [isLoadingChats, loadChats, chats]);
+    }, [isLoadingChats, loadChats, chats, searchQuery, filter]);
 
     const handleRefetch = useCallback(() => {
         if (isLoadingChats) return;
@@ -52,6 +60,7 @@ const useChatList = (searchQuery?: string) => {
                 search: searchQuery || "",
                 unread_first: true,
                 sort_by: ChatSortByOptions.LATEST_MESSAGE_DATE,
+                ...getFilterOptions(filter),
             },
             {
                 onSuccess: (data) => {
@@ -62,11 +71,11 @@ const useChatList = (searchQuery?: string) => {
                 },
             }
         );
-    }, [isLoadingChats, loadChats, searchQuery]);
+    }, [isLoadingChats, loadChats, searchQuery, filter]);
 
     useEffect(() => {
         handleRefetch();
-    }, [searchQuery]);
+    }, [searchQuery, filter]);
 
     return {
         chats,
