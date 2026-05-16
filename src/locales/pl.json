@@ -541,14 +541,60 @@
             }
         },
         "dashboard": {
-            "welcome": "Witaj ponownie, {{name}}",
+            "eyebrow": "Centrum obsługi",
             "title": "Panel administracyjny Fundacja Peryskop",
-            "server_status": "Status serwera jest aktywny",
-            "search_subtitle": "Wyszukiwarka",
-            "search_title": "Szybkie wyszukiwanie użytkowników",
-            "reports_subtitle": "Aktywnych zgłoszeń: {{count}}",
-            "reports_title": "Zgłoszenia",
-            "check_more": "Sprawdź więcej"
+            "last_updated": "Ostatnia aktualizacja: {{date}}",
+            "loading_data": "Ładowanie danych",
+            "check_more": "Sprawdź więcej",
+            "resolve": "Rozpatrz",
+            "waiting_for": "Czeka {{duration}}",
+            "metrics": {
+                "waiting": "Osoby czekające",
+                "waiting_detail": "{{count}} próśb o ponowne parowanie",
+                "longest_wait": "Najdłużej czeka",
+                "no_waiting": "Brak osób w kolejce",
+                "free_slots": "Wolne miejsca",
+                "free_slots_detail": "{{count}} dostępnych wolontariuszy",
+                "alerts": "Alerty",
+                "alerts_detail": "Najnowsze sygnały z parowania",
+                "reports": "Otwarte zgłoszenia",
+                "reports_detail": "Zgłoszenia do rozpatrzenia"
+            },
+            "actions": {
+                "title": "Do obsłużenia teraz",
+                "subtitle": "Najpilniejsze sprawy ułożone według wpływu na proces wsparcia.",
+                "waiting_title": "Osoba czeka na wsparcie",
+                "rematch_title": "Prośba o ponowne parowanie",
+                "alert_title": "Alert parowania",
+                "report_title": "Otwarte zgłoszenie",
+                "no_capacity_title": "Brak dostępnych wolontariuszy",
+                "no_capacity_description": "W kolejce są osoby oczekujące, ale żaden wolontariusz nie ma teraz dostępnej pojemności.",
+                "view_volunteers": "Zobacz wolontariuszy",
+                "empty": "Brak pilnych spraw do obsłużenia."
+            },
+            "matching": {
+                "title": "Parowanie",
+                "subtitle": "Szybki obraz kolejki i pojemności wolontariuszy.",
+                "waiting": "Czeka",
+                "matched": "Sparowani",
+                "full": "Pełni",
+                "blocked": "Zablokowani",
+                "capacity": "Wykorzystane miejsca"
+            },
+            "alerts": {
+                "title": "Alerty",
+                "empty": "Brak alertów parowania."
+            },
+            "reports": {
+                "title": "Zgłoszenia",
+                "empty": "Brak otwartych zgłoszeń."
+            },
+            "forms": {
+                "title": "Formularze",
+                "mentees": "Formularze osób w kryzysie",
+                "volunteers": "Formularze wolontariuszy",
+                "no_oldest": "Brak oczekujących"
+            }
         },
         "reports": {
             "subtitle": "Zgłoszenia",

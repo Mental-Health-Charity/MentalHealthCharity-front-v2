@@ -104,14 +104,60 @@
             }
         },
         "dashboard": {
-            "welcome": "Welcome back, {{name}}",
+            "eyebrow": "Service center",
             "title": "Peryskop Foundation Admin Panel",
-            "server_status": "Server status is active",
-            "search_subtitle": "Search",
-            "search_title": "Quick user search",
-            "reports_subtitle": "Active reports: {{count}}",
-            "reports_title": "Reports",
-            "check_more": "Check more"
+            "last_updated": "Last updated: {{date}}",
+            "loading_data": "Loading data",
+            "check_more": "Check more",
+            "resolve": "Review",
+            "waiting_for": "Waiting {{duration}}",
+            "metrics": {
+                "waiting": "People waiting",
+                "waiting_detail": "{{count}} rematch requests",
+                "longest_wait": "Longest wait",
+                "no_waiting": "No one in queue",
+                "free_slots": "Free slots",
+                "free_slots_detail": "{{count}} available volunteers",
+                "alerts": "Alerts",
+                "alerts_detail": "Latest matching signals",
+                "reports": "Open reports",
+                "reports_detail": "Reports to review"
+            },
+            "actions": {
+                "title": "Needs attention now",
+                "subtitle": "Most urgent items ordered by impact on the support process.",
+                "waiting_title": "Person waiting for support",
+                "rematch_title": "Rematch request",
+                "alert_title": "Matching alert",
+                "report_title": "Open report",
+                "no_capacity_title": "No available volunteers",
+                "no_capacity_description": "There are people waiting in the queue, but no volunteer currently has usable capacity.",
+                "view_volunteers": "View volunteers",
+                "empty": "No urgent items."
+            },
+            "matching": {
+                "title": "Matching",
+                "subtitle": "Queue and volunteer capacity at a glance.",
+                "waiting": "Waiting",
+                "matched": "Matched",
+                "full": "Full",
+                "blocked": "Blocked",
+                "capacity": "Used slots"
+            },
+            "alerts": {
+                "title": "Alerts",
+                "empty": "No matching alerts."
+            },
+            "reports": {
+                "title": "Reports",
+                "empty": "No open reports."
+            },
+            "forms": {
+                "title": "Forms",
+                "mentees": "Crisis support forms",
+                "volunteers": "Volunteer forms",
+                "no_oldest": "No waiting forms"
+            }
         }
     },
     "crisis": {
