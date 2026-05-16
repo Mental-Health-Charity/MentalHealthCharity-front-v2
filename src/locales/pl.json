@@ -531,7 +531,14 @@
             "volunteer_forms": "Formularze wolontariuszy",
             "reports": "Zgłoszenia",
             "chats": "Czaty",
-            "back": "Powrót"
+            "back": "Powrót",
+            "sections": {
+                "overview": "Przegląd",
+                "support": "Obsługa wsparcia",
+                "intake": "Formularze i zgłoszenia",
+                "content": "Treści",
+                "admin": "Administracja"
+            }
         },
         "dashboard": {
             "welcome": "Witaj ponownie, {{name}}",

@@ -15,6 +15,7 @@ import {
     UserCheck,
     Users,
 } from "lucide-react";
+import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Permissions } from "../../constants";
@@ -27,6 +28,20 @@ interface Props {
     handleToggle: () => void;
 }
 
+type MenuItem = {
+    text: string;
+    icon: ReactNode;
+    to: string;
+    permissions: Permissions;
+};
+
+type MenuSection = {
+    title: string;
+    items: MenuItem[];
+};
+
+const normalizePath = (path: string) => path.replace(/\/+$/, "") || "/";
+
 export const AdminSidebar = ({ handleToggle, open }: Props) => {
     const isMobile = useIsMobile();
     const { hasPermissions } = usePermissions();
@@ -34,72 +49,97 @@ export const AdminSidebar = ({ handleToggle, open }: Props) => {
 
     const currentPath = window.location.pathname;
 
-    const menuItems = [
+    const menuSections: MenuSection[] = [
         {
-            text: t("admin.sidebar.dashboard"),
-            icon: <LayoutDashboard className="size-5" />,
-            to: "/admin/",
-            permissions: Permissions.ADMIN_DASHBOARD,
+            title: t("admin.sidebar.sections.overview", { defaultValue: "Przegląd" }),
+            items: [
+                {
+                    text: t("admin.sidebar.dashboard"),
+                    icon: <LayoutDashboard className="size-5" />,
+                    to: "/admin/",
+                    permissions: Permissions.ADMIN_DASHBOARD,
+                },
+            ],
         },
         {
-            text: t("admin.sidebar.users"),
-            icon: <Users className="size-5" />,
-            to: "/admin/users/",
-            permissions: Permissions.MANAGE_USERS,
+            title: t("admin.sidebar.sections.support", { defaultValue: "Obsługa wsparcia" }),
+            items: [
+                {
+                    text: t("admin.sidebar.matching_mentees", { defaultValue: "Osoby w kryzysie" }),
+                    icon: <UserCheck className="size-5" />,
+                    to: "/admin/matching/mentees",
+                    permissions: Permissions.MANAGE_CHATS,
+                },
+                {
+                    text: t("admin.sidebar.matching_volunteers", { defaultValue: "Wolontariusze" }),
+                    icon: <Users className="size-5" />,
+                    to: "/admin/matching/volunteers",
+                    permissions: Permissions.MANAGE_CHATS,
+                },
+                {
+                    text: t("admin.sidebar.matching_alerts", { defaultValue: "Alerty parowania" }),
+                    icon: <Bell className="size-5" />,
+                    to: "/admin/matching/alerts",
+                    permissions: Permissions.MANAGE_CHATS,
+                },
+                {
+                    text: t("admin.sidebar.chats"),
+                    icon: <MessageCircle className="size-5" />,
+                    to: "/admin/chats/",
+                    permissions: Permissions.MANAGE_CHATS,
+                },
+            ],
         },
         {
-            text: t("admin.sidebar.articles"),
-            icon: <FileText className="size-5" />,
-            to: "/admin/articles/",
-            permissions: Permissions.MANAGE_ARTICLES,
+            title: t("admin.sidebar.sections.intake", { defaultValue: "Formularze i zgłoszenia" }),
+            items: [
+                {
+                    text: t("admin.sidebar.mentee_forms"),
+                    icon: <ClipboardList className="size-5" />,
+                    to: "/admin/forms/mentee",
+                    permissions: Permissions.MANAGE_MENTEE_FORMS,
+                },
+                {
+                    text: t("admin.sidebar.volunteer_forms"),
+                    icon: <ClipboardCheck className="size-5" />,
+                    to: "/admin/forms/volunteer",
+                    permissions: Permissions.MANAGE_VOLUNTEER_FORMS,
+                },
+                {
+                    text: t("admin.sidebar.reports"),
+                    icon: <Flag className="size-5" />,
+                    to: "/admin/reports/",
+                    permissions: Permissions.MANAGE_REPORTS,
+                },
+            ],
         },
         {
-            text: t("articles.add_article"),
-            icon: <PlusCircle className="size-5" />,
-            to: "/articles/dashboard",
-            permissions: Permissions.CREATE_ARTICLE,
+            title: t("admin.sidebar.sections.content", { defaultValue: "Treści" }),
+            items: [
+                {
+                    text: t("admin.sidebar.articles"),
+                    icon: <FileText className="size-5" />,
+                    to: "/admin/articles/",
+                    permissions: Permissions.MANAGE_ARTICLES,
+                },
+                {
+                    text: t("articles.add_article"),
+                    icon: <PlusCircle className="size-5" />,
+                    to: "/articles/dashboard",
+                    permissions: Permissions.CREATE_ARTICLE,
+                },
+            ],
         },
         {
-            text: t("admin.sidebar.mentee_forms"),
-            icon: <ClipboardList className="size-5" />,
-            to: "/admin/forms/mentee",
-            permissions: Permissions.MANAGE_MENTEE_FORMS,
-        },
-        {
-            text: t("admin.sidebar.matching_mentees", { defaultValue: "Osoby w kryzysie" }),
-            icon: <UserCheck className="size-5" />,
-            to: "/admin/matching/mentees",
-            permissions: Permissions.MANAGE_CHATS,
-        },
-        {
-            text: t("admin.sidebar.matching_volunteers", { defaultValue: "Wolontariusze" }),
-            icon: <Users className="size-5" />,
-            to: "/admin/matching/volunteers",
-            permissions: Permissions.MANAGE_CHATS,
-        },
-        {
-            text: t("admin.sidebar.matching_alerts", { defaultValue: "Alerty parowania" }),
-            icon: <Bell className="size-5" />,
-            to: "/admin/matching/alerts",
-            permissions: Permissions.MANAGE_CHATS,
-        },
-        {
-            text: t("admin.sidebar.volunteer_forms"),
-            icon: <ClipboardCheck className="size-5" />,
-            to: "/admin/forms/volunteer",
-            permissions: Permissions.MANAGE_VOLUNTEER_FORMS,
-        },
-        {
-            text: t("admin.sidebar.reports"),
-            icon: <Flag className="size-5" />,
-            to: "/admin/reports/",
-            permissions: Permissions.MANAGE_REPORTS,
-        },
-        {
-            text: t("admin.sidebar.chats"),
-            icon: <MessageCircle className="size-5" />,
-            to: "/admin/chats/",
-            permissions: Permissions.MANAGE_CHATS,
+            title: t("admin.sidebar.sections.admin", { defaultValue: "Administracja" }),
+            items: [
+                {
+                    text: t("admin.sidebar.users"),
+                    icon: <Users className="size-5" />,
+                    to: "/admin/users/",
+                    permissions: Permissions.MANAGE_USERS,
+                },
+            ],
         },
     ];
 
@@ -109,31 +149,46 @@ export const AdminSidebar = ({ handleToggle, open }: Props) => {
                 {t("admin.sidebar.title")}
             </h2>
             <hr className="border-sidebar-border" />
-            <nav aria-label="Admin navigation" className="mt-2 flex flex-col">
-                {menuItems
-                    .filter((item) => hasPermissions(item.permissions))
-                    .map((item) => {
-                        const isActive = currentPath === item.to;
-                        return (
-                            <Link
-                                key={item.to}
-                                to={item.to}
-                                aria-current={isActive ? "page" : undefined}
-                                className={cn(
-                                    "text-sidebar-foreground flex items-center gap-3 border-l-3 border-transparent px-4 py-2.5 text-sm no-underline transition-colors",
-                                    isActive
-                                        ? "bg-sidebar-accent border-l-sidebar-primary font-medium"
-                                        : "hover:bg-sidebar-accent"
-                                )}
-                            >
-                                <span className="text-sidebar-foreground/70">{item.icon}</span>
-                                <span>{item.text}</span>
-                            </Link>
-                        );
-                    })}
+            <nav aria-label="Admin navigation" className="mt-3 flex flex-col pb-3">
+                {menuSections.map((section) => {
+                    const visibleItems = section.items.filter((item) => hasPermissions(item.permissions));
+
+                    if (visibleItems.length === 0) {
+                        return null;
+                    }
+
+                    return (
+                        <section key={section.title} className="mb-4 last:mb-2">
+                            <h3 className="text-sidebar-foreground/55 px-4 pb-1.5 text-[11px] font-semibold tracking-wide uppercase">
+                                {section.title}
+                            </h3>
+                            <div className="flex flex-col">
+                                {visibleItems.map((item) => {
+                                    const isActive = normalizePath(currentPath) === normalizePath(item.to);
+                                    return (
+                                        <Link
+                                            key={item.to}
+                                            to={item.to}
+                                            aria-current={isActive ? "page" : undefined}
+                                            className={cn(
+                                                "text-sidebar-foreground flex items-center gap-3 border-l-3 border-transparent px-4 py-2.5 text-sm no-underline transition-colors",
+                                                isActive
+                                                    ? "bg-sidebar-accent border-l-sidebar-primary font-medium"
+                                                    : "hover:bg-sidebar-accent"
+                                            )}
+                                        >
+                                            <span className="text-sidebar-foreground/70">{item.icon}</span>
+                                            <span>{item.text}</span>
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        </section>
+                    );
+                })}
                 <a
                     href="/"
-                    className="text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-3 border-l-3 border-transparent px-4 py-2.5 text-sm no-underline transition-colors"
+                    className="text-sidebar-foreground hover:bg-sidebar-accent mt-1 flex items-center gap-3 border-l-3 border-transparent px-4 py-2.5 text-sm no-underline transition-colors"
                 >
                     <ArrowLeft className="text-sidebar-foreground/70 size-5" />
                     <span>{t("admin.sidebar.back")}</span>

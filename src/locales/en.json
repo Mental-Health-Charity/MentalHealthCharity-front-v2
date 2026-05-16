@@ -94,7 +94,14 @@
             "volunteer_forms": "Volunteer Forms",
             "reports": "Reports",
             "chats": "Chats",
-            "back": "Back"
+            "back": "Back",
+            "sections": {
+                "overview": "Overview",
+                "support": "Support operations",
+                "intake": "Forms and reports",
+                "content": "Content",
+                "admin": "Administration"
+            }
         },
         "dashboard": {
             "welcome": "Welcome back, {{name}}",
