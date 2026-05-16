@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AutoSizer, InfiniteLoader, List, type ListRowRenderer, WindowScroller } from "react-virtualized";
 import { translatedRoles } from "../../../users/constants";
+import formatDate from "../../../shared/helpers/formatDate";
 import { formNoteFields, FormResponse, MenteeForm, VolunteerForm } from "../../types";
 import RecruitmentManagerModal from "../RecruitmentManagerModal";
 
@@ -99,7 +100,7 @@ const FormsTable = ({
                     </div>
                     <div className="min-w-0">
                         <p className="text-foreground truncate text-xs">
-                            {new Date(form.creation_date).toLocaleDateString()}
+                            {formatDate(form.creation_date, "dd/MM/yyyy")}
                         </p>
                     </div>
                     <div className="min-w-0">

@@ -10,6 +10,7 @@ import Loader from "./modules/shared/components/Loader";
 import Navbar from "./modules/shared/components/Navbar";
 import RootRouter from "./modules/shared/components/RootRouter";
 import TechnicalBreakScreen from "./modules/shared/components/TechnicalBreakScreen";
+import { APP_TIME_ZONE, parseApiDate } from "./modules/shared/helpers/dateTime";
 
 const queryClient = new QueryClient();
 const TECHNICAL_BREAK_FLAG = "technical-break";
@@ -52,7 +53,7 @@ const formatTechnicalBreakDate = (dateValue?: string): string | null => {
     }
 
     try {
-        const parsedDate = new Date(dateValue);
+        const parsedDate = parseApiDate(dateValue);
 
         if (Number.isNaN(parsedDate.getTime())) {
             return null;
@@ -61,6 +62,7 @@ const formatTechnicalBreakDate = (dateValue?: string): string | null => {
         return new Intl.DateTimeFormat("pl-PL", {
             dateStyle: "full",
             timeStyle: "short",
+            timeZone: APP_TIME_ZONE,
         }).format(parsedDate);
     } catch {
         return null;

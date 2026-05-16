@@ -194,7 +194,7 @@ const FormTableItem = ({ form, className, ...props }: Props) => {
                     <div className="flex flex-wrap gap-1.5">
                         {visibleDates.map((date, idx) => (
                             <Badge key={`${date}-${idx}`} className="px-2 py-0.5 text-[11px]">
-                                {formatDate(new Date(date), "dd/MM/yyyy HH:mm")}
+                                {formatDate(date, "dd/MM/yyyy HH:mm")}
                             </Badge>
                         ))}
                     </div>
@@ -340,7 +340,7 @@ const FormTableItem = ({ form, className, ...props }: Props) => {
                             {t("forms_fields.creation_date")}
                         </p>
                         <p className="text-foreground mt-0.5 text-xs font-semibold">
-                            {formatDate(new Date(form.creation_date), "dd/MM/yyyy")}
+                            {formatDate(form.creation_date, "dd/MM/yyyy")}
                         </p>
                     </div>
                 </div>

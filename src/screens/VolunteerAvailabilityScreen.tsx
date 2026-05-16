@@ -17,18 +17,7 @@ import {
 import updateVolunteerAvailabilityMutation from "../modules/matching/queries/updateVolunteerAvailabilityMutation";
 import { volunteerAvailabilityQueryOptions } from "../modules/matching/queries/volunteerAvailabilityQueryOptions";
 import Container from "../modules/shared/components/Container";
-
-const formatDateTime = (value?: string | null) => {
-    if (!value) return null;
-
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return null;
-
-    return new Intl.DateTimeFormat("pl-PL", {
-        dateStyle: "short",
-        timeStyle: "short",
-    }).format(date);
-};
+import formatDate from "../modules/shared/helpers/formatDate";
 
 const VolunteerAvailabilityScreen = () => {
     const { t } = useTranslation();
@@ -61,7 +50,7 @@ const VolunteerAvailabilityScreen = () => {
     const freeSlots = data?.free_slots ?? 0;
     const selectedCapacity = Number(capacity);
     const selectedBelowCurrentAssignments = selectedCapacity < activeChatCount;
-    const blockedUntil = formatDateTime(data?.blocked_until);
+    const blockedUntil = data?.blocked_until ? formatDate(data.blocked_until) : null;
 
     const statusBadge = useMemo(() => {
         if (!data || declaredCapacity === null) {

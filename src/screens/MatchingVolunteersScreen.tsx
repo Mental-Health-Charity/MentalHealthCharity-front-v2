@@ -10,11 +10,12 @@ import { Link } from "react-router-dom";
 import { volunteerCapacityQueryOptions } from "../modules/matching/queries/volunteerCapacityQueryOptions";
 import { VolunteerCapacityItem } from "../modules/matching/types";
 import AdminLayout from "../modules/shared/components/AdminLayout";
+import { isApiDateInFuture } from "../modules/shared/helpers/dateTime";
 import formatDate from "../modules/shared/helpers/formatDate";
 
 type ViewMode = "available" | "full";
 
-const isBlocked = (blockedUntil?: string | null) => Boolean(blockedUntil && new Date(blockedUntil) > new Date());
+const isBlocked = isApiDateInFuture;
 
 const isAvailableForMatching = ({ availability }: VolunteerCapacityItem) =>
     availability.declared_capacity !== null &&

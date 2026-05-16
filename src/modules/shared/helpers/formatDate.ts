@@ -1,14 +1,8 @@
 import { formatInTimeZone } from "date-fns-tz";
+import { APP_TIME_ZONE, parseApiDate } from "./dateTime";
 
-const formatDate = (
-    date: string | Date,
-    dateFormat: string = "dd/MM/yyyy HH:mm",
-    timeZone: string = Intl.DateTimeFormat().resolvedOptions().timeZone
-) => {
-    const parsedDate = new Date(date);
-
-    // TODO: fix when backend will return correct date
-    parsedDate.setHours(parsedDate.getHours() + 2);
+const formatDate = (date: string | Date, dateFormat: string = "dd/MM/yyyy HH:mm", timeZone: string = APP_TIME_ZONE) => {
+    const parsedDate = parseApiDate(date);
 
     return formatInTimeZone(parsedDate, timeZone, dateFormat);
 };

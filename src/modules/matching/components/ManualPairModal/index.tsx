@@ -6,6 +6,7 @@ import { AlertTriangle, Loader2, UserCheck } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Modal from "../../../shared/components/Modal";
+import { isApiDateInFuture } from "../../../shared/helpers/dateTime";
 import formatDate from "../../../shared/helpers/formatDate";
 import { MenteeMatchingItem, VolunteerCapacityItem } from "../../types";
 
@@ -18,7 +19,7 @@ interface Props {
     onSubmit: (volunteer: VolunteerCapacityItem, ignoreCapacity: boolean) => void;
 }
 
-const isBlocked = (blockedUntil?: string | null) => Boolean(blockedUntil && new Date(blockedUntil) > new Date());
+const isBlocked = isApiDateInFuture;
 
 const isFull = ({ availability }: VolunteerCapacityItem) => availability.is_full || availability.free_slots <= 0;
 

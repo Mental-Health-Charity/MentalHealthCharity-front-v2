@@ -9,7 +9,7 @@ export const arrayOfIsoDatesPlugin: FieldRendererPlugin = {
         <div className="flex flex-wrap gap-2">
             {(value as string[]).map((date) => (
                 <Badge key={date} className="text-sm">
-                    {formatDate(new Date(date), "dd/MM/yyyy HH:mm")}
+                    {formatDate(date, "dd/MM/yyyy HH:mm")}
                 </Badge>
             ))}
         </div>
