@@ -26,6 +26,21 @@ export interface VolunteerAvailabilityUpdate {
     declared_capacity: number;
 }
 
+export interface ManualPairRequest {
+    user_id: number;
+    volunteer_id: number;
+    ignore_capacity: boolean;
+}
+
+export interface ManualPairResponse {
+    chat_id: number;
+    warning?: string | null;
+}
+
+export interface RematchDecisionRequest {
+    wants_rematch: boolean;
+}
+
 export interface MenteeMatchingState {
     user_id: number;
     help_form_id: number | null;

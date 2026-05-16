@@ -22,10 +22,12 @@ const validationSchema = Yup.object({
 
 interface Props {
     onSubmit: (values: CreateChatFormValues) => void;
+    allowedAutoGroupRoles?: Roles[];
 }
 
-const CreateChatForm = ({ onSubmit }: Props) => {
+const CreateChatForm = ({ onSubmit, allowedAutoGroupRoles }: Props) => {
     const { t } = useTranslation();
+    const roleOptions = allowedAutoGroupRoles ?? Object.values(Roles);
     const formik = useFormik<CreateChatFormValues>({
         initialValues: {
             name: "",
@@ -88,7 +90,7 @@ const CreateChatForm = ({ onSubmit }: Props) => {
                         className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-8 w-full rounded-lg border bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:ring-3"
                     >
                         <option value="">---</option>
-                        {Object.values(Roles).map((role) => (
+                        {roleOptions.map((role) => (
                             <option key={role} value={role}>
                                 {role}
                             </option>

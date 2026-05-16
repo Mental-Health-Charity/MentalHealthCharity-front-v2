@@ -101,6 +101,9 @@ export const url = {
         editChat({ id }: EditChatOptions) {
             return `${baseUrl}/api/v1/chat/${id}`;
         },
+        closeChat({ id }: ReadChatOptions) {
+            return `${baseUrl}/api/v1/chat/${id}/deactivate`;
+        },
         deleteChat({ id }: EditChatOptions) {
             return `${baseUrl}/api/v1/chat/${id}`;
         },
@@ -197,6 +200,12 @@ export const url = {
         waitingMentees: `${baseUrl}/api/v1/matching/admin/queue`,
         matchedMentees: `${baseUrl}/api/v1/matching/admin/matched`,
         volunteers: `${baseUrl}/api/v1/matching/admin/volunteers`,
+        manualPair: `${baseUrl}/api/v1/matching/admin/manual-pair`,
+        myState: `${baseUrl}/api/v1/matching/me/state`,
+        rematchDecision: `${baseUrl}/api/v1/matching/me/rematch-decision`,
+        updateChatAutoMatching({ id }: ReadChatOptions) {
+            return `${baseUrl}/api/v1/matching/admin/chats/${id}/auto-matching`;
+        },
         updateUserAutomationExclusion({ id }: ReadUserByIdOptions) {
             return `${baseUrl}/api/v1/matching/admin/users/${id}/automation-exclusion`;
         },

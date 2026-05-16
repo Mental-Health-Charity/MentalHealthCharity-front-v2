@@ -2,15 +2,19 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
-import { Clock, MessageCircle, UserCheck, Users } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Clock, MessageCircle, UserCheck, UserPlus, Users } from "lucide-react";
 import { useMemo, useState } from "react";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import ManualPairModal from "../modules/matching/components/ManualPairModal";
+import manualPairMutation from "../modules/matching/queries/manualPairMutation";
 import {
     matchedMenteesQueryOptions,
     waitingMenteesQueryOptions,
 } from "../modules/matching/queries/menteeMatchingQueryOptions";
+import { volunteerCapacityQueryOptions } from "../modules/matching/queries/volunteerCapacityQueryOptions";
 import { MenteeMatchingItem, MenteeMatchingStatus } from "../modules/matching/types";
 import AdminLayout from "../modules/shared/components/AdminLayout";
 import formatDate from "../modules/shared/helpers/formatDate";
@@ -28,10 +32,33 @@ const statusClassName: Record<MenteeMatchingStatus, string> = {
 
 const MatchingMenteesScreen = () => {
     const { t } = useTranslation();
+    const queryClient = useQueryClient();
     const [viewMode, setViewMode] = useState<ViewMode>("waiting");
+    const [selectedMentee, setSelectedMentee] = useState<MenteeMatchingItem | null>(null);
 
     const waitingQuery = useQuery(waitingMenteesQueryOptions());
     const matchedQuery = useQuery(matchedMenteesQueryOptions());
+    const volunteersQuery = useQuery(volunteerCapacityQueryOptions());
+
+    const { mutate: manualPair, isPending: isManualPairPending } = useMutation({
+        mutationFn: manualPairMutation,
+        onSuccess: (data) => {
+            setSelectedMentee(null);
+            queryClient.invalidateQueries({ queryKey: ["matching"] });
+            toast.success(
+                data.warning
+                    ? t("matching.manual_pair_success_with_warning", {
+                          defaultValue: "{{warning}} Czat ID: {{chatId}}",
+                          warning: data.warning,
+                          chatId: data.chat_id,
+                      })
+                    : t("matching.manual_pair_success", {
+                          defaultValue: "Utworzono ręczne sparowanie. Czat ID: {{chatId}}",
+                          chatId: data.chat_id,
+                      })
+            );
+        },
+    });
 
     const activeQuery = viewMode === "waiting" ? waitingQuery : matchedQuery;
     const items = useMemo(() => activeQuery.data ?? [], [activeQuery.data]);
@@ -48,44 +75,68 @@ const MatchingMenteesScreen = () => {
     };
 
     const renderRows = (mentees: MenteeMatchingItem[]) =>
-        mentees.map(({ user, state }) => (
-            <TableRow key={`${state.user_id}-${state.status}`}>
-                <TableCell>
-                    <div className="flex min-w-[180px] flex-col">
-                        <span className="text-foreground font-medium">{user.full_name || user.email}</span>
-                        <span className="text-muted-foreground text-xs">ID: {user.id}</span>
-                    </div>
-                </TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>
-                    <Badge className={cn("border-0", statusClassName[state.status])}>
-                        {statusLabels[state.status]}
-                    </Badge>
-                </TableCell>
-                <TableCell>{formatDate(state.queued_at)}</TableCell>
-                <TableCell>{state.matched_at ? formatDate(state.matched_at) : "-"}</TableCell>
-                <TableCell>
-                    {state.current_chat_id ? (
-                        <Link
-                            to={`/chat/${state.current_chat_id}`}
-                            className="hover:bg-muted inline-flex h-8 items-center gap-1 rounded-md px-3 text-sm font-medium no-underline"
-                        >
-                            <MessageCircle className="size-4" />
-                            {t("chat.go_to_chat")}
-                        </Link>
-                    ) : (
-                        <span className="text-muted-foreground">-</span>
-                    )}
-                </TableCell>
-                <TableCell>
-                    <Badge variant={state.auto_matching_enabled ? "secondary" : "outline"}>
-                        {state.auto_matching_enabled
-                            ? t("common.enabled", { defaultValue: "Wlaczona" })
-                            : t("common.disabled", { defaultValue: "Wylaczona" })}
-                    </Badge>
-                </TableCell>
-            </TableRow>
-        ));
+        mentees.map((item) => {
+            const { user, state } = item;
+            const canManualPair =
+                viewMode === "waiting" &&
+                !state.current_chat_id &&
+                !state.excluded_from_automation &&
+                [MenteeMatchingStatus.WAITING, MenteeMatchingStatus.REMATCH_REQUESTED].includes(state.status);
+
+            return (
+                <TableRow key={`${state.user_id}-${state.status}`}>
+                    <TableCell>
+                        <div className="flex min-w-[180px] flex-col">
+                            <span className="text-foreground font-medium">{user.full_name || user.email}</span>
+                            <span className="text-muted-foreground text-xs">ID: {user.id}</span>
+                        </div>
+                    </TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                        <Badge className={cn("border-0", statusClassName[state.status])}>
+                            {statusLabels[state.status]}
+                        </Badge>
+                    </TableCell>
+                    <TableCell>{formatDate(state.queued_at)}</TableCell>
+                    <TableCell>{state.matched_at ? formatDate(state.matched_at) : "-"}</TableCell>
+                    <TableCell>
+                        {state.current_chat_id ? (
+                            <Link
+                                to={`/chat/${state.current_chat_id}`}
+                                className="hover:bg-muted inline-flex h-8 items-center gap-1 rounded-md px-3 text-sm font-medium no-underline"
+                            >
+                                <MessageCircle className="size-4" />
+                                {t("chat.go_to_chat")}
+                            </Link>
+                        ) : (
+                            <span className="text-muted-foreground">-</span>
+                        )}
+                    </TableCell>
+                    <TableCell>
+                        <Badge variant={state.auto_matching_enabled ? "secondary" : "outline"}>
+                            {state.auto_matching_enabled
+                                ? t("common.enabled", { defaultValue: "Wlaczona" })
+                                : t("common.disabled", { defaultValue: "Wylaczona" })}
+                        </Badge>
+                    </TableCell>
+                    <TableCell>
+                        {canManualPair ? (
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setSelectedMentee(item)}
+                                disabled={volunteersQuery.isLoading}
+                            >
+                                <UserPlus className="size-4" />
+                                {t("matching.manual_pair_submit", { defaultValue: "Sparuj" })}
+                            </Button>
+                        ) : (
+                            <span className="text-muted-foreground">-</span>
+                        )}
+                    </TableCell>
+                </TableRow>
+            );
+        });
 
     return (
         <AdminLayout>
@@ -144,12 +195,13 @@ const MatchingMenteesScreen = () => {
                                 <TableHead>{t("matching.matched_at", { defaultValue: "Sparowany od" })}</TableHead>
                                 <TableHead>{t("chat.chat", { defaultValue: "Czat" })}</TableHead>
                                 <TableHead>{t("matching.automation", { defaultValue: "Automatyzacja" })}</TableHead>
+                                <TableHead>{t("common.actions", { defaultValue: "Akcje" })}</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {activeQuery.isLoading ? (
                                 <TableRow>
-                                    <TableCell colSpan={7} className="text-muted-foreground h-24 text-center">
+                                    <TableCell colSpan={8} className="text-muted-foreground h-24 text-center">
                                         {t("common.loading", { defaultValue: "Ladowanie..." })}
                                     </TableCell>
                                 </TableRow>
@@ -157,7 +209,7 @@ const MatchingMenteesScreen = () => {
                                 renderRows(items)
                             ) : (
                                 <TableRow>
-                                    <TableCell colSpan={7} className="text-muted-foreground h-24 text-center">
+                                    <TableCell colSpan={8} className="text-muted-foreground h-24 text-center">
                                         {viewMode === "waiting"
                                             ? t("matching.no_waiting_mentees", {
                                                   defaultValue: "Brak osob oczekujacych na sparowanie.",
@@ -177,6 +229,23 @@ const MatchingMenteesScreen = () => {
                 <p className="text-destructive mt-3">
                     {t("common.no_data", { defaultValue: "Nie udalo sie pobrac danych." })}
                 </p>
+            )}
+
+            {selectedMentee && (
+                <ManualPairModal
+                    open={!!selectedMentee}
+                    onClose={() => setSelectedMentee(null)}
+                    mentee={selectedMentee}
+                    volunteers={volunteersQuery.data ?? []}
+                    isPending={isManualPairPending}
+                    onSubmit={(volunteer, ignoreCapacity) =>
+                        manualPair({
+                            user_id: selectedMentee.user.id,
+                            volunteer_id: volunteer.volunteer.id,
+                            ignore_capacity: ignoreCapacity,
+                        })
+                    }
+                />
             )}
         </AdminLayout>
     );

@@ -9,6 +9,7 @@ import { useUser } from "../../../auth/components/AuthProvider";
 import ReportModal from "../../../report/components/ReportModal";
 import { Permissions } from "../../../shared/constants";
 import usePermissions from "../../../shared/hooks/usePermissions";
+import { Roles } from "../../../users/constants";
 import useChat from "../../hooks/useChat";
 import useChatListLoader from "../../hooks/useChatListLoader";
 import { Chat as ChatType } from "../../types";
@@ -326,6 +327,7 @@ const ChatWindow = () => {
                     open={showAddParticipant}
                     onClose={() => setShowAddParticipant(false)}
                     chat={selectedChat}
+                    allowedRoles={[Roles.ADMIN, Roles.VOLUNTEERSUPERVISOR, Roles.REDACTOR]}
                     onSuccess={reloadChat}
                 />
             )}

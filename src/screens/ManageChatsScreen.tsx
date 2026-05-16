@@ -12,12 +12,15 @@ import ChatManager from "../modules/chat/components/ChatManager";
 import CreateChatModal from "../modules/chat/components/CreateChatModal";
 import EditChatModal from "../modules/chat/components/EditChatModal";
 import useChatList from "../modules/chat/hooks/useChatList";
+import closeChatMutation from "../modules/chat/queries/closeChatMutation";
 import deleteChatMutation from "../modules/chat/queries/deleteChatMutation";
 import editChatMutation from "../modules/chat/queries/editChatMutation";
 import removeParticipantMutation from "../modules/chat/queries/removeParticipantMutation";
+import updateChatAutoMatchingMutation from "../modules/chat/queries/updateChatAutoMatchingMutation";
 import { Chat } from "../modules/chat/types";
 import AdminLayout from "../modules/shared/components/AdminLayout";
 import useDebounce from "../modules/shared/hooks/useDebounce";
+import { Roles } from "../modules/users/constants";
 
 const ManageChatsScreen = () => {
     const { t } = useTranslation();
@@ -46,11 +49,35 @@ const ManageChatsScreen = () => {
         },
     });
 
+    const { mutate: closeChat } = useMutation({
+        mutationFn: closeChatMutation,
+        onSuccess: () => {
+            toast.success(t("chat.close_chat_success", { defaultValue: "Czat został zamknięty" }));
+            handleRefetch();
+        },
+    });
+
     const { mutate: removeParticipant } = useMutation({
         mutationFn: removeParticipantMutation,
         onSuccess: () => {
             handleRefetch();
             toast.success(t("chat.remove_participant_success"));
+        },
+    });
+
+    const { mutate: updateChatAutoMatching } = useMutation({
+        mutationFn: updateChatAutoMatchingMutation,
+        onSuccess: (chat) => {
+            handleRefetch();
+            toast.success(
+                chat.auto_matching_enabled
+                    ? t("matching.auto_rematching_enabled_success", {
+                          defaultValue: "Automatyczne ponowne parowanie zostało włączone",
+                      })
+                    : t("matching.auto_rematching_disabled_success", {
+                          defaultValue: "Automatyczne ponowne parowanie zostało wyłączone",
+                      })
+            );
         },
     });
 
@@ -111,10 +138,18 @@ const ManageChatsScreen = () => {
                 }
                 data={chats ?? undefined}
                 onToggleChat={(chat) =>
-                    editChat({
+                    chat.is_active
+                        ? closeChat({ id: chat.id })
+                        : editChat({
+                              id: chat.id,
+                              is_active: true,
+                              name: chat.name,
+                          })
+                }
+                onToggleAutoMatching={(chat) =>
+                    updateChatAutoMatching({
                         id: chat.id,
-                        is_active: !chat.is_active,
-                        name: chat.name,
+                        auto_matching_enabled: !chat.auto_matching_enabled,
                     })
                 }
                 onRemoveChat={({ id }) => deleteChat(id)}
@@ -145,6 +180,7 @@ const ManageChatsScreen = () => {
                         toast.success(t("chat.add_participant_success"));
                     }}
                     chat={selectedChatToAddParticipant}
+                    allowedRoles={[Roles.ADMIN, Roles.VOLUNTEERSUPERVISOR, Roles.REDACTOR]}
                     open={!!selectedChatToAddParticipant}
                     onClose={() => setSelectedChatToAddParticipant(null)}
                 />

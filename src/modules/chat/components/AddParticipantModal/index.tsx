@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 import { User } from "../../../auth/types";
 import Modal from "../../../shared/components/Modal";
+import { Roles } from "../../../users/constants";
 import SearchUser from "../../../users/components/SearchUser";
 import addParticipantMutation from "../../queries/addParticipantMutation";
 import { Chat } from "../../types";
@@ -14,9 +15,10 @@ interface Props {
     onClose: () => void;
     onSuccess?: () => void;
     chat: Chat;
+    allowedRoles?: Roles[];
 }
 
-const AddParticipantModal = ({ chat, onSuccess, ...props }: Props) => {
+const AddParticipantModal = ({ chat, onSuccess, allowedRoles, ...props }: Props) => {
     const { t } = useTranslation();
 
     const validationSchema = Yup.object({
@@ -57,6 +59,7 @@ const AddParticipantModal = ({ chat, onSuccess, ...props }: Props) => {
                         formik.setFieldValue("participant", user);
                     }}
                     value={formik.values.participant}
+                    allowedRoles={allowedRoles}
                 />
                 <Button disabled={!formik.dirty} type="submit">
                     {!formik.dirty ? t("common.make_changes_to_save") : t("common.submit")}

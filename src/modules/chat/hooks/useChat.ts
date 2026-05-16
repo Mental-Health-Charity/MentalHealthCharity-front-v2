@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { t } from "i18next";
 import Cookies from "js-cookie";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -9,8 +9,8 @@ import { useUser } from "../../auth/components/AuthProvider";
 import { UnknownUser } from "../constants";
 import { ChatDataParser } from "../helpers/ChatDataParser";
 import { fetchChatHistory } from "../queries/chatHistoryQueryOptions";
+import closeChatMutation from "../queries/closeChatMutation";
 import deleteChatMessageMutation from "../queries/deleteChatMessageMutation";
-import editChatMutation from "../queries/editChatMutation";
 import { getChatById } from "../queries/getChatById";
 import { markAsReadMutation } from "../queries/markAsReadMutation";
 import { Chat, ConnectionStatus, Message } from "../types";
@@ -29,6 +29,7 @@ export interface HistoryPaginationState {
 }
 
 const useChat = (chatId?: number, options?: Options) => {
+    const queryClient = useQueryClient();
     const token = Cookies.get("token");
     const [messages, setMessages] = useState<Message[]>([]);
     const [pendingMessages, setPendingMessages] = useState<Message[]>([]);
@@ -72,12 +73,13 @@ const useChat = (chatId?: number, options?: Options) => {
         mutationFn: deleteChatMessageMutation,
     });
 
-    const { mutate: editChat } = useMutation({
-        mutationFn: editChatMutation,
+    const { mutate: closeChatMutationFn } = useMutation({
+        mutationFn: closeChatMutation,
 
-        onSuccess: () => {
-            toast.success(t("chat.edit_chat_success"));
-            reloadChat();
+        onSuccess: (closedChat) => {
+            toast.success(t("chat.close_chat_success", { defaultValue: "Czat został zamknięty" }));
+            queryClient.setQueryData(["chat", { id: closedChat.id }], closedChat);
+            queryClient.invalidateQueries({ queryKey: ["chats"] });
         },
     });
 
@@ -125,13 +127,11 @@ const useChat = (chatId?: number, options?: Options) => {
 
     const handleCloseChat = useCallback(
         (chat: Chat) => {
-            editChat({
+            closeChatMutationFn({
                 id: chat.id,
-                is_active: false,
-                name: chat.name,
             });
         },
-        [editChat, reloadChat]
+        [closeChatMutationFn]
     );
 
     if (!token) {

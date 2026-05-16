@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import Modal from "../../../shared/components/Modal";
+import { Roles } from "../../../users/constants";
 import convertToCreateChatPayload from "../../helpers/convertToCreateChatPayload";
 import createChatMutation from "../../queries/createChatMutation";
 import { CreateChatFormValues } from "../../types";
@@ -27,7 +28,10 @@ const CreateChatModal = ({ onSuccess, ...props }: Props) => {
 
     return (
         <Modal {...props} title={t("chat.create_new_chat")}>
-            <CreateChatForm onSubmit={handleCreateChat} />
+            <CreateChatForm
+                onSubmit={handleCreateChat}
+                allowedAutoGroupRoles={[Roles.ADMIN, Roles.VOLUNTEERSUPERVISOR, Roles.REDACTOR]}
+            />
         </Modal>
     );
 };

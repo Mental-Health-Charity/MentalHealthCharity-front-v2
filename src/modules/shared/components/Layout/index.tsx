@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { useLocation } from "react-router-dom";
+import MenteeRematchPrompt from "../../../matching/components/MenteeRematchPrompt";
 import VolunteerAvailabilityPrompt from "../../../matching/components/VolunteerAvailabilityPrompt";
 import CookiesBar from "../CookiesBar";
 import CrisisBar from "../CrisisBar";
@@ -50,6 +51,7 @@ const Layout = ({ children }: Props) => {
                 {children}
             </main>
             <VolunteerAvailabilityPrompt />
+            <MenteeRematchPrompt />
             {!isAdminScreen && !isChatScreen && <Footer />}
             <CookiesBar />
         </div>

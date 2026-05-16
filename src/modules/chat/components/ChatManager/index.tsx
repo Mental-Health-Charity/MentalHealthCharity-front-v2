@@ -7,11 +7,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
     ArrowRightCircle,
     Copy,
+    LockKeyhole,
     MessageSquare,
-    Pause,
     Pencil,
     Play,
     Plus,
+    RefreshCwOff,
+    RotateCw,
     Trash2,
     User as UserIcon,
     Users,
@@ -32,6 +34,7 @@ interface Props {
     onEditChat: (chat: Chat) => void;
     onRemoveChat: (chat: Chat) => void;
     onToggleChat: (chat: Chat) => void;
+    onToggleAutoMatching: (chat: Chat) => void;
     onAddParticipant: (chat: Chat) => void;
     onRemoveParticipant: (chat: Chat, participant: User) => void;
     onLoadMore: () => void;
@@ -42,6 +45,7 @@ const ChatManager = ({
     onEditChat,
     onRemoveChat,
     onToggleChat,
+    onToggleAutoMatching,
     onAddParticipant,
     onRemoveParticipant,
     onLoadMore,
@@ -157,6 +161,15 @@ const ChatManager = ({
                             >
                                 {chat.is_active ? t("common.active") : t("common.inactive")}
                             </Badge>
+                            <Badge variant={chat.auto_matching_enabled ? "secondary" : "outline"}>
+                                {chat.auto_matching_enabled
+                                    ? t("matching.auto_rematching_enabled", {
+                                          defaultValue: "Automatyczne ponowne parowanie",
+                                      })
+                                    : t("matching.auto_rematching_disabled", {
+                                          defaultValue: "Ręczne ponowne parowanie",
+                                      })}
+                            </Badge>
 
                             <ActionMenu
                                 actions={[
@@ -175,12 +188,28 @@ const ChatManager = ({
                                     {
                                         id: "disable",
                                         variant: "divider",
-                                        label: chat.is_active ? t("common.disable") : t("common.enable"),
+                                        label: chat.is_active ? t("chat.close_chat") : t("common.enable"),
                                         onClick: () => onToggleChat(chat),
                                         icon: chat.is_active ? (
-                                            <Pause className="text-warning-brand size-4" />
+                                            <LockKeyhole className="text-warning-brand size-4" />
                                         ) : (
                                             <Play className="text-success-brand size-4" />
+                                        ),
+                                    },
+                                    {
+                                        id: "toggle_auto_matching",
+                                        label: chat.auto_matching_enabled
+                                            ? t("matching.disable_auto_rematching", {
+                                                  defaultValue: "Wyłącz automatyczne ponowne parowanie",
+                                              })
+                                            : t("matching.enable_auto_rematching", {
+                                                  defaultValue: "Włącz automatyczne ponowne parowanie",
+                                              }),
+                                        onClick: () => onToggleAutoMatching(chat),
+                                        icon: chat.auto_matching_enabled ? (
+                                            <RefreshCwOff className="text-warning-brand size-4" />
+                                        ) : (
+                                            <RotateCw className="text-success-brand size-4" />
                                         ),
                                     },
                                     {
