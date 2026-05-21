@@ -4,7 +4,7 @@ import handleApiError from "../../shared/helpers/handleApiError";
 import { Article, UpdateArticleBannerOptions } from "../types";
 
 const updateArticleBannerMutation = async ({ article_id, banner }: UpdateArticleBannerOptions): Promise<Article> => {
-    const headers = getAuthHeaders();
+    const headers = getAuthHeaders({ withContentType: false });
 
     const formData = new FormData();
     formData.append("banner", banner); // banner może być Base64 lub plikiem
@@ -12,10 +12,7 @@ const updateArticleBannerMutation = async ({ article_id, banner }: UpdateArticle
     try {
         const res = await fetch(url.articles.updateBanner({ id: article_id }), {
             method: "PUT",
-            headers: {
-                ...headers,
-                "Content-Type": "multipart/form-data",
-            },
+            headers,
             body: formData,
         });
 

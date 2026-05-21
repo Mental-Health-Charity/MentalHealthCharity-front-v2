@@ -9,6 +9,7 @@
             "articles": "Artykuły",
             "chat_with_volunteer": "Otrzymaj pomoc",
             "donations": "Wesprzyj nas",
+            "trainings": "Szkolenia",
             "chat": "Czat",
             "admin": "Zarządzaj stroną",
             "aria": {
@@ -75,6 +76,31 @@
             "new_value": "Nowa wartość",
             "field": "Pole",
             "no_changes": "Brak zmian"
+        }
+    },
+    "trainings": {
+        "eyebrow": "Strefa wolontariusza",
+        "title": "Szkolenia",
+        "subtitle": "Materiały szkoleniowe dla wolontariuszy: szybki podgląd i pobranie plików PDF oraz grafik.",
+        "open": "Otwórz podgląd",
+        "preview_title": "Podgląd: {{title}}",
+        "items": {
+            "handbook_part_1": {
+                "title": "Podręcznik wolontariusza: część 1",
+                "description": "Wprowadzenie do roli, zasady pracy i etyka wsparcia."
+            },
+            "handbook_part_2": {
+                "title": "Podręcznik wolontariusza: część 2",
+                "description": "Jak postępować w sytuacjach pilnej pomocy psychiatrycznej."
+            },
+            "cheat_sheet": {
+                "title": "Ściąga wolontariusza",
+                "description": "Najważniejsze zasady w skróconej, łatwej do zapamiętania formie."
+            },
+            "system_usage": {
+                "title": "Infografika: obsługa systemu",
+                "description": "Szybka instrukcja poruszania się po systemie i panelu czatu."
+            }
         }
     },
     "confirm_email_begin": {
