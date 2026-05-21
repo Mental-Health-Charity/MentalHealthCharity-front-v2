@@ -12,7 +12,6 @@ import { useUser } from "../../../auth/components/AuthProvider";
 import ChangeImageInput from "../../../shared/components/ChangeImageInput";
 import Loader from "../../../shared/components/Loader";
 import Markdown from "../../../shared/components/Markdown";
-import fileToBase64 from "../../../shared/helpers/fileToBase64";
 import { Roles } from "../../../users/constants";
 import {
     ArticleRequiredRoles,
@@ -48,11 +47,9 @@ const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft, articleId }: Prop
     const handleUpdateApiArticleBanner = async (banner: File) => {
         if (!articleId) return;
 
-        const newBanner = await fileToBase64(banner);
-
         updateArticleBanner({
             article_id: articleId,
-            banner: newBanner,
+            banner,
         });
     };
 
@@ -136,6 +133,7 @@ const ArticleEditor = ({ initialValues, onSubmit, onSaveDraft, articleId }: Prop
                         isLoading={isArticleBannerUpdatePending}
                         onChange={(image) => {
                             if (articleId && image) {
+                                formik.setFieldValue("banner_url", image);
                                 handleUpdateApiArticleBanner(image);
                             } else {
                                 formik.setFieldValue("banner_url", image);

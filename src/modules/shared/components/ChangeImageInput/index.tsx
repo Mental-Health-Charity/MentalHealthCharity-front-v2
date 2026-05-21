@@ -10,6 +10,9 @@ interface Props {
     isLoading?: boolean;
 }
 
+const ALLOWED_BANNER_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const ACCEPTED_BANNER_TYPES = ALLOWED_BANNER_TYPES.join(",");
+
 const ChangeImageInput = ({ onChange, value, isLoading }: Props) => {
     const { t } = useTranslation();
     const inputRef = useRef<HTMLInputElement>(null);
@@ -28,8 +31,8 @@ const ChangeImageInput = ({ onChange, value, isLoading }: Props) => {
             return;
         }
 
-        if (!file.type.includes("image/")) {
-            toast.error(t("validation.invalid_file", { type: "webp/jpeg/jpg/png/svg" }));
+        if (!ALLOWED_BANNER_TYPES.includes(file.type)) {
+            toast.error(t("validation.invalid_file", { type: "webp/jpeg/jpg/png" }));
             return;
         }
 
@@ -38,7 +41,7 @@ const ChangeImageInput = ({ onChange, value, isLoading }: Props) => {
 
     return (
         <>
-            <input type="file" hidden accept="image/*" ref={inputRef} onChange={handleChange} />
+            <input type="file" hidden accept={ACCEPTED_BANNER_TYPES} ref={inputRef} onChange={handleChange} />
             {value && (
                 <Button
                     variant="destructive"
