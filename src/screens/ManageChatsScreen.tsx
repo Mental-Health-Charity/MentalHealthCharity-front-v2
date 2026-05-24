@@ -13,10 +13,8 @@ import CreateChatModal from "../modules/chat/components/CreateChatModal";
 import EditChatModal from "../modules/chat/components/EditChatModal";
 import useChatList from "../modules/chat/hooks/useChatList";
 import closeChatMutation from "../modules/chat/queries/closeChatMutation";
-import deleteChatMutation from "../modules/chat/queries/deleteChatMutation";
 import editChatMutation from "../modules/chat/queries/editChatMutation";
 import removeParticipantMutation from "../modules/chat/queries/removeParticipantMutation";
-import updateChatAutoMatchingMutation from "../modules/chat/queries/updateChatAutoMatchingMutation";
 import { Chat, ChatListFilter } from "../modules/chat/types";
 import AdminLayout from "../modules/shared/components/AdminLayout";
 import useDebounce from "../modules/shared/hooks/useDebounce";
@@ -44,14 +42,6 @@ const ManageChatsScreen = () => {
     const [selectedChatToAddParticipant, setSelectedChatToAddParticipant] = useState<Chat | null>(null);
     const { chats, handleLoadChats, handleRefetch } = useChatList(debouncedQuery, chatFilter);
 
-    const { mutate: deleteChat } = useMutation({
-        mutationFn: deleteChatMutation,
-        onSuccess: () => {
-            handleRefetch();
-            toast.success(t("chat.delete_chat_success"));
-        },
-    });
-
     const { mutate: editChat } = useMutation({
         mutationFn: editChatMutation,
         onSuccess: () => {
@@ -74,22 +64,6 @@ const ManageChatsScreen = () => {
         onSuccess: () => {
             handleRefetch();
             toast.success(t("chat.remove_participant_success"));
-        },
-    });
-
-    const { mutate: updateChatAutoMatching } = useMutation({
-        mutationFn: updateChatAutoMatchingMutation,
-        onSuccess: (chat) => {
-            handleRefetch();
-            toast.success(
-                chat.auto_matching_enabled
-                    ? t("matching.auto_rematching_enabled_success", {
-                          defaultValue: "Automatyczne ponowne parowanie zostało włączone",
-                      })
-                    : t("matching.auto_rematching_disabled_success", {
-                          defaultValue: "Automatyczne ponowne parowanie zostało wyłączone",
-                      })
-            );
         },
     });
 
@@ -172,10 +146,11 @@ const ManageChatsScreen = () => {
             <ChatManager
                 onLoadMore={handleLoadChats}
                 onAddParticipant={(chat) => setSelectedChatToAddParticipant(chat)}
-                onRemoveParticipant={(chat, participant) =>
+                onRemoveParticipant={(chat, participant, autoRematch) =>
                     removeParticipant({
                         chat_id: chat.id,
                         participant_id: participant.id,
+                        auto_rematch: autoRematch,
                     })
                 }
                 data={chats ?? undefined}
@@ -188,13 +163,6 @@ const ManageChatsScreen = () => {
                               name: chat.name,
                           })
                 }
-                onToggleAutoMatching={(chat) =>
-                    updateChatAutoMatching({
-                        id: chat.id,
-                        auto_matching_enabled: !chat.auto_matching_enabled,
-                    })
-                }
-                onRemoveChat={({ id }) => deleteChat(id)}
                 onEditChat={(chat) => setSelectedChatToEdit(chat)}
             />
 

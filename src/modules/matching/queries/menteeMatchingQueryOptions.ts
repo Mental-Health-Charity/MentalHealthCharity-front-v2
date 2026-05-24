@@ -29,3 +29,9 @@ export const matchedMenteesQueryOptions = () =>
         queryKey: ["matching", "mentees", "matched"],
         queryFn: () => fetchMenteeMatchingItems(url.matching.matchedMentees),
     });
+
+export const pausedMenteesQueryOptions = () =>
+    queryOptions<MenteeMatchingItem[]>({
+        queryKey: ["matching", "mentees", "paused"],
+        queryFn: () => fetchMenteeMatchingItems(url.matching.pausedMentees),
+    });

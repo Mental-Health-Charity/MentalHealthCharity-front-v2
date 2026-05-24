@@ -48,14 +48,14 @@ const MenteeRematchPrompt = () => {
 
     const { mutate, isPending } = useMutation({
         mutationFn: rematchDecisionMutation,
-        onSuccess: (state) => {
+        onSuccess: (state, variables) => {
             setOpen(false);
             clearStoredReminderAt(state.user_id);
             setReminderAt(null);
             queryClient.setQueryData(["matching", "me", "state"], state);
             queryClient.invalidateQueries({ queryKey: ["chat"] });
             toast.success(
-                state.status === MenteeMatchingStatus.WAITING
+                variables.wants_rematch
                     ? t("matching.rematch_requested_success", {
                           defaultValue: "Zgłoszenie do ponownego sparowania zostało zapisane.",
                       })

@@ -31,17 +31,15 @@ import { User } from "../../../auth/types";
 import ActionMenu from "../../../shared/components/ActionMenu";
 import formatDate from "../../../shared/helpers/formatDate";
 import { Pagination } from "../../../shared/types";
-import { translatedRoles } from "../../../users/constants";
+import { Roles, translatedRoles } from "../../../users/constants";
 import { Chat } from "../../types";
 
 interface Props {
     data?: Pagination<Chat>;
     onEditChat: (chat: Chat) => void;
-    onRemoveChat: (chat: Chat) => void;
     onToggleChat: (chat: Chat) => void;
-    onToggleAutoMatching: (chat: Chat) => void;
     onAddParticipant: (chat: Chat) => void;
-    onRemoveParticipant: (chat: Chat, participant: User) => void;
+    onRemoveParticipant: (chat: Chat, participant: User, autoRematch?: boolean) => void;
     onLoadMore: () => void;
 }
 
@@ -59,16 +57,7 @@ const InfoIcon = ({ children, label }: { children: ReactNode; label: string }) =
     </Tooltip>
 );
 
-const ChatManager = ({
-    data,
-    onEditChat,
-    onRemoveChat,
-    onToggleChat,
-    onToggleAutoMatching,
-    onAddParticipant,
-    onRemoveParticipant,
-    onLoadMore,
-}: Props) => {
+const ChatManager = ({ data, onEditChat, onToggleChat, onAddParticipant, onRemoveParticipant, onLoadMore }: Props) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const sentinelRef = useRef<HTMLDivElement>(null);
@@ -189,14 +178,6 @@ const ChatManager = ({
                             ? t("matching.manual_pairing_created", { defaultValue: "Czat utworzony ręcznie" })
                             : t("matching.auto_pairing_created", { defaultValue: "Czat utworzony automatycznie" });
 
-                    const rematchingLabel = chat.auto_matching_enabled
-                        ? t("matching.auto_rematching_enabled", {
-                              defaultValue: "Ponowne parowanie po zamknięciu: automatyczne",
-                          })
-                        : t("matching.auto_rematching_disabled", {
-                              defaultValue: "Ponowne parowanie po zamknięciu: ręczne",
-                          });
-
                     return (
                         <article
                             key={chat.id}
@@ -249,13 +230,6 @@ const ChatManager = ({
                                                     <MousePointerClick className="size-4" />
                                                 ) : (
                                                     <Route className="size-4" />
-                                                )}
-                                            </InfoIcon>
-                                            <InfoIcon label={rematchingLabel}>
-                                                {chat.auto_matching_enabled ? (
-                                                    <RotateCw className="text-info-brand size-4" />
-                                                ) : (
-                                                    <RefreshCwOff className="size-4" />
                                                 )}
                                             </InfoIcon>
                                         </div>
@@ -317,38 +291,17 @@ const ChatManager = ({
                                                 icon: <Plus className="size-4" />,
                                             },
                                             {
-                                                id: "toggle_auto_matching",
-                                                label: chat.auto_matching_enabled
-                                                    ? t("matching.disable_auto_rematching", {
-                                                          defaultValue: "Wyłącz automatyczne ponowne parowanie",
-                                                      })
-                                                    : t("matching.enable_auto_rematching", {
-                                                          defaultValue: "Włącz automatyczne ponowne parowanie",
-                                                      }),
-                                                onClick: () => onToggleAutoMatching(chat),
-                                                icon: chat.auto_matching_enabled ? (
-                                                    <RefreshCwOff className="text-warning-brand size-4" />
-                                                ) : (
-                                                    <RotateCw className="text-success-brand size-4" />
-                                                ),
-                                            },
-                                            {
                                                 id: "disable",
                                                 variant: "divider",
-                                                label: chat.is_active ? t("chat.close_chat") : t("common.enable"),
+                                                label: chat.is_active
+                                                    ? t("chat.close_chat", { defaultValue: "Zamknij czat" })
+                                                    : t("common.enable"),
                                                 onClick: () => onToggleChat(chat),
                                                 icon: chat.is_active ? (
                                                     <LockKeyhole className="text-warning-brand size-4" />
                                                 ) : (
                                                     <Play className="text-success-brand size-4" />
                                                 ),
-                                            },
-                                            {
-                                                id: "remove",
-                                                variant: "divider",
-                                                label: t("common.remove"),
-                                                onClick: () => onRemoveChat(chat),
-                                                icon: <Trash2 className="text-destructive size-4" />,
                                             },
                                         ]}
                                     />
@@ -421,13 +374,61 @@ const ChatManager = ({
                                                                     ),
                                                                 icon: <Pencil className="size-4" />,
                                                             },
-                                                            {
-                                                                id: "remove",
-                                                                label: t("chat.remove_from_chat"),
-                                                                variant: "divider",
-                                                                onClick: () => onRemoveParticipant(chat, participant),
-                                                                icon: <Trash2 className="text-destructive size-4" />,
-                                                            },
+                                                            ...(participant.user_role === Roles.VOLUNTEER
+                                                                ? [
+                                                                      {
+                                                                          id: "remove_auto_rematch",
+                                                                          label: t(
+                                                                              "chat.remove_volunteer_for_auto_rematch",
+                                                                              {
+                                                                                  defaultValue:
+                                                                                      "Usuń wolontariusza i uruchom automatyczny rematch",
+                                                                              }
+                                                                          ),
+                                                                          variant: "divider" as const,
+                                                                          onClick: () =>
+                                                                              onRemoveParticipant(
+                                                                                  chat,
+                                                                                  participant,
+                                                                                  true
+                                                                              ),
+                                                                          icon: (
+                                                                              <RotateCw className="text-success-brand size-4" />
+                                                                          ),
+                                                                      },
+                                                                      {
+                                                                          id: "remove_manual_rematch",
+                                                                          label: t(
+                                                                              "chat.remove_volunteer_for_manual_rematch",
+                                                                              {
+                                                                                  defaultValue:
+                                                                                      "Usuń wolontariusza i przenieś do ręcznego rematchu",
+                                                                              }
+                                                                          ),
+                                                                          variant: "divider" as const,
+                                                                          onClick: () =>
+                                                                              onRemoveParticipant(
+                                                                                  chat,
+                                                                                  participant,
+                                                                                  false
+                                                                              ),
+                                                                          icon: (
+                                                                              <RefreshCwOff className="text-warning-brand size-4" />
+                                                                          ),
+                                                                      },
+                                                                  ]
+                                                                : [
+                                                                      {
+                                                                          id: "remove",
+                                                                          label: t("chat.remove_from_chat"),
+                                                                          variant: "divider" as const,
+                                                                          onClick: () =>
+                                                                              onRemoveParticipant(chat, participant),
+                                                                          icon: (
+                                                                              <Trash2 className="text-destructive size-4" />
+                                                                          ),
+                                                                      },
+                                                                  ]),
                                                         ]}
                                                     />
                                                 </div>

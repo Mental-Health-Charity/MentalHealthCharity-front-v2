@@ -41,6 +41,7 @@ export interface CreateChatFormValues {
 export interface ParticipantOptions {
     chat_id: number;
     participant_id: number;
+    auto_rematch?: boolean;
 }
 
 export interface GetChatMessagesOptions extends DefaultPaginationOptions {
@@ -99,7 +100,6 @@ export interface Chat {
     is_active: boolean;
     is_group_chat: boolean;
     status: "ACTIVE" | "CLOSED" | "ARCHIVED";
-    auto_matching_enabled: boolean;
     matching_mode: "AUTO" | "MANUAL";
     closed_at: string | null;
     creation_date: string;
@@ -139,11 +139,6 @@ export interface EditChatPayload {
     id: number;
     name: string;
     is_active: boolean;
-}
-
-export interface UpdateChatAutoMatchingPayload {
-    id: number;
-    auto_matching_enabled: boolean;
 }
 
 export interface CloseChatPayload {

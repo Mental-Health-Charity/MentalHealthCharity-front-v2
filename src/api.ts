@@ -104,9 +104,6 @@ export const url = {
         closeChat({ id }: ReadChatOptions) {
             return `${baseUrl}/api/v1/chat/${id}/deactivate`;
         },
-        deleteChat({ id }: EditChatOptions) {
-            return `${baseUrl}/api/v1/chat/${id}`;
-        },
         editNote({ id }: ChatNoteOptions) {
             return `${baseUrl}/api/v1/chat-note/chat/${id}`;
         },
@@ -122,8 +119,9 @@ export const url = {
         addParticipant({ chat_id, participant_id }: ParticipantOptions) {
             return `${baseUrl}/api/v1/chat/${chat_id}/participant/${participant_id}`;
         },
-        removeParticipant({ chat_id, participant_id }: ParticipantOptions) {
-            return `${baseUrl}/api/v1/chat/${chat_id}/participant/${participant_id}`;
+        removeParticipant({ chat_id, participant_id, auto_rematch }: ParticipantOptions) {
+            const query = auto_rematch === undefined ? "" : `?auto_rematch=${auto_rematch}`;
+            return `${baseUrl}/api/v1/chat/${chat_id}/participant/${participant_id}${query}`;
         },
         readMessages({ chatId, ...options }: GetChatMessagesOptions) {
             const query = buildQuery(options);
@@ -199,6 +197,7 @@ export const url = {
         volunteerAvailability: `${baseUrl}/api/v1/matching/volunteer/availability`,
         waitingMentees: `${baseUrl}/api/v1/matching/admin/queue`,
         matchedMentees: `${baseUrl}/api/v1/matching/admin/matched`,
+        pausedMentees: `${baseUrl}/api/v1/matching/admin/paused`,
         volunteers: `${baseUrl}/api/v1/matching/admin/volunteers`,
         alerts: `${baseUrl}/api/v1/matching/admin/alerts`,
         settings: `${baseUrl}/api/v1/matching/admin/settings`,
@@ -206,11 +205,11 @@ export const url = {
         manualPair: `${baseUrl}/api/v1/matching/admin/manual-pair`,
         myState: `${baseUrl}/api/v1/matching/me/state`,
         rematchDecision: `${baseUrl}/api/v1/matching/me/rematch-decision`,
-        updateChatAutoMatching({ id }: ReadChatOptions) {
-            return `${baseUrl}/api/v1/matching/admin/chats/${id}/auto-matching`;
-        },
         updateUserAutomationExclusion({ id }: ReadUserByIdOptions) {
             return `${baseUrl}/api/v1/matching/admin/users/${id}/automation-exclusion`;
+        },
+        adminRematchDecision({ id }: ReadUserByIdOptions) {
+            return `${baseUrl}/api/v1/matching/admin/users/${id}/rematch-decision`;
         },
     },
     form: {

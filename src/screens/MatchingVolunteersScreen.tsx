@@ -2,16 +2,20 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, UserCheck, Users } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AlertTriangle, Loader2, UserCheck, UserX, Users } from "lucide-react";
+import toast from "react-hot-toast";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import updateUserAutomationExclusionMutation from "../modules/matching/queries/updateUserAutomationExclusionMutation";
 import { volunteerCapacityQueryOptions } from "../modules/matching/queries/volunteerCapacityQueryOptions";
 import { VolunteerCapacityItem } from "../modules/matching/types";
+import { useUser } from "../modules/auth/components/AuthProvider";
 import AdminLayout from "../modules/shared/components/AdminLayout";
 import { isApiDateInFuture } from "../modules/shared/helpers/dateTime";
 import formatDate from "../modules/shared/helpers/formatDate";
+import { Roles } from "../modules/users/constants";
 
 type ViewMode = "available" | "full";
 
@@ -25,8 +29,26 @@ const isAvailableForMatching = ({ availability }: VolunteerCapacityItem) =>
 
 const MatchingVolunteersScreen = () => {
     const { t } = useTranslation();
+    const queryClient = useQueryClient();
+    const { user: currentUser } = useUser();
     const [viewMode, setViewMode] = useState<ViewMode>("available");
     const { data, isError, isLoading } = useQuery(volunteerCapacityQueryOptions());
+    const canManageAutomationExclusion = currentUser?.user_role === Roles.ADMIN;
+    const { mutate: updateAutomationExclusion, isPending: isAutomationExclusionPending } = useMutation({
+        mutationFn: updateUserAutomationExclusionMutation,
+        onSuccess: (updatedUser) => {
+            queryClient.invalidateQueries({ queryKey: ["matching"] });
+            toast.success(
+                updatedUser.excluded_from_automation
+                    ? t("matching.automation_exclusion_enabled_success", {
+                          defaultValue: "Konto zostało wykluczone z automatycznego parowania",
+                      })
+                    : t("matching.automation_exclusion_disabled_success", {
+                          defaultValue: "Konto wróciło do automatycznego parowania",
+                      })
+            );
+        },
+    });
 
     const volunteers = data ?? [];
     const availableVolunteers = useMemo(() => volunteers.filter(isAvailableForMatching), [volunteers]);
@@ -65,6 +87,7 @@ const MatchingVolunteersScreen = () => {
         rows.map((item) => {
             const { volunteer, availability } = item;
             const status = getStatus(item);
+            const isUpdatingAutomationExclusion = isAutomationExclusionPending;
 
             return (
                 <TableRow key={volunteer.id}>
@@ -96,12 +119,36 @@ const MatchingVolunteersScreen = () => {
                         </Badge>
                     </TableCell>
                     <TableCell>
-                        <Link
-                            to={`/profile/${volunteer.id}`}
-                            className="hover:bg-muted inline-flex h-8 items-center gap-1 rounded-md px-3 text-sm font-medium no-underline"
-                        >
-                            {t("common.go_to_profile", { defaultValue: "Profil" })}
-                        </Link>
+                        <div className="flex flex-wrap items-center gap-2">
+                            {canManageAutomationExclusion && (
+                                <Button
+                                    size="sm"
+                                    variant={volunteer.excluded_from_automation ? "outline" : "destructive"}
+                                    onClick={() =>
+                                        updateAutomationExclusion({
+                                            userId: volunteer.id,
+                                            excluded_from_automation: !volunteer.excluded_from_automation,
+                                        })
+                                    }
+                                    disabled={isUpdatingAutomationExclusion}
+                                >
+                                    {isUpdatingAutomationExclusion ? (
+                                        <Loader2 className="size-4 animate-spin" />
+                                    ) : (
+                                        <UserX className="size-4" />
+                                    )}
+                                    {volunteer.excluded_from_automation
+                                        ? t("matching.include_in_automation", { defaultValue: "Przywróć" })
+                                        : t("matching.exclude_from_automation", { defaultValue: "Wyklucz" })}
+                                </Button>
+                            )}
+                            <Link
+                                to={`/profile/${volunteer.id}`}
+                                className="hover:bg-muted inline-flex h-8 items-center gap-1 rounded-md px-3 text-sm font-medium no-underline"
+                            >
+                                {t("common.go_to_profile", { defaultValue: "Profil" })}
+                            </Link>
+                        </div>
                     </TableCell>
                 </TableRow>
             );

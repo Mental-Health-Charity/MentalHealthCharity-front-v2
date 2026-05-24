@@ -2,12 +2,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import resolveAssetUrl from "@/modules/shared/helpers/resolveAssetUrl";
 import { useMutation } from "@tanstack/react-query";
-import { Loader2, LockKeyhole, Trash2, User as UserIcon, UserPlus, X } from "lucide-react";
+import { Loader2, LockKeyhole, RefreshCwOff, RotateCw, Trash2, User as UserIcon, UserPlus, X } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import formatDate from "../../../shared/helpers/formatDate";
-import { translatedRoles } from "../../../users/constants";
+import { Roles, translatedRoles } from "../../../users/constants";
 import removeParticipantMutation from "../../queries/removeParticipantMutation";
 import { Chat } from "../../types";
 import ChatSidebarPanel from "../ChatSidebarPanel";
@@ -31,6 +31,14 @@ const ChatDetails = ({
 }: Props) => {
     const { t } = useTranslation();
     const [confirmingId, setConfirmingId] = useState<number | null>(null);
+
+    const getRemoveParticipantLabel = (participantRole: Roles) => {
+        if (participantRole !== Roles.VOLUNTEER) return t("chat.remove_from_chat");
+
+        return t("chat.remove_volunteer_from_chat", {
+            defaultValue: "Usuń wolontariusza",
+        });
+    };
 
     const { mutate: removeParticipant, isPending: isRemoving } = useMutation({
         mutationFn: removeParticipantMutation,
@@ -103,29 +111,82 @@ const ChatDetails = ({
                                     </AvatarFallback>
                                 </Avatar>
                                 {confirmingId === participant.id ? (
-                                    <div className="flex min-w-0 flex-1 items-center gap-2">
+                                    <div className="flex min-w-0 flex-1 flex-col gap-2">
                                         <span className="text-muted-foreground truncate text-xs">
-                                            {t("chat.remove_from_chat")}?
+                                            {getRemoveParticipantLabel(participant.user_role)}?
                                         </span>
-                                        <div className="flex shrink-0 gap-1">
-                                            <Button
-                                                variant="destructive"
-                                                size="sm"
-                                                className="h-6 px-2 text-xs"
-                                                disabled={isRemoving}
-                                                onClick={() =>
-                                                    removeParticipant({
-                                                        chat_id: chat.id,
-                                                        participant_id: participant.id,
-                                                    })
-                                                }
-                                            >
-                                                {isRemoving ? (
-                                                    <Loader2 className="size-3 animate-spin" />
-                                                ) : (
-                                                    t("common.confirm", { defaultValue: "Tak" })
-                                                )}
-                                            </Button>
+                                        <div className="flex flex-wrap gap-1">
+                                            {participant.user_role === Roles.VOLUNTEER ? (
+                                                <>
+                                                    <Button
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        className="h-auto min-h-7 gap-1 px-2 text-xs whitespace-normal"
+                                                        disabled={isRemoving}
+                                                        onClick={() =>
+                                                            removeParticipant({
+                                                                chat_id: chat.id,
+                                                                participant_id: participant.id,
+                                                                auto_rematch: true,
+                                                            })
+                                                        }
+                                                    >
+                                                        {isRemoving ? (
+                                                            <Loader2 className="size-3 animate-spin" />
+                                                        ) : (
+                                                            <>
+                                                                <RotateCw className="size-3" />
+                                                                {t("chat.auto_rematch", {
+                                                                    defaultValue: "Auto rematch",
+                                                                })}
+                                                            </>
+                                                        )}
+                                                    </Button>
+                                                    <Button
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        className="h-auto min-h-7 gap-1 px-2 text-xs whitespace-normal"
+                                                        disabled={isRemoving}
+                                                        onClick={() =>
+                                                            removeParticipant({
+                                                                chat_id: chat.id,
+                                                                participant_id: participant.id,
+                                                                auto_rematch: false,
+                                                            })
+                                                        }
+                                                    >
+                                                        {isRemoving ? (
+                                                            <Loader2 className="size-3 animate-spin" />
+                                                        ) : (
+                                                            <>
+                                                                <RefreshCwOff className="size-3" />
+                                                                {t("chat.manual_rematch", {
+                                                                    defaultValue: "Ręczny rematch",
+                                                                })}
+                                                            </>
+                                                        )}
+                                                    </Button>
+                                                </>
+                                            ) : (
+                                                <Button
+                                                    variant="destructive"
+                                                    size="sm"
+                                                    className="h-6 px-2 text-xs"
+                                                    disabled={isRemoving}
+                                                    onClick={() =>
+                                                        removeParticipant({
+                                                            chat_id: chat.id,
+                                                            participant_id: participant.id,
+                                                        })
+                                                    }
+                                                >
+                                                    {isRemoving ? (
+                                                        <Loader2 className="size-3 animate-spin" />
+                                                    ) : (
+                                                        t("common.confirm", { defaultValue: "Tak" })
+                                                    )}
+                                                </Button>
+                                            )}
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
@@ -150,7 +211,7 @@ const ChatDetails = ({
                                             <button
                                                 onClick={() => setConfirmingId(participant.id)}
                                                 className="text-muted-foreground hover:text-destructive shrink-0 rounded-md p-1 opacity-0 transition-all group-hover:opacity-100"
-                                                aria-label={t("chat.remove_from_chat")}
+                                                aria-label={getRemoveParticipantLabel(participant.user_role)}
                                             >
                                                 <Trash2 className="size-3.5" />
                                             </button>
