@@ -13,7 +13,8 @@ interface Props {
 }
 
 const MAX_AVATAR_SIZE = 1024 * 1024;
-const ALLOWED_AVATAR_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const ALLOWED_AVATAR_TYPES = ["image/jpeg", "image/png", "image/gif"];
+const ACCEPTED_AVATAR_TYPES = ALLOWED_AVATAR_TYPES.join(",");
 
 const ChangeAvatar = ({ avatar, username, disabled, onSubmit }: Props) => {
     const { t } = useTranslation();
@@ -37,7 +38,7 @@ const ChangeAvatar = ({ avatar, username, disabled, onSubmit }: Props) => {
     const validateFile = (file: File | null) => {
         if (!file) return null;
         if (!ALLOWED_AVATAR_TYPES.includes(file.type)) {
-            return t("validation.invalid_file", { type: "JPG, PNG, WEBP" });
+            return t("validation.invalid_file", { type: "JPG, PNG, GIF" });
         }
         if (file.size > MAX_AVATAR_SIZE) {
             return t("validation.max_size", { size: "1MB" });
@@ -123,7 +124,7 @@ const ChangeAvatar = ({ avatar, username, disabled, onSubmit }: Props) => {
                         id="avatar"
                         name="avatar"
                         type="file"
-                        accept="image/png,image/jpeg,image/webp"
+                        accept={ACCEPTED_AVATAR_TYPES}
                         onChange={handleFileChange}
                     />
                     {error && <p className="text-destructive mt-2.5 text-center text-sm">{error}</p>}

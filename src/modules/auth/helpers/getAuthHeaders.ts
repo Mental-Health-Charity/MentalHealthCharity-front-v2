@@ -1,13 +1,24 @@
 import Cookies from "js-cookie";
 
-const getAuthHeaders = () => {
+type GetAuthHeadersOptions = {
+    withContentType?: boolean;
+};
+
+const getAuthHeaders = (options: GetAuthHeadersOptions = {}): Headers => {
+    const { withContentType = true } = options;
+
     const headers = new Headers();
 
     const jwtTokenType = Cookies.get("jwt_type");
     const jwtToken = Cookies.get("token");
 
-    headers.append("Content-Type", "application/json");
-    headers.append("Authorization", `${jwtTokenType} ${jwtToken}`);
+    if (withContentType) {
+        headers.append("Content-Type", "application/json");
+    }
+
+    if (jwtTokenType && jwtToken) {
+        headers.append("Authorization", `${jwtTokenType} ${jwtToken}`);
+    }
 
     return headers;
 };

@@ -7,7 +7,8 @@
             "my_account": "My account",
             "logout": "Logout",
             "articles": "Articles",
-            "donations": "Donations"
+            "donations": "Donations",
+            "trainings": "Trainings"
         },
         "search": "Search...",
         "edit": "Edit",
@@ -25,10 +26,37 @@
         "go_to_profile": "Go to profile",
         "hide": "Hide",
         "back": "Back",
+        "preview": "Preview",
+        "download": "Download",
         "expand": "Expand",
         "collapse": "Collapse",
         "show_more_count_click": "and {{count}} more. Click to show",
         "not_found": "Oops! No content found."
+    },
+    "trainings": {
+        "eyebrow": "Volunteer area",
+        "title": "Trainings",
+        "subtitle": "Volunteer training materials with quick previews and downloads.",
+        "open": "Open preview",
+        "preview_title": "Preview: {{title}}",
+        "items": {
+            "handbook_part_1": {
+                "title": "Volunteer handbook: part 1",
+                "description": "Role introduction, working principles, and support ethics."
+            },
+            "handbook_part_2": {
+                "title": "Volunteer handbook: part 2",
+                "description": "Procedures and practical guidance for chat conversations."
+            },
+            "cheat_sheet": {
+                "title": "Volunteer cheat sheet",
+                "description": "Key rules in a short, easy-to-scan format."
+            },
+            "system_usage": {
+                "title": "Infographic: system usage",
+                "description": "Quick guide to navigating the system and chat panel."
+            }
+        }
     },
     "homepage": {
         "choose_mentee_button": "Get support",

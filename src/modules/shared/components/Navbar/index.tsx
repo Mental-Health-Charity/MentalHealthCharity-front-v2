@@ -11,15 +11,16 @@ import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronRight, LogOut, Menu, Moon, Sun, X } from "lucide-react";
+import { ChevronDown, ChevronRight, LogOut, Menu, Moon, Sun, X } from "lucide-react";
 import React, { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 import Logo from "../../../../assets/static/logo_small.webp";
+import { useIsMobile, useIsTablet } from "../../../../hooks/useBreakpoint";
 import { useTheme } from "../../../../hooks/useTheme";
 import { useUser } from "../../../auth/components/AuthProvider";
 import { getChatsQueryOptions } from "../../../chat/queries/getChatsQueryOptions";
-import { Roles } from "../../../users/constants";
+import { Roles, translatedRoles } from "../../../users/constants";
 import { Permissions } from "../../constants";
 import usePermissions from "../../hooks/usePermissions";
 import { NavlinkProps } from "../../types";
@@ -49,11 +50,19 @@ const Navbar = () => {
         ? user.full_name?.trim() || user.email || t("common.navigation.my_account", { defaultValue: "Moje konto" })
         : "";
     const userInitial = userDisplayName.charAt(0).toUpperCase();
+    const isMobile = useIsMobile();
+    const isTablet = useIsTablet();
+    const hideBrandName = isTablet && !isMobile;
 
     const pages: NavlinkProps[] = useMemo(() => {
         const basePages: NavlinkProps[] = [
             { name: t("common.navigation.home"), to: "/" },
             { name: t("common.navigation.articles"), to: "/articles" },
+            {
+                name: t("common.navigation.trainings"),
+                to: "/trainings",
+                permissions: Permissions.VIEW_TRAININGS,
+            },
             { name: t("common.navigation.donations"), to: "/donations" },
             {
                 name: t("common.navigation.admin"),
@@ -88,6 +97,23 @@ const Navbar = () => {
     if (isAdminPanel) return null;
 
     const filteredPages = pages.filter((page) => !page.permissions || hasPermissions(page.permissions));
+    const primaryOrder = ["/", "/articles", "/donations", "/chat"];
+    const overflowOrder = ["/trainings", "/admin/"];
+    const primaryOrderSet = new Set(primaryOrder);
+    const overflowOrderSet = new Set(overflowOrder);
+    const pageByTo = new Map(filteredPages.map((page) => [page.to, page]));
+    const primaryPages = primaryOrder
+        .map((to) => pageByTo.get(to))
+        .filter((page): page is NavlinkProps => Boolean(page));
+    const orderedOverflowPages = overflowOrder
+        .map((to) => pageByTo.get(to))
+        .filter((page): page is NavlinkProps => Boolean(page));
+    const extraPages = filteredPages.filter((page) => !primaryOrderSet.has(page.to) && !overflowOrderSet.has(page.to));
+    const overflowPages = [...orderedOverflowPages, ...extraPages];
+    const mobilePages = [...primaryPages, ...overflowPages];
+    const overflowLabel = user
+        ? (translatedRoles[user.user_role] ?? t("common.navigation.more", { defaultValue: "More" }))
+        : t("common.navigation.more", { defaultValue: "More" });
 
     return (
         <header className="bg-card/95 border-border/60 sticky top-0 z-50 w-full border-b px-4 py-2 backdrop-blur-md">
@@ -95,7 +121,9 @@ const Navbar = () => {
                 {/* Logo + brand name */}
                 <Link to="/" className="flex shrink-0 items-center gap-2.5 no-underline">
                     <img src={Logo} alt="Logo" className="w-10" />
-                    <span className="text-foreground hidden text-lg font-bold sm:inline">Peryskop</span>
+                    {!hideBrandName && (
+                        <span className="text-foreground hidden text-lg font-bold sm:inline">Peryskop</span>
+                    )}
                 </Link>
 
                 {/* Mobile Menu Toggle */}
@@ -134,7 +162,7 @@ const Navbar = () => {
 
                         {/* Navigation links */}
                         <div className="flex flex-col px-3 py-3">
-                            {filteredPages.map(({ name, to }) => {
+                            {mobilePages.map(({ name, to }) => {
                                 const isActive = location.pathname === to;
                                 return (
                                     <Link
@@ -224,10 +252,38 @@ const Navbar = () => {
                 </Sheet>
 
                 {/* Desktop Menu */}
-                <div className="hidden min-w-0 flex-1 items-center justify-center gap-3 md:flex xl:gap-6">
-                    {filteredPages.map((props) => (
-                        <NavLink key={props.to} {...props} className="px-2 text-lg xl:px-3 xl:text-xl" />
+                <div className="hidden items-center gap-6 min-[1100px]:absolute min-[1100px]:left-1/2 min-[1100px]:-translate-x-1/2 md:flex">
+                    {primaryPages.map((props) => (
+                        <NavLink key={props.to} {...props} />
                     ))}
+                    {overflowPages.length > 0 && (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger
+                                render={
+                                    <button className="text-foreground hover:text-primary-brand relative inline-flex items-center gap-1 px-3 py-2 text-xl font-semibold whitespace-nowrap opacity-90 transition-colors duration-200 hover:opacity-100" />
+                                }
+                            >
+                                {overflowLabel}
+                                <ChevronDown className="size-4" />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="center">
+                                {overflowPages.map((page) => (
+                                    <DropdownMenuItem
+                                        key={page.to}
+                                        render={
+                                            <Link
+                                                to={page.to}
+                                                reloadDocument={page.to === "/admin/"}
+                                                className="no-underline"
+                                            />
+                                        }
+                                    >
+                                        {page.name}
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
                 </div>
 
                 {/* User Menu (Desktop) */}

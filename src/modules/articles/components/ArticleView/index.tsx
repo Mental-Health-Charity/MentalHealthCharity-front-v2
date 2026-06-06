@@ -4,7 +4,6 @@ import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Calendar, Clock, User as UserIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { baseUrl } from "../../../../api";
 import Markdown from "../../../shared/components/Markdown";
 import formatDate from "../../../shared/helpers/formatDate";
 import resolveAssetUrl from "../../../shared/helpers/resolveAssetUrl";
@@ -34,7 +33,7 @@ const ArticleView = ({ article, articles }: Props) => {
                 <div className="relative flex min-h-[360px] items-end md:min-h-[480px]">
                     {/* Background image */}
                     <img
-                        src={baseUrl + article.banner_url}
+                        src={article.banner_url}
                         alt=""
                         aria-hidden="true"
                         className="absolute inset-0 h-full w-full object-cover"
@@ -47,7 +46,6 @@ const ArticleView = ({ article, articles }: Props) => {
                         className="hover:text-foreground absolute top-6 left-6 z-10 flex items-center gap-2 rounded-full bg-black/20 px-4 py-2 text-sm font-medium text-white/90 backdrop-blur-md transition-colors"
                     >
                         <ArrowLeft className="size-4" />
-                        {t("articles.all_articles", { defaultValue: "All articles" })}
                     </Link>
 
                     {/* Hero content */}

@@ -23,7 +23,7 @@ export interface UpdateArticleOptions {
 }
 
 export interface UpdateArticleBannerOptions {
-    banner: string;
+    banner: File;
     article_id: number;
 }
 

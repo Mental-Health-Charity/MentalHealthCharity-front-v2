@@ -37,6 +37,7 @@ const HomepageScreen = React.lazy(() => import("../../screens/HomepageScreen"));
 const LoginScreen = React.lazy(() => import("../../screens/LoginScreen"));
 const ProfileScreen = React.lazy(() => import("../../screens/ProfileScreen"));
 const ReportsScreen = React.lazy(() => import("../../screens/ReportsScreen"));
+const TrainingsScreen = React.lazy(() => import("../../screens/TrainingsScreen"));
 const UserEditorScreen = React.lazy(() => import("../../screens/UserEditorScreen"));
 const MenteeFormGettingStartedScreen = React.lazy(() => import("../../screens/MenteeFormGettingStartedScreen"));
 
@@ -198,6 +199,12 @@ const routes: RouteType[] = [
         url: "/articles",
         onRender: <ArticlesScreen />,
         requiresAuth: false,
+    },
+    {
+        url: "/trainings",
+        onRender: <TrainingsScreen />,
+        requiresAuth: true,
+        permission: Permissions.VIEW_TRAININGS,
     },
     {
         url: "/articles/create",
