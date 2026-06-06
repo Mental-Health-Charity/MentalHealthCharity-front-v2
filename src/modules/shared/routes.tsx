@@ -205,6 +205,7 @@ const routes: RouteType[] = [
         onRender: <TrainingsScreen />,
         requiresAuth: true,
         permission: Permissions.VIEW_TRAININGS,
+        roles: [Roles.VOLUNTEER, Roles.REDACTOR, Roles.ADMIN, Roles.VOLUNTEERSUPERVISOR],
     },
     {
         url: "/articles/create",
@@ -246,6 +247,7 @@ const routes: RouteType[] = [
         onRender: <VolunteerAvailabilityScreen />,
         requiresAuth: true,
         permission: Permissions.MANAGE_OWN_AVAILABILITY,
+        roles: [Roles.VOLUNTEER],
     },
 
     {

@@ -20,7 +20,7 @@ import { useIsMobile, useIsTablet } from "../../../../hooks/useBreakpoint";
 import { useTheme } from "../../../../hooks/useTheme";
 import { useUser } from "../../../auth/components/AuthProvider";
 import { getChatsQueryOptions } from "../../../chat/queries/getChatsQueryOptions";
-import { Roles, translatedRoles } from "../../../users/constants";
+import { Roles } from "../../../users/constants";
 import { Permissions } from "../../constants";
 import usePermissions from "../../hooks/usePermissions";
 import { NavlinkProps } from "../../types";
@@ -54,21 +54,20 @@ const Navbar = () => {
     const isTablet = useIsTablet();
     const hideBrandName = isTablet && !isMobile;
 
-    const pages: NavlinkProps[] = useMemo(() => {
+    const mainPages: NavlinkProps[] = useMemo(() => {
         const basePages: NavlinkProps[] = [
             { name: t("common.navigation.home"), to: "/" },
             { name: t("common.navigation.articles"), to: "/articles" },
-            {
-                name: t("common.navigation.trainings"),
-                to: "/trainings",
-                permissions: Permissions.VIEW_TRAININGS,
-            },
+            ...(!isVolunteer
+                ? [
+                      {
+                          name: t("common.navigation.trainings"),
+                          to: "/trainings",
+                          permissions: Permissions.VIEW_TRAININGS,
+                      },
+                  ]
+                : []),
             { name: t("common.navigation.donations"), to: "/donations" },
-            {
-                name: t("common.navigation.admin"),
-                to: "/admin/",
-                permissions: Permissions.ADMIN_DASHBOARD,
-            },
         ];
 
         if (chats && chats.total > 0) {
@@ -79,16 +78,34 @@ const Navbar = () => {
             });
         }
 
-        if (isVolunteer) {
-            basePages.push({
-                name: t("common.navigation.availability", { defaultValue: "Dyspozycyjnosc" }),
-                to: "/volunteer/availability",
-                permissions: Permissions.MANAGE_OWN_AVAILABILITY,
-            });
-        }
-
         return basePages;
     }, [chats, isVolunteer, t]);
+
+    const volunteerPages: NavlinkProps[] = useMemo(() => {
+        if (!isVolunteer) return [];
+
+        return [
+            {
+                name: t("common.navigation.trainings"),
+                to: "/trainings",
+                permissions: Permissions.VIEW_TRAININGS,
+            },
+            {
+                name: t("common.navigation.availability"),
+                to: "/volunteer/availability",
+                permissions: Permissions.MANAGE_OWN_AVAILABILITY,
+            },
+        ];
+    }, [isVolunteer, t]);
+
+    const adminPage: NavlinkProps = useMemo(
+        () => ({
+            name: t("common.navigation.admin"),
+            to: "/admin/",
+            permissions: Permissions.ADMIN_DASHBOARD,
+        }),
+        [t]
+    );
 
     useEffect(() => {
         setIsDrawerOpen(false);
@@ -96,24 +113,15 @@ const Navbar = () => {
 
     if (isAdminPanel) return null;
 
-    const filteredPages = pages.filter((page) => !page.permissions || hasPermissions(page.permissions));
-    const primaryOrder = ["/", "/articles", "/donations", "/chat"];
-    const overflowOrder = ["/trainings", "/admin/"];
-    const primaryOrderSet = new Set(primaryOrder);
-    const overflowOrderSet = new Set(overflowOrder);
-    const pageByTo = new Map(filteredPages.map((page) => [page.to, page]));
-    const primaryPages = primaryOrder
-        .map((to) => pageByTo.get(to))
-        .filter((page): page is NavlinkProps => Boolean(page));
-    const orderedOverflowPages = overflowOrder
-        .map((to) => pageByTo.get(to))
-        .filter((page): page is NavlinkProps => Boolean(page));
-    const extraPages = filteredPages.filter((page) => !primaryOrderSet.has(page.to) && !overflowOrderSet.has(page.to));
-    const overflowPages = [...orderedOverflowPages, ...extraPages];
-    const mobilePages = [...primaryPages, ...overflowPages];
-    const overflowLabel = user
-        ? (translatedRoles[user.user_role] ?? t("common.navigation.more", { defaultValue: "More" }))
-        : t("common.navigation.more", { defaultValue: "More" });
+    const primaryPages = mainPages.filter((page) => !page.permissions || hasPermissions(page.permissions));
+    const visibleVolunteerPages = volunteerPages.filter(
+        (page) => !page.permissions || hasPermissions(page.permissions)
+    );
+    const showVolunteerMenu = isVolunteer && visibleVolunteerPages.length > 0;
+    const showAdminLink = hasPermissions(Permissions.ADMIN_DASHBOARD);
+    const mobilePages = showAdminLink ? [...primaryPages, adminPage] : primaryPages;
+    const isVolunteerSectionActive = visibleVolunteerPages.some((page) => location.pathname === page.to);
+    const volunteerMenuLabel = t("common.navigation.volunteer_area");
 
     return (
         <header className="bg-card/95 border-border/60 sticky top-0 z-50 w-full border-b px-4 py-2 backdrop-blur-md">
@@ -181,6 +189,32 @@ const Navbar = () => {
                                     </Link>
                                 );
                             })}
+                            {showVolunteerMenu && (
+                                <div className="mt-2 border-t pt-2">
+                                    <p className="text-muted-foreground px-3 py-2 text-xs font-semibold tracking-wide uppercase">
+                                        {volunteerMenuLabel}
+                                    </p>
+                                    {visibleVolunteerPages.map(({ name, to }) => {
+                                        const isActive = location.pathname === to;
+                                        return (
+                                            <Link
+                                                key={to}
+                                                to={to}
+                                                className={`flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium no-underline transition-colors ${
+                                                    isActive
+                                                        ? "bg-primary-brand/10 text-primary-brand"
+                                                        : "text-foreground hover:bg-muted"
+                                                }`}
+                                            >
+                                                {name}
+                                                <ChevronRight
+                                                    className={`size-4 ${isActive ? "text-primary-brand" : "text-muted-foreground"}`}
+                                                />
+                                            </Link>
+                                        );
+                                    })}
+                                </div>
+                            )}
                         </div>
 
                         <Separator />
@@ -256,27 +290,27 @@ const Navbar = () => {
                     {primaryPages.map((props) => (
                         <NavLink key={props.to} {...props} />
                     ))}
-                    {overflowPages.length > 0 && (
+                    {showVolunteerMenu && (
                         <DropdownMenu>
                             <DropdownMenuTrigger
                                 render={
-                                    <button className="text-foreground hover:text-primary-brand relative inline-flex items-center gap-1 px-3 py-2 text-xl font-semibold whitespace-nowrap opacity-90 transition-colors duration-200 hover:opacity-100" />
+                                    <button
+                                        className={`hover:text-primary-brand relative inline-flex items-center gap-1 px-3 py-2 text-xl font-semibold whitespace-nowrap transition-colors duration-200 ${
+                                            isVolunteerSectionActive
+                                                ? "text-primary-brand opacity-100"
+                                                : "text-foreground opacity-90 hover:opacity-100"
+                                        }`}
+                                    />
                                 }
                             >
-                                {overflowLabel}
+                                {volunteerMenuLabel}
                                 <ChevronDown className="size-4" />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="center">
-                                {overflowPages.map((page) => (
+                                {visibleVolunteerPages.map((page) => (
                                     <DropdownMenuItem
                                         key={page.to}
-                                        render={
-                                            <Link
-                                                to={page.to}
-                                                reloadDocument={page.to === "/admin/"}
-                                                className="no-underline"
-                                            />
-                                        }
+                                        render={<Link to={page.to} className="no-underline" />}
                                     >
                                         {page.name}
                                     </DropdownMenuItem>
@@ -284,6 +318,7 @@ const Navbar = () => {
                             </DropdownMenuContent>
                         </DropdownMenu>
                     )}
+                    {showAdminLink && <NavLink {...adminPage} />}
                 </div>
 
                 {/* User Menu (Desktop) */}

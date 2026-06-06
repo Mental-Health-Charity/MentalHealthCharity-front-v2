@@ -8,7 +8,9 @@
             "logout": "Logout",
             "articles": "Articles",
             "donations": "Donations",
-            "trainings": "Trainings"
+            "trainings": "Trainings",
+            "availability": "Availability",
+            "volunteer_area": "Volunteer"
         },
         "search": "Search...",
         "edit": "Edit",
