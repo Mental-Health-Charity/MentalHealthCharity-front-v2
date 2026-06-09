@@ -203,6 +203,9 @@ export const url = {
         settings: `${baseUrl}/api/v1/matching/admin/settings`,
         run: `${baseUrl}/api/v1/matching/admin/run`,
         manualPair: `${baseUrl}/api/v1/matching/admin/manual-pair`,
+        queueForm({ id }: FormOptions) {
+            return `${baseUrl}/api/v1/matching/admin/forms/${id}/queue`;
+        },
         myState: `${baseUrl}/api/v1/matching/me/state`,
         rematchDecision: `${baseUrl}/api/v1/matching/me/rematch-decision`,
         updateUserAutomationExclusion({ id }: ReadUserByIdOptions) {

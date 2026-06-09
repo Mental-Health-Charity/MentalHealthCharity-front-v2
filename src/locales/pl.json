@@ -440,6 +440,11 @@
     },
     "matching": {
         "manual_pairing_created": "Czat utworzony ręcznie",
+        "matching_status": "Parowanie",
+        "move_form_to_queue": "Przenieś do sparowania",
+        "move_form_to_queue_success": "Formularz przeniesiono do kolejki parowania",
+        "in_matching_queue": "W kolejce parowania",
+        "not_queued": "Nieprzeniesiony",
         "auto_pairing_created": "Czat utworzony automatycznie"
     },
     "users": {

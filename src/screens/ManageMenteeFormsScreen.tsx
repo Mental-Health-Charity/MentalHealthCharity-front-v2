@@ -1,21 +1,25 @@
 import { Button } from "@/components/ui/button";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Filter } from "lucide-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import FormsTable from "../modules/forms/components/FormsTable/index.tsx";
+import MenteeFormsTable from "../modules/forms/components/MenteeFormsTable";
 import { translatedFormStatus, translateFormSorting } from "../modules/forms/constants";
 import { getFormsInfiniteQueryOptions } from "../modules/forms/queries/getFormsQueryOptions";
-import { formNoteFields, formSorting, formStatus, formTypes } from "../modules/forms/types";
+import queueMenteeFormMutation from "../modules/forms/queries/queueMenteeFormMutation";
+import { formSorting, formStatus, formTypes } from "../modules/forms/types";
 import AdminLayout from "../modules/shared/components/AdminLayout";
 import SimpleCard from "../modules/shared/components/SimpleCard";
 
 const ManageMenteeFormsScreen = () => {
     const { t } = useTranslation();
+    const queryClient = useQueryClient();
     const [status, setStatus] = useState<formStatus>(formStatus.WAITED);
     const [sort, setSort] = useState<formSorting>(formSorting.NEWEST);
+    const [queueingFormId, setQueueingFormId] = useState<number | null>(null);
 
-    const { data, isLoading, isError, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
+    const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
         getFormsInfiniteQueryOptions({
             form_status: status,
             form_type: formTypes.MENTEE,
@@ -26,6 +30,25 @@ const ManageMenteeFormsScreen = () => {
 
     const forms = data?.pages.flatMap((page) => page.items) ?? [];
     const totalForms = data?.pages[0]?.total ?? 0;
+    const { mutate: queueForm } = useMutation({
+        mutationFn: queueMenteeFormMutation,
+        onMutate: ({ id }) => {
+            setQueueingFormId(id);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["forms-infinite"] });
+            queryClient.invalidateQueries({ queryKey: ["forms"] });
+            queryClient.invalidateQueries({ queryKey: ["matching"] });
+            toast.success(
+                t("matching.move_form_to_queue_success", {
+                    defaultValue: "Formularz przeniesiono do kolejki parowania",
+                })
+            );
+        },
+        onSettled: () => {
+            setQueueingFormId(null);
+        },
+    });
 
     return (
         <AdminLayout>
@@ -57,16 +80,15 @@ const ManageMenteeFormsScreen = () => {
             </div>
             <div className="w-full min-w-0">
                 <div className="w-full max-w-full overflow-x-auto overflow-y-hidden">
-                    <FormsTable
-                        onRefetch={refetch}
+                    <MenteeFormsTable
                         data={forms}
                         total={totalForms}
                         hasNextPage={Boolean(hasNextPage)}
                         isFetchingNextPage={isFetchingNextPage}
                         isInitialLoading={isLoading}
                         loadMore={fetchNextPage}
-                        formNoteKeys={[formNoteFields.NOTE]}
-                        renderStepAddnotation={(id: number) => t(`manage_volunteer_mentee.steps.${id - 1}`)}
+                        queueingFormId={queueingFormId}
+                        onQueueForm={(form) => queueForm({ id: form.id })}
                     />
                 </div>
             </div>

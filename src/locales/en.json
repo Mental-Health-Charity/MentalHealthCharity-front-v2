@@ -209,6 +209,11 @@
     },
     "matching": {
         "manual_pairing_created": "Chat created manually",
+        "matching_status": "Matching",
+        "move_form_to_queue": "Move to matching",
+        "move_form_to_queue_success": "Form moved to the matching queue",
+        "in_matching_queue": "In matching queue",
+        "not_queued": "Not moved",
         "auto_pairing_created": "Chat created automatically"
     },
     "crisis": {

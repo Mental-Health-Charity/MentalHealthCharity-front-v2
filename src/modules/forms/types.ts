@@ -1,4 +1,5 @@
 import { User } from "../auth/types";
+import { MenteeMatchingState } from "../matching/types";
 
 export interface FormOptions {
     id: number;
@@ -101,6 +102,7 @@ export interface FormResponse<T> {
     fields: T;
     form_status: formStatus;
     notes: FormNote;
+    matching_state?: MenteeMatchingState | null;
     form_type: {
         form_type: formTypes;
         id: number;
