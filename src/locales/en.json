@@ -214,6 +214,15 @@
         "move_form_to_queue_success": "Form moved to the matching queue",
         "in_matching_queue": "In matching queue",
         "not_queued": "Not moved",
+        "view_form": "View form",
+        "no_form_available": "No form",
+        "form_preview_title": "Application form",
+        "form_preview_description": "Preview of the form linked to the person in crisis.",
+        "form_preview_error": "Could not load the form.",
+        "restore_to_queue_confirm_title": "Restore this person to the queue?",
+        "restore_to_queue_description": "The person will return to the matching queue and can be connected with a volunteer again.",
+        "mark_support_closed_confirm_title": "Close support for this person?",
+        "mark_support_closed_description": "The person will not return to the matching queue. This case will be marked as closed.",
         "auto_pairing_created": "Chat created automatically"
     },
     "crisis": {

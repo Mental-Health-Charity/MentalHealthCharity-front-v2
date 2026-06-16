@@ -60,8 +60,8 @@ const EditUserModal = ({ onClose, open, user, onSubmit }: Props) => {
                         {step === 0 && (
                             <>
                                 <div className="space-y-1.5">
-                                    <Label>{t("users.id")}</Label>
-                                    <Input disabled value={user.id} />
+                                    <Label>{t("users.email")}</Label>
+                                    <Input disabled value={user.email} />
                                 </div>
                                 <div className="space-y-1.5">
                                     <Label htmlFor="full_name">{t("users.full_name")}</Label>
@@ -101,10 +101,6 @@ const EditUserModal = ({ onClose, open, user, onSubmit }: Props) => {
                                     {touched.user_role && errors.user_role && (
                                         <p className="text-destructive text-sm">{errors.user_role}</p>
                                     )}
-                                </div>
-                                <div className="space-y-1.5">
-                                    <Label>{t("users.email")}</Label>
-                                    <Input disabled value={user.email} />
                                 </div>
                                 <label className="border-border bg-muted/30 flex cursor-pointer items-start gap-3 rounded-lg border p-3">
                                     <Checkbox

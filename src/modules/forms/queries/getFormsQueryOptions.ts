@@ -3,7 +3,7 @@ import { url } from "../../../api";
 import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
 import handleApiError from "../../shared/helpers/handleApiError";
 import { Pagination } from "../../shared/types";
-import { formTypes, FormResponse, MenteeForm, ReadAllFormOptions, VolunteerForm } from "../types";
+import { formTypes, FormOptions, FormResponse, MenteeForm, ReadAllFormOptions, VolunteerForm } from "../types";
 
 type FormTypeByCode<T extends formTypes> = T extends formTypes.MENTEE
     ? Pagination<FormResponse<MenteeForm>>
@@ -35,6 +35,28 @@ export const fetchForms = async (
         throw error;
     }
 };
+
+export const fetchFormById = async ({ id }: FormOptions): Promise<FormResponse<VolunteerForm | MenteeForm>> => {
+    const response = await fetch(url.form.readById({ id }), {
+        method: "GET",
+        headers: getAuthHeaders(),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        await handleApiError(data);
+        throw new Error("Failed to fetch form");
+    }
+
+    return data;
+};
+
+export const getFormByIdQueryOptions = (options: FormOptions) =>
+    queryOptions<FormResponse<VolunteerForm | MenteeForm>>({
+        queryKey: ["forms", "detail", options.id],
+        queryFn: () => fetchFormById(options),
+    });
 
 export const getFormsQueryOptions = <T extends formTypes>(options: ReadAllFormOptions & { form_type: T }) =>
     queryOptions<FormTypeByCode<T>>({

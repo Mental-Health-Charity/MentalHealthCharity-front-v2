@@ -445,6 +445,15 @@
         "move_form_to_queue_success": "Formularz przeniesiono do kolejki parowania",
         "in_matching_queue": "W kolejce parowania",
         "not_queued": "Nieprzeniesiony",
+        "view_form": "Zobacz formularz",
+        "no_form_available": "Brak formularza",
+        "form_preview_title": "Formularz zgłoszenia",
+        "form_preview_description": "Podgląd formularza powiązanego z osobą w kryzysie.",
+        "form_preview_error": "Nie udało się pobrać formularza.",
+        "restore_to_queue_confirm_title": "Przywrócić osobę do kolejki?",
+        "restore_to_queue_description": "Osoba wróci do kolejki parowania i może zostać ponownie połączona z wolontariuszem.",
+        "mark_support_closed_confirm_title": "Zakończyć obsługę tej osoby?",
+        "mark_support_closed_description": "Osoba nie wróci do kolejki parowania. Przypadek zostanie oznaczony jako zakończony.",
         "auto_pairing_created": "Czat utworzony automatycznie"
     },
     "users": {

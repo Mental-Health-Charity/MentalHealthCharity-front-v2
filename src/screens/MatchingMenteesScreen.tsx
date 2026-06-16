@@ -1,14 +1,26 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CircleOff, Clock, Loader2, MessageCircle, RotateCw, UserCheck, UserPlus, UserX, Users } from "lucide-react";
+import {
+    CircleOff,
+    Clock,
+    FileText,
+    Loader2,
+    MessageCircle,
+    RotateCw,
+    UserCog,
+    UserCheck,
+    UserPlus,
+    Users,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { useUser } from "../modules/auth/components/AuthProvider";
+import { User } from "../modules/auth/types";
+import MenteeFormPreviewModal from "../modules/forms/components/MenteeFormPreviewModal";
 import ManualPairModal from "../modules/matching/components/ManualPairModal";
 import adminRematchDecisionMutation from "../modules/matching/queries/adminRematchDecisionMutation";
 import manualPairMutation from "../modules/matching/queries/manualPairMutation";
@@ -17,12 +29,13 @@ import {
     pausedMenteesQueryOptions,
     waitingMenteesQueryOptions,
 } from "../modules/matching/queries/menteeMatchingQueryOptions";
-import updateUserAutomationExclusionMutation from "../modules/matching/queries/updateUserAutomationExclusionMutation";
 import { volunteerCapacityQueryOptions } from "../modules/matching/queries/volunteerCapacityQueryOptions";
 import { MenteeMatchingItem, MenteeMatchingStatus } from "../modules/matching/types";
 import AdminLayout from "../modules/shared/components/AdminLayout";
+import Modal from "../modules/shared/components/Modal";
 import formatDate from "../modules/shared/helpers/formatDate";
-import { Roles } from "../modules/users/constants";
+import EditUserModal from "../modules/users/components/EditUserModal";
+import editUserAsAdminMutation from "../modules/users/queries/editUserAsAdminMutation";
 
 type ViewMode = "waiting" | "matched" | "paused";
 
@@ -38,10 +51,14 @@ const statusClassName: Record<MenteeMatchingStatus, string> = {
 const MatchingMenteesScreen = () => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
-    const { user: currentUser } = useUser();
     const [viewMode, setViewMode] = useState<ViewMode>("waiting");
     const [selectedMentee, setSelectedMentee] = useState<MenteeMatchingItem | null>(null);
-    const canManageAutomationExclusion = currentUser?.user_role === Roles.ADMIN;
+    const [userToEdit, setUserToEdit] = useState<User | null>(null);
+    const [previewFormId, setPreviewFormId] = useState<number | null>(null);
+    const [pausedDecision, setPausedDecision] = useState<{
+        item: MenteeMatchingItem;
+        wantsRematch: boolean;
+    } | null>(null);
 
     const waitingQuery = useQuery(waitingMenteesQueryOptions());
     const matchedQuery = useQuery(matchedMenteesQueryOptions());
@@ -67,25 +84,19 @@ const MatchingMenteesScreen = () => {
             );
         },
     });
-    const { mutate: updateAutomationExclusion, isPending: isAutomationExclusionPending } = useMutation({
-        mutationFn: updateUserAutomationExclusionMutation,
-        onSuccess: (updatedUser) => {
+    const { mutate: editUserAsAdmin } = useMutation({
+        mutationFn: editUserAsAdminMutation,
+        onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["matching"] });
             queryClient.invalidateQueries({ queryKey: ["forms"] });
-            toast.success(
-                updatedUser.excluded_from_automation
-                    ? t("matching.automation_exclusion_enabled_success", {
-                          defaultValue: "Konto zostało wykluczone z automatycznego parowania",
-                      })
-                    : t("matching.automation_exclusion_disabled_success", {
-                          defaultValue: "Konto wróciło do automatycznego parowania",
-                      })
-            );
+            queryClient.invalidateQueries({ queryKey: ["users"] });
+            toast.success(t("common.success"));
         },
     });
     const { mutate: adminRematchDecision, isPending: isAdminRematchDecisionPending } = useMutation({
         mutationFn: adminRematchDecisionMutation,
         onSuccess: (_state, variables) => {
+            setPausedDecision(null);
             queryClient.invalidateQueries({ queryKey: ["matching"] });
             toast.success(
                 variables.wants_rematch
@@ -98,6 +109,17 @@ const MatchingMenteesScreen = () => {
             );
         },
     });
+
+    const confirmPausedDecision = () => {
+        if (!pausedDecision) {
+            return;
+        }
+
+        adminRematchDecision({
+            userId: pausedDecision.item.user.id,
+            wants_rematch: pausedDecision.wantsRematch,
+        });
+    };
 
     const activeQuery = viewMode === "waiting" ? waitingQuery : viewMode === "matched" ? matchedQuery : pausedQuery;
     const items = useMemo(() => activeQuery.data ?? [], [activeQuery.data]);
@@ -135,13 +157,12 @@ const MatchingMenteesScreen = () => {
                 !state.excluded_from_automation &&
                 [MenteeMatchingStatus.WAITING, MenteeMatchingStatus.REMATCH_REQUESTED].includes(state.status);
             const canResolvePaused = viewMode === "paused" && state.status === MenteeMatchingStatus.PAUSED;
-            const isUpdatingAutomationExclusion = isAutomationExclusionPending;
             const isResolvingPaused = isAdminRematchDecisionPending;
-            const hasVisibleActions = canManualPair || canResolvePaused || canManageAutomationExclusion;
             const isManualRematch =
                 state.status === MenteeMatchingStatus.REMATCH_REQUESTED &&
                 !state.auto_matching_enabled &&
                 !state.excluded_from_automation;
+            const canPreviewForm = Boolean(state.help_form_id);
             const automationBadge = state.excluded_from_automation
                 ? {
                       variant: "destructive" as const,
@@ -184,23 +205,39 @@ const MatchingMenteesScreen = () => {
                     <TableCell>{formatDate(state.queued_at)}</TableCell>
                     <TableCell>{state.matched_at ? formatDate(state.matched_at) : "-"}</TableCell>
                     <TableCell>
-                        {state.current_chat_id ? (
-                            <Link
-                                to={`/chat/${state.current_chat_id}`}
-                                className="hover:bg-muted inline-flex h-8 items-center gap-1 rounded-md px-3 text-sm font-medium no-underline"
-                            >
-                                <MessageCircle className="size-4" />
-                                {t("chat.go_to_chat")}
-                            </Link>
-                        ) : (
-                            <span className="text-muted-foreground">-</span>
-                        )}
-                    </TableCell>
-                    <TableCell>
                         <Badge variant={automationBadge.variant}>{automationBadge.label}</Badge>
                     </TableCell>
                     <TableCell>
                         <div className="flex flex-wrap items-center gap-2">
+                            {state.current_chat_id && (
+                                <Link
+                                    to={`/chat/${state.current_chat_id}`}
+                                    className={cn(buttonVariants({ variant: "default", size: "sm" }), "no-underline")}
+                                >
+                                    <MessageCircle className="size-4" />
+                                    {t("chat.go_to_chat")}
+                                </Link>
+                            )}
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => state.help_form_id && setPreviewFormId(state.help_form_id)}
+                                disabled={!canPreviewForm}
+                                title={
+                                    canPreviewForm
+                                        ? t("matching.view_form", { defaultValue: "Zobacz formularz" })
+                                        : t("matching.no_form_available", { defaultValue: "Brak formularza" })
+                                }
+                            >
+                                <FileText className="size-4" />
+                                {canPreviewForm
+                                    ? t("matching.view_form", { defaultValue: "Zobacz formularz" })
+                                    : t("matching.no_form_available", { defaultValue: "Brak formularza" })}
+                            </Button>
+                            <Button size="sm" variant="outline" onClick={() => setUserToEdit(user)}>
+                                <UserCog className="size-4" />
+                                {t("users.edit_user", { defaultValue: "Edytuj użytkownika" })}
+                            </Button>
                             {canManualPair && (
                                 <Button
                                     size="sm"
@@ -219,13 +256,12 @@ const MatchingMenteesScreen = () => {
                                     <Button
                                         size="sm"
                                         variant="outline"
-                                        onClick={() =>
-                                            adminRematchDecision({
-                                                userId: user.id,
-                                                wants_rematch: true,
-                                            })
-                                        }
+                                        onClick={() => setPausedDecision({ item, wantsRematch: true })}
                                         disabled={isResolvingPaused}
+                                        title={t("matching.restore_to_queue_description", {
+                                            defaultValue:
+                                                "Osoba wróci do kolejki parowania i może zostać ponownie połączona z wolontariuszem.",
+                                        })}
                                     >
                                         {isResolvingPaused ? (
                                             <Loader2 className="size-4 animate-spin" />
@@ -237,13 +273,12 @@ const MatchingMenteesScreen = () => {
                                     <Button
                                         size="sm"
                                         variant="ghost"
-                                        onClick={() =>
-                                            adminRematchDecision({
-                                                userId: user.id,
-                                                wants_rematch: false,
-                                            })
-                                        }
+                                        onClick={() => setPausedDecision({ item, wantsRematch: false })}
                                         disabled={isResolvingPaused}
+                                        title={t("matching.mark_support_closed_description", {
+                                            defaultValue:
+                                                "Osoba nie wróci do kolejki parowania. Przypadek zostanie oznaczony jako zakończony.",
+                                        })}
                                     >
                                         {isResolvingPaused ? (
                                             <Loader2 className="size-4 animate-spin" />
@@ -254,29 +289,6 @@ const MatchingMenteesScreen = () => {
                                     </Button>
                                 </>
                             )}
-                            {canManageAutomationExclusion && (
-                                <Button
-                                    size="sm"
-                                    variant={state.excluded_from_automation ? "outline" : "destructive"}
-                                    onClick={() =>
-                                        updateAutomationExclusion({
-                                            userId: user.id,
-                                            excluded_from_automation: !state.excluded_from_automation,
-                                        })
-                                    }
-                                    disabled={isUpdatingAutomationExclusion}
-                                >
-                                    {isUpdatingAutomationExclusion ? (
-                                        <Loader2 className="size-4 animate-spin" />
-                                    ) : (
-                                        <UserX className="size-4" />
-                                    )}
-                                    {state.excluded_from_automation
-                                        ? t("matching.include_in_automation", { defaultValue: "Przywróć" })
-                                        : t("matching.exclude_from_automation", { defaultValue: "Wyklucz" })}
-                                </Button>
-                            )}
-                            {!hasVisibleActions && <span className="text-muted-foreground">-</span>}
                         </div>
                     </TableCell>
                 </TableRow>
@@ -348,7 +360,6 @@ const MatchingMenteesScreen = () => {
                                 <TableHead>{t("common.status", { defaultValue: "Status" })}</TableHead>
                                 <TableHead>{t("matching.queued_at", { defaultValue: "W kolejce od" })}</TableHead>
                                 <TableHead>{t("matching.matched_at", { defaultValue: "Sparowany od" })}</TableHead>
-                                <TableHead>{t("chat.chat", { defaultValue: "Czat" })}</TableHead>
                                 <TableHead>{t("matching.automation", { defaultValue: "Automatyzacja" })}</TableHead>
                                 <TableHead>{t("common.actions", { defaultValue: "Akcje" })}</TableHead>
                             </TableRow>
@@ -356,7 +367,7 @@ const MatchingMenteesScreen = () => {
                         <TableBody>
                             {activeQuery.isLoading ? (
                                 <TableRow>
-                                    <TableCell colSpan={8} className="text-muted-foreground h-24 text-center">
+                                    <TableCell colSpan={7} className="text-muted-foreground h-24 text-center">
                                         {t("common.loading", { defaultValue: "Ladowanie..." })}
                                     </TableCell>
                                 </TableRow>
@@ -364,7 +375,7 @@ const MatchingMenteesScreen = () => {
                                 renderRows(items)
                             ) : (
                                 <TableRow>
-                                    <TableCell colSpan={8} className="text-muted-foreground h-24 text-center">
+                                    <TableCell colSpan={7} className="text-muted-foreground h-24 text-center">
                                         {emptyStateText}
                                     </TableCell>
                                 </TableRow>
@@ -395,6 +406,90 @@ const MatchingMenteesScreen = () => {
                         })
                     }
                 />
+            )}
+
+            <MenteeFormPreviewModal
+                open={Boolean(previewFormId)}
+                formId={previewFormId}
+                onClose={() => setPreviewFormId(null)}
+            />
+
+            {userToEdit && (
+                <EditUserModal
+                    open={Boolean(userToEdit)}
+                    user={userToEdit}
+                    onClose={() => setUserToEdit(null)}
+                    onSubmit={(values) =>
+                        editUserAsAdmin({
+                            id: userToEdit.id,
+                            payload: values,
+                        })
+                    }
+                />
+            )}
+
+            {pausedDecision && (
+                <Modal
+                    open={Boolean(pausedDecision)}
+                    onClose={() => {
+                        if (!isAdminRematchDecisionPending) {
+                            setPausedDecision(null);
+                        }
+                    }}
+                    title={
+                        pausedDecision.wantsRematch
+                            ? t("matching.restore_to_queue_confirm_title", {
+                                  defaultValue: "Przywrócić osobę do kolejki?",
+                              })
+                            : t("matching.mark_support_closed_confirm_title", {
+                                  defaultValue: "Zakończyć obsługę tej osoby?",
+                              })
+                    }
+                    className="sm:max-w-xl"
+                >
+                    <div className="flex flex-col gap-4">
+                        <div className="border-border bg-muted/30 rounded-lg border p-3">
+                            <p className="text-foreground text-sm font-medium">
+                                {pausedDecision.item.user.full_name || pausedDecision.item.user.email}
+                            </p>
+                            <p className="text-muted-foreground text-xs">{pausedDecision.item.user.email}</p>
+                        </div>
+
+                        <p className="text-muted-foreground text-sm leading-relaxed">
+                            {pausedDecision.wantsRematch
+                                ? t("matching.restore_to_queue_description", {
+                                      defaultValue:
+                                          "Osoba wróci do kolejki parowania i może zostać ponownie połączona z wolontariuszem.",
+                                  })
+                                : t("matching.mark_support_closed_description", {
+                                      defaultValue:
+                                          "Osoba nie wróci do kolejki parowania. Przypadek zostanie oznaczony jako zakończony.",
+                                  })}
+                        </p>
+
+                        <div className="flex justify-end gap-2">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => setPausedDecision(null)}
+                                disabled={isAdminRematchDecisionPending}
+                            >
+                                {t("common.cancel", { defaultValue: "Anuluj" })}
+                            </Button>
+                            <Button
+                                type="button"
+                                variant={pausedDecision.wantsRematch ? "default" : "destructive"}
+                                onClick={confirmPausedDecision}
+                                disabled={isAdminRematchDecisionPending}
+                            >
+                                {isAdminRematchDecisionPending && <Loader2 className="size-4 animate-spin" />}
+                                {pausedDecision.wantsRematch
+                                    ? t("matching.restore_to_queue", { defaultValue: "Przywróć do kolejki" })
+                                    : t("matching.mark_support_closed", { defaultValue: "Zakończ obsługę" })}
+                            </Button>
+                        </div>
+                    </div>
+                </Modal>
             )}
         </AdminLayout>
     );

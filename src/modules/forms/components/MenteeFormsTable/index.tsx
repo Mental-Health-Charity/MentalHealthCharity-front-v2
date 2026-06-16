@@ -2,11 +2,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Loader2, MoveRight } from "lucide-react";
+import { FileText, Loader2, MoveRight } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { translatedRoles, Roles } from "../../../users/constants";
 import formatDate from "../../../shared/helpers/formatDate";
 import { formStatus, FormResponse, formTypes, MenteeForm } from "../../types";
+import MenteeFormPreviewModal from "../MenteeFormPreviewModal";
 
 interface Props {
     data: FormResponse<MenteeForm>[];
@@ -30,6 +32,7 @@ const MenteeFormsTable = ({
     queueingFormId,
 }: Props) => {
     const { t } = useTranslation();
+    const [previewForm, setPreviewForm] = useState<FormResponse<MenteeForm> | null>(null);
 
     if (isInitialLoading && data.length === 0) {
         return (
@@ -100,25 +103,29 @@ const MenteeFormsTable = ({
                                         )}
                                     </TableCell>
                                     <TableCell>
-                                        {canQueue ? (
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
-                                                onClick={() => onQueueForm(form)}
-                                                disabled={isQueueing}
-                                            >
-                                                {isQueueing ? (
-                                                    <Loader2 className="size-4 animate-spin" />
-                                                ) : (
-                                                    <MoveRight className="size-4" />
-                                                )}
-                                                {t("matching.move_form_to_queue", {
-                                                    defaultValue: "Przenieś do sparowania",
-                                                })}
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <Button size="sm" variant="outline" onClick={() => setPreviewForm(form)}>
+                                                <FileText className="size-4" />
+                                                {t("matching.view_form", { defaultValue: "Zobacz formularz" })}
                                             </Button>
-                                        ) : (
-                                            <span className="text-muted-foreground text-sm">-</span>
-                                        )}
+                                            {canQueue && (
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    onClick={() => onQueueForm(form)}
+                                                    disabled={isQueueing}
+                                                >
+                                                    {isQueueing ? (
+                                                        <Loader2 className="size-4 animate-spin" />
+                                                    ) : (
+                                                        <MoveRight className="size-4" />
+                                                    )}
+                                                    {t("matching.move_form_to_queue", {
+                                                        defaultValue: "Przenieś do sparowania",
+                                                    })}
+                                                </Button>
+                                            )}
+                                        </div>
                                     </TableCell>
                                 </TableRow>
                             );
@@ -142,6 +149,12 @@ const MenteeFormsTable = ({
                     </Button>
                 )}
             </div>
+            <MenteeFormPreviewModal
+                open={Boolean(previewForm)}
+                form={previewForm}
+                formId={previewForm?.id ?? null}
+                onClose={() => setPreviewForm(null)}
+            />
         </div>
     );
 };
