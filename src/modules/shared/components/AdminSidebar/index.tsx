@@ -250,7 +250,7 @@ export const AdminSidebar = ({ handleToggle, open }: Props) => {
             ) : (
                 <aside
                     aria-label="Admin navigation"
-                    className="bg-sidebar text-sidebar-foreground shrink-0 overflow-y-auto"
+                    className="bg-sidebar text-sidebar-foreground sticky top-0 h-screen shrink-0 overflow-y-auto"
                     style={{ width: drawerWidth }}
                 >
                     {sidebarContent}
