@@ -8,6 +8,7 @@ import {
     ClipboardList,
     FileText,
     Flag,
+    History,
     LayoutDashboard,
     Menu,
     MessageCircle,
@@ -85,6 +86,12 @@ export const AdminSidebar = ({ handleToggle, open }: Props) => {
                     text: t("admin.sidebar.matching_alerts", { defaultValue: "Alerty parowania" }),
                     icon: <Bell className="size-5" />,
                     to: "/admin/matching/alerts",
+                    permissions: Permissions.MANAGE_CHATS,
+                },
+                {
+                    text: t("admin.sidebar.matching_history", { defaultValue: "Historia obsługi" }),
+                    icon: <History className="size-5" />,
+                    to: "/admin/matching/history",
                     permissions: Permissions.MANAGE_CHATS,
                 },
                 {

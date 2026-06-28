@@ -19,6 +19,7 @@ const ManageArticlesScreen = React.lazy(() => import("../../screens/ManageArticl
 const ManageMenteeFormsScreen = React.lazy(() => import("../../screens/ManageMenteeFormsScreen"));
 const MatchingAlertsScreen = React.lazy(() => import("../../screens/MatchingAlertsScreen"));
 const MatchingMenteesScreen = React.lazy(() => import("../../screens/MatchingMenteesScreen"));
+const MatchingUserHistoryScreen = React.lazy(() => import("../../screens/MatchingUserHistoryScreen"));
 const MatchingVolunteersScreen = React.lazy(() => import("../../screens/MatchingVolunteersScreen"));
 const ManageVolunteerFormsScreen = React.lazy(() => import("../../screens/ManageVolunteerFormsScreen"));
 const MenteeFormScreen = React.lazy(() => import("../../screens/MenteeFormScreen"));
@@ -175,6 +176,12 @@ const routes: RouteType[] = [
     {
         url: "/admin/matching/alerts",
         onRender: <MatchingAlertsScreen />,
+        requiresAuth: true,
+        permission: Permissions.MANAGE_CHATS,
+    },
+    {
+        url: "/admin/matching/history",
+        onRender: <MatchingUserHistoryScreen />,
         requiresAuth: true,
         permission: Permissions.MANAGE_CHATS,
     },

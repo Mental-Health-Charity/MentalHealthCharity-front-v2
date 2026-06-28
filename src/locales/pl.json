@@ -454,7 +454,29 @@
         "restore_to_queue_description": "Osoba wróci do kolejki parowania i może zostać ponownie połączona z wolontariuszem.",
         "mark_support_closed_confirm_title": "Zakończyć obsługę tej osoby?",
         "mark_support_closed_description": "Osoba nie wróci do kolejki parowania. Przypadek zostanie oznaczony jako zakończony.",
-        "auto_pairing_created": "Czat utworzony automatycznie"
+        "auto_pairing_created": "Czat utworzony automatycznie",
+        "user_history_title": "Historia obsługi",
+        "user_history_subtitle": "Wyszukaj osobę w kryzysie po imieniu, nazwisku albo emailu i sprawdź przebieg obsługi.",
+        "user_history_email_placeholder": "adres@email.pl",
+        "user_history_not_found": "Nie znaleziono wybranej osoby.",
+        "user_history_wrong_role": "Historia obsługi jest dostępna tylko dla osób w kryzysie.",
+        "user_history_no_events": "Brak historii operacyjnej dla tej osoby.",
+        "latest_form": "Formularz",
+        "latest_chat": "Czat",
+        "latest_volunteer": "Wolontariusz",
+        "chat_closed_at": "Zamknięcie czatu",
+        "source": "Źródło",
+        "form": "Formularz",
+        "chat": "Czat",
+        "volunteer": "Wolontariusz",
+        "actor": "Wykonał",
+        "timeline_source": {
+            "automatic": "Automatyczne",
+            "manual": "Ręczne",
+            "mail": "Mail",
+            "error": "Błąd",
+            "system": "System"
+        }
     },
     "users": {
         "edit_modal_title": "Edytuj użytkownika",
@@ -591,6 +613,7 @@
             "volunteer_forms": "Formularze wolontariuszy",
             "reports": "Zgłoszenia",
             "chats": "Czaty",
+            "matching_history": "Historia obsługi",
             "back": "Powrót",
             "sections": {
                 "overview": "Przegląd",

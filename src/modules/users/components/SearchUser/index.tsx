@@ -18,9 +18,18 @@ interface Props {
     allowedRoles?: Roles[];
     value?: User;
     disabled?: boolean;
+    hideRoleFilter?: boolean;
 }
 
-const SearchUser = ({ onChange, value, onChangeSearchQuery, onChangeRole, allowedRoles, disabled }: Props) => {
+const SearchUser = ({
+    onChange,
+    value,
+    onChangeSearchQuery,
+    onChangeRole,
+    allowedRoles,
+    disabled,
+    hideRoleFilter,
+}: Props) => {
     const roleOptions = allowedRoles ?? Object.values(Roles);
     const [role, setRole] = useState<Roles | undefined>(allowedRoles?.[0]);
     const [username, setUsername] = useState<string>("");
@@ -144,34 +153,36 @@ const SearchUser = ({ onChange, value, onChangeSearchQuery, onChangeRole, allowe
                 )}
             </div>
 
-            <div className="min-w-[120px]">
-                <Label htmlFor="role-filter">{t("search_user.role_label", "Role")}</Label>
-                <div className="relative my-2">
-                    <select
-                        id="role-filter"
-                        disabled={disabled || allowedRoles?.length === 1}
-                        value={role || ""}
-                        onChange={(e) => {
-                            const selectedRole = e.target.value === "" ? undefined : (e.target.value as Roles);
-                            setRole(selectedRole);
-                            onChangeRole?.(selectedRole);
-                        }}
-                        className="border-input bg-paper text-foreground focus-visible:border-ring focus-visible:ring-ring/50 h-10 w-full appearance-none rounded-lg border px-2.5 py-1 pr-8 text-sm outline-none focus-visible:ring-3 disabled:opacity-50"
-                    >
-                        {!allowedRoles && (
-                            <option className="bg-paper text-foreground" value="">
-                                {t("search_user.any_role", "Każda rola")}
-                            </option>
-                        )}
-                        {roleOptions.map((r) => (
-                            <option className="bg-paper text-foreground" key={r} value={r}>
-                                {r}
-                            </option>
-                        ))}
-                    </select>
-                    <ChevronDown className="text-muted-foreground pointer-events-none absolute top-1/2 right-2 size-4 -translate-y-1/2" />
+            {!hideRoleFilter && (
+                <div className="min-w-[120px]">
+                    <Label htmlFor="role-filter">{t("search_user.role_label", "Role")}</Label>
+                    <div className="relative my-2">
+                        <select
+                            id="role-filter"
+                            disabled={disabled || allowedRoles?.length === 1}
+                            value={role || ""}
+                            onChange={(e) => {
+                                const selectedRole = e.target.value === "" ? undefined : (e.target.value as Roles);
+                                setRole(selectedRole);
+                                onChangeRole?.(selectedRole);
+                            }}
+                            className="border-input bg-paper text-foreground focus-visible:border-ring focus-visible:ring-ring/50 h-10 w-full appearance-none rounded-lg border px-2.5 py-1 pr-8 text-sm outline-none focus-visible:ring-3 disabled:opacity-50"
+                        >
+                            {!allowedRoles && (
+                                <option className="bg-paper text-foreground" value="">
+                                    {t("search_user.any_role", "Każda rola")}
+                                </option>
+                            )}
+                            {roleOptions.map((r) => (
+                                <option className="bg-paper text-foreground" key={r} value={r}>
+                                    {r}
+                                </option>
+                            ))}
+                        </select>
+                        <ChevronDown className="text-muted-foreground pointer-events-none absolute top-1/2 right-2 size-4 -translate-y-1/2" />
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 };

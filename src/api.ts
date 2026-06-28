@@ -21,6 +21,7 @@ import {
     SearchChatQueryOptions,
 } from "./modules/chat/types";
 import { CanUserSendFormOptions, FormOptions, ReadAllFormOptions } from "./modules/forms/types";
+import { UserTimelineOptions } from "./modules/matching/types";
 import { ChangeReportStatusPayload } from "./modules/report/types";
 import {
     PublicProfileOptions,
@@ -213,6 +214,10 @@ export const url = {
         },
         adminRematchDecision({ id }: ReadUserByIdOptions) {
             return `${baseUrl}/api/v1/matching/admin/users/${id}/rematch-decision`;
+        },
+        userTimeline(options: UserTimelineOptions) {
+            const query = buildQuery(options);
+            return `${baseUrl}/api/v1/matching/admin/user-timeline?${query}`;
         },
     },
     form: {

@@ -70,6 +70,75 @@ export interface AdminAlert {
     created_at: string;
 }
 
+export enum AutomationEventType {
+    FORM_SUBMITTED = "FORM_SUBMITTED",
+    FORM_QUEUED = "FORM_QUEUED",
+    AVAILABILITY_UPDATED = "AVAILABILITY_UPDATED",
+    CHAT_CREATED = "CHAT_CREATED",
+    NO_CAPACITY = "NO_CAPACITY",
+    REMATCH_REQUESTED = "REMATCH_REQUESTED",
+    REMATCH_DECISION = "REMATCH_DECISION",
+    MANUAL_PAIRING = "MANUAL_PAIRING",
+    VOLUNTEER_REMOVED = "VOLUNTEER_REMOVED",
+    CHAT_CLOSED = "CHAT_CLOSED",
+    AUTOMATION_EXCLUSION_UPDATED = "AUTOMATION_EXCLUSION_UPDATED",
+    ERROR = "ERROR",
+    INFO = "INFO",
+}
+
+export interface UserTimelineOptions {
+    email?: string;
+    user_id?: number;
+}
+
+export interface UserTimelineForm {
+    id: number;
+    status: "WAITED" | "ACCEPTED" | "REJECTED";
+    current_step: number;
+    creation_date: string;
+}
+
+export interface UserTimelineChat {
+    id: number;
+    name: string | null;
+    status: "ACTIVE" | "CLOSED" | "ARCHIVED";
+    matching_mode: "AUTO" | "MANUAL";
+    creation_date: string;
+    closed_at: string | null;
+    volunteer: User | null;
+}
+
+export interface UserTimelineSummary {
+    matching_status: MenteeMatchingStatus | null;
+    latest_form: UserTimelineForm | null;
+    current_chat: UserTimelineChat | null;
+    latest_chat: UserTimelineChat | null;
+    latest_volunteer: User | null;
+    chat_created_at: string | null;
+    chat_closed_at: string | null;
+}
+
+export interface UserTimelineEvent {
+    occurred_at: string;
+    event_type: AutomationEventType;
+    label: string;
+    detail: string;
+    source: "automatic" | "manual" | "mail" | "error" | "system";
+    form_id: number | null;
+    chat_id: number | null;
+    volunteer: User | null;
+    actor: User | null;
+    metadata: Record<string, unknown> | null;
+}
+
+export interface UserTimelineResponse {
+    user: User;
+    summary: UserTimelineSummary;
+    forms: UserTimelineForm[];
+    chats: UserTimelineChat[];
+    events: UserTimelineEvent[];
+}
+
 export interface MenteeMatchingState {
     user_id: number;
     help_form_id: number | null;

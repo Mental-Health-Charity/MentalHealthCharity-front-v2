@@ -135,6 +135,7 @@
             "volunteer_forms": "Volunteer Forms",
             "reports": "Reports",
             "chats": "Chats",
+            "matching_history": "Support history",
             "back": "Back",
             "sections": {
                 "overview": "Overview",
@@ -223,7 +224,29 @@
         "restore_to_queue_description": "The person will return to the matching queue and can be connected with a volunteer again.",
         "mark_support_closed_confirm_title": "Close support for this person?",
         "mark_support_closed_description": "The person will not return to the matching queue. This case will be marked as closed.",
-        "auto_pairing_created": "Chat created automatically"
+        "auto_pairing_created": "Chat created automatically",
+        "user_history_title": "Support history",
+        "user_history_subtitle": "Search for a person in crisis by name or email and review their support path.",
+        "user_history_email_placeholder": "address@email.com",
+        "user_history_not_found": "The selected person was not found.",
+        "user_history_wrong_role": "Support history is available only for people in crisis.",
+        "user_history_no_events": "No operational history for this person.",
+        "latest_form": "Form",
+        "latest_chat": "Chat",
+        "latest_volunteer": "Volunteer",
+        "chat_closed_at": "Chat closed",
+        "source": "Source",
+        "form": "Form",
+        "chat": "Chat",
+        "volunteer": "Volunteer",
+        "actor": "Actor",
+        "timeline_source": {
+            "automatic": "Automatic",
+            "manual": "Manual",
+            "mail": "Email",
+            "error": "Error",
+            "system": "System"
+        }
     },
     "crisis": {
         "banner_text": "In crisis? Call — help is free, anonymous, and available 24/7.",
