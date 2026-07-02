@@ -45,6 +45,45 @@ interface Props {
 
 const getInitial = (user: User) => (user.full_name || user.email || "?").charAt(0).toUpperCase();
 
+const getSpecialChatLabelKey = (chatType: Chat["chat_type"]) => {
+    switch (chatType) {
+        case "SUPERVISION":
+            return "chat.type_supervision";
+        case "GROUP":
+            return "chat.type_group";
+        case "DIRECT":
+            return "chat.type_special_direct";
+        case "SUPPORT":
+            return "chat.special_chat";
+    }
+};
+
+const getSpecialChatDefaultLabel = (chatType: Chat["chat_type"]) => {
+    switch (chatType) {
+        case "SUPERVISION":
+            return "Superwizyjny";
+        case "GROUP":
+            return "Grupowy";
+        case "DIRECT":
+            return "Specjalny 1:1";
+        case "SUPPORT":
+            return "Specjalny";
+    }
+};
+
+const getSpecialChatBadgeVariant = (chatType: Chat["chat_type"]) => {
+    switch (chatType) {
+        case "SUPERVISION":
+            return "warning" as const;
+        case "GROUP":
+            return "info" as const;
+        case "DIRECT":
+            return "outline" as const;
+        case "SUPPORT":
+            return "outline" as const;
+    }
+};
+
 const InfoIcon = ({ children, label }: { children: ReactNode; label: string }) => (
     <Tooltip>
         <TooltipTrigger
@@ -154,6 +193,9 @@ const ChatManager = ({ data, onEditChat, onToggleChat, onAddParticipant, onRemov
                     const visibleParticipants = chat.participants.slice(0, 3);
                     const hiddenParticipantsCount = Math.max(chat.participants.length - visibleParticipants.length, 0);
                     const isClosed = !chat.is_active || chat.status === "CLOSED";
+                    const specialChatLabel = t(getSpecialChatLabelKey(chat.chat_type), {
+                        defaultValue: getSpecialChatDefaultLabel(chat.chat_type),
+                    });
 
                     const statusLabel = isClosed
                         ? t("common.closed", { defaultValue: "Zamknięty" })
@@ -161,22 +203,38 @@ const ChatManager = ({ data, onEditChat, onToggleChat, onAddParticipant, onRemov
 
                     const leadingIcon = isClosed ? (
                         <LockKeyhole className="text-muted-foreground size-5" />
-                    ) : chat.is_supervisor_chat ? (
+                    ) : chat.chat_type === "SUPERVISION" ? (
                         <ShieldCheck className="text-warning-brand size-5" />
+                    ) : chat.chat_type === "GROUP" ? (
+                        <Users className="text-info-brand size-5" />
+                    ) : chat.chat_type === "DIRECT" ? (
+                        <UserIcon className="text-muted-foreground size-5" />
                     ) : (
                         <MessageSquare className="text-primary-brand size-5" />
                     );
 
                     const leadingIconClassName = isClosed
                         ? "bg-muted"
-                        : chat.is_supervisor_chat
+                        : chat.chat_type === "SUPERVISION"
                           ? "bg-warning-brand/10"
-                          : "bg-primary-brand/10";
+                          : chat.chat_type === "GROUP"
+                            ? "bg-info-brand/10"
+                            : chat.chat_type === "DIRECT"
+                              ? "bg-muted"
+                              : "bg-primary-brand/10";
 
-                    const matchingModeLabel =
-                        chat.matching_mode === "MANUAL"
+                    const matchingSourceLabel =
+                        chat.matching_source === "MANUAL"
                             ? t("matching.manual_pairing_created", { defaultValue: "Czat utworzony ręcznie" })
-                            : t("matching.auto_pairing_created", { defaultValue: "Czat utworzony automatycznie" });
+                            : chat.matching_source === "AUTO"
+                              ? t("matching.auto_pairing_created", { defaultValue: "Czat utworzony automatycznie" })
+                              : null;
+                    const matchingSourceIcon =
+                        chat.matching_source === "MANUAL" ? (
+                            <MousePointerClick className="size-4" />
+                        ) : chat.matching_source === "AUTO" ? (
+                            <Route className="size-4" />
+                        ) : null;
 
                     return (
                         <article
@@ -199,9 +257,9 @@ const ChatManager = ({ data, onEditChat, onToggleChat, onAddParticipant, onRemov
                                             <h3 className="text-foreground max-w-full text-base font-semibold break-words">
                                                 {chat.name}
                                             </h3>
-                                            {chat.is_supervisor_chat && (
-                                                <Badge variant="warning">
-                                                    {t("chat.admin_chat", { defaultValue: "Superwizyjny" })}
+                                            {chat.is_special_chat && (
+                                                <Badge variant={getSpecialChatBadgeVariant(chat.chat_type)}>
+                                                    {specialChatLabel}
                                                 </Badge>
                                             )}
                                         </div>
@@ -225,13 +283,9 @@ const ChatManager = ({ data, onEditChat, onToggleChat, onAddParticipant, onRemov
 
                                         <div className="mt-3 flex flex-wrap items-center gap-2">
                                             <Badge variant={isClosed ? "outline" : "success"}>{statusLabel}</Badge>
-                                            <InfoIcon label={matchingModeLabel}>
-                                                {chat.matching_mode === "MANUAL" ? (
-                                                    <MousePointerClick className="size-4" />
-                                                ) : (
-                                                    <Route className="size-4" />
-                                                )}
-                                            </InfoIcon>
+                                            {matchingSourceLabel && matchingSourceIcon && (
+                                                <InfoIcon label={matchingSourceLabel}>{matchingSourceIcon}</InfoIcon>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

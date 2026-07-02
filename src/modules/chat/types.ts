@@ -99,8 +99,11 @@ export interface Chat {
     participants: User[];
     is_active: boolean;
     is_group_chat: boolean;
+    is_special_chat: boolean;
+    chat_type: "SUPPORT" | "SUPERVISION" | "GROUP" | "DIRECT";
     status: "ACTIVE" | "CLOSED" | "ARCHIVED";
     matching_mode: "AUTO" | "MANUAL";
+    matching_source: "AUTO" | "MANUAL" | null;
     closed_at: string | null;
     creation_date: string;
     last_message?: Message;
