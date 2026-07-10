@@ -1,14 +1,28 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ExternalLink, Globe, IdCard, KeyRound, ScanEye, ShieldAlert, ShieldX } from "lucide-react";
+import {
+    ArrowLeft,
+    ExternalLink,
+    Globe,
+    HeartHandshake,
+    IdCard,
+    KeyRound,
+    ScanEye,
+    ShieldAlert,
+    ShieldX,
+} from "lucide-react";
 import { Trans, useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Container from "../modules/shared/components/Container";
 import {
     assessUrlThreats,
+    isDonationPlatformUrl,
     LEAVING_URL_PARAM,
+    OFFICIAL_FUNDRAISER_URL,
     parseSafeHttpUrl,
     type UrlThreat,
 } from "../modules/shared/helpers/externalLink";
+
+const officialFundraiser = parseSafeHttpUrl(OFFICIAL_FUNDRAISER_URL);
 
 // Maps each detected threat to a plain-language explanation shown to the user.
 const THREAT_LABEL_KEYS: Record<UrlThreat, string> = {
@@ -40,6 +54,11 @@ const LeavingScreen = () => {
         // Open the external destination in a new tab, fully isolated from the app,
         // then return the user to where they came from (the chat).
         window.open(url.href, "_blank", "noopener,noreferrer");
+        goBack();
+    };
+
+    const openOfficialFundraiser = () => {
+        window.open(OFFICIAL_FUNDRAISER_URL, "_blank", "noopener,noreferrer");
         goBack();
     };
 
@@ -131,6 +150,94 @@ const LeavingScreen = () => {
                             <ArrowLeft className="size-4" />
                             {t("chat.leaving.back")}
                         </Button>
+                    </div>
+                </div>
+            </Container>
+        );
+    }
+
+    // Links to donation platforms other than our own fundraiser: warn that it is
+    // an unofficial collection and steer the user to the official one.
+    if (isDonationPlatformUrl(url)) {
+        return (
+            <Container className="flex flex-col items-center py-12 md:py-20">
+                <div className="bg-card border-border/60 w-full max-w-lg overflow-hidden rounded-3xl border shadow-xl">
+                    {/* Caution header */}
+                    <div className="from-warning-brand/15 to-accent-brand/10 bg-gradient-to-br px-6 pt-10 pb-8 text-center sm:px-8">
+                        <div className="from-warning-brand to-accent-brand shadow-warning-brand/30 mx-auto flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br text-white shadow-lg">
+                            <HeartHandshake className="size-8" strokeWidth={2.25} />
+                        </div>
+                        <span className="bg-warning-brand/15 text-warning-brand mt-5 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold tracking-wide uppercase">
+                            <ShieldAlert className="size-3.5" />
+                            {t("chat.leaving.donation_badge")}
+                        </span>
+                        <h1 className="mt-3 text-2xl font-semibold text-balance">{t("chat.leaving.donation_title")}</h1>
+                        <p className="text-muted-foreground mx-auto mt-2 leading-relaxed">
+                            {t("chat.leaving.donation_description")}
+                        </p>
+                    </div>
+
+                    <div className="space-y-6 px-6 pt-3 pb-8 sm:px-10">
+                        {/* The link that was posted */}
+                        <div>
+                            <span className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+                                {t("chat.leaving.donation_detected")}
+                            </span>
+                            <div className="bg-muted/60 border-border/50 mt-2 flex items-center gap-3 rounded-2xl border p-3.5">
+                                <div className="bg-card border-border/60 flex size-11 shrink-0 items-center justify-center rounded-xl border">
+                                    <Globe className="text-muted-foreground size-5" />
+                                </div>
+                                <div className="min-w-0 flex-1 text-left">
+                                    <p className="truncate text-base font-semibold" title={url.hostname}>
+                                        {url.hostname}
+                                    </p>
+                                    <p className="text-muted-foreground truncate text-xs" title={url.href}>
+                                        {url.href}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* The official fundraiser to donate through instead */}
+                        {officialFundraiser && (
+                            <div>
+                                <span className="text-primary-brand text-xs font-semibold tracking-wide uppercase">
+                                    {t("chat.leaving.donation_official_heading")}
+                                </span>
+                                <div className="border-primary-brand/40 bg-primary-brand-light mt-2 flex items-center gap-3 rounded-2xl border p-3.5">
+                                    <div className="bg-primary-brand flex size-11 shrink-0 items-center justify-center rounded-xl text-white">
+                                        <HeartHandshake className="size-5" />
+                                    </div>
+                                    <div className="min-w-0 flex-1 text-left">
+                                        <p className="text-primary-brand-dark truncate text-base font-semibold">
+                                            {officialFundraiser.hostname}
+                                            {officialFundraiser.pathname}
+                                        </p>
+                                        <p className="text-primary-brand-dark/70 truncate text-xs">
+                                            {t("chat.leaving.donation_official_heading")}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Actions: official fundraiser first, then a muted way out. */}
+                        <div className="space-y-2.5 pt-1">
+                            <Button className="w-full" size="lg" onClick={openOfficialFundraiser}>
+                                <HeartHandshake className="size-4" />
+                                {t("chat.leaving.donation_official_cta")}
+                            </Button>
+                            <Button variant="outline" className="w-full" size="lg" onClick={goBack}>
+                                <ArrowLeft className="size-4" />
+                                {t("chat.leaving.back")}
+                            </Button>
+                            <button
+                                onClick={proceed}
+                                className="text-muted-foreground hover:text-foreground mx-auto block cursor-pointer text-xs underline underline-offset-2"
+                            >
+                                {t("chat.leaving.donation_proceed")}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </Container>

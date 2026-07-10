@@ -258,7 +258,14 @@
             "reason_punycode": "Nazwa strony zawiera podejrzane, ukryte znaki.",
             "reason_userinfo": "Adres próbuje ukryć swoją prawdziwą nazwę.",
             "reason_impersonation": "Ta strona podszywa się pod Fundację Peryskop.",
-            "reason_suspicious_tld": "Adres używa końcówki często wykorzystywanej w oszustwach."
+            "reason_suspicious_tld": "Adres używa końcówki często wykorzystywanej w oszustwach.",
+            "donation_badge": "Nieoficjalna zbiórka",
+            "donation_title": "Wykryto nieoficjalną zbiórkę",
+            "donation_description": "Ten link prowadzi do zbiórki, która nie jest prowadzona przez Fundację Peryskop. Darowizny możesz bezpiecznie przekazać tylko przez naszą oficjalną zbiórkę.",
+            "donation_detected": "Podany link prowadzi do",
+            "donation_official_heading": "Nasza oficjalna zbiórka",
+            "donation_official_cta": "Przejdź do oficjalnej zbiórki",
+            "donation_proceed": "Otwórz mimo to podaną stronę"
         },
         "edit_chat": "Edytuj czat",
         "remove_from_chat": "Usuń z czatu",

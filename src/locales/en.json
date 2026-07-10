@@ -355,7 +355,14 @@
             "reason_punycode": "The site name contains suspicious, hidden characters.",
             "reason_userinfo": "The address is trying to hide its real name.",
             "reason_impersonation": "This site is impersonating the Peryskop Foundation.",
-            "reason_suspicious_tld": "The address uses an ending that is often used in scams."
+            "reason_suspicious_tld": "The address uses an ending that is often used in scams.",
+            "donation_badge": "Unofficial fundraiser",
+            "donation_title": "Unofficial fundraiser detected",
+            "donation_description": "This link leads to a fundraiser that is not run by the Peryskop Foundation. You can donate safely only through our official fundraiser.",
+            "donation_detected": "The link provided leads to",
+            "donation_official_heading": "Our official fundraiser",
+            "donation_official_cta": "Go to the official fundraiser",
+            "donation_proceed": "Open the provided page anyway"
         },
         "notes": "Notes",
         "contract": "Agreement",

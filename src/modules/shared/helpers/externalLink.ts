@@ -3,10 +3,33 @@
 // directly; everything else is routed through the warning gate at LEAVING_ROUTE.
 const FOUNDATION_DOMAINS = ["fundacjaperyskop.org"];
 
+// The foundation's one and only official fundraiser. Donations must go here.
+export const OFFICIAL_FUNDRAISER_URL = "https://pomagam.pl/rw9bkc";
+
 // Specific full URLs (path included) that are trusted even though their domain
 // is not ours — e.g. the foundation's official fundraiser page. Only these exact
 // pages skip the gate; the rest of the domain is still treated as external.
-const ALLOWED_URLS = ["https://pomagam.pl/rw9bkc"];
+const ALLOWED_URLS = [OFFICIAL_FUNDRAISER_URL];
+
+// Known donation / fundraising / tip platforms. A link to any of these (other
+// than our own allowlisted fundraiser) is flagged as an "unofficial fundraiser"
+// so users are steered to the official collection instead of donating elsewhere.
+const DONATION_DOMAINS = [
+    "pomagam.pl",
+    "siepomaga.pl",
+    "zrzutka.pl",
+    "tiply.pl",
+    "tiply.io",
+    "gofundme.com",
+    "patronite.pl",
+    "buycoffee.to",
+    "suppi.pl",
+    "ko-fi.com",
+    "patreon.com",
+    "paypal.me",
+    "revolut.me",
+    "leetchi.com",
+];
 
 // Only real web links are ever turned into clickable elements. Anything using a
 // dangerous scheme (javascript:, data:, vbscript:, ...) is rendered as plain text.
@@ -90,6 +113,17 @@ export function isAllowlistedUrl(url: URL): boolean {
  */
 export function isTrustedUrl(url: URL): boolean {
     return isInternalUrl(url) || isAllowlistedUrl(url);
+}
+
+/**
+ * True when the URL points at a known donation/fundraising platform but is NOT
+ * our own allowlisted fundraiser — i.e. a potentially unofficial collection the
+ * user should be warned about.
+ */
+export function isDonationPlatformUrl(url: URL): boolean {
+    if (isAllowlistedUrl(url)) return false;
+    const host = url.hostname.toLowerCase();
+    return DONATION_DOMAINS.some((domain) => host === domain || host.endsWith(`.${domain}`));
 }
 
 /** True when the host is a bare IP address (IPv4 or IPv6) instead of a domain name. */
