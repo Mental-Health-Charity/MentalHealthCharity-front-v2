@@ -3,6 +3,11 @@
 // directly; everything else is routed through the warning gate at LEAVING_ROUTE.
 const FOUNDATION_DOMAINS = ["fundacjaperyskop.org"];
 
+// Specific full URLs (path included) that are trusted even though their domain
+// is not ours — e.g. the foundation's official fundraiser page. Only these exact
+// pages skip the gate; the rest of the domain is still treated as external.
+const ALLOWED_URLS = ["https://pomagam.pl/rw9bkc"];
+
 // Only real web links are ever turned into clickable elements. Anything using a
 // dangerous scheme (javascript:, data:, vbscript:, ...) is rendered as plain text.
 const SAFE_PROTOCOLS = ["http:", "https:"];
@@ -56,6 +61,35 @@ export function isInternalUrl(url: URL): boolean {
         return true;
     }
     return FOUNDATION_DOMAINS.some((domain) => host === domain || host.endsWith(`.${domain}`));
+}
+
+/** Canonical origin+path key, ignoring trailing slash, query string and hash. */
+function urlKey(url: URL): string {
+    const path = url.pathname.replace(/\/+$/, "");
+    return `${url.protocol}//${url.host.toLowerCase()}${path}`;
+}
+
+const ALLOWED_URL_KEYS = new Set(
+    ALLOWED_URLS.map((raw) => {
+        try {
+            return urlKey(new URL(raw));
+        } catch {
+            return raw;
+        }
+    })
+);
+
+/** True when the URL exactly matches an allowlisted page (origin + path only). */
+export function isAllowlistedUrl(url: URL): boolean {
+    return ALLOWED_URL_KEYS.has(urlKey(url));
+}
+
+/**
+ * True when a link may be opened directly, skipping the warning gate: our own
+ * domains, the current app origin, or an explicitly allowlisted page.
+ */
+export function isTrustedUrl(url: URL): boolean {
+    return isInternalUrl(url) || isAllowlistedUrl(url);
 }
 
 /** True when the host is a bare IP address (IPv4 or IPv6) instead of a domain name. */

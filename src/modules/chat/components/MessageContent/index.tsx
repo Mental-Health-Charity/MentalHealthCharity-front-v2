@@ -1,7 +1,7 @@
 import Linkify from "linkify-react";
 import type { IntermediateRepresentation } from "linkifyjs";
 import { Link } from "react-router-dom";
-import { buildLeavingUrl, isInternalUrl, parseSafeHttpUrl } from "../../../shared/helpers/externalLink";
+import { buildLeavingUrl, isTrustedUrl, parseSafeHttpUrl } from "../../../shared/helpers/externalLink";
 
 interface Props {
     content: string;
@@ -33,8 +33,8 @@ const MessageContent = ({ content, isOwnMessage = false }: Props) => {
         // Unsafe or unparseable scheme — show the original text, not a link.
         if (!url) return <>{text}</>;
 
-        // Foundation / same-origin links skip the gate and open directly.
-        if (isInternalUrl(url)) {
+        // Foundation / same-origin / allowlisted links skip the gate and open directly.
+        if (isTrustedUrl(url)) {
             return (
                 <a href={url.href} target="_blank" rel="noopener noreferrer" className={linkClassName}>
                     {text}
