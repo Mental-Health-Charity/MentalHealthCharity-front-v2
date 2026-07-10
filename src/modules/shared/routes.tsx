@@ -41,6 +41,7 @@ const ReportsScreen = React.lazy(() => import("../../screens/ReportsScreen"));
 const TrainingsScreen = React.lazy(() => import("../../screens/TrainingsScreen"));
 const UserEditorScreen = React.lazy(() => import("../../screens/UserEditorScreen"));
 const MenteeFormGettingStartedScreen = React.lazy(() => import("../../screens/MenteeFormGettingStartedScreen"));
+const LeavingScreen = React.lazy(() => import("../../screens/LeavingScreen"));
 
 const routes: RouteType[] = [
     {
@@ -62,6 +63,11 @@ const routes: RouteType[] = [
     {
         url: "/about-chat",
         onRender: <AboutChatScreen />,
+        requiresAuth: false,
+    },
+    {
+        url: "/leaving",
+        onRender: <LeavingScreen />,
         requiresAuth: false,
     },
     {

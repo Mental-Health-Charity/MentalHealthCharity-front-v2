@@ -10,6 +10,7 @@ import { Permissions } from "../../../shared/constants";
 import formatDate from "../../../shared/helpers/formatDate";
 import usePermissions from "../../../shared/hooks/usePermissions";
 import { Message } from "../../types";
+import MessageContent from "../MessageContent";
 
 interface Props {
     message: Message;
@@ -60,9 +61,7 @@ const ChatMessage = ({ message, onDeleteMessage, onRetryMessage, showArchiveChip
                         message.isFailed && "border-destructive/50 opacity-70"
                     )}
                 >
-                    <p className="text-start text-[15px] leading-relaxed [overflow-wrap:anywhere] break-words">
-                        {message.content}
-                    </p>
+                    <MessageContent content={message.content} isOwnMessage={!!senderIsCurrentUser} />
                     <div
                         className={cn(
                             "mt-1 flex items-center gap-1.5 text-[11px]",
