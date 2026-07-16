@@ -37,7 +37,6 @@ const SearchUser = ({
     const [open, setOpen] = useState(false);
     const { t } = useTranslation();
     const debouncedValue = useDebounce(username, 500);
-    const inputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
     const { data, refetch } = useQuery(
@@ -92,7 +91,6 @@ const SearchUser = ({
                 <Label htmlFor="search-user">{t("search_user.label", "Wyszukaj użytkownika")}</Label>
                 <div className="relative my-2">
                     <Input
-                        ref={inputRef}
                         id="search-user"
                         disabled={disabled}
                         value={username}

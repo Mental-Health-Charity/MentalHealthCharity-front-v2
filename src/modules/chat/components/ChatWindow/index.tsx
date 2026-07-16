@@ -9,7 +9,7 @@ import { useUser } from "../../../auth/components/AuthProvider";
 import ReportModal from "../../../report/components/ReportModal";
 import { Permissions } from "../../../shared/constants";
 import usePermissions from "../../../shared/hooks/usePermissions";
-import { Roles } from "../../../users/constants";
+import getAllowedParticipantRoles from "../../helpers/getAllowedParticipantRoles";
 import useChat from "../../hooks/useChat";
 import useChatListLoader from "../../hooks/useChatListLoader";
 import { Chat as ChatType } from "../../types";
@@ -319,7 +319,7 @@ const ChatWindow = () => {
                 <NewChatModal
                     open={showNewChatModal}
                     onClose={() => setShowNewChatModal(false)}
-                    onSuccess={reloadChat}
+                    onSuccess={(chat) => navigate(`/chat/${chat.id}`)}
                 />
             )}
             {showAddParticipant && selectedChat && (
@@ -327,7 +327,7 @@ const ChatWindow = () => {
                     open={showAddParticipant}
                     onClose={() => setShowAddParticipant(false)}
                     chat={selectedChat}
-                    allowedRoles={[Roles.ADMIN, Roles.VOLUNTEERSUPERVISOR, Roles.REDACTOR]}
+                    allowedRoles={getAllowedParticipantRoles(selectedChat)}
                     onSuccess={reloadChat}
                 />
             )}

@@ -13,6 +13,8 @@ interface Props {
     onSuccess?: () => void;
 }
 
+const allowedAutoGroupRoles = [Roles.ADMIN, Roles.VOLUNTEER, Roles.VOLUNTEERSUPERVISOR, Roles.REDACTOR];
+
 const CreateChatModal = ({ onSuccess, ...props }: Props) => {
     const { t } = useTranslation();
 
@@ -28,10 +30,7 @@ const CreateChatModal = ({ onSuccess, ...props }: Props) => {
 
     return (
         <Modal {...props} title={t("chat.create_new_chat")}>
-            <CreateChatForm
-                onSubmit={handleCreateChat}
-                allowedAutoGroupRoles={[Roles.ADMIN, Roles.VOLUNTEERSUPERVISOR, Roles.REDACTOR]}
-            />
+            <CreateChatForm onSubmit={handleCreateChat} allowedAutoGroupRoles={allowedAutoGroupRoles} />
         </Modal>
     );
 };

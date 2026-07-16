@@ -11,6 +11,7 @@ import AddParticipantModal from "../modules/chat/components/AddParticipantModal"
 import ChatManager from "../modules/chat/components/ChatManager";
 import CreateChatModal from "../modules/chat/components/CreateChatModal";
 import EditChatModal from "../modules/chat/components/EditChatModal";
+import getAllowedParticipantRoles from "../modules/chat/helpers/getAllowedParticipantRoles";
 import useChatList from "../modules/chat/hooks/useChatList";
 import closeChatMutation from "../modules/chat/queries/closeChatMutation";
 import editChatMutation from "../modules/chat/queries/editChatMutation";
@@ -18,7 +19,6 @@ import removeParticipantMutation from "../modules/chat/queries/removeParticipant
 import { Chat, ChatListFilter } from "../modules/chat/types";
 import AdminLayout from "../modules/shared/components/AdminLayout";
 import useDebounce from "../modules/shared/hooks/useDebounce";
-import { Roles } from "../modules/users/constants";
 
 const chatListFilters: { label: string; value: ChatListFilter }[] = [
     { label: "Wszystkie", value: "all" },
@@ -190,7 +190,7 @@ const ManageChatsScreen = () => {
                         toast.success(t("chat.add_participant_success"));
                     }}
                     chat={selectedChatToAddParticipant}
-                    allowedRoles={[Roles.ADMIN, Roles.VOLUNTEERSUPERVISOR, Roles.REDACTOR]}
+                    allowedRoles={getAllowedParticipantRoles(selectedChatToAddParticipant)}
                     open={!!selectedChatToAddParticipant}
                     onClose={() => setSelectedChatToAddParticipant(null)}
                 />

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import { Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -11,24 +11,26 @@ import Modal from "../../../shared/components/Modal";
 import { Roles } from "../../../users/constants";
 import convertToCreateChatPayload from "../../helpers/convertToCreateChatPayload";
 import createChatMutation from "../../queries/createChatMutation";
-import { CreateChatFormValues } from "../../types";
+import { Chat, CreateChatFormValues } from "../../types";
 
 const FLAG_OPTIONS = [{ value: "autoGroupChat", label: "Automatyczny czat grupowy" }];
 
 interface Props {
     open: boolean;
     onClose: () => void;
-    onSuccess?: () => void;
+    onSuccess?: (chat: Chat) => void;
 }
 
 const NewChatModal = ({ open, onClose, onSuccess }: Props) => {
     const { t } = useTranslation();
+    const queryClient = useQueryClient();
 
     const { mutate, isPending } = useMutation({
         mutationFn: createChatMutation,
-        onSuccess: () => {
+        onSuccess: (chat) => {
+            void queryClient.invalidateQueries({ queryKey: ["chats"] });
             onClose();
-            onSuccess?.();
+            onSuccess?.(chat);
         },
     });
 
