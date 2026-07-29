@@ -289,6 +289,21 @@ body.chat-route {
     font-size: 20px;
 }
 
+/* In edit mode give the contentEditable itself a concrete height so clicking
+   anywhere in the editor area (not just on existing text) focuses it. */
+.article-editor-md .mdxeditor-root-contenteditable,
+.article-editor-md .markdown-editable {
+    min-height: 460px;
+}
+
+/* Native <select> dropdown options are painted by the OS; give them themed
+   colors so the list is readable in dark mode (otherwise white on white). */
+select option,
+select optgroup {
+    background-color: var(--background);
+    color: var(--foreground);
+}
+
 .markdown-editable img {
     max-width: 100%;
 }

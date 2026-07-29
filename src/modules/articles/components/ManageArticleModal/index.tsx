@@ -18,11 +18,10 @@ const ManageArticleModal = ({ onClose, open, onSubmit }: Props) => {
 
     const validationSchema = Yup.object({
         status: Yup.string().required(t("manage_articles.validation.status_required")),
-        reject_message: Yup.string().when("status", (status: unknown) => {
-            if (status === ArticleStatus.REJECTED) {
-                return Yup.string();
-            }
-            return Yup.string();
+        reject_message: Yup.string().when("status", {
+            is: ArticleStatus.REJECTED,
+            then: (schema) => schema.trim().required(t("manage_articles.validation.reject_reason_required")),
+            otherwise: (schema) => schema,
         }),
     });
 

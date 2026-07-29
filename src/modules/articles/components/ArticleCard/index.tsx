@@ -6,7 +6,6 @@ import { Pencil, Trash2, User as UserIcon } from "lucide-react";
 import { useCallback } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { baseUrl } from "../../../../api";
 import { useUser } from "../../../auth/components/AuthProvider";
 import ActionMenu from "../../../shared/components/ActionMenu";
 import InternalLink from "../../../shared/components/InternalLink";
@@ -69,7 +68,7 @@ const ArticleCard = ({ article, onRefetch, draft }: Props) => {
                 <div className="relative overflow-hidden">
                     <img
                         className="h-48 w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        src={baseUrl + article.banner_url}
+                        src={resolveAssetUrl(article.banner_url)}
                         alt={article.title}
                         onError={(e) => {
                             e.currentTarget.src = "https://placehold.co/600x400";

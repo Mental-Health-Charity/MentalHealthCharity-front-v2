@@ -1,5 +1,6 @@
 import { queryOptions, UseQueryOptions } from "@tanstack/react-query";
 import { url } from "../../../api";
+import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
 import handleApiError from "../../shared/helpers/handleApiError";
 import { Pagination } from "../../shared/types";
 import { Article, ReadPublicArticlesOptions } from "../types";
@@ -12,7 +13,11 @@ export const readPublicArticlesQueryOptions = (
         queryKey: ["public_articles"],
         queryFn: async () => {
             try {
-                const response = await fetch(url.articles.readPublicArticles(options));
+                // Send the token so reviewers can list non-published articles;
+                // anonymous callers still only receive published ones.
+                const response = await fetch(url.articles.readPublicArticles(options), {
+                    headers: getAuthHeaders({ withContentType: false }),
+                });
 
                 const data = await response.json();
 

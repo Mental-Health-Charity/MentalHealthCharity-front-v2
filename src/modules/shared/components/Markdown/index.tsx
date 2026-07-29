@@ -22,16 +22,23 @@ import {
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
 import { forwardRef } from "react";
+import { useTheme } from "@/hooks/useTheme";
 
 interface Props extends Omit<MDXEditorProps, "markdown"> {
     content: string;
     readonly?: boolean;
 }
 
-const Markdown = forwardRef<MDXEditorMethods, Props>(({ content, readonly = true, ...editorProps }, ref) => {
+const Markdown = forwardRef<MDXEditorMethods, Props>(({ content, readonly = true, className, ...editorProps }, ref) => {
+    // MDXEditor ships its own dark palette behind the `dark-theme` class; enable it
+    // whenever the app is in dark mode so the toolbar and content stay consistent.
+    // NB: className is pulled out of editorProps so the {...editorProps} spread
+    // below can't overwrite this composed value (which would drop `markdown`/`dark-theme`).
+    const { resolvedTheme } = useTheme();
+
     return (
         <MDXEditor
-            className={`markdown ${editorProps.className ? editorProps.className : ""}`}
+            className={`markdown ${resolvedTheme === "dark" ? "dark-theme" : ""} ${className ?? ""}`}
             contentEditableClassName="markdown-editable"
             plugins={[
                 listsPlugin(),

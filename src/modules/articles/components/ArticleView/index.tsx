@@ -33,7 +33,7 @@ const ArticleView = ({ article, articles }: Props) => {
                 <div className="relative flex min-h-[360px] items-end md:min-h-[480px]">
                     {/* Background image */}
                     <img
-                        src={article.banner_url}
+                        src={resolveAssetUrl(article.banner_url)}
                         alt=""
                         aria-hidden="true"
                         className="absolute inset-0 h-full w-full object-cover"
