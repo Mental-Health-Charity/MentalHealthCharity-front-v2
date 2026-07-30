@@ -143,6 +143,8 @@
         },
         "max_size": "Plik jest za duży. Maksymalny rozmiar to {{size}}",
         "invalid_file": "Plik powinien być w formacie {{type}}",
+        "min_length": "To pole musi zawierać co najmniej {{count}} znaków",
+        "max_length": "To pole może zawierać maksymalnie {{count}} znaków",
         "name": {
             "tooShort": "Imię musi mieć co najmniej 2 znaki."
         },
@@ -419,6 +421,16 @@
         "article_created": "Pomyślnie wysłano artykuł. Zaraz zostaniesz przekierowany.",
         "send": "Wyślij artykuł",
         "article_deleted_success": "Artykuł został usunięty",
+        "article_banner_updated": "Zdjęcie artykułu zostało zaktualizowane",
+        "draft_saved": "Zapisano wersję roboczą",
+        "draft_requirements": "Aby zapisać szkic, podaj tytuł (min. 3 znaki) i wybierz kategorię.",
+        "draft_restore": {
+            "message": "Znaleźliśmy Twoją niezapisaną wersję z {{time}}. Czy chcesz ją przywrócić?",
+            "restore": "Przywróć",
+            "discard": "Odrzuć",
+            "restored": "Przywrócono niezapisaną wersję",
+            "discarded": "Odrzucono zapisaną wersję"
+        },
 
         "dashboard": {
             "subtitle": "Zarządzaj artykułami",
@@ -437,10 +449,10 @@
             "published": "Opublikowany",
             "draft": "Szkic",
             "waiting_for_approval": "Oczekuje na zatwierdzenie",
-            "sent": "Wyślij do recenzji",
+            "sent": "Wyślij do zatwierdzenia",
             "rejected": "Odrzucony",
             "deleted": "Usunięty",
-            "corrected": "Poprawiony"
+            "corrected": "Wyślij jako poprawiony"
         },
         "required_roles": {
             "volunteer": "Wolontariusz i wyżej",
@@ -454,19 +466,53 @@
             "category_list_title": "Lista kategorii"
         },
         "save_draft": "Zapisz szkic",
+        "save_draft_version": "Zapisz jako wersja robocza",
+        "save_draft_warning": {
+            "title": "Zapisać jako wersja robocza?",
+            "status_change": "Zapisanie jako wersja robocza zmieni status artykułu z „{{from}}” na „{{to}}”.",
+            "published_warning": "Uwaga: artykuł przestanie być widoczny publicznie w zakładce Artykuły i nie będzie już dostępny do czytania dla odwiedzających — do czasu ponownej publikacji.",
+            "autosave_hint": "Nie musisz zapisywać jako wersja robocza, aby nie stracić zmian — zapisują się one automatycznie na tym urządzeniu i możesz do nich wrócić później.",
+            "confirm": "Zapisz jako wersja robocza",
+            "cancel": "Anuluj"
+        },
+        "sidebar": {
+            "title": "Kopia i wersja robocza",
+            "local_label": "Zapisano postęp na tym urządzeniu",
+            "local_none": "Brak lokalnej kopii",
+            "cloud_label": "Ostatni zapis w chmurze",
+            "cloud_none": "Jeszcze nie zapisano w chmurze",
+            "hint": "Zmiany są automatycznie zapisywane w tej przeglądarce jako kopia bezpieczeństwa."
+        },
         "manage_categories": "Zarządzaj kategoriami",
+        "preview": {
+            "button": "Podgląd",
+            "title": "Podgląd artykułu",
+            "untitled": "Bez tytułu",
+            "no_banner": "Brak zdjęcia głównego",
+            "no_content": "Ten artykuł nie ma jeszcze treści.",
+            "card_heading": "Kafelek na liście artykułów",
+            "article_heading": "Pełny widok artykułu"
+        },
 
         "manage": "Zarządzaj",
         "form": {
             "title": "Tytuł",
+            "title_placeholder": "Wpisz chwytliwy tytuł artykułu",
+            "title_counter": "{{count}}/{{max}} znaków",
             "upload_banner": "Dodaj zdjęcie",
             "article_category_id": "Kategoria",
+            "select_category": "Wybierz kategorię…",
             "video_url": "Link do wideo (opcjonalne)",
             "remove_banner": "Usuń zdjęcie",
             "required_role": "Wymagane uprawnienia",
             "status": "Wyślij jako",
             "change_banner": "Zmień zdjęcie",
-            "content": "Twoja treść..."
+            "content": "Twoja treść...",
+            "content_label": "Treść artykułu",
+            "fix_errors": "Popraw poniższe pola, aby kontynuować:",
+            "banner_dropzone_title": "Przeciągnij zdjęcie tutaj lub kliknij, aby wybrać",
+            "banner_dropzone_hint": "JPG, PNG lub WEBP • maks. {{size}}",
+            "banner_drop_here": "Upuść, aby zmienić zdjęcie"
         },
         "subtitle": "W naszym serwisie znajdziesz artykuły na temat psychologii, które pomogą Ci zrozumieć siebie i innych. Wszystkie prace są autorstwa naszych wolontariuszy, którzy chcą pomóc Ci w trudnych chwilach."
     },
@@ -903,8 +949,12 @@
             "published": "Opublikuj"
         },
         "fields": {
-            "reject_message": "Powód odrzucenia (opcjonalne)",
+            "reject_message": "Powód odrzucenia",
             "status": "Status"
+        },
+        "validation": {
+            "status_required": "Wybierz status",
+            "reject_reason_required": "Podaj powód odrzucenia, aby autor wiedział, co poprawić"
         }
     },
     "manage_mentee_forms": {

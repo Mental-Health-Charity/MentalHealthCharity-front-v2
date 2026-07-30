@@ -1,5 +1,6 @@
 import { queryOptions, UseQueryOptions } from "@tanstack/react-query";
 import { url } from "../../../api";
+import getAuthHeaders from "../../auth/helpers/getAuthHeaders";
 import { ReadPublicArticlesOptions } from "../types";
 import { Article } from "../types";
 import { Pagination } from "../../shared/types";
@@ -13,7 +14,11 @@ export const articlesByUserQueryOptions = (
         queryKey: ["articles"],
         queryFn: async () => {
             try {
-                const response = await fetch(url.articles.readByUser(options));
+                // Send the token so the author (and reviewers) can see their own
+                // non-published articles; others only receive published ones.
+                const response = await fetch(url.articles.readByUser(options), {
+                    headers: getAuthHeaders({ withContentType: false }),
+                });
 
                 const data = await response.json();
 

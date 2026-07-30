@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -9,8 +10,6 @@ import updateArticleMutation from "../modules/articles/queries/updateArticleMuta
 import { CreateArticleValues, UpdateArticlePayload } from "../modules/articles/types";
 import Container from "../modules/shared/components/Container";
 import Loader from "../modules/shared/components/Loader";
-import SimpleCard from "../modules/shared/components/SimpleCard";
-import fileToBase64 from "../modules/shared/helpers/fileToBase64";
 import NotFoundScreen from "./NotFoundScreen";
 
 const EditArticleScreen = () => {
@@ -18,15 +17,10 @@ const EditArticleScreen = () => {
     const navigate = useNavigate();
     const { id } = useParams();
 
+    const [cloudSavedAt, setCloudSavedAt] = useState<number | null>(null);
+
     const { mutate: editArticle, isPending: isArticleEditPending } = useMutation({
         mutationFn: updateArticleMutation,
-        onSuccess: () => {
-            toast.success(t("articles.article_created"));
-
-            setTimeout(() => {
-                navigate("/articles/dashboard");
-            }, 2000);
-        },
     });
 
     const { data, isLoading } = useQuery(
@@ -38,35 +32,37 @@ const EditArticleScreen = () => {
         )
     );
 
+    // In edit mode the banner is managed separately (the /banner endpoint on
+    // image change), so the update payload must never carry a banner_url — sending
+    // it back would let the resolved absolute URL be persisted and then doubled.
+    const buildUpdatePayload = (values: CreateArticleValues, status: ArticleStatus): UpdateArticlePayload => ({
+        banner_base64: "",
+        article_category_id: values.article_category_id || 0,
+        article_id: Number(id),
+        content: values.content,
+        required_role: values.required_role,
+        status,
+        title: values.title,
+        video_url: values.video_url,
+    });
+
     const handleEditArticle = async (values: CreateArticleValues) => {
-        const banner = values.banner_url instanceof File ? await fileToBase64(values.banner_url) : values.banner_url;
-
-        const transformValues: UpdateArticlePayload = {
-            banner_base64: banner || "",
-            article_category_id: values.article_category_id || 0,
-            article_id: Number(id),
-            content: values.content,
-            required_role: values.required_role,
-            status: values.status,
-            title: values.title,
-            video_url: values.video_url,
-        };
-
-        editArticle(transformValues);
+        editArticle(buildUpdatePayload(values, values.status), {
+            onSuccess: () => {
+                toast.success(t("articles.article_created"));
+                setTimeout(() => navigate("/articles/dashboard"), 2000);
+            },
+        });
     };
 
     const handleCreateDraft = async (values: CreateArticleValues) => {
-        const banner = values.banner_url instanceof File ? await fileToBase64(values.banner_url) : values.banner_url;
-
-        const transformValues: UpdateArticlePayload = {
-            ...values,
-            article_category_id: values.article_category_id || 0,
-            banner_base64: banner || "",
-            article_id: Number(id),
-            status: ArticleStatus.DRAFT,
-        };
-
-        editArticle(transformValues);
+        // Save in place — no redirect — so the author can keep working.
+        editArticle(buildUpdatePayload(values, ArticleStatus.DRAFT), {
+            onSuccess: () => {
+                toast.success(t("articles.draft_saved"));
+                setCloudSavedAt(Date.now());
+            },
+        });
     };
 
     const initialValues: CreateArticleValues = {
@@ -88,18 +84,21 @@ const EditArticleScreen = () => {
     }
 
     return (
-        <Container parentClassName="z-0 bg-border-brand shadow-md">
+        <Container parentClassName="z-0 bg-border-brand shadow-md" className="max-w-[1440px]">
             {isArticleEditPending && <Loader variant="fullscreen" />}
-            <SimpleCard className="mb-5 p-5">
+            <div className="mb-5">
                 {data && (
                     <ArticleEditor
                         initialValues={initialValues}
                         onSaveDraft={handleCreateDraft}
                         articleId={Number(id)}
                         onSubmit={(values) => handleEditArticle(values)}
+                        isSaving={isArticleEditPending}
+                        lastCloudSavedAt={cloudSavedAt ?? (data.creation_date ? Date.parse(data.creation_date) : null)}
+                        currentStatus={data.status}
                     />
                 )}
-            </SimpleCard>
+            </div>
         </Container>
     );
 };
