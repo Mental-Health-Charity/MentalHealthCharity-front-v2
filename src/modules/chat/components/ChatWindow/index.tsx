@@ -73,7 +73,7 @@ const ChatWindow = () => {
                 return true;
             }
 
-            return chat.participants.some((p) => p.id === user.id);
+            return chat.is_active && chat.status === "ACTIVE" && chat.participants.some((p) => p.id === user.id);
         },
         reconnectAttempts: Infinity,
         reconnectInterval: (attemptNumber) => Math.min(1000 * 2 ** attemptNumber, 30000),
