@@ -51,10 +51,10 @@ const Note = ({ chat, onClose }: Props) => {
     }, [data]);
 
     useEffect(() => {
-        if (debounceValue && edited) {
+        if (chat.is_active && debounceValue && edited) {
             mutate({ content: debounceValue, id: chat.id });
         }
-    }, [debounceValue, chat.id, mutate]);
+    }, [debounceValue, chat.id, chat.is_active, edited, mutate]);
 
     return (
         <ChatSidebarPanel>
@@ -90,13 +90,14 @@ const Note = ({ chat, onClose }: Props) => {
                 ) : typeof content === "string" || content === null ? (
                     <Markdown
                         onChange={(value) => {
+                            if (!chat.is_active) return;
                             setContent(value);
                             setEdited(true);
                         }}
                         ref={ref}
                         autoFocus
                         content={content || ""}
-                        readonly={false}
+                        readonly={!chat.is_active}
                     />
                 ) : null}
 

@@ -6,10 +6,16 @@ import { ChatSortByOptions } from "../constants";
 import { getChatsQueryOptions } from "../queries/getChatsQueryOptions";
 import { Chat } from "../types";
 
-export default function useChatListLoader(pageSize = 100) {
+interface AggregatedChatData {
+    key: string;
+    data: Pagination<Chat>;
+}
+
+export default function useChatListLoader(pageSize = 100, status: "active" | "closed" = "active") {
     const queryClient = useQueryClient();
     const [searchQuery, setSearchQuery] = useState("");
     const debouncedSearch = useDebounce(searchQuery, 400);
+    const aggregationKey = JSON.stringify([status, debouncedSearch, pageSize]);
 
     const { data, isLoading, isFetching } = useQuery(
         getChatsQueryOptions({
@@ -17,51 +23,65 @@ export default function useChatListLoader(pageSize = 100) {
             page: 1,
             unread_first: true,
             sort_by: ChatSortByOptions.LATEST_MESSAGE_DATE,
+            status,
             ...(debouncedSearch ? { search: debouncedSearch } : {}),
         })
     );
 
-    const [aggregatedData, setAggregatedData] = useState<Pagination<Chat> | undefined>(undefined);
-    const loadingPagesRef = useRef<Set<number>>(new Set());
+    const [aggregatedState, setAggregatedState] = useState<AggregatedChatData | undefined>(undefined);
+    const activeAggregationKeyRef = useRef(aggregationKey);
+    activeAggregationKeyRef.current = aggregationKey;
+    const loadingPagesRef = useRef<Set<string>>(new Set());
+    const aggregatedData = aggregatedState?.key === aggregationKey ? aggregatedState.data : undefined;
 
     useEffect(() => {
-        if (data) setAggregatedData(data);
-    }, [data]);
+        if (data) setAggregatedState({ key: aggregationKey, data });
+    }, [aggregationKey, data]);
 
     const loadPage = useCallback(
         async (pageNumber: number) => {
             if (!aggregatedData) return;
             if (pageNumber <= aggregatedData.page) return;
             if (aggregatedData.pages && pageNumber > aggregatedData.pages) return;
-            if (loadingPagesRef.current.has(pageNumber)) return;
+            const requestKey = aggregationKey;
+            const loadingKey = `${requestKey}:${pageNumber}`;
+            if (loadingPagesRef.current.has(loadingKey)) return;
 
-            loadingPagesRef.current.add(pageNumber);
+            loadingPagesRef.current.add(loadingKey);
             try {
                 const next = await queryClient.fetchQuery(
                     getChatsQueryOptions({
                         size: pageSize,
                         page: pageNumber,
+                        unread_first: true,
+                        sort_by: ChatSortByOptions.LATEST_MESSAGE_DATE,
+                        status,
                         ...(debouncedSearch ? { search: debouncedSearch } : {}),
                     })
                 );
 
-                setAggregatedData((prev) => {
-                    if (!prev) return next;
-                    const existingIds = new Set(prev.items.map((i) => i.id));
+                setAggregatedState((prev) => {
+                    if (activeAggregationKeyRef.current !== requestKey) return prev;
+                    const previousData = prev?.key === requestKey ? prev.data : undefined;
+                    if (!previousData) return { key: requestKey, data: next };
+                    const existingIds = new Set(previousData.items.map((i) => i.id));
                     const newItems = next.items.filter((i) => !existingIds.has(i.id));
                     return {
-                        items: [...prev.items, ...newItems],
-                        total: next.total,
-                        pages: next.pages,
-                        page: next.page,
-                        size: next.size ?? prev.size,
-                    } as Pagination<Chat>;
+                        key: requestKey,
+                        data: {
+                            items: [...previousData.items, ...newItems],
+                            total: next.total,
+                            pages: next.pages,
+                            page: next.page,
+                            size: next.size ?? previousData.size,
+                        } as Pagination<Chat>,
+                    };
                 });
             } finally {
-                loadingPagesRef.current.delete(pageNumber);
+                loadingPagesRef.current.delete(loadingKey);
             }
         },
-        [aggregatedData, queryClient, pageSize, debouncedSearch]
+        [aggregatedData, aggregationKey, queryClient, pageSize, debouncedSearch, status]
     );
 
     const loadNextPage = useCallback(async () => {

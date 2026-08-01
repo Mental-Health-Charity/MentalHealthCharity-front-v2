@@ -85,6 +85,7 @@ export interface SocketMessage {
     creation_date: string;
     sender_id: number;
     is_read: boolean;
+    auto_close_at?: string | null;
 }
 
 export interface Contract {
@@ -105,6 +106,7 @@ export interface Chat {
     matching_mode: "AUTO" | "MANUAL";
     matching_source: "AUTO" | "MANUAL" | null;
     closed_at: string | null;
+    auto_close_at: string | null;
     creation_date: string;
     last_message?: Message;
     is_supervisor_chat: boolean;
@@ -148,6 +150,23 @@ export interface CloseChatPayload {
     id: number;
 }
 
+export interface SnoozeAutoClosePayload {
+    id: number;
+}
+
+export interface ChatInactivitySettings {
+    empty_or_starter_timeout_days: number;
+    conversation_timeout_days: number;
+    snooze_extension_days: number;
+    updated_at?: string | null;
+    updated_by_id?: number | null;
+}
+
+export type ChatInactivitySettingsUpdate = Pick<
+    ChatInactivitySettings,
+    "empty_or_starter_timeout_days" | "conversation_timeout_days" | "snooze_extension_days"
+>;
+
 export enum SocketEventType {
     MESSAGE = "message",
     DELETE = "delete",
@@ -156,4 +175,5 @@ export enum SocketEventType {
 export interface ChatDeleteEvent {
     id: number;
     event: SocketEventType.DELETE;
+    auto_close_at?: string | null;
 }

@@ -19,6 +19,8 @@ interface Props {
     onSearchChange: (value: string) => void;
     isSearching?: boolean;
     onNewChat?: () => void;
+    filter: "active" | "closed";
+    onFilterChange: (filter: "active" | "closed") => void;
 }
 
 const ChatSidebar = ({
@@ -31,6 +33,8 @@ const ChatSidebar = ({
     onSearchChange,
     isSearching,
     onNewChat,
+    filter,
+    onFilterChange,
 }: Props) => {
     const isMobile = useIsMobile();
     const { t } = useTranslation();
@@ -72,6 +76,25 @@ const ChatSidebar = ({
                         <X className="size-5" />
                     </button>
                 )}
+            </div>
+
+            <div className="border-border/50 grid grid-cols-2 gap-1 border-b p-2">
+                {(["active", "closed"] as const).map((value) => (
+                    <button
+                        key={value}
+                        type="button"
+                        onClick={() => onFilterChange(value)}
+                        className={
+                            filter === value
+                                ? "bg-primary-brand text-primary-foreground rounded-lg px-3 py-2 text-sm font-medium"
+                                : "text-muted-foreground hover:bg-muted rounded-lg px-3 py-2 text-sm font-medium"
+                        }
+                    >
+                        {value === "active"
+                            ? t("chat.active_chats", { defaultValue: "Aktywne" })
+                            : t("chat.archive", { defaultValue: "Archiwum" })}
+                    </button>
+                ))}
             </div>
 
             {/* New Chat button */}

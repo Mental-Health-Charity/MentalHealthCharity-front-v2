@@ -1,10 +1,16 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Play, Settings, ShieldCheck } from "lucide-react";
+import { Clock3, Play, Save, Settings, ShieldCheck } from "lucide-react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { chatInactivitySettingsQueryOptions } from "../modules/chat/queries/chatInactivitySettingsQueryOptions";
+import updateChatInactivitySettingsMutation from "../modules/chat/queries/updateChatInactivitySettingsMutation";
+import { ChatInactivitySettingsUpdate } from "../modules/chat/types";
 import { matchingSettingsQueryOptions } from "../modules/matching/queries/matchingSettingsQueryOptions";
 import runMatchingMutation from "../modules/matching/queries/runMatchingMutation";
 import updateMatchingSettingsMutation from "../modules/matching/queries/updateMatchingSettingsMutation";
@@ -15,7 +21,23 @@ const AdminSettingsScreen = () => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
     const settingsQuery = useQuery(matchingSettingsQueryOptions());
+    const inactivitySettingsQuery = useQuery(chatInactivitySettingsQueryOptions());
+    const [inactivitySettings, setInactivitySettings] = useState<ChatInactivitySettingsUpdate>({
+        empty_or_starter_timeout_days: 7,
+        conversation_timeout_days: 14,
+        snooze_extension_days: 7,
+    });
     const isAutomaticMatchingEnabled = settingsQuery.data?.automatic_matching_enabled === true;
+
+    useEffect(() => {
+        if (!inactivitySettingsQuery.data) return;
+
+        setInactivitySettings({
+            empty_or_starter_timeout_days: inactivitySettingsQuery.data.empty_or_starter_timeout_days,
+            conversation_timeout_days: inactivitySettingsQuery.data.conversation_timeout_days,
+            snooze_extension_days: inactivitySettingsQuery.data.snooze_extension_days,
+        });
+    }, [inactivitySettingsQuery.data]);
 
     const updateSettings = useMutation({
         mutationFn: updateMatchingSettingsMutation,
@@ -46,8 +68,35 @@ const AdminSettingsScreen = () => {
         },
     });
 
+    const updateInactivitySettings = useMutation({
+        mutationFn: updateChatInactivitySettingsMutation,
+        onSuccess: (settings) => {
+            queryClient.setQueryData(["chat", "inactivity-settings"], settings);
+            setInactivitySettings({
+                empty_or_starter_timeout_days: settings.empty_or_starter_timeout_days,
+                conversation_timeout_days: settings.conversation_timeout_days,
+                snooze_extension_days: settings.snooze_extension_days,
+            });
+            toast.success(
+                t("chat.inactivity_settings.saved", {
+                    defaultValue: "Ustawienia automatycznego zamykania zostały zapisane",
+                })
+            );
+        },
+    });
+
     const isSaving = updateSettings.isPending || settingsQuery.isFetching;
     const isRunning = runMatching.isPending;
+    const inactivityValuesAreValid = Object.values(inactivitySettings).every(
+        (value) => Number.isInteger(value) && value >= 1 && value <= 365
+    );
+
+    const setInactivitySetting = (field: keyof ChatInactivitySettingsUpdate, value: string) => {
+        setInactivitySettings((current) => ({
+            ...current,
+            [field]: Number(value),
+        }));
+    };
 
     return (
         <AdminLayout>
@@ -153,6 +202,130 @@ const AdminSettingsScreen = () => {
                             {t("matching.settings_run_now", { defaultValue: "Uruchom parowanie teraz" })}
                         </Button>
                     </div>
+                </div>
+            </section>
+
+            <section className="bg-card border-border/50 mt-5 rounded-xl border p-6 shadow-sm">
+                <div className="flex items-start gap-3">
+                    <div className="bg-muted flex size-10 shrink-0 items-center justify-center rounded-lg">
+                        <Clock3 className="text-muted-foreground size-5" />
+                    </div>
+                    <div>
+                        <h2 className="text-foreground text-lg font-semibold">
+                            {t("chat.inactivity_settings.title", {
+                                defaultValue: "Automatyczne zamykanie chatów",
+                            })}
+                        </h2>
+                        <p className="text-muted-foreground text-sm">
+                            {t("chat.inactivity_settings.description", {
+                                defaultValue:
+                                    "Terminy są stosowane do nowych chatów oraz przy kolejnej wiadomości lub drzemce. Nie zmieniają już wyznaczonych terminów.",
+                            })}
+                        </p>
+                    </div>
+                </div>
+
+                <div className="mt-6 grid gap-5 md:grid-cols-3">
+                    <div className="space-y-2">
+                        <Label htmlFor="empty-or-starter-timeout">
+                            {t("chat.inactivity_settings.empty_or_starter_label", {
+                                defaultValue: "Pusty lub tylko startowy",
+                            })}
+                        </Label>
+                        <Input
+                            id="empty-or-starter-timeout"
+                            type="number"
+                            min={1}
+                            max={365}
+                            value={inactivitySettings.empty_or_starter_timeout_days}
+                            disabled={inactivitySettingsQuery.isLoading || updateInactivitySettings.isPending}
+                            onChange={(event) =>
+                                setInactivitySetting("empty_or_starter_timeout_days", event.target.value)
+                            }
+                        />
+                        <p className="text-muted-foreground text-xs">
+                            {t("chat.inactivity_settings.days_after_inactivity", {
+                                defaultValue: "Dni bez aktywności",
+                            })}
+                        </p>
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="conversation-timeout">
+                            {t("chat.inactivity_settings.conversation_label", {
+                                defaultValue: "Chat z rozmową",
+                            })}
+                        </Label>
+                        <Input
+                            id="conversation-timeout"
+                            type="number"
+                            min={1}
+                            max={365}
+                            value={inactivitySettings.conversation_timeout_days}
+                            disabled={inactivitySettingsQuery.isLoading || updateInactivitySettings.isPending}
+                            onChange={(event) => setInactivitySetting("conversation_timeout_days", event.target.value)}
+                        />
+                        <p className="text-muted-foreground text-xs">
+                            {t("chat.inactivity_settings.days_after_inactivity", {
+                                defaultValue: "Dni bez aktywności",
+                            })}
+                        </p>
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="snooze-extension">
+                            {t("chat.inactivity_settings.snooze_label", {
+                                defaultValue: "Jedna drzemka",
+                            })}
+                        </Label>
+                        <Input
+                            id="snooze-extension"
+                            type="number"
+                            min={1}
+                            max={365}
+                            value={inactivitySettings.snooze_extension_days}
+                            disabled={inactivitySettingsQuery.isLoading || updateInactivitySettings.isPending}
+                            onChange={(event) => setInactivitySetting("snooze_extension_days", event.target.value)}
+                        />
+                        <p className="text-muted-foreground text-xs">
+                            {t("chat.inactivity_settings.extension_days", {
+                                defaultValue: "Dodawane dni",
+                            })}
+                        </p>
+                    </div>
+                </div>
+
+                <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        {inactivitySettingsQuery.data?.updated_at && (
+                            <p className="text-muted-foreground text-xs">
+                                {t("matching.settings_updated_at", {
+                                    defaultValue: "Ostatnia zmiana: {{date}}",
+                                    date: formatDate(inactivitySettingsQuery.data.updated_at),
+                                })}
+                            </p>
+                        )}
+                        {inactivitySettingsQuery.isError && (
+                            <p className="text-destructive text-sm">
+                                {t("common.no_data", { defaultValue: "Nie udało się pobrać danych." })}
+                            </p>
+                        )}
+                    </div>
+
+                    <Button
+                        type="button"
+                        disabled={
+                            inactivitySettingsQuery.isLoading ||
+                            updateInactivitySettings.isPending ||
+                            !inactivityValuesAreValid
+                        }
+                        onClick={() => updateInactivitySettings.mutate(inactivitySettings)}
+                    >
+                        <Save className="size-4" />
+                        {updateInactivitySettings.isPending
+                            ? t("chat.inactivity_settings.saving", { defaultValue: "Zapisywanie..." })
+                            : t("common.save", { defaultValue: "Zapisz" })}
+                    </Button>
                 </div>
             </section>
         </AdminLayout>

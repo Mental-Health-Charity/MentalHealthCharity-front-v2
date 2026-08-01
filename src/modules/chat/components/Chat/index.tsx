@@ -35,7 +35,7 @@ interface Props {
     chat?: ChatType;
     isChatInitializing?: boolean;
     onSendMessage: (message: string) => void;
-    onDeleteMessage: (id: number) => void;
+    onDeleteMessage?: (id: number) => void;
     onRetryMessage?: (id: number) => void;
     messages: Message[];
     status: ConnectionStatus;
@@ -115,8 +115,8 @@ const Chat = ({
 
     const isConnected = status.state === ReadyState.OPEN;
     const isParticipant = chat && user && chat.participants.some((p) => p.id === user.id);
-    const canSendMessage = isConnected && !!chat && !!user && !!isParticipant;
-    const showConnectionBanner = !isChatInitializing && !!chat && status.state !== ReadyState.OPEN;
+    const canSendMessage = isConnected && !!chat?.is_active && !!user && !!isParticipant;
+    const showConnectionBanner = !isChatInitializing && !!chat?.is_active && status.state !== ReadyState.OPEN;
 
     const formik = useFormik({
         initialValues: {
@@ -593,7 +593,7 @@ const Chat = ({
                     </Button>
                 </div>
             )}
-            <ConnectionModal status={status} disabled={isChatInitializing || !chat} />
+            <ConnectionModal status={status} disabled={isChatInitializing || !chat?.is_active} />
         </div>
     );
 };

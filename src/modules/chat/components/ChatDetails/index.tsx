@@ -75,6 +75,14 @@ const ChatDetails = ({
                     <p className="text-muted-foreground mt-1 text-xs">
                         {t("common.created_at", { date: formatDate(chat.creation_date) })}
                     </p>
+                    {chat.auto_close_at && chat.is_active && (
+                        <p className="text-warning-brand mt-1 text-xs font-medium">
+                            {t("chat.auto_close_at", {
+                                date: formatDate(chat.auto_close_at),
+                                defaultValue: "Automatyczne zamknięcie: {{date}}",
+                            })}
+                        </p>
+                    )}
                 </div>
 
                 {/* Participants */}

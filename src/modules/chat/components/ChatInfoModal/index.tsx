@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
 import { Clock, MessageSquareOff, MessageSquareText } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Modal from "../../../shared/components/Modal";
+import { chatInactivitySettingsQueryOptions } from "../../queries/chatInactivitySettingsQueryOptions";
 
-const STORAGE_KEY = "chat_info_dismissed_at";
+const STORAGE_KEY = "chat_info_dismissed_at_v2";
 const REMINDER_INTERVAL_MS = 14 * 24 * 60 * 60 * 1000; // 2 weeks
 
 const shouldShowModal = (): boolean => {
@@ -17,10 +19,15 @@ const shouldShowModal = (): boolean => {
 const ChatInfoModal = () => {
     const { t } = useTranslation();
     const [open, setOpen] = useState(false);
+    const settingsQuery = useQuery(chatInactivitySettingsQueryOptions());
 
     useEffect(() => {
-        setOpen(shouldShowModal());
-    }, []);
+        if (settingsQuery.data) {
+            setOpen(shouldShowModal());
+        }
+    }, [settingsQuery.data]);
+
+    if (!settingsQuery.data) return null;
 
     const handleClose = () => {
         localStorage.setItem(STORAGE_KEY, String(Date.now()));
@@ -43,7 +50,9 @@ const ChatInfoModal = () => {
                                 {t("chat.info_modal.with_messages_title")}
                             </p>
                             <p className="text-muted-foreground mt-0.5 text-sm">
-                                {t("chat.info_modal.with_messages_body")}
+                                {t("chat.info_modal.with_messages_body", {
+                                    count: settingsQuery.data.conversation_timeout_days,
+                                })}
                             </p>
                         </div>
                     </div>
@@ -55,7 +64,9 @@ const ChatInfoModal = () => {
                                 {t("chat.info_modal.no_messages_title")}
                             </p>
                             <p className="text-muted-foreground mt-0.5 text-sm">
-                                {t("chat.info_modal.no_messages_body")}
+                                {t("chat.info_modal.no_messages_body", {
+                                    count: settingsQuery.data.empty_or_starter_timeout_days,
+                                })}
                             </p>
                         </div>
                     </div>

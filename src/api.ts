@@ -80,6 +80,7 @@ export const url = {
         resetPassword: `${baseUrl}/api/v1/users/reset-password`,
     },
     chat: {
+        inactivitySettings: `${baseUrl}/api/v1/chat/inactivity-settings`,
         readChats(options: SearchChatQueryOptions) {
             const query = buildQuery(options);
             return `${baseUrl}/api/v1/chat/?${query}`;
@@ -104,6 +105,9 @@ export const url = {
         },
         closeChat({ id }: ReadChatOptions) {
             return `${baseUrl}/api/v1/chat/${id}/deactivate`;
+        },
+        snoozeAutoClose({ id }: ReadChatOptions) {
+            return `${baseUrl}/api/v1/chat/${id}/snooze-auto-close`;
         },
         editNote({ id }: ChatNoteOptions) {
             return `${baseUrl}/api/v1/chat-note/chat/${id}`;

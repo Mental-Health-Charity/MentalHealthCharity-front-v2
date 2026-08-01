@@ -14,7 +14,7 @@ import MessageContent from "../MessageContent";
 
 interface Props {
     message: Message;
-    onDeleteMessage: (id: number) => void;
+    onDeleteMessage?: (id: number) => void;
     onRetryMessage?: (id: number) => void;
     showArchiveChip?: boolean;
     isNew?: boolean;
@@ -113,7 +113,7 @@ const ChatMessage = ({ message, onDeleteMessage, onRetryMessage, showArchiveChip
                     )}
                 </div>
             </div>
-            {canDeleteMessage && !message.isPending && !message.isFailed && (
+            {canDeleteMessage && onDeleteMessage && !message.isPending && !message.isFailed && (
                 <div className="invisible shrink-0 group-hover:visible">
                     <ActionMenu
                         actions={[

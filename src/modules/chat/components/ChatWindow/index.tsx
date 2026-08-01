@@ -1,7 +1,9 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { BookOpen, Flag, LockKeyhole, Menu, ScrollText, StickyNote, Users } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AlarmClockPlus, BookOpen, Flag, LockKeyhole, Menu, ScrollText, StickyNote, Users } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { useIsMobile } from "../../../../hooks/useBreakpoint";
@@ -9,9 +11,12 @@ import { useUser } from "../../../auth/components/AuthProvider";
 import ReportModal from "../../../report/components/ReportModal";
 import { Permissions } from "../../../shared/constants";
 import usePermissions from "../../../shared/hooks/usePermissions";
+import { Roles } from "../../../users/constants";
 import getAllowedParticipantRoles from "../../helpers/getAllowedParticipantRoles";
 import useChat from "../../hooks/useChat";
 import useChatListLoader from "../../hooks/useChatListLoader";
+import { chatInactivitySettingsQueryOptions } from "../../queries/chatInactivitySettingsQueryOptions";
+import snoozeAutoCloseMutation from "../../queries/snoozeAutoCloseMutation";
 import { Chat as ChatType } from "../../types";
 import AddParticipantModal from "../AddParticipantModal";
 import Chat from "../Chat";
@@ -23,13 +28,18 @@ import CustomizeChatModal from "../CustomizeChatModal";
 import HelpRulesSidebar from "../HelpRulesSidebar";
 import NewChatModal from "../NewChatModal";
 import Note from "../Note";
+import SnoozeAutoCloseModal from "../SnoozeAutoCloseModal";
 
 const ChatWindow = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const parsedChatId = id ? Number(id) : Number.NaN;
     const chatId = Number.isInteger(parsedChatId) && parsedChatId > 0 ? parsedChatId : undefined;
-    const { data, aggregatedData, loadNextPage, searchQuery, setSearchQuery, isSearching } = useChatListLoader(100);
+    const [chatFilter, setChatFilter] = useState<"active" | "closed">("active");
+    const { data, aggregatedData, loadNextPage, searchQuery, setSearchQuery, isSearching } = useChatListLoader(
+        100,
+        chatFilter
+    );
     const effectiveData = aggregatedData || data;
     const isMobile = useIsMobile();
     const [showDetails, setShowDetails] = useState(!isMobile);
@@ -42,7 +52,11 @@ const ChatWindow = () => {
     const [showNewChatModal, setShowNewChatModal] = useState(false);
     const [showAddParticipant, setShowAddParticipant] = useState(false);
     const [showCloseChatModal, setShowCloseChatModal] = useState(false);
+    const [showSnoozeAutoCloseModal, setShowSnoozeAutoCloseModal] = useState(false);
     const { t } = useTranslation();
+    const queryClient = useQueryClient();
+    const { data: inactivitySettings } = useQuery(chatInactivitySettingsQueryOptions());
+    const snoozeExtensionDays = inactivitySettings?.snooze_extension_days ?? 7;
     const [showSidebar, setShowSidebar] = useState(false);
     const { hasPermissions } = usePermissions();
 
@@ -96,12 +110,49 @@ const ChatWindow = () => {
         selectedChat.is_active &&
         (hasPermissions(Permissions.EDIT_CHAT_DATA) || hasPermissions(Permissions.MANAGE_CHATS));
     const canUseChatAttachments = selectedChat ? !selectedChat.is_group_chat : false;
+    const canSnoozeAutoClose = Boolean(
+        inactivitySettings &&
+            selectedChat?.is_active &&
+            selectedChat.chat_type === "SUPPORT" &&
+            selectedChat.auto_close_at &&
+            user?.user_role === Roles.VOLUNTEER &&
+            selectedChat.participants.some((participant) => participant.id === user.id)
+    );
+
+    const { mutate: snoozeAutoClose, isPending: isSnoozingAutoClose } = useMutation({
+        mutationFn: snoozeAutoCloseMutation,
+        onSuccess: async () => {
+            await Promise.all([reloadChat(), queryClient.invalidateQueries({ queryKey: ["chats"] })]);
+            setShowSnoozeAutoCloseModal(false);
+            toast.success(
+                t("chat.snooze_success", {
+                    defaultValue: "Termin zamknięcia przesunięto o {{count}} dni",
+                    count: snoozeExtensionDays,
+                })
+            );
+        },
+    });
+
+    const handleFilterChange = (filter: "active" | "closed") => {
+        setChatFilter(filter);
+        navigate("/chat");
+    };
 
     useEffect(() => {
         if (!chatId && effectiveData?.items.length) {
             navigate(`/chat/${effectiveData.items[0].id}`, { replace: true });
         }
     }, [chatId, effectiveData, navigate]);
+
+    useEffect(() => {
+        if (!chatId || !selectedChat) return;
+        const selectedChatFilter = selectedChat.is_active && selectedChat.status === "ACTIVE" ? "active" : "closed";
+        setChatFilter((current) => (current === selectedChatFilter ? current : selectedChatFilter));
+    }, [chatId, selectedChat]);
+
+    useEffect(() => {
+        setShowSnoozeAutoCloseModal(false);
+    }, [selectedChat?.id]);
 
     useEffect(() => {
         if (selectedChat?.is_group_chat) {
@@ -132,20 +183,22 @@ const ChatWindow = () => {
 
             {canUseChatAttachments && (
                 <>
-                    <Tooltip>
-                        <TooltipTrigger
-                            render={
-                                <button
-                                    onClick={() => setShowReportModal(!showReportModal)}
-                                    className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-2 transition-colors"
-                                    aria-label={t("chat.report")}
-                                >
-                                    <Flag className="size-5" />
-                                </button>
-                            }
-                        />
-                        <TooltipContent>{t("chat.report")}</TooltipContent>
-                    </Tooltip>
+                    {selectedChat?.is_active && (
+                        <Tooltip>
+                            <TooltipTrigger
+                                render={
+                                    <button
+                                        onClick={() => setShowReportModal(!showReportModal)}
+                                        className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-2 transition-colors"
+                                        aria-label={t("chat.report")}
+                                    >
+                                        <Flag className="size-5" />
+                                    </button>
+                                }
+                            />
+                            <TooltipContent>{t("chat.report")}</TooltipContent>
+                        </Tooltip>
+                    )}
 
                     <Tooltip>
                         <TooltipTrigger
@@ -194,6 +247,33 @@ const ChatWindow = () => {
                 <TooltipContent>{t("chat.show_details", { defaultValue: "Details" })}</TooltipContent>
             </Tooltip>
 
+            {canSnoozeAutoClose && (
+                <Tooltip>
+                    <TooltipTrigger
+                        render={
+                            <button
+                                type="button"
+                                disabled={isSnoozingAutoClose}
+                                onClick={() => setShowSnoozeAutoCloseModal(true)}
+                                className="text-warning-brand hover:bg-warning-brand/10 rounded-lg p-2 transition-colors disabled:opacity-50"
+                                aria-label={t("chat.snooze_auto_close", {
+                                    defaultValue: "Drzemka +{{count}} dni",
+                                    count: snoozeExtensionDays,
+                                })}
+                            >
+                                <AlarmClockPlus className="size-5" />
+                            </button>
+                        }
+                    />
+                    <TooltipContent>
+                        {t("chat.snooze_auto_close", {
+                            defaultValue: "Drzemka +{{count}} dni",
+                            count: snoozeExtensionDays,
+                        })}
+                    </TooltipContent>
+                </Tooltip>
+            )}
+
             {canCloseChat && (
                 <>
                     <div className="bg-border/60 mx-1 h-5 w-px" />
@@ -229,6 +309,8 @@ const ChatWindow = () => {
                     searchQuery={searchQuery}
                     onSearchChange={setSearchQuery}
                     isSearching={isSearching}
+                    filter={chatFilter}
+                    onFilterChange={handleFilterChange}
                     onNewChat={hasPermissions(Permissions.MANAGE_CHATS) ? () => setShowNewChatModal(true) : undefined}
                 />
 
@@ -266,7 +348,7 @@ const ChatWindow = () => {
                     {/* Chat area */}
 
                     <Chat
-                        onDeleteMessage={handleDeleteMessage}
+                        onDeleteMessage={selectedChat?.is_active ? handleDeleteMessage : undefined}
                         onRetryMessage={retrySend}
                         status={connectionStatus}
                         messages={messages}
@@ -288,6 +370,7 @@ const ChatWindow = () => {
                     <ContractSidebar
                         key={`contract-${selectedChat.id}`}
                         chatId={selectedChat.id.toString()}
+                        readonly={!selectedChat.is_active}
                         onClose={() => setShowContractModal(false)}
                     />
                 )}
@@ -300,16 +383,18 @@ const ChatWindow = () => {
                         onClose={() => setShowDetails(false)}
                         chat={selectedChat}
                         onAddParticipant={
-                            hasPermissions(Permissions.MANAGE_CHATS) ? () => setShowAddParticipant(true) : undefined
+                            selectedChat.is_active && hasPermissions(Permissions.MANAGE_CHATS)
+                                ? () => setShowAddParticipant(true)
+                                : undefined
                         }
-                        canManageParticipants={hasPermissions(Permissions.MANAGE_CHATS)}
+                        canManageParticipants={selectedChat.is_active && hasPermissions(Permissions.MANAGE_CHATS)}
                         onParticipantRemoved={reloadChat}
                         onCloseChat={canCloseChat ? () => setShowCloseChatModal(true) : undefined}
                     />
                 )}
             </div>
 
-            {showReportModal && selectedChat && canUseChatAttachments && (
+            {showReportModal && selectedChat?.is_active && canUseChatAttachments && (
                 <ReportModal open={showReportModal} onClose={() => setShowReportModal(false)} />
             )}
             {showCustomizeModal && (
@@ -339,6 +424,16 @@ const ChatWindow = () => {
                         closeChat(selectedChat);
                         setShowCloseChatModal(false);
                     }}
+                />
+            )}
+            {selectedChat?.auto_close_at && (
+                <SnoozeAutoCloseModal
+                    open={showSnoozeAutoCloseModal}
+                    currentAutoCloseAt={selectedChat.auto_close_at}
+                    extensionDays={snoozeExtensionDays}
+                    isPending={isSnoozingAutoClose}
+                    onClose={() => setShowSnoozeAutoCloseModal(false)}
+                    onConfirm={() => snoozeAutoClose({ id: selectedChat.id })}
                 />
             )}
         </TooltipProvider>

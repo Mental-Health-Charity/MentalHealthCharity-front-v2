@@ -87,8 +87,20 @@ const useChat = (chatId?: number, options?: Options) => {
     const selectedChatRef = useRef(selectedChat);
     selectedChatRef.current = selectedChat;
 
+    const updateCachedAutoCloseAt = useCallback(
+        (autoCloseAt: string | null | undefined) => {
+            if (!chatId || autoCloseAt === undefined) return;
+            queryClient.setQueryData<Chat>(["chat", { id: chatId }], (current) =>
+                current ? { ...current, auto_close_at: autoCloseAt } : current
+            );
+        },
+        [chatId, queryClient]
+    );
+
     const parser = new ChatDataParser()
         .onNewMessage((msg) => {
+            updateCachedAutoCloseAt(msg.auto_close_at);
+
             // Deduplicate: ignore if we already have this message
             if (knownMessageIdsRef.current.has(msg.id)) {
                 return;
@@ -118,7 +130,8 @@ const useChat = (chatId?: number, options?: Options) => {
                 markAsRead({ id: chatId });
             }
         })
-        .onDelete(({ id }) => {
+        .onDelete(({ id, auto_close_at }) => {
+            updateCachedAutoCloseAt(auto_close_at);
             knownMessageIdsRef.current.delete(id);
             setMessages((prev) => prev.filter((m) => m.id !== id));
         });
@@ -139,7 +152,7 @@ const useChat = (chatId?: number, options?: Options) => {
     }
 
     const wsUrl =
-        typeof chatId === "number" && chatId > 0
+        typeof chatId === "number" && chatId > 0 && selectedChat?.is_active && selectedChat.status === "ACTIVE"
             ? url.chat.connect({
                   token,
                   chat_id: String(chatId),

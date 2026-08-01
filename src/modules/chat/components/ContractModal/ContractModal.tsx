@@ -17,9 +17,10 @@ import ChatSidebarPanel from "../ChatSidebarPanel";
 interface Props {
     onClose: () => void;
     chatId: string;
+    readonly?: boolean;
 }
 
-const ContractSidebar = ({ onClose, chatId }: Props) => {
+const ContractSidebar = ({ onClose, chatId, readonly = false }: Props) => {
     const [content, setContent] = useState("");
     const [edited, setEdited] = useState(false);
     const ref = useRef<MDXEditorMethods>(null);
@@ -46,10 +47,17 @@ const ContractSidebar = ({ onClose, chatId }: Props) => {
     });
 
     useEffect(() => {
-        if (debouncedContent && edited && data && !data.is_confirmed && debouncedContent !== data.content) {
+        if (
+            !readonly &&
+            debouncedContent &&
+            edited &&
+            data &&
+            !data.is_confirmed &&
+            debouncedContent !== data.content
+        ) {
             editContract({ id: chatId, body: debouncedContent });
         }
-    }, [debouncedContent, data, edited, chatId, editContract]);
+    }, [debouncedContent, data, edited, chatId, editContract, readonly]);
 
     const { mutate: confirmContract } = useMutation({
         mutationFn: confirmContractForChatMutation,
@@ -101,18 +109,19 @@ const ContractSidebar = ({ onClose, chatId }: Props) => {
                 ) : (
                     <Markdown
                         onChange={(value) => {
+                            if (readonly) return;
                             setContent(value);
                             setEdited(true);
                         }}
                         ref={ref}
                         content={content}
-                        readonly={data?.is_confirmed}
+                        readonly={readonly || data?.is_confirmed}
                     />
                 )}
             </div>
 
             {/* Footer */}
-            {hasPermissions(Permissions.CAN_CONFIRM_CONTRACT) && data && !data.is_confirmed && (
+            {!readonly && hasPermissions(Permissions.CAN_CONFIRM_CONTRACT) && data && !data.is_confirmed && (
                 <div className="border-border/50 border-t px-4 py-3">
                     <Button onClick={handleConfirmContract} size="sm" className="w-full">
                         {t("chat.accept_contract")}
